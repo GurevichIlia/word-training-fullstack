@@ -1,8 +1,8 @@
-import keys from "./../config/keys";
+// import keys from "../config/keys";
 import Passport from "passport-jwt";
 import User from "../Models/User";
-import errorHandler from "../utils/errorHandler";
 
+const keys = require('./../config/keys')
 const JwtStrategy = Passport.Strategy;
 const ExtractJwt = Passport.ExtractJwt;
 

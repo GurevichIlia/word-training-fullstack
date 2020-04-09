@@ -20,19 +20,19 @@ export class WordsRoutes {
         //     "/getWordById",
         //     passport.authenticate("jwt", { session: false }),
         //     this.wordsController.editWordById
-        // );
+        // );uuu
         this.router.post(
             "/:languageId",
             passport.authenticate("jwt", { session: false }),
             this.wordsController.createNewWord
         );
         this.router.patch(
-            "/:languageId",
+            "/editWord/:languageId",
             passport.authenticate("jwt", { session: false }),
             this.wordsController.editWordById
         );
         this.router.delete(
-            "/:languageId",
+            "/deleteWord/:wordId",
             passport.authenticate("jwt", { session: false }),
             this.wordsController.deleteWordById
         );

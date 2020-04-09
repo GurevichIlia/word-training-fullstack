@@ -6,10 +6,12 @@ import { WordModel } from "../interfaces";
 export class WordsController {
     public getAllWords = async (req: Request, res: Response) => {
         try {
+            const user = req.user as { _id: string, email: string }
             const words = await Word.find({
                 language: req.params.languageId,
-                user: req.user
+                user: user._id
             });
+
             res.status(200).json(words);
         } catch (error) {
             errorHandler(res, error);
@@ -29,7 +31,7 @@ export class WordsController {
                 word: req.body.word,
                 translation: req.body.translation,
                 isFavorite: req.body.isFavorite,
-                language: req.body.language,
+                language: req.params.languageId,
                 user: req.user
             }).save();
             res.status(201).json(newWord);
@@ -53,8 +55,9 @@ export class WordsController {
 
     public deleteWordById = async (req: Request, res: Response) => {
         try {
-            await Word.findOneAndRemove({ _id: req.body._id })
+            const deletedWord = await Word.findOneAndRemove({ _id: req.params.wordId })
             res.status(200).json({
+                word: deletedWord,
                 message: 'Removed'
             })
         } catch (error) {

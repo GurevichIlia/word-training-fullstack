@@ -3,10 +3,17 @@
   "version": "1.0.0",
   "description": "nodejs_api",
   "main": "index.js",
+  "engines": {
+    "node": "12.15.0",
+    "npm": "6.13.4"
+  },
   "scripts": {
     "start": "node dist/app.ts",
-    "dev": "nodemon src/index.ts ",
-    "build": "tsc -p ."
+    "server": "nodemon src/index.ts ",
+    "build": "tsc -p .",
+    "client": "npm run start --prefix word-training-client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run client && npm run build --prefix word-training-client"
   },
   "author": "Ilia Gurevich",
   "license": "ISC",

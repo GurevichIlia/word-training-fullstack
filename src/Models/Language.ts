@@ -8,6 +8,9 @@ const languageSchema = new Schema({
         type: String,
         required: true
     },
+    quantityWords: {
+        type: Number,
+    },
     user: {
         ref: "users",
         type: Schema.Types.ObjectId

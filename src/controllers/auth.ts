@@ -4,9 +4,10 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../Models/User";
 import errorHandler from "../utils/errorHandler";
-import keys from "../config/keys";
-
+// import keys from "../config/keys";
+const keys = require('./../config/keys')
 export class AuthController {
+
     public login = async (req: Request, res: Response) => {
         const candidate = await User.findOne({ email: req.body.email });
 
@@ -23,12 +24,13 @@ export class AuthController {
                         userId: candidate._id
                     },
                     keys.jwt,
-                    { expiresIn: 60 * 60 }
+                    { expiresIn: 90 * 90 }
                 );
 
                 res.status(200).json({
                     token: `Bearer ${token}`,
-                    message: "Successfully"
+                    message: "Successfully",
+                    currentLanguage: candidate.currentLanguage
                 });
             } else {
                 res.status(401).json({

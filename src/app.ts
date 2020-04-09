@@ -1,11 +1,9 @@
 import { WordsRoutes } from "./routes/words";
 import express from "express";
 import mongoose from "mongoose";
-import keys from "./config/keys";
+import path from "path"
+// import keys from "./config/keys";
 import bodyParser from "body-parser";
-import path from "path";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import cors from "cors";
 import Morgan from "morgan";
 import { AuthRoutes } from "./routes/auth";
@@ -14,7 +12,7 @@ import passportCheck from "./middleware/passport";
 import { LanguagesRoutes } from "./routes/language";
 // const cors = require('cors');
 // const path = require('path')
-
+const keys = require('./config/keys')
 const app: express.Application = express();
 
 mongoose
@@ -40,4 +38,16 @@ app.use("/api/auth", new AuthRoutes().router);
 app.use("/api/vocabulary", new WordsRoutes().router);
 app.use("/api/languages", new LanguagesRoutes().router);
 
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('word-training-client/dist/word-training'))
+
+    app.get('*', (req, res) => {
+        res.sendfile(
+            path.resolve(
+                __dirname, 'word-training-client', 'dist', 'word-training', 'index.html'
+            )
+        )
+    })
+}
 export default app;

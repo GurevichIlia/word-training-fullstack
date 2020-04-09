@@ -1,4 +1,4 @@
-import { UserModel } from './../interfaces';
+import { UserModel, Language } from './../interfaces';
 import mongoose from 'mongoose'
 
 const Schema = mongoose.Schema
@@ -17,7 +17,12 @@ const userSchema = new Schema({
       nickName: {
             type: String,
             required: true
+      },
+      currentLanguage: {
+            type: Object ,
+            default: ''
       }
+
 })
 const User = mongoose.model<UserModel>('users', userSchema)
 export default User

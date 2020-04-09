@@ -1,7 +1,9 @@
+import { UserModel, Language as LangModel } from './../interfaces';
 import errorHandler from "../utils/errorHandler";
 import { Response, Request } from "express";
 import Language from "../Models/Language";
 import Word from "../Models/Word";
+import User from "../Models/User";
 
 export class LanguagesController {
     public getAllLanguages = async (req: Request, res: Response) => {
@@ -17,7 +19,6 @@ export class LanguagesController {
     public createLanguage = async (req: Request, res: Response) => {
         try {
             const user = req.user as { _id: string; email: string };
-            console.log("USER", user);
 
             const newLanguage = await new Language({
                 name: req.body.name,
@@ -54,4 +55,32 @@ export class LanguagesController {
             errorHandler(res, error);
         }
     };
+
+
+    getCurrentLanguage = async (req: Request, res: Response) => {
+        try {
+            const user = await User.findOne({ _id: req.user}) as UserModel
+            const currentLang = user.currentLanguage;
+            res.status(200).json({ currentLang });
+        } catch (error) {
+            errorHandler(res, error)
+        }
+    }
+
+    setCurrentLanguage = async (req: Request, res: Response) => {
+        try {
+            const user: UserModel = req.user as UserModel;
+            const currentLanguage = await Language.findOne({ _id: req.body.currentLanguage }) as LangModel;
+
+            user.currentLanguage = currentLanguage
+            const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }) as UserModel
+            res.status(200).json({
+                currentLanguage: updatedUser.currentLanguage,
+                message: 'Language selected'
+            })
+        } catch (error) {
+            errorHandler(res, error);
+
+        }
+    }
 }

@@ -1,10 +1,10 @@
 
-const mongoUri = 'mongodb+srv://solfire:4762071@cluster0-taobv.mongodb.net/test?retryWrites=true&w=majority'
-const jwt = 'jwt-token'
+if (process.env.NODE_ENV === 'production') {
+      module.exports = require('./keys.prod')
 
-export default { mongoUri, jwt }
-
-
+} else {
+      module.exports = require('./keys.dev')
+}
 
 
 
