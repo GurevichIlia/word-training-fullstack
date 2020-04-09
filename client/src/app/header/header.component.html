@@ -1,0 +1,32 @@
+<div class="container">
+      <div class="row" *ngIf="isLoggedIn$ | async">
+            <div class="col-2 text-right" *ngIf="currentLanguage$ | async as language">
+                  <nb-user shape="round" [nbContextMenu]="items" [title]="language.name"
+                        [badgeText]="quantityWords$ | async" badgeStatus="success" size="medium"
+                        badgePosition="bottom end" [name]="user?.nickName"></nb-user>
+
+                  <!-- <div class="row">
+                        <div class="col-12">
+                              <a [routerLink]="[ 'home/user-data']" outline status="accent" size="small">Vocabulary</a>
+                              <a class="ml-2" [routerLink]="[ 'home/word-trainer']" outline status="accent"
+                                    size="small">Word trainer </a>
+                              <a class="ml-2" [routerLink]="[ 'home/language-selection']" outline status="accent"
+                                    size="small">Language </a>
+                        </div>
+                  </div> -->
+            </div>
+            <!-- <div class="col-3">
+                  <nb-icon #Menu style="font-size: 35px" [nbContextMenu]="items" size="large" icon="menu-outline"></nb-icon>
+                  <div class="row" style="justify-content: flex-end">
+                        <div class="col-11">
+                              <span><strong>{{userName}}</strong></span>
+                        </div>
+                        <div class="col-1">
+                              <nb-action class="col-1" (click)="logout()" icon="log-out"></nb-action>
+                        </div>
+                  </div>
+            </div> -->
+
+
+      </div>
+</div>

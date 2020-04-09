@@ -1,0 +1,20 @@
+<div *ngIf="languages$ | async as languages; else loader">
+
+      <app-select-language (action)="getActionFromChildren($event)" *ngIf="languages.length !== 0 && mode === 'initial'"
+            [currentlanguageId]="(currentLearningLanguage$ | async)?._id" [languages]="languages">
+      </app-select-language>
+
+      <app-new-language (changeMode)="changeMode('initial')" (addLanguage)="addNewLang($event)" *ngIf="languages.length === 0 || mode === 'newlanguage'">
+      </app-new-language>
+
+      <app-edit-language (changeMode)="changeMode('initial')" (editLanguage)="editLang($event)" [language]="editingLanguage$ | async"  *ngIf="languages.length !== 0 && mode === 'editlanguage'"></app-edit-language>
+
+</div>
+
+<ng-template #loader>
+      <nb-card [nbSpinner]="true" nbSpinnerStatus="basic">
+            <nb-card-body>
+                  Loading...
+            </nb-card-body>
+      </nb-card>
+</ng-template>

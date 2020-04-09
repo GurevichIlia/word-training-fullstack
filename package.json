@@ -11,10 +11,10 @@
     "start": "node dist/app.ts",
     "server": "nodemon src/index.ts ",
     "build": "tsc -p .",
-    "client-install": "npm install --prefix word-training-client",
-    "client": "npm run start --prefix word-training-client",
+    "client-install": "npm install --prefix client",
+    "client": "npm run start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run client-install && npm run heroku-postbuild --prefix word-training-client"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run client-install && npm run heroku-postbuild --prefix client"
   },
   "author": "Ilia Gurevich",
   "license": "ISC",

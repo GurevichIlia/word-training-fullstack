@@ -1,0 +1,30 @@
+<nb-card>
+      <nb-card-header class="row">
+            <div class="col-8">
+                  <h6 class="mb-3">Training result: {{(wordsForResult$ | async).length}} </h6>
+                  <p>Known words:{{knownWordsQuantity}} </p>
+                  <p>Unknown words: {{unknownWordsQuantity}}</p>
+            </div>
+            <div class="col-4">
+                  <div class="row">
+                              <button class="col-12 mb-1" size="small" (click)="goToVocabulary()" nbButton>Vocabulary</button>
+                        <button class="col-12 mb-1" size="small" (click)="trainAgain()" nbButton>Train again</button>
+                        <button *ngIf="unknownWordsQuantity > 0" class="col-12" size="small" (click)="trainUnknownWords()" nbButton>Train
+                              unknown</button>
+                  </div>
+
+            </div>
+
+      </nb-card-header>
+      <nb-card-body>
+            <nb-list>
+                  <nb-list-item *ngFor="let word of wordsForResult$ | async">
+                        <span><strong>{{ word.word }}</strong></span>
+                        <img style="float: right" class="icons" *ngIf="word.knowen === true"
+                              src="../../../assets/Photos/icons8-checkmark-48.png" alt="">
+                        <img style="float: right" class="icons" *ngIf="word.knowen === false"
+                              src="../../../assets/Photos/icons8-delete-48.png" alt="">
+                  </nb-list-item>
+            </nb-list>
+      </nb-card-body>
+</nb-card>

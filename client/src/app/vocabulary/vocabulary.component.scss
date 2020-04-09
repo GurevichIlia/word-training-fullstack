@@ -1,0 +1,16 @@
+.wordDialogBox {
+  width: 340px;
+}
+
+.wordDialogBox .wordDialogFooter {
+  display: flex;
+  justify-content: space-around;
+}
+
+.wordDialogFooter > button {
+  width: 140px;
+  margin: 5px;
+}
+.searchBlock > input {
+  width: 200px;
+}

@@ -1,0 +1,115 @@
+<div [nbSpinner]="loadingSpinner" nbSpinnerStatus="warning">
+      <div class="row align-items-center">
+            <nb-select [formControl]="favoriteMode" class="mb-3 col-1" placeholder="Select mode">
+                  <nb-option value="all">All words - {{userWords.length}}</nb-option>
+                  <nb-option value="favorites">Favorites - {{favoritesWordsQuantity}}</nb-option>
+                  <nb-option *ngIf="unknownMode" value="unknown"> Unknown - {{userRandomWords.length }}</nb-option>
+            </nb-select>
+            <div class="col-3" *ngIf="start">
+                  <div class="row">
+                        <span class="col-12">Right:<strong>{{knownWords}}</strong></span>
+                        <span class="col-12">Wrong:<strong>{{notknownWords}}</strong></span>
+                  </div>
+            </div>
+
+      </div>
+      <div class="row" *ngIf="!start">
+            <div class="col-6">
+                  <img style="width: 150px; height: 150px" src="../../assets/Photos/2fb6b3788b.png" alt="">
+            </div>
+            <div class="col-6">
+                  <img style="width: 150px; height: 150px" src="../../assets/Photos/finger-swipe-icon-22.jpg" alt="">
+            </div>
+            <div class="col-6">
+                  <p><strong> Swipe left if you know word.</strong></p>
+            </div>
+            <div class="col-6">
+                  <p><strong> Swipe up if you don't know word. Automatically add to favorites.</strong></p>
+            </div>
+            <div class="col-6">
+                  <img style="width: 150px; height: 150px" src="../../assets/Photos/2fb6b3788b1.png" alt="">
+
+            </div>
+            <div class="col-6">
+                  <p class="mt-4"><strong> Swipe right to show previous word.</strong></p>
+
+            </div>
+      </div>
+      <div>
+            <nb-flip-card #flipCard *ngIf="start" [showToggleButton]="'false'">
+                  <nb-card-front #flipCard>
+                        <nb-card [@wordCardAnimator]="animationState" (@wordCardAnimator.done)="resetAnimationState()"
+                              style="height: 200px" status="success">
+                              <nb-card-header class="mb-2 cardHeaderFront">
+                                    <span>Word</span>
+                              </nb-card-header>
+                              <nb-card-body (swiperight)="prevWord()" (swipeup)="dontKnow(userRandomWords[wordIndex])"
+                                    (swipeleft)="onKnow(userRandomWords[wordIndex])">
+                                    <div style="width: 300px">
+                                          <h3 [ngStyle]="{'font-size': userRandomWords[wordIndex]?.word.length > 11 ? '30px' : '40px'}"
+                                                class="text-center"><i>{{userRandomWords[wordIndex]?.word}}</i></h3>
+
+                                    </div>
+                                    <div>
+                                          <img (tap)="addToFavorites(userRandomWords[wordIndex])"
+                                                *ngIf="!userRandomWords[wordIndex]?.isFavorite"
+                                                style="width: 30px; height: 30px"
+                                                src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
+                                                alt="">
+                                          <img (tap)="removeFromFavorites(userRandomWords[wordIndex])"
+                                                *ngIf="userRandomWords[wordIndex]?.isFavorite"
+                                                style="width: 30px; height: 30px"
+                                                src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png"
+                                                alt="">
+
+                                    </div>
+                                    <!-- <button (click)="addToFavorites(userRandomWords[wordIndex])">fav</button> -->
+
+                              </nb-card-body>
+
+                        </nb-card>
+                  </nb-card-front>
+                  <nb-card-back #flipCard>
+                        <nb-card status="danger" style="height: 200px" [@wordCardAnimator]="animationState"
+                              (@wordCardAnimator.done)="resetAnimationState()">
+                              <nb-card-header class="mb-2 cardHeaderBack">Translate</nb-card-header>
+                              <nb-card-body style="height: 100%" (swiperight)="prevWord()"
+                                    (swipeup)="dontKnow(userRandomWords[wordIndex])"
+                                    (swipeleft)="onKnow(userRandomWords[wordIndex])">
+                                    <div style="width: 300px">
+                                          <h3 [ngStyle]="{'font-size': userRandomWords[wordIndex]?.translation.length > 11 ? '30px' : '40px'}"
+                                                class="text-center"><i>{{userRandomWords[wordIndex]?.translation}}
+
+                                                </i></h3>
+                                    </div>
+                                    <div>
+                                          <img (tap)="addToFavorites(userRandomWords[wordIndex])"
+                                                *ngIf="!userRandomWords[wordIndex]?.isFavorite"
+                                                style="width: 30px; height: 30px"
+                                                src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
+                                                alt="">
+                                          <img (tap)="removeFromFavorites(userRandomWords[wordIndex])"
+                                                *ngIf="userRandomWords[wordIndex]?.isFavorite"
+                                                style="width: 30px; height: 30px"
+                                                src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png"
+                                                alt="">
+                                    </div>
+
+                              </nb-card-body>
+                        </nb-card>
+                  </nb-card-back>
+
+            </nb-flip-card>
+      </div>
+      <!-- 
+      <nb-icon icon="arrow-back" *ngIf="start" (click)="prevWord()"></nb-icon> <span class="ml-1" *ngIf="start">previous
+            word</span> -->
+      <div class="row justify-content-center mt-2">
+            <button *ngIf="!start" type="buttom" (click)="onStart()" class="col-8 mb-2" nbButton
+                  style="background-color: darkorchid; border-color: darkorchid">Start</button>
+            <button *ngIf="start" type="buttom" class="col-8 mb-2" nbButton status="warning"
+                  (click)="goToTrainResult()">Stop game</button>
+            <!-- <button *ngIf="start" type="buttom" (click)="onKnow()" class="col-4 ml-2 mb-2" nbButton
+                  status="success">Know</button> -->
+      </div>
+</div>

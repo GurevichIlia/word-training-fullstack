@@ -1,0 +1,36 @@
+<div class="row justify-content-center">
+  <div class="col-xs-12 col-sm-col-12 col-md-12 col-lg-12 col-xl-12 mb-3 text-right">
+    <h3 class="text-center"  >Login</h3>
+    <nb-card class="text-center"  [@loginAnimator]="animationState" (@loginAnimator.done)="resetAnimationState()">
+      <nb-card-body size="medium" >
+        <form [formGroup]="loginForm" (ngSubmit)="login()">
+          <div class="mb-2">
+            <input formControlName="email"  type="text" nbInput fullWidth [status]="emailInputColor"
+              placeholder="Email">
+              <ng-container *ngIf="loginForm.get('email').touched && loginForm.get('email').hasError">
+                <span style="font-size: 12px; color: red" *ngIf="loginForm.get('email').hasError('required') ">Email can't be empty</span>
+                <span style="font-size: 12px; color: red" *ngIf="loginForm.get('email').hasError('email')">Format is not correct</span>
+              </ng-container>
+
+
+          </div>
+          <div class="mb-4">
+            <input formControlName="password" type="password"  nbInput fullWidth [status]="passwordInputColor"
+              placeholder="Password">
+              <span style="font-size: 12px; color: red" *ngIf="loginForm.get('password').touched && loginForm.get('password').hasError('required')">Password can't be empty</span>
+          </div>
+
+          <div class="row justify-content-center">
+
+            <button type="submit" class="col-6 mb-2" nbButton status="success">Submit</button>
+
+            <div class="col-12">
+              <span><a style="cursor: pointer" (click)="goToRegistration()">Registration</a></span>
+            </div>
+          </div>
+        </form>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
+

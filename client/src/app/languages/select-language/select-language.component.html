@@ -1,0 +1,72 @@
+<nb-card>
+      <nb-card-header>
+            <h6>Please select the language you want to learn</h6>
+            <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
+      </nb-card-header>
+
+      <nb-card-body class="row justify-content-center">
+            <nb-select class="col-12" size="large" placeholder="Select language" [(ngModel)]="currentlanguageId">
+                  <nb-option *ngFor="let language of languages" [value]="language._id">
+                        {{language.name}}
+
+
+                  </nb-option>
+
+
+            </nb-select>
+
+            <!-- <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon> -->
+
+
+
+      </nb-card-body>
+
+      <mat-menu #menu="matMenu" class="matmenu">
+            <div class="menu">
+                  <div (click)="dispatchAction('CHANGE MODE', 'newlanguage')" class="menuitem">
+                        <nb-icon icon="edit-2-outline"></nb-icon>
+                        <span class="ml-2">Add</span>
+                  </div>
+                  <div (click)="dispatchAction('EDIT', currentlanguageId)" class="menuitem">
+                        <nb-icon icon="edit-2-outline"></nb-icon>
+                        <span class="ml-2">Edit</span>
+                  </div>
+                  <div (click)="dispatchAction('DELETE', currentlanguageId)" class="menuitem">
+                        <nb-icon icon="trash-2-outline"></nb-icon>
+                        <span class="ml-2">Delete</span>
+                  </div>
+
+            </div>
+
+
+      </mat-menu>
+      <!-- <div class="row justify-content-center">
+            <div class="col-xs-1 mb-4">
+                  <button type="button" size="tiny" (click)="dispatchAction('CHANGE MODE')" nbButton
+                        status="success">Add
+                  </button>
+
+            </div>
+
+            <div class="col-xs-1" *ngIf="selectedLang">
+                  <button type="button" size="tiny" (click)="dispatchAction('DELETE')" nbButton
+                        status="warning">Delete</button>
+
+            </div>
+
+            <div class="col-xs-1" *ngIf="selectedLang">
+                  <button type="button" size="tiny" (click)="dispatchAction('EDIT')" nbButton
+                        status="danger">Edit</button>
+
+            </div>
+      </div> -->
+      <div class="row justify-content-center">
+            <div class="col-xl-5 submitBtnBox">
+                  <button type="button" size="medium" nbButton (click)="dispatchAction('SELECT', currentlanguageId)"
+                        status="success">Submit</button>
+
+            </div>
+      </div>
+
+
+</nb-card>
