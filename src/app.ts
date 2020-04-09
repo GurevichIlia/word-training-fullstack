@@ -40,12 +40,12 @@ app.use("/api/languages", new LanguagesRoutes().router);
 
 
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('word-training-client/dist/word-training'))
+    app.use(express.static('client/dist/word-training'))
 
     app.get('*', (req, res) => {
         res.sendfile(
             path.resolve(
-                __dirname, 'word-training-client', 'dist', 'word-training', 'index.html'
+                __dirname, 'client', 'dist', 'word-training', 'index.html'
             )
         )
     })
