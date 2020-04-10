@@ -44,7 +44,7 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/dist/word-training'))
 
     app.get('*', (req, res) => {
-        res.sendfile(
+        res.sendFile(
             path.resolve(
                 __dirname, 'client', 'dist', 'word-training', 'index.html'
             )
