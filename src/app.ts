@@ -13,6 +13,7 @@ import { LanguagesRoutes } from "./routes/language";
 // const cors = require('cors');
 // const path = require('path')
 const keys = require('./config/keys')
+console.log('KEYS', keys)
 const app: express.Application = express();
 
 mongoose
