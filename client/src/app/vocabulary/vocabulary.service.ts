@@ -4,8 +4,6 @@ import { Injectable } from '@angular/core';
 
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Word, Language } from '../shared/interfaces';
-import { baseUrl } from '../app.config';
-import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -21,22 +19,22 @@ export class VocabularyService {
   }
 
   getWordsFromServer(langId: string): Observable<Word[]> {
-    return this.http.get<Word[]>(`${baseUrl}vocabulary/${langId}`);
+    return this.http.get<Word[]>(`/api/vocabulary/${langId}`);
   }
 
   addWord(word: Word): Observable<Word> {
     const lang = this.generalService.currentLearningLanguage.getValue();
-    return this.http.post<Word>(`${baseUrl}vocabulary/${lang._id}`, word);
+    return this.http.post<Word>(`/api/vocabulary/${lang._id}`, word);
   }
 
   editWord(word: Word): Observable<Word> {
     const lang = this.generalService.currentLearningLanguage.getValue();
-    return this.http.patch<Word>(`${baseUrl}vocabulary/editWord/${lang._id}`, word);
+    return this.http.patch<Word>(`/api/vocabulary/editWord/${lang._id}`, word);
   }
 
   deleteWordFromServer(wordId: string): Observable<Word[]> {
     const lang = this.generalService.currentLearningLanguage.getValue();
-    return this.http.delete<Word[]>(`${baseUrl}vocabulary/deleteWord/${wordId}`);
+    return this.http.delete<Word[]>(`/api/vocabulary/deleteWord/${wordId}`);
   }
 
 

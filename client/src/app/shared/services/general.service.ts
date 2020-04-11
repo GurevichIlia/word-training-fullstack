@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Language } from './../interfaces';
 
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { baseUrl } from 'src/app/app.config';
 import { map, shareReplay } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
@@ -32,7 +31,7 @@ export class GeneralService {
 
   getCurrentLanguage$() {
     // tslint:disable-next-line: max-line-length
-    return this.http.get<{ currentLang: Language }>(`${baseUrl}languages/getCurrentLanguage`).pipe(map(({ currentLang }) => currentLang), shareReplay(1));
+    return this.http.get<{ currentLang: Language }>(`/api/languages/getCurrentLanguage`).pipe(map(({ currentLang }) => currentLang), shareReplay(1));
   }
 
 

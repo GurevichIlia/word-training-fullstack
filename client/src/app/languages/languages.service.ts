@@ -1,5 +1,4 @@
 import { Language } from '../shared/interfaces';
-import { baseUrl } from '../app.config';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -10,23 +9,23 @@ export class LanguagesService {
   constructor(private http: HttpClient) { }
 
   getAllLanguages(): Observable<Language[]> {
-    return this.http.get<Language[]>(`${baseUrl}languages/getAllLanguages`);
+    return this.http.get<Language[]>(`/api/languages/getAllLanguages`);
   }
 
   addLanguage(language: Language): Observable<Language> {
-    return this.http.post<Language>(`${baseUrl}languages/createLanguage`, language);
+    return this.http.post<Language>(`/api/languages/createLanguage`, language);
   }
 
   editLanguage(language: Language): Observable<Language> {
-    return this.http.patch<Language>(`${baseUrl}languages/editLanguage`, language);
+    return this.http.patch<Language>(`/api/languages/editLanguage`, language);
   }
 
   deleteLanguage(languageId: string): Observable<Language[]> {
-    return this.http.delete<Language[]>(`${baseUrl}languages/deleteLanguage/${languageId}`);
+    return this.http.delete<Language[]>(`/api/languages/deleteLanguage/${languageId}`);
   }
 
   setCurrentLanguageOnServer(languageId: string) {
-    return this.http.post<Language>(`${baseUrl}languages/setCurrentLanguage`, { currentLanguage: languageId });
+    return this.http.post<Language>(`/api/languages/setCurrentLanguage`, { currentLanguage: languageId });
 
   }
 

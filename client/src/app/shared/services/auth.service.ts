@@ -7,7 +7,6 @@ import { Observable, of, BehaviorSubject } from 'rxjs';
 
 import { User, Language } from '../interfaces';
 import { LocalstorageService } from './localstorage.service';
-import { baseUrl } from './../../app.config';
 
 
 @Injectable({
@@ -27,11 +26,11 @@ export class AuthService {
   }
 
   registration(newUser: User): Observable<User> {
-    return this.http.post<User>(`${baseUrl}auth/registration`, newUser);
+    return this.http.post<User>(`/api/auth/registration`, newUser);
   }
 
   login(user: User): Observable<{ token: string, message: string, currentLanguage: Language }> {
-    return this.http.post<{ token: string, message: string, currentLanguage: Language }>(`${baseUrl}auth/login`, user);
+    return this.http.post<{ token: string, message: string, currentLanguage: Language }>(`/api/auth/login`, user);
   }
 
   logOut() {
