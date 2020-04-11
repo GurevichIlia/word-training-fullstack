@@ -8,7 +8,7 @@
     "npm": "6.13.4"
   },
   "scripts": {
-    "start": "tsc && node dist/index.js",
+    "start": "ts-node ./src/app.ts",
     "server": "nodemon src/index.ts",
     "client-install": "npm install --prefix client",
     "client": "npm run start --prefix client",
