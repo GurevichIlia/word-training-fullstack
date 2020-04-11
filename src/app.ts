@@ -14,6 +14,8 @@ import { LanguagesRoutes } from "./routes/language";
 // const path = require('path')
 const keys = require('./config/keys')
 console.log('KEYS', keys)
+console.log('ENV  MODE', process.env)
+
 const app: express.Application = express();
 
 mongoose

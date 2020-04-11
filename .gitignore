@@ -1,2 +1,2 @@
 node_modules
-./src/config/keys.dev.ts
+config/keys.dev.ts
