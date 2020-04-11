@@ -8,10 +8,10 @@
     "npm": "6.13.4"
   },
   "scripts": {
-    "start": "node build/server.js",
+    "start": "node ./dist/src/index.js",
     "server": "nodemon src/index.ts",
     "client-install": "npm install --prefix client",
-    "build": "tsc -p",
+    "build": "tsc",
     "client": "npm run start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run build && npm run client-install && npm run build --prefix client"
