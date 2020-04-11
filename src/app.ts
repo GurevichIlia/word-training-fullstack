@@ -17,7 +17,7 @@ console.log('KEYS', keys)
 const app: express.Application = express();
 
 mongoose
-    .connect(keys.mongoUri, {
+    .connect(keys.mongoURI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false
