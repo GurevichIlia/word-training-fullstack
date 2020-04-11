@@ -8,12 +8,12 @@
     "npm": "6.13.4"
   },
   "scripts": {
-    "start": "ts-node ./src/app.ts",
+    "start": "ts-node ./src/index.ts",
     "server": "nodemon src/index.ts",
     "client-install": "npm install --prefix client",
     "client": "npm run start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run client-install && npm run --prefix client"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run client-install && npm run build --prefix client"
   },
   "author": "Ilia Gurevich",
   "license": "ISC",
