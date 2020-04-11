@@ -2,7 +2,7 @@
   "name": "word_training_nodejs",
   "version": "1.0.0",
   "description": "nodejs_api",
-  "main": "index.js",
+  "main": "index.ts",
   "engines": {
     "node": "12.15.0",
     "npm": "6.13.4"
