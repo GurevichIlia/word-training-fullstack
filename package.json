@@ -2,19 +2,18 @@
   "name": "word_training_nodejs",
   "version": "1.0.0",
   "description": "nodejs_api",
-  "main": "index.ts",
+  "main": "index.js",
   "engines": {
     "node": "12.15.0",
     "npm": "6.13.4"
   },
   "scripts": {
-    "start": "npm run build && node dist/src/index.js",
+    "start": "tsc && dist/index.js",
     "server": "nodemon src/index.ts",
-    "build": "rimraf ./dist && tsc",
     "client-install": "npm install --prefix client",
     "client": "npm run start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run client-install && npm run build --prefix client"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run client-install && npm run --prefix client"
   },
   "author": "Ilia Gurevich",
   "license": "ISC",
