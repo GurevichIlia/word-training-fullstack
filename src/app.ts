@@ -1,4 +1,3 @@
-process.env.NODE_ENV = 'production'
 import { WordsRoutes } from "./routes/words";
 import express from "express";
 import mongoose from "mongoose";
@@ -54,4 +53,4 @@ if (process.env.NODE_ENV === 'production') {
         )
     })
 }
-export default app;
+module.exports = app;
