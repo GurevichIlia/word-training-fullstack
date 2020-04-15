@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import User from "../Models/User";
 import errorHandler from "../utils/errorHandler";
 // import keys from "../config/keys";
-const keys = require('./../config/keys')
+import keys from './../config/keys';
 export class AuthController {
 
     public login = async (req: Request, res: Response) => {
