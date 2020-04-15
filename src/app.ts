@@ -12,7 +12,7 @@ import passportCheck from "./middleware/passport";
 import { LanguagesRoutes } from "./routes/language";
 // const cors = require('cors');
 // const path = require('path')
-import { keys } from './config/keys';
+const keys = require('./config/keys')
 console.log('KEYS', keys)
 console.log('ENV  MODE', process.env)
 
