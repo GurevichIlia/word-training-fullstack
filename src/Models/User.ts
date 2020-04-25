@@ -19,8 +19,12 @@ const userSchema = new Schema({
             required: true
       },
       currentLanguage: {
-            type: Object ,
+            type: Object,
             default: ''
+      },
+      userLanguages: {
+            type: Array,
+            default: []
       }
 
 })

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { SelectLanguageGuardGuard } from './shared/guards/select-language-guard.guard';
 import { WordsTrainGuard } from './shared/guards/words-train.guard';
 
 

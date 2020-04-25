@@ -1,6 +1,7 @@
 import { FormControl } from '@angular/forms';
 import { Language } from './../../shared/interfaces';
-import { Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, ViewChild, ElementRef } from '@angular/core';
+import { NbSelectComponent } from '@nebular/theme';
 
 @Component({
   selector: 'app-select-language',
@@ -9,10 +10,12 @@ import { Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SelectLanguageComponent implements OnChanges {
-  @Input() compareFunction: () => void;
-  @Input() languages: Language[];
+  @Input() allLanguages: Language[];
+  @Input() userLanguages: Language[];
+
   @Input() currentlanguageId: string;
   @Output() action = new EventEmitter();
+  @Output() addLanguages = new EventEmitter();
   constructor() { }
 
   ngOnChanges() {
@@ -22,5 +25,9 @@ export class SelectLanguageComponent implements OnChanges {
     // const payload = this.languages.find(lang => lang._id === id);
     this.action.emit({ action, payload });
     console.log({ action, payload });
+  }
+
+  onAddLanguages(languages: Language[]) {
+    this.addLanguages.emit(languages);
   }
 }

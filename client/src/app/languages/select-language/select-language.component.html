@@ -1,4 +1,4 @@
-<nb-card>
+<!-- <nb-card>
       <nb-card-header>
             <h6>Please select the language you want to learn</h6>
             <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
@@ -15,7 +15,6 @@
 
             </nb-select>
 
-            <!-- <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon> -->
 
 
 
@@ -40,26 +39,7 @@
 
 
       </mat-menu>
-      <!-- <div class="row justify-content-center">
-            <div class="col-xs-1 mb-4">
-                  <button type="button" size="tiny" (click)="dispatchAction('CHANGE MODE')" nbButton
-                        status="success">Add
-                  </button>
 
-            </div>
-
-            <div class="col-xs-1" *ngIf="selectedLang">
-                  <button type="button" size="tiny" (click)="dispatchAction('DELETE')" nbButton
-                        status="warning">Delete</button>
-
-            </div>
-
-            <div class="col-xs-1" *ngIf="selectedLang">
-                  <button type="button" size="tiny" (click)="dispatchAction('EDIT')" nbButton
-                        status="danger">Edit</button>
-
-            </div>
-      </div> -->
       <div class="row justify-content-center">
             <div class="col-xl-5 submitBtnBox">
                   <button type="button" size="medium" nbButton (click)="dispatchAction('SELECT', currentlanguageId)"
@@ -69,4 +49,61 @@
       </div>
 
 
+</nb-card> -->
+
+
+<nb-card>
+      <nb-card-body>
+
+            <nb-tabset>
+                  <nb-tab class="p-0" tabTitle="User languages" [badgeText]="userLanguages?.length"
+                        badgeStatus="warning">
+
+                        <nb-select class="col-12  mt-3 mb-3" size="large" placeholder="Select language"
+                              [(ngModel)]="currentlanguageId">
+                              <nb-option *ngFor="let language of userLanguages" [value]="language._id">
+                                    {{language.name}}
+                              </nb-option>
+                        </nb-select>
+                        <div class="row justify-content-center">
+                              <div class="col-xl-5 submitBtnBox">
+                                    <button type="button" size="medium" nbButton
+                                          (click)="dispatchAction('SELECT', currentlanguageId)"
+                                          status="success">Submit</button>
+
+                              </div>
+                        </div>
+                  </nb-tab>
+                  <nb-tab class="p-0" tabTitle="All languages" [badgeText]="allLanguages?.length" badgeStatus="warning">
+
+                        <!-- <nb-select #AllLanguages multiple class="col-12 mt-3 mb-3" size="large"
+                              placeholder="Select language">
+                              <nb-option *ngFor="let language of allLanguages" [value]="language">
+                                    {{language.name}}
+                              </nb-option>
+
+
+                        </nb-select> -->
+                        <mat-form-field class="col-12 mt-3 mb-3">
+                              <mat-label>Languages</mat-label>
+                              <mat-select #AllLanguages multiple>
+                                    <mat-option *ngFor="let language of allLanguages" [value]="language">
+                                          {{language.name}}
+                                    </mat-option>
+                              </mat-select>
+                        </mat-form-field>
+
+                        <div class="row justify-content-center">
+                              <div class="col-xl-5 submitBtnBox">
+                                    <button type="button" size="medium" nbButton
+                                          (click)="onAddLanguages([])"
+                                          status="success">Submit</button>
+
+                              </div>
+                        </div>
+                  </nb-tab>
+
+            </nb-tabset>
+
+      </nb-card-body>
 </nb-card>

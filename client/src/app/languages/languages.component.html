@@ -1,13 +1,13 @@
-<div *ngIf="languages$ | async as languages; else loader">
+<div *ngIf="allLanguages$ | async as languages; else loader">
 
-      <app-select-language (action)="getActionFromChildren($event)" *ngIf="languages.length !== 0 && mode === 'initial'"
-            [currentlanguageId]="(currentLearningLanguage$ | async)?._id" [languages]="languages">
+      <app-select-language (addLanguages)="addUserLanguages($event)" (action)="getActionFromChildren($event)" *ngIf="languages.length !== 0 && mode === 'initial'"
+            [currentlanguageId]="(currentLearningLanguage$ | async)?._id" [allLanguages]="languages" [userLanguages]="userLanguages$ | async">
       </app-select-language>
 
-      <app-new-language (changeMode)="changeMode('initial')" (addLanguage)="addNewLang($event)" *ngIf="languages.length === 0 || mode === 'newlanguage'">
+      <app-new-language (changeMode)="changeMode('initial')"  *ngIf="languages.length === 0 || mode === 'newlanguage'">
       </app-new-language>
 
-      <app-edit-language (changeMode)="changeMode('initial')" (editLanguage)="editLang($event)" [language]="editingLanguage$ | async"  *ngIf="languages.length !== 0 && mode === 'editlanguage'"></app-edit-language>
+      <app-edit-language (changeMode)="changeMode('initial')"  [language]="editingLanguage$ | async"  *ngIf="languages.length !== 0 && mode === 'editlanguage'"></app-edit-language>
 
 </div>
 

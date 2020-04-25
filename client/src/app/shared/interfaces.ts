@@ -17,4 +17,5 @@ export interface Word {
 export interface Language {
       name: string;
       _id?: string;
+      isSelect?: boolean;
 }

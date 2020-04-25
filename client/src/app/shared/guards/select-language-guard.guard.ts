@@ -1,3 +1,4 @@
+import { LanguagesService } from './../../languages/languages.service';
 import { GeneralService } from './../services/general.service';
 import { Injectable } from '@angular/core';
 import { CanActivate, CanActivateChild, CanLoad, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
@@ -10,7 +11,7 @@ import { take, map } from 'rxjs/operators';
 export class SelectLanguageGuardGuard implements CanActivate {
 
   constructor(
-    private generalService: GeneralService,
+    private languageService: LanguagesService,
     private router: Router) {
 
 
@@ -19,7 +20,7 @@ export class SelectLanguageGuardGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     let canActive = false;
-    return this.generalService.getCurrentLanguage$().pipe(
+    return this.languageService.getCurrentLanguage$().pipe(
       take(1),
       map(lang => {
         console.log('GUARD LANG', lang);

@@ -5,7 +5,8 @@ export interface UserModel extends Document {
       nickName?: string;
       email: string;
       password: string;
-      currentLanguage?: Language
+      currentLanguage?: Language,
+      userLanguages: Language[]
 }
 
 export interface WordModel extends Document {

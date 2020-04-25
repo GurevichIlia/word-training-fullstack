@@ -29,10 +29,7 @@ export class GeneralService {
   }
 
 
-  getCurrentLanguage$() {
-    // tslint:disable-next-line: max-line-length
-    return this.http.get<{ currentLang: Language }>(`/api/languages/getCurrentLanguage`).pipe(map(({ currentLang }) => currentLang), shareReplay(1));
-  }
+
 
 
   setQuantityWords(value: number) {

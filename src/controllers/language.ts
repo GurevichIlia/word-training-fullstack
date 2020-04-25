@@ -9,7 +9,21 @@ export class LanguagesController {
     public getAllLanguages = async (req: Request, res: Response) => {
         try {
             const user = req.user;
-            const languages = await Language.find({ user: user });
+            // const languages = await Language.find({ user: user });
+            const languages = await Language.find();
+
+            res.status(200).json(languages);
+        } catch (error) {
+            errorHandler(res, error);
+        }
+    };
+
+    public getUserLanguages = async (req: Request, res: Response) => {
+        try {
+            const gotUser = req.user;
+            const user = await User.findOne({ _id: gotUser }) as UserModel;
+            const languages = user.userLanguages;
+
             res.status(200).json(languages);
         } catch (error) {
             errorHandler(res, error);
@@ -59,7 +73,7 @@ export class LanguagesController {
 
     getCurrentLanguage = async (req: Request, res: Response) => {
         try {
-            const user = await User.findOne({ _id: req.user}) as UserModel
+            const user = await User.findOne({ _id: req.user }) as UserModel
             const currentLang = user.currentLanguage;
             res.status(200).json({ currentLang });
         } catch (error) {
@@ -83,4 +97,61 @@ export class LanguagesController {
 
         }
     }
+
+
+    // addUserLanguages = async (req: Request, res: Response) => {
+    //     try {
+    //         const user: UserModel = req.user as UserModel;
+    //         const userLanguages: LangModel[] = req.body.userLanguages as LangModel[];
+
+    //         if (user.userLanguages) {
+    //             user.userLanguages = [...user.userLanguages, ...userLanguages]
+    //         } else {
+    //             user.userLanguages = [...userLanguages]
+    //         }
+    //         console.log('User', user)
+
+
+
+    //         const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }) as UserModel
+    //         res.status(200).json({
+    //             userLAnguages: updatedUser.userLanguages,
+    //             message: 'Languages added'
+    //         })
+    //     } catch (error) {
+    //         errorHandler(res, error);
+
+    //     }
+    // }
+
+    public addUserLanguages = async (req: Request, res: Response) => {
+        try {
+            const user: UserModel = req.user as UserModel;
+            const selectedUserLanguages: LangModel[] = req.body.userLanguages as LangModel[];
+
+
+            const promises = await selectedUserLanguages.map(async language => {
+                const lang = await Language.findOne({ _id: language }) as LangModel
+                return lang;
+            })
+
+            const userLanguages = await Promise.all(promises);
+
+            if (user.userLanguages) {
+                user.userLanguages = [...user.userLanguages, ...userLanguages]
+            } else {
+                user.userLanguages = userLanguages;
+            }
+
+
+            const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true }) as UserModel
+
+            res.status(200).json({
+                userLanguages: updatedUser.userLanguages,
+                message: 'Languages added'
+            })
+        } catch (error) {
+            errorHandler(res, error);
+        }
+    };
 }

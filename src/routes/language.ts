@@ -18,6 +18,12 @@ export class LanguagesRoutes {
         );
 
         this.router.get(
+            "/getUserLanguages",
+            passport.authenticate("jwt", { session: false }),
+            this.languagesController.getUserLanguages
+        );
+
+        this.router.get(
             "/getCurrentLanguage",
             passport.authenticate("jwt", { session: false }),
             this.languagesController.getCurrentLanguage
@@ -40,11 +46,17 @@ export class LanguagesRoutes {
             passport.authenticate("jwt", { session: false }),
             this.languagesController.deleteLanguage
         );
-        
+
         this.router.post(
             "/setCurrentLanguage",
             passport.authenticate("jwt", { session: false }),
             this.languagesController.setCurrentLanguage
+        );
+
+        this.router.post(
+            "/addUserLanguages",
+            passport.authenticate("jwt", { session: false }),
+            this.languagesController.addUserLanguages
         );
     }
 }

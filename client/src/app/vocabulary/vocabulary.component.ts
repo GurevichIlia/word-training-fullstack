@@ -1,3 +1,4 @@
+import { LanguagesService } from './../languages/languages.service';
 import { AskQuestionComponent } from './../shared/modals/ask-question/ask-question.component';
 import { Router } from '@angular/router';
 import { Component, OnInit, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
@@ -35,7 +36,8 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     private router: Router,
     private notification: NotificationsService,
     private menuService: NbMenuService,
-    private dialogService: NbDialogService
+    private dialogService: NbDialogService, 
+    private languageService: LanguagesService
 
 
   ) { }
@@ -48,7 +50,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
 
 
   getAllWords() {
-    this.words$ = this.generalService.getCurrentLanguage$()
+    this.words$ = this.languageService.getCurrentLanguage$()
       .pipe(switchMap(currentLang => {
         if (currentLang) {
           this.generalService.setCurrentLanguage(currentLang);
