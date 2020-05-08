@@ -1,0 +1,27 @@
+<div #scrollframe *ngIf="words; else loader">
+      <ng-container *ngIf="words.length !== 0 ; else empty">
+            {{filterValue?.value}}
+            <app-word
+                  *ngFor="let word of words | filter: filterValue?.value | slice:0:pageSize ; trackBy: trackWords; let i = index"
+                  (action)="sendAction($event)" [word]="word">
+                  <nb-checkbox [checked]="word.assignedGroups.includes(selectedGroup)"></nb-checkbox>
+            </app-word>
+
+      </ng-container>
+      <ng-template #empty>
+            <span class="m-auto">No one word yet</span>
+
+      </ng-template>
+
+      <!-- <button class="col-12" (click)="showMore()" type="button" nbButton outline status="default"
+                  size="small">Show
+                  more</button> -->
+</div>
+
+<ng-template #loader>
+      <nb-card [nbSpinner]="true" nbSpinnerStatus="basic">
+            <nb-card-body>
+                  Loading...
+            </nb-card-body>
+      </nb-card>
+</ng-template>

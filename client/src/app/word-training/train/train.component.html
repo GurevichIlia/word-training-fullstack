@@ -1,0 +1,83 @@
+<div>
+      <nb-flip-card #flipCard [showToggleButton]="'false'">
+            <nb-card-front #flipCard>
+                  <nb-card [@wordCardAnimator]="animationState" (@wordCardAnimator.done)="onResetAnimationState()"
+                        style="height: 200px">
+                        <nb-card-header class="mb-2 cardHeaderFront">
+                              <span>Word</span>
+                        </nb-card-header>
+                        <nb-card-body>
+                              <div style="width: 300px">
+                                    <h3 [ngStyle]="{'font-size': word?.word.length > 11 ? '30px' : '40px'}"
+                                          class="text-center"><i>{{word?.word}}</i></h3>
+
+                              </div>
+                              {{word?.levelKnowledge}}
+                              <!-- <div>
+                                    <img (tap)="addToFavorites(word)" *ngIf="!word?.isFavorite"
+                                          style="width: 30px; height: 30px"
+                                          src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
+                                          alt="">
+                                    <img (tap)="removeFromFavorites(word)" *ngIf="word?.isFavorite"
+                                          style="width: 30px; height: 30px"
+                                          src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png"
+                                          alt="">
+
+                              </div> -->
+                              <!-- <button (click)="addToFavorites(word)">fav</button> -->
+
+                        </nb-card-body>
+
+                  </nb-card>
+            </nb-card-front>
+            <nb-card-back #flipCard>
+                  <nb-card status="danger" style="height: 200px" [@wordCardAnimator]="animationState"
+                        (@wordCardAnimator.done)="onResetAnimationState()">
+                        <nb-card-header class="mb-2 cardHeaderBack">Translate</nb-card-header>
+                        <nb-card-body style="height: 100%" (swiperight)="onPrevWord()" (swipeup)="dontKnow(word)"
+                              (swipeleft)="onNextWord()">
+                              <div style="width: 300px">
+                                    <h3 [ngStyle]="{'font-size': word?.translation.length > 11 ? '30px' : '40px'}"
+                                          class="text-center"><i>{{word?.translation}}
+
+                                          </i></h3>
+                              </div>
+                              <div>
+                                    <img (tap)="addToFavorites(word)" *ngIf="!word?.isFavorite"
+                                          style="width: 30px; height: 30px"
+                                          src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
+                                          alt="">
+                                    <img (tap)="removeFromFavorites(word)" *ngIf="word?.isFavorite"
+                                          style="width: 30px; height: 30px"
+                                          src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png"
+                                          alt="">
+                              </div>
+
+                        </nb-card-body>
+                  </nb-card>
+            </nb-card-back>
+
+      </nb-flip-card>
+</div>
+
+<nb-card>
+      <div class="row level-row justify-content-around">
+            <div class="col-2 level bad" (click)="onSetKnowledgeLevel(word._id, 1)">1</div>
+            <div class="col-2 level better" (click)="onSetKnowledgeLevel(word._id, 2)">2</div>
+            <div class="col-2 level medium" (click)="onSetKnowledgeLevel(word._id, 3)">3</div>
+            <div class="col-2 level good" (click)="onSetKnowledgeLevel(word._id, 4)">4</div>
+            <div class="col-2 level excellent" (click)="onSetKnowledgeLevel(word._id, 5)">5</div>
+      </div>
+</nb-card>
+
+<!-- 
+<nb-icon icon="arrow-back" *ngIf="start" (click)="prevWord()"></nb-icon> <span class="ml-1" *ngIf="start">previous
+      word</span> -->
+<div class="row justify-content-center mt-2">
+      <!-- <button *ngIf="!start" type="buttom" (click)="onStart()" class="col-8 mb-2" nbButton
+            style="background-color: darkorchid; border-color: darkorchid">Start</button> -->
+      <button type="buttom" class="col-8 mb-2" nbButton status="warning" (click)="goToTrainResult()">Stop
+            game</button>
+      <!-- <button *ngIf="start" type="buttom" (click)="onKnow()" class="col-4 ml-2 mb-2" nbButton
+            status="success">Know</button> -->
+</div>

@@ -1,3 +1,4 @@
+import { GeneralFacade } from 'src/app/general.facade';
 import { GeneralService } from './../../shared/services/general.service';
 import { FormBuilder, FormGroup, Validators, } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
@@ -35,7 +36,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private localStorageService: LocalstorageService,
     private notifications: NotificationsService,
-    private generalService: GeneralService
+    private generalFacade: GeneralFacade
   ) { }
 
   ngOnInit() {
@@ -55,7 +56,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             console.log('AFTER LOGIN', res);
             this.authService.setIsAuthenticated(true);
             this.localStorageService.setItem('token', res.token);
-            this.generalService.setCurrentLanguage(res.currentLanguage);
+            this.generalFacade.setCurrentLanguage(res.currentLanguage);
             this.router.navigate(['vocabulary']);
             this.notifications.success('', res.message);
 

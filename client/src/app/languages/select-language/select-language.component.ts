@@ -16,18 +16,23 @@ export class SelectLanguageComponent implements OnChanges {
   @Input() currentlanguageId: string;
   @Output() action = new EventEmitter();
   @Output() addLanguages = new EventEmitter();
+  @Output() selectLanguage = new EventEmitter();
   constructor() { }
 
   ngOnChanges() {
   }
 
-  dispatchAction(action: string, payload: any) {
+  dispatchAction(action: string, payload?: any) {
     // const payload = this.languages.find(lang => lang._id === id);
     this.action.emit({ action, payload });
     console.log({ action, payload });
   }
 
-  onAddLanguages(languages: Language[]) {
-    this.addLanguages.emit(languages);
+  onSelectLanguage(language: Language) {
+    this.selectLanguage.emit(language)
+  }
+
+  onAddLanguages() {
+    this.addLanguages.emit();
   }
 }

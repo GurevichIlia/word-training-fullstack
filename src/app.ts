@@ -10,6 +10,7 @@ import { AuthRoutes } from "./routes/auth";
 import passport from "passport";
 import passportCheck from "./middleware/passport";
 import { LanguagesRoutes } from "./routes/language";
+import { WordGroupRoutes } from "./routes/word-group";
 // const cors = require('cors');
 // const path = require('path')
 const keys = require('./config/keys')
@@ -40,6 +41,8 @@ app.use(bodyParser.json());
 app.use("/api/auth", new AuthRoutes().router);
 app.use("/api/vocabulary", new WordsRoutes().router);
 app.use("/api/languages", new LanguagesRoutes().router);
+app.use("/api/word-group", new WordGroupRoutes().router);
+
 
 
 if (process.env.NODE_ENV === 'production') {

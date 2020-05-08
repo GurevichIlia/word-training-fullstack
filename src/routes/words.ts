@@ -26,15 +26,19 @@ export class WordsRoutes {
             passport.authenticate("jwt", { session: false }),
             this.wordsController.createNewWord
         );
+
         this.router.patch(
             "/editWord/:languageId",
             passport.authenticate("jwt", { session: false }),
             this.wordsController.editWordById
         );
+
         this.router.delete(
             "/deleteWord/:wordId",
             passport.authenticate("jwt", { session: false }),
             this.wordsController.deleteWordById
         );
+
+ 
     }
 }

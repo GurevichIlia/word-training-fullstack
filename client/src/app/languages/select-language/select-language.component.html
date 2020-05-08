@@ -59,12 +59,16 @@
                   <nb-tab class="p-0" tabTitle="User languages" [badgeText]="userLanguages?.length"
                         badgeStatus="warning">
 
-                        <nb-select class="col-12  mt-3 mb-3" size="large" placeholder="Select language"
+                        <nb-select class="col-12 mt-3 mb-3" placeholder="Select language"
                               [(ngModel)]="currentlanguageId">
                               <nb-option *ngFor="let language of userLanguages" [value]="language._id">
                                     {{language.name}}
+                                    <nb-icon class="ml-auto" (click)="dispatchAction('DELETE', language._id)"
+                                          icon="trash-2-outline">
+                                    </nb-icon>
                               </nb-option>
                         </nb-select>
+
                         <div class="row justify-content-center">
                               <div class="col-xl-5 submitBtnBox">
                                     <button type="button" size="medium" nbButton
@@ -84,23 +88,33 @@
 
 
                         </nb-select> -->
-                        <mat-form-field class="col-12 mt-3 mb-3">
-                              <mat-label>Languages</mat-label>
-                              <mat-select #AllLanguages multiple>
-                                    <mat-option *ngFor="let language of allLanguages" [value]="language">
+
+                        <nb-list class="col-12 mt-3 mb-3 p-0">
+                              <nb-list-item *ngFor="let language of allLanguages">
+                                    <nb-checkbox [disabled]="language.isSelected" (click)="onSelectLanguage(language)"
+                                          [checked]="language.isSelected === true">
                                           {{language.name}}
-                                    </mat-option>
-                              </mat-select>
-                        </mat-form-field>
+                                    </nb-checkbox>
+
+
+                              </nb-list-item>
+                        </nb-list>
 
                         <div class="row justify-content-center">
-                              <div class="col-xl-5 submitBtnBox">
-                                    <button type="button" size="medium" nbButton
-                                          (click)="onAddLanguages([])"
+                              <div class="col-6 col-xl-5 ">
+                                    <button type="button" size="medium" nbButton (click)="onAddLanguages()"
                                           status="success">Submit</button>
 
                               </div>
+                              <div class="col-6 col-xl-5 ">
+                                    <button type="button" size="medium" nbButton (click)="dispatchAction('CANCEL')"
+                                          status="danger">Cancel</button>
+
+                              </div>
                         </div>
+
+
+
                   </nb-tab>
 
             </nb-tabset>

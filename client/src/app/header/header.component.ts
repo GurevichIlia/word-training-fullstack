@@ -1,3 +1,4 @@
+import { GeneralFacade } from 'src/app/general.facade';
 import { GeneralService } from './../shared/services/general.service';
 import { User, Language } from './../shared/interfaces';
 import { AuthService } from './../shared/services/auth.service';
@@ -23,11 +24,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     { title: 'Vocabulary', link: 'vocabulary' },
     { title: 'Word train', link: 'word-training' },
     { title: 'Change language', link: 'languages' },
-    { title: 'Log out', link: 'authorization/login', icon: 'log-out' }];
+    { title: 'Log out', link: '/login', icon: 'log-out' }];
   constructor(
     private authService: AuthService,
     private menuService: NbMenuService,
-    private generalService: GeneralService,
+    private generalFacade: GeneralFacade
 
   ) {
     this.themeControl = new FormControl('');
@@ -60,10 +61,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.authService.logOut();
   }
   getCurrentLanguage() {
-    this.currentLanguage$ = this.generalService.currentLearningLanguage$.pipe(tap(lang => console.log('LANGUAGE HEADER', lang)));
+    this.currentLanguage$ = this.generalFacade.getCurrentLanguage$().pipe(tap(lang => console.log('LANGUAGE HEADER', lang)));
   }
   getquantityWords() {
-    this.quantityWords$ = this.generalService.getQuantityWords$().pipe(tap(q => console.log('QUANTITY', q)));
+    this.quantityWords$ = this.generalFacade.getWordsQuantity$().pipe(tap(q => console.log('QUANTITY', q)));
   }
   ngOnDestroy(): void {
     // Called once, before the instance is destroyed.

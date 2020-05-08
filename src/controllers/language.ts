@@ -126,7 +126,7 @@ export class LanguagesController {
 
     public addUserLanguages = async (req: Request, res: Response) => {
         try {
-            const user: UserModel = req.user as UserModel;
+            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
             const selectedUserLanguages: LangModel[] = req.body.userLanguages as LangModel[];
 
 
@@ -136,14 +136,14 @@ export class LanguagesController {
             })
 
             const userLanguages = await Promise.all(promises);
+  
 
             if (user.userLanguages) {
                 user.userLanguages = [...user.userLanguages, ...userLanguages]
+                // user.userLanguages = userLanguages.map(language => user.userLanguages.splice(index))
             } else {
                 user.userLanguages = userLanguages;
             }
-
-
             const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true }) as UserModel
 
             res.status(200).json({
@@ -154,4 +154,20 @@ export class LanguagesController {
             errorHandler(res, error);
         }
     };
+
+    public deleteUserLanguage = async (req: Request, res: Response) => {
+        try {
+            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
+
+            user.userLanguages = user.userLanguages.filter(language => req.body.languageId != language._id)
+            
+            const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }) as UserModel
+            res.status(200).json({
+                userLanguages: updatedUser.userLanguages,
+                message: 'Language removed'
+            })
+        } catch (error) {
+            errorHandler(res, error);
+        }
+    }
 }

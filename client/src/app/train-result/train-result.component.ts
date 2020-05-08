@@ -53,7 +53,7 @@ export class TrainResultComponent implements OnInit {
     return this.unknownWords;
   }
   trainUnknownWords() {
-    this.trainingService.setTrainWords(this.getUnknownWords());
+    // this.trainingService.setTrainWords(this.getUnknownWords());
     this.router.navigate(['word-training']);
   }
   trainAgain() { 

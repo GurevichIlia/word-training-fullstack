@@ -1,5 +1,4 @@
-import { FormControl } from '@angular/forms';
-import { GeneralService } from './../shared/services/general.service';
+
 import { Router } from '@angular/router';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 
@@ -11,13 +10,14 @@ import { tap, takeUntil, map, switchMap } from 'rxjs/operators';
 
 
 
+
 @Component({
   selector: 'app-languages',
   templateUrl: './languages.component.html',
   styleUrls: ['./languages.component.scss']
 })
 export class LanguagesComponent implements OnInit, OnDestroy {
-  
+
   allLanguages$: Observable<Language[]>;
   userLanguages$: Observable<Language[]>;
 
@@ -26,6 +26,7 @@ export class LanguagesComponent implements OnInit, OnDestroy {
   isNewLanguage = false;
   mode = 'initial'; // initial, editlanguage, newlanguage
   subscription$ = new Subject();
+  languagesCandidateToAdd: Language[] = [];
   constructor(
     private notifications: NotificationsService,
     private languagesService: LanguagesService,
@@ -47,12 +48,12 @@ export class LanguagesComponent implements OnInit, OnDestroy {
       .pipe(
         map(([allLanguages, userLanguages]) => {
 
-          return allLanguages.map(userLanguage => {
-            const foundLanguage = userLanguages.find(language => language._id === userLanguage._id);
+          return allLanguages.map(language => {
+            const foundLanguage = userLanguages.find(userLanguage => language._id === userLanguage._id);
             if (foundLanguage) {
-              return foundLanguage;
+              return { ...foundLanguage, isSelected: true };
             } else {
-              return userLanguage;
+              return { ...language, isSelected: false };
             }
 
           });
@@ -63,7 +64,7 @@ export class LanguagesComponent implements OnInit, OnDestroy {
   getUserLAnguages() {
     this.userLanguages$ = this.languagesService.getUserLanguages()
       .pipe(
-        map(languages => languages.map(langauge => ({ ...langauge, isSelect: true }))),
+        map(languages => languages.map(langauge => ({ ...langauge, isSelected: true }))),
         tap(res => console.log('USER LANGUAGES', res)
         ));
 
@@ -146,14 +147,17 @@ export class LanguagesComponent implements OnInit, OnDestroy {
   //   // this.language = {} as Language;
   // }
 
-  addUserLanguages(languages: Language[]) {
-    console.log('USER LANGUAGES ', languages)
+  addUserLanguages() {
+    const languages = this.languagesCandidateToAdd;
+    console.log('USER LANGUAGES ', languages);
     this.languagesService.addUserLanguages(languages)
       .pipe(
         takeUntil(this.subscription$)
       )
       .subscribe(res => {
         this.getUserLAnguages();
+        this.getAllLanguages();
+
         console.log('AFTER ADD LANGUAGES', res);
       }, err => this.notifications.error('', err.error.message));
 
@@ -173,12 +177,12 @@ export class LanguagesComponent implements OnInit, OnDestroy {
       case 'EDIT': this.onEdit(payload as string);
         // tslint:disable-next-line: align
         break;
-      // case 'DELETE': this.deleteLang(payload as string);
-      //   // tslint:disable-next-line: align
-      //   break;
-      // case 'UPDATE': this.editLang(payload);
-      //   // tslint:disable-next-line: align
-      //   break;
+      case 'CANCEL': this.cleareCandidates();
+        // tslint:disable-next-line: align
+        break;
+      case 'DELETE': this.deleteUserLanguage(payload);
+        // tslint:disable-next-line: align
+        break;
       default:
         break;
     }
@@ -188,6 +192,27 @@ export class LanguagesComponent implements OnInit, OnDestroy {
     this.mode = modeName;
   }
 
+  addLanguageToCandidates(language: Language) {
+    this.languagesCandidateToAdd = this.languagesService.addToCandidates([...this.languagesCandidateToAdd], language);
+    console.log('Candidates', this.languagesCandidateToAdd)
+  }
+
+  cleareCandidates() {
+    this.languagesCandidateToAdd = [];
+  }
+
+  deleteUserLanguage(languageId: string) {
+    this.languagesService.deleteUserLanguage(languageId)
+      .pipe(
+        takeUntil(this.subscription$)
+      )
+      .subscribe(res => {
+        this.getUserLAnguages();
+        this.getAllLanguages();
+        console.log('AFTER Delete LANGUAGE', res);
+      }, err => this.notifications.error('', err.error.message));
+
+  }
 
   unsubscribe() {
     this.subscription$.next();

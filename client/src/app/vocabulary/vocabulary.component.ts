@@ -1,15 +1,15 @@
+import { VocabularyFacade } from './vocabulary.facade';
 import { LanguagesService } from './../languages/languages.service';
 import { AskQuestionComponent } from './../shared/modals/ask-question/ask-question.component';
 import { Router } from '@angular/router';
 import { Component, OnInit, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 
-import { switchMap, takeUntil } from 'rxjs/operators';
-import { Observable, EMPTY, Subject } from 'rxjs';
-import { Word } from './../shared/interfaces';
-import { VocabularyService } from './vocabulary.service';
-import { GeneralService } from './../shared/services/general.service';
-import { NbMenuService, NbDialogService, NbDialogRef } from '@nebular/theme';
+import { switchMap, takeUntil, tap, startWith, map, filter } from 'rxjs/operators';
+import { Observable, EMPTY, Subject, BehaviorSubject } from 'rxjs';
+import { Word, WordGroup } from './../shared/interfaces';
+
+import { NbDialogService, NbDialogRef } from '@nebular/theme';
 import { NotificationsService } from './../shared/services/notifications.service';
 
 
@@ -20,51 +20,40 @@ import { NotificationsService } from './../shared/services/notifications.service
 })
 export class VocabularyComponent implements OnInit, OnDestroy {
   @ViewChild('wordModal') wordModalRef: TemplateRef<any>;
+  @ViewChild('groupModalRef') groupModalRef: TemplateRef<any>;
+
   newWordForm: FormGroup;
   addWordByList: string;
   pageSize = 20;
   filterValue = new FormControl('');
-  words$: Observable<Word[]>;
   subscription$ = new Subject();
-  titleForWordModal: string;
+  titleForModal: string;
   wordModal: NbDialogRef<any>;
   editWordOldValue: Word;
+
+  allWords$: Observable<Word[]>;
+  wordsFiltredByGroup$: Observable<Word[]>;
+  wordGroups$: Observable<WordGroup[]>;
+  selectedGroup$ = new BehaviorSubject<string>('1');
+  groupName = new FormControl('', Validators.required);
+  groupModal: NbDialogRef<any>;
+
+  selectedWordsForAssignGroups$ = new BehaviorSubject<string[]>([]);
   constructor(
     private fb: FormBuilder,
-    private generalService: GeneralService,
-    private vocabularyService: VocabularyService,
     private router: Router,
     private notification: NotificationsService,
-    private menuService: NbMenuService,
-    private dialogService: NbDialogService, 
-    private languageService: LanguagesService
-
-
+    private dialogService: NbDialogService,
+    private vocabularyFacade: VocabularyFacade
   ) { }
 
   ngOnInit() {
-    this.getAllWords();
     this.createNewWordForm();
-    this.menuService.onItemClick().subscribe(item => console.log(item))
-  }
 
+    this.allWords$ = this.vocabularyFacade.getAllUserWords$();
+    this.wordsFiltredByGroup$ = this.vocabularyFacade.getUserWordsFiltredByGroup(this.selectedGroup$);
+    this.wordGroups$ = this.vocabularyFacade.getWordsGroups$();
 
-  getAllWords() {
-    this.words$ = this.languageService.getCurrentLanguage$()
-      .pipe(switchMap(currentLang => {
-        if (currentLang) {
-          this.generalService.setCurrentLanguage(currentLang);
-          return this.vocabularyService.getWordsFromServer(currentLang._id)
-            .pipe(switchMap(words => {
-              this.generalService.setQuantityWords(words.length)
-              this.vocabularyService.setWords(words.reverse());
-              return this.vocabularyService.getCurrentWords$();
-            }));
-        } else {
-          this.router.navigate(['languages']);
-          return EMPTY;
-        }
-      }));
   }
 
   createNewWordForm() {
@@ -82,13 +71,16 @@ export class VocabularyComponent implements OnInit, OnDestroy {
 
   addNewWord() {
     if (this.newWordForm.valid) {
-      this.vocabularyService.addWord(this.newWordForm.value)
-        .pipe(takeUntil(this.subscription$))
+      this.vocabularyFacade.addNewWord(this.newWordForm.value)
+        .pipe(
+          takeUntil(this.subscription$)
+        )
         .subscribe(word => {
           if (word) {
             this.notification.success('', 'Successfully');
-            this.vocabularyService.words.getValue().unshift(word);
             this.closeWordModal();
+            this.vocabularyFacade.updateWordList();
+
           }
         }, err => this.notification.error('', err.message.error));
 
@@ -98,17 +90,18 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   }
 
   updateWord(oldValue: Word, editeWord: Word) {
-    this.vocabularyService.onEdit(editeWord);
+    // this.vocabularyFacade.onEdit(editeWord);
     if (editeWord) {
-      this.vocabularyService.editWord(editeWord)
+      this.vocabularyFacade.editWord(editeWord)
         .pipe(takeUntil(this.subscription$))
         .subscribe(editedWord => {
           if (editedWord) {
             this.notification.success('', 'Successfully');
             this.closeWordModal();
+            this.vocabularyFacade.updateWordList();
           }
         }, err => {
-          this.vocabularyService.onEdit(oldValue);
+          // this.vocabularyFacade.onEdit(oldValue);
           this.notification.error('', err.message.error);
         });
     }
@@ -166,14 +159,16 @@ export class VocabularyComponent implements OnInit, OnDestroy {
 
     result$.onClose.pipe(switchMap(res => {
       if (res) {
-        this.vocabularyService.deleteWord(word);
-        return this.vocabularyService.deleteWordFromServer(word._id);
+        // this.vocabularyFacade.deleteWord(word);
+        return this.vocabularyFacade.deleteWordFromServer(word._id);
       } else {
         return EMPTY;
       }
     })).pipe(takeUntil(this.subscription$))
       .subscribe(res => {
         this.notification.success('', `Word ${word.word} removed`);
+        this.vocabularyFacade.updateWordList();
+        // this.getWords();
       }, err => {
         this.notification.error('', err.error.message);
       });
@@ -181,7 +176,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   }
 
   openWordModal(title: string) {
-    this.titleForWordModal = title;
+    this.titleForModal = title;
     this.wordModal = this.dialogService.open(this.wordModalRef);
   }
 
@@ -190,6 +185,39 @@ export class VocabularyComponent implements OnInit, OnDestroy {
       this.wordModal.close();
       this.newWordForm.reset();
     }
+  }
+
+  createNewGroup() {
+    if (!this.groupName.valid) {
+      return this.notification.warning('', 'Please fill in required fields');
+
+    }
+
+    this.vocabularyFacade.createWordGroup(this.groupName.value)
+      .subscribe(res => {
+        this.groupModal.close();
+        // this.getGroups();
+        console.log('RES AFTER SAVE GROUP', res);
+      })
+  }
+
+  assignGroup() {
+
+  }
+
+  openGroupModal(title: string) {
+    this.titleForModal = title;
+    this.groupModal = this.dialogService.open(this.groupModalRef);
+  }
+  toggleShowWordsForAssign() {
+
+  }
+
+  toggleWordAssignToGroup(wordId: string) {
+    const selectedProduct = this.vocabularyFacade.selectWord(this.selectedWordsForAssignGroups$.getValue(), wordId);
+
+    this.selectedWordsForAssignGroups$.next(selectedProduct);
+    console.log('SELECTED WORDS FOR ASSIGN GROUPS', this.selectedWordsForAssignGroups$.getValue());
   }
 
   unsubscribe() {

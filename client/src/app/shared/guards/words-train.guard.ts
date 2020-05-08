@@ -1,3 +1,5 @@
+import { GeneralState } from './../../general.state';
+import { VocabularyService } from './../../vocabulary/vocabulary.service';
 import { NotificationsService } from './../services/notifications.service';
 import { WordTrainingService } from './../../word-training/word-training.service';
 import { Injectable } from '@angular/core';
@@ -11,7 +13,7 @@ import { map, take } from 'rxjs/operators';
 export class WordsTrainGuard implements CanActivate {
 
   constructor(
-    private wordTrainingService: WordTrainingService,
+    private generalState: GeneralState,
     private router: Router,
     private notifications: NotificationsService
   ) {
@@ -19,7 +21,7 @@ export class WordsTrainGuard implements CanActivate {
   }
   canActivate() {
     let canActive = false;
-    return this.wordTrainingService.getUserWords().pipe(
+    return this.generalState.getUserWords$().pipe(
       take(1),
       map(words => {
         console.log('GUARD TRAIN', words);

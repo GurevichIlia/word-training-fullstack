@@ -1,33 +1,36 @@
+import { RouterModule } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import { MatCardModule } from '@angular/material/card';
+
 
 import {
   NbThemeModule, NbLayoutModule, NbSidebarModule, NbButtonModule,
   NbInputModule, NbCardModule, NbSelectModule, NbToastrModule, NbListModule,
   NbTabsetModule, NbIconModule, NbActionsModule, NbCheckboxModule, NbSpinnerModule,
-  NbContextMenuModule, NbUserModule, NbMenuModule, NbDialogModule
+  NbContextMenuModule, NbUserModule, NbMenuModule, NbDialogModule, NbAccordionModule
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NgxPrettyCheckboxModule } from 'ngx-pretty-checkbox';
+import { MatCardModule } from '@angular/material/card';
 import { FilterPipe } from './pipes/filter.pipe';
 import { EditWordComponent } from './modals/edit-word/edit-word.component';
 import { AskQuestionComponent } from './modals/ask-question/ask-question.component';
-
-
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { FooterComponent } from './components/footer/footer.component';
+import { HomeComponent } from '../modules/home/home/home.component';
 
 
 
 @NgModule({
-  declarations: [FilterPipe, AskQuestionComponent],
+  declarations: [FilterPipe, AskQuestionComponent, FooterComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
+    RouterModule,
     NbLayoutModule,
     NbButtonModule,
     NbInputModule,
@@ -45,8 +48,8 @@ import { AskQuestionComponent } from './modals/ask-question/ask-question.compone
     NgxPrettyCheckboxModule,
     MatCardModule,
     MatMenuModule,
-    MatSelectModule,
-    MatFormFieldModule
+    NbAccordionModule
+    
   ],
   exports: [
     ReactiveFormsModule,
@@ -68,13 +71,12 @@ import { AskQuestionComponent } from './modals/ask-question/ask-question.compone
     NbContextMenuModule,
     NbUserModule,
     NbMenuModule,
+    NbAccordionModule,
     NgxPrettyCheckboxModule,
     MatCardModule,
     FilterPipe,
     MatMenuModule,
-    MatSelectModule,
-    MatFormFieldModule
-    
+    FooterComponent
 
   ],
   entryComponents: [EditWordComponent, AskQuestionComponent]

@@ -1,17 +1,15 @@
 <!-- <form [formGroup]="editForm"> -->
 <div class="row">
 
-
-
       <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
       <mat-menu #menu="matMenu" class="matmenu">
             <div class="menu">
                   <div (click)="dispatchAction('EDIT WORD', word)" class="menuitem">
-                        <nb-icon icon="trash-2-outline"></nb-icon>        
+                        <nb-icon icon="trash-2-outline"></nb-icon>
                         <span class="ml-2">Edit</span>
                   </div>
-                  <div  (click)="dispatchAction('DELETE WORD', word)" class="menuitem">
-                        <nb-icon icon="edit-2-outline"></nb-icon> 
+                  <div (click)="dispatchAction('DELETE WORD', word)" class="menuitem">
+                        <nb-icon icon="edit-2-outline"></nb-icon>
                         <span class="ml-2">Delete</span>
                   </div>
             </div>
@@ -25,58 +23,16 @@
             <!-- <nb-checkbox formControlName="favorite" (change)="onSaveEditedWord()" status="success"></nb-checkbox>
                                           <span style="font-size: 12px">favorite</span> </nb-checkbox> -->
 
-            <img (tap)="dispatchAction('IS FAVORITE', word)" 
-                  *ngIf="!word.isFavorite" style="width: 30px; height: 30px"
+            <img (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="!word.isFavorite" style="width: 30px; height: 30px"
                   src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
                   alt="">
-            <img (tap)="dispatchAction('IS FAVORITE', word)" 
-                  *ngIf="word.isFavorite" style="width: 30px; height: 30px"
+            <img (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="word.isFavorite" style="width: 30px; height: 30px"
                   src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png"
                   alt="">
       </div>
       <span style="font-size: 17px" class="ml-3 col-9 mb-3"><i>{{word.translation}}</i></span>
 
-
-      <!-- <div *ngIf="edit" class="col-12">
-                  <input style="width: 100%" formControlName="word" class="mb-1" type="text" fieldSize="small" nbInput
-                        fullWidth placeholder="Word">
-                  <input style="width: 100%" [status]="editForm.invalid? 'danger' : ''" formControlName="translate"
-                        class="mb-2" type="text" fieldSize="small" nbInput fullWidth placeholder="Translate">
-            </div> -->
-
-
-      <!-- <div class="col-12">
-                  <div class="row" style=" align-items: flex-end;
-                  justify-content: flex-end">
-                        <div class="col-1">
-                              <span>
-                                    <nb-icon *ngIf="!edit" style="cursor: pointer" (click)="onEdit()" icon="edit-2">
-                                    </nb-icon>
-                              </span>
-                              <span>
-                                    <nb-icon *ngIf="edit" style="cursor: pointer" (click)="onSaveEditedWord()"
-                                          icon="save">
-                                    </nb-icon>
-                              </span> -->
-
-      <!-- <button type="button" *ngIf="!edit" nbButton size="tiny" (click)="onEdit()"></button>
-                  <button type="button" [disabled]="editForm.invalid" *ngIf="edit" nbButton status="success"
-                        size="tiny" (click)="onSaveEditedWord()">save</button> -->
-      <!-- </div>
-                        <div class="col-1 ml-2 mr-5">
-                              <span>
-                                    <nb-icon style="cursor: pointer" (click)="removeWord()" icon="trash-2">
-                                    </nb-icon>
-                              </span> -->
-      <!-- <button (click)="removeWord()" nbButton type="button" status="danger"
-                        size="tiny">del</button> -->
-      <!-- </div>
-                  </div>-->
-
-
-
-
+      <ng-content></ng-content>
 </div>
 
-<!-- </form> -->
 <hr>

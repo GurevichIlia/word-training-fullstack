@@ -54,6 +54,10 @@ export class MyHammerConfig extends HammerGestureConfig {
 
 
   ],
+  exports: [
+    BrowserAnimationsModule,
+
+  ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptorService, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ServerErrorInterceptor, multi: true },

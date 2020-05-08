@@ -12,7 +12,7 @@ export const bounceInRight = [
       style({ animation: 'cubic-bezier(0.215, 0.61, 0.355, 1)', offset: 0 }),
       style({
             opacity: 0,
-            transform: 'translate3d(3000px, 0, 0)', offset: 0
+            transform: 'translate3d(480px, 0, 0)', offset: 0
       }),
       style({
             opacity: 1,
@@ -48,7 +48,7 @@ export const bounceInLeft = [
       style({ animation: 'cubic-bezier(0.215, 0.61, 0.355, 1)', offset: 0 }),
       style({
             opacity: 0,
-            transform: 'translate3d(-3000px, 0, 0)', offset: 0
+            transform: 'translate3d(-480px, 0, 0)', offset: 0
       }),
       style({
             opacity: 1,

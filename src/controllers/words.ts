@@ -64,6 +64,7 @@ export class WordsController {
             errorHandler(res, error);
         }
     };
+
 }
 
 // this.router.get("words/getAllWords", this.wordsController);

@@ -4,13 +4,15 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { SharedModule } from './../shared/shared.module';
 import { WordTrainingComponent } from './word-training.component';
+import { InstructionsComponent } from './instructions/instructions.component';
+import { TrainComponent } from './train/train.component';
 
 const wordtrainingRoutes: Routes = [
   { path: '', component: WordTrainingComponent }
 ];
 
 @NgModule({
-  declarations: [WordTrainingComponent],
+  declarations: [WordTrainingComponent, InstructionsComponent, TrainComponent],
   imports: [
     CommonModule,
     SharedModule,

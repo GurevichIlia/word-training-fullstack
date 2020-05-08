@@ -6,7 +6,8 @@ export interface UserModel extends Document {
       email: string;
       password: string;
       currentLanguage?: Language,
-      userLanguages: Language[]
+      userLanguages: Language[],
+      wordGroups: WordGroupModel[]
 }
 
 export interface WordModel extends Document {
@@ -14,6 +15,8 @@ export interface WordModel extends Document {
       word: string;
       translate: string;
       isFavorite?: boolean;
+      levelKnowledge: number;
+      assignedGroups: string[]
 }
 
 export interface Language extends Document {
@@ -21,5 +24,10 @@ export interface Language extends Document {
       langName: string;
 }
 
-
+export interface WordGroupModel extends Document {
+      _id: string,
+      name: string,
+      wordQuantity: number,
+      shareForAll: boolean;
+}
 

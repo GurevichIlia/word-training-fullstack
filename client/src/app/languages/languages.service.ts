@@ -47,4 +47,22 @@ export class LanguagesService {
 
   }
 
+  deleteUserLanguage(languageId: string) {
+    return this.http.post<Language>(`/api/languages/deleteUserLanguage`, { languageId });
+
+  }
+
+
+
+  addToCandidates(candidates: Language[], language: Language) {
+
+    const alreadyAddedLanguge = candidates.find(existLanguage => existLanguage._id === language._id);
+
+    if (alreadyAddedLanguge) {
+      candidates = candidates.filter(existLanguage => existLanguage._id !== language._id)
+    } else {
+      candidates.push(language);
+    }
+    return candidates;
+  }
 }

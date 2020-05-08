@@ -1,115 +1,48 @@
 <nb-card style="height: 100%">
+
       <nb-card-header>
-            <div class="row">
-                  <div class="col-12">
-                        <button nbButton style="background-color: darkorchid; border-color: darkorchid; width: 100%"
-                              size="medium" (click)="toTrainWords()">Train words</button>
-                        <!-- <span style="cursor: pointer" >Let's train words</span>
-                              <nb-icon class="ml-1" icon="arrow-forward"></nb-icon> -->
-                  </div>
-            </div>
-            <hr>
-            <ul class="row list-unstyled justify-content-center">
-                  <!-- <span class="col-5 text-center"
-                              [ngStyle]="{'border-bottom': addWordByList === 'Word'? '2px solid black' : 'none'}"
-                              (click)="changeAddMode('Add word')">Add word</span>
-                        <span class="col-5  text-center"
-                              [ngStyle]="{'border-bottom': addWordByList === 'List'? '2px solid black' : 'none'}"
-                              (click)="changeAddMode('Add list of words')">Add list</span> -->
-                  <!-- <li class="col-6"><a (click)="changeAddMode('Add word')">Add word</a> </li>
-                        <li class="col-6"><a (click)="changeAddMode('Add list of words')">Add list</a> </li> -->
-            </ul>
-            <div class="searchBlock">
-                  <!-- <form [formGroup]="newWordForm" (ngSubmit)="addNewWord()" class="row">
-                        <input formControlName="word" class="mb-1 col-12" type="text" fieldSize="small" nbInput
-                              fullWidth placeholder="Word">
-                        <input formControlName="translation" class="mb-2 col-12" type="text" fieldSize="small" nbInput
-                              fullWidth placeholder="Translate">
-
-                        <div class="col">
-                              <button [disabled]="newWordForm.invalid" type="submit" nbButton status="success"
-                                    size="small">Add word</button>
-                        </div>
-                  </form> -->
-                  <button (click)="getActionFromChildren({action:'ADD WORD MODAL' })" type="submit" nbButton
-                        status="success" size="small">Add
-                        word</button>
-                  <input [formControl]="filterValue" class="mb-2 ml-1" type="text" fieldSize="small" nbInput fullWidth
-                        placeholder="Search">
-
-
-
-            </div>
-
-            <!-- <div *ngIf="addWordByList === 'List'">
-                        <form [formGroup]="listWordForm">
-                              <textarea nbInput fullWidth formControlName="list" style="height: 300px"
-                                    placeholder="Example: word - translate, word - translate, ... "></textarea>
-                              <div class="row justify-content-around">
-                                    <button [disabled]="listWordForm.invalid" (click)=" getListOfNewWords()" type="submit"
-                                          nbButton status="success" size="small">Show
-                                          list</button>
-                                    <button [disabled]="listOfNewWords.length === 0" (click)="saveListOfNewWords()"
-                                          type="button" nbButton status="warning" size="small">Save list</button>
-                              </div>
-      
-                        </form>
-                  </div> -->
-
-
+            <app-search [filterValue]="filterValue" (addWord)="getActionFromChildren($event)"></app-search>
       </nb-card-header>
 
       <nb-card-body>
-            <!-- <button class="mb-2" size="small" type="button" nbButton outline status="default" (click)="getUserWords()">swap words </button> -->
-            <div>
-                  <div #scrollframe *ngIf="words$ | async as words; else loader">
-                        <ng-container *ngIf="words.length !== 0 ; else empty">
 
-                              <app-word
-                                    *ngFor="let word of words | filter: filterValue.value | slice:0:pageSize ; trackBy: trackWords; let i = index"
-                                    (action)="getActionFromChildren($event)" [word]="word">
-                              </app-word>
+            <app-groups [wordGroups]="wordGroups$ | async" (selectGroup)="selectedGroup$.next($event)">
 
-                        </ng-container>
-                        <ng-template #empty>
-                              <span class="m-auto">No one word yet</span>
-
-                        </ng-template>
-
-                        <!-- <button class="col-12" (click)="showMore()" type="button" nbButton outline status="default"
-                                    size="small">Show
-                                    more</button> -->
-                  </div>
-
-                  <ng-template #loader>
-                        <nb-card [nbSpinner]="true" nbSpinnerStatus="basic">
-                              <nb-card-body>
-                                    Loading...
-                              </nb-card-body>
-                        </nb-card>
-                  </ng-template>
-            </div>
-            <!-- <div *ngIf="addWordByList === 'List'">
-                        <div *ngIf="listOfNewWords.length !== 0">
-                              <button size="small" type="button" nbButton status="" (click)="swapWords(listOfNewWords)">swap
-                                    words
-                              </button>
-      
+                  <nb-icon class="ml-1" [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
+                  <mat-menu #menu="matMenu" class="matmenu">
+                        <div class="menu">
+                              <div class="menuitem">
+                                    <nb-icon icon="trash-2-outline"></nb-icon>
+                                    <span class="ml-2" (click)="openGroupModal('Add group')">Create</span>
+                              </div>
+                              <div class="menuitem">
+                                    <nb-icon icon="trash-2-outline"></nb-icon>
+                                    <span class="ml-2" (click)="toggleShowWordsForAssign('Show words for assign')">Add
+                                          words</span>
+                              </div>
+                              <div class="menuitem">
+                                    <nb-icon icon="edit-2-outline"></nb-icon>
+                                    <span class="ml-2">Delete</span>
+                              </div>
                         </div>
-                        <nb-list>
-                              <nb-list-item *ngFor="let word of listOfNewWords">
-                                    {{word.word}} - {{word.translate}}
-                              </nb-list-item>
-                        </nb-list>
-                  </div> -->
+                  </mat-menu>
+
+            </app-groups>
+
+            <app-word-list (action)="getActionFromChildren($event)" [pageSize]="pageSize" [trackWords]="trackWords"
+                  [filterValue]="filterValue" [selectedGroup]="selectedGroup$ | async" [words]="wordsFiltredByGroup$ | async">
+            </app-word-list>
       </nb-card-body>
+
+
+
 </nb-card>
 
 
 <ng-template #wordModal let-data let-ref="dialogRef">
       <nb-card class="wordDialogBox">
             <nb-card-header>
-                  <h4>{{titleForWordModal}}</h4>
+                  <h4>{{titleForModal}}</h4>
             </nb-card-header>
             <nb-card-body>
                   <form [formGroup]="newWordForm" class="row">
@@ -121,10 +54,28 @@
             </nb-card-body>
             <nb-card-footer class="wordDialogFooter">
                   <button nbButton status="danger" (click)="closeWordModal()">Cancel</button>
-                  <button *ngIf="titleForWordModal === 'Add word'" nbButton status="success"
+                  <button *ngIf="titleForModal === 'Add word'" nbButton status="success"
                         (click)="addNewWord()">Submit</button>
-                  <button *ngIf="titleForWordModal === 'Edit word'" nbButton status="success"
+                  <button *ngIf="titleForModal === 'Edit word'" nbButton status="success"
                         (click)="updateWord(editWordOldValue, newWordForm.value)">Update</button>
+            </nb-card-footer>
+      </nb-card>
+</ng-template>
+
+<ng-template #groupModalRef let-data let-ref="dialogRef">
+      <nb-card class="wordDialogBox">
+            <nb-card-header>
+                  <h4>{{titleForModal}}</h4>
+            </nb-card-header>
+            <nb-card-body>
+                  <input [formControl]="groupName" class="mb-1 col-12" type="text" fieldSize="small" nbInput
+                        placeholder="Word">
+            </nb-card-body>
+            <nb-card-footer class="wordDialogFooter">
+                  <button nbButton status="danger" (click)="groupModal.close()">Cancel</button>
+                  <button *ngIf="titleForModal === 'Add group'" nbButton status="success"
+                        (click)="createNewGroup()">Submit</button>
+                  <button *ngIf="titleForModal === 'Edit group'" nbButton status="success">Update</button>
             </nb-card-footer>
       </nb-card>
 </ng-template>

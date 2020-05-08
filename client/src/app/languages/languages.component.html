@@ -1,6 +1,6 @@
 <div *ngIf="allLanguages$ | async as languages; else loader">
 
-      <app-select-language (addLanguages)="addUserLanguages($event)" (action)="getActionFromChildren($event)" *ngIf="languages.length !== 0 && mode === 'initial'"
+      <app-select-language (selectLanguage)="addLanguageToCandidates($event)" (addLanguages)="addUserLanguages()" (action)="getActionFromChildren($event)" *ngIf="languages.length !== 0 && mode === 'initial'"
             [currentlanguageId]="(currentLearningLanguage$ | async)?._id" [allLanguages]="languages" [userLanguages]="userLanguages$ | async">
       </app-select-language>
 

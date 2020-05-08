@@ -16,6 +16,14 @@ const wordSchema = new Schema({
         type: Boolean,
         default: false
     },
+    levelKnowledge: {
+        type: Number,
+        default: 0
+    },
+    assignedGroups: {
+        type: Array,
+        default: ['1','2']
+    },
     language: {
         ref: "languages",
         type: Schema.Types.ObjectId

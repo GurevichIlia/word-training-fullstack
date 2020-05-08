@@ -12,10 +12,19 @@ export interface Word {
       isFavorite: boolean;
       readonly _id?: string;
       knowen?: boolean;
+      levelKnowledge?: number;
+      assignedGroups?: string[];
 }
 
 export interface Language {
       name: string;
       _id?: string;
-      isSelect?: boolean;
+      isSelected?: boolean;
+}
+
+export interface WordGroup {
+      _id: string;
+      name: string;
+      wordQuantity: number;
+      shareForAll: boolean;
 }

@@ -58,5 +58,11 @@ export class LanguagesRoutes {
             passport.authenticate("jwt", { session: false }),
             this.languagesController.addUserLanguages
         );
+
+        this.router.post(
+            "/deleteUserLanguage",
+            passport.authenticate("jwt", { session: false }),
+            this.languagesController.deleteUserLanguage
+        );
     }
 }
