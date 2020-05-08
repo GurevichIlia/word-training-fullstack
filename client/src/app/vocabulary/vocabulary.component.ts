@@ -209,14 +209,15 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     this.titleForModal = title;
     this.groupModal = this.dialogService.open(this.groupModalRef);
   }
-  toggleShowWordsForAssign() {
+
+  toggleShowWordsForAssign(test) {
 
   }
 
   toggleWordAssignToGroup(wordId: string) {
-    const selectedProduct = this.vocabularyFacade.selectWord(this.selectedWordsForAssignGroups$.getValue(), wordId);
+    // const selectedProduct = this.vocabularyFacade.selectWord(this.selectedWordsForAssignGroups$.getValue(), wordId);
 
-    this.selectedWordsForAssignGroups$.next(selectedProduct);
+    // this.selectedWordsForAssignGroups$.next(selectedProduct);
     console.log('SELECTED WORDS FOR ASSIGN GROUPS', this.selectedWordsForAssignGroups$.getValue());
   }
 

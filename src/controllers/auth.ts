@@ -10,7 +10,7 @@ export class AuthController {
 
     public login = async (req: Request, res: Response) => {
         const candidate = await User.findOne({ email: req.body.email });
-
+        console.log('GETTING DATA FOR LOGIN', req.body)
         if (candidate) {
             const passwordResult = bcrypt.compareSync(
                 req.body.password,

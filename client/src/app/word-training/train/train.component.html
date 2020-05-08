@@ -34,8 +34,8 @@
                   <nb-card status="danger" style="height: 200px" [@wordCardAnimator]="animationState"
                         (@wordCardAnimator.done)="onResetAnimationState()">
                         <nb-card-header class="mb-2 cardHeaderBack">Translate</nb-card-header>
-                        <nb-card-body style="height: 100%" (swiperight)="onPrevWord()" (swipeup)="dontKnow(word)"
-                              (swipeleft)="onNextWord()">
+                        <nb-card-body style="height: 100%"
+                            >
                               <div style="width: 300px">
                                     <h3 [ngStyle]="{'font-size': word?.translation.length > 11 ? '30px' : '40px'}"
                                           class="text-center"><i>{{word?.translation}}
@@ -43,11 +43,11 @@
                                           </i></h3>
                               </div>
                               <div>
-                                    <img (tap)="addToFavorites(word)" *ngIf="!word?.isFavorite"
+                                    <img  *ngIf="!word?.isFavorite"
                                           style="width: 30px; height: 30px"
                                           src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
                                           alt="">
-                                    <img (tap)="removeFromFavorites(word)" *ngIf="word?.isFavorite"
+                                    <img  *ngIf="word?.isFavorite"
                                           style="width: 30px; height: 30px"
                                           src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png"
                                           alt="">
@@ -70,7 +70,7 @@
       </div>
 </nb-card>
 
-<!-- 
+<!--
 <nb-icon icon="arrow-back" *ngIf="start" (click)="prevWord()"></nb-icon> <span class="ml-1" *ngIf="start">previous
       word</span> -->
 <div class="row justify-content-center mt-2">

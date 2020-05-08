@@ -30,7 +30,7 @@ export class ServerErrorInterceptor implements HttpInterceptor {
           // this.modal.open(ModalSessionexpiredComponent, { width: '450px' });
           return throwError(error);
         } else if (error.status === 500) {
-          this.authService.logOut();
+          // this.authService.logOut();
           console.log(error);
           return throwError(error);
         } else {

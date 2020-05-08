@@ -14,7 +14,6 @@
     "@angular-devkit/build-angular": "~0.900.1",
     "@angular/animations": "^9.0.0",
     "@angular/cdk": "^9.2.1",
-    "@angular/cli": "^9.0.1",
     "@angular/common": "^9.0.0",
     "@angular/compiler": "^9.0.0",
     "@angular/compiler-cli": "^9.0.0",
@@ -29,7 +28,7 @@
     "bootstrap": "^4.4.1",
     "eva-icons": "^1.1.2",
     "hammerjs": "^2.0.8",
-    "http-server": "^0.12.1",
+    "http-server": "^0.12.3",
     "ngx-pretty-checkbox": "^1.1.0",
     "pretty-checkbox": "^3.0.3",
     "rxjs": "~6.5.4",
@@ -38,9 +37,9 @@
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
-    "@angular/compiler-cli": "^9.0.0",
-    "@angular/cli": "^9.0.1",
     "@angular-devkit/build-angular": "~0.900.1",
+    "@angular/cli": "^9.1.4",
+    "@angular/compiler-cli": "^9.0.0",
     "@angular/language-service": "^9.0.0",
     "@schematics/angular": "^8.1.3",
     "@types/jasmine": "^3.3.16",

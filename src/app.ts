@@ -14,8 +14,6 @@ import { WordGroupRoutes } from "./routes/word-group";
 // const cors = require('cors');
 // const path = require('path')
 const keys = require('./config/keys')
-console.log('KEYS', keys)
-console.log('ENV  MODE', process.env)
 
 const app: express.Application = express();
 
@@ -43,17 +41,22 @@ app.use("/api/vocabulary", new WordsRoutes().router);
 app.use("/api/languages", new LanguagesRoutes().router);
 app.use("/api/word-group", new WordGroupRoutes().router);
 
-
-
+process.env.NODE_ENV = 'production'
+console.log('SENDING HTML', path.resolve(
+    __dirname, 'client', 'dist', 'word-training', 'index.html'
+))
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/dist/word-training'))
 
     app.get('*', (req, res) => {
         res.sendFile(
+
             path.resolve(
                 __dirname, 'client', 'dist', 'word-training', 'index.html'
             )
         )
+
+
     })
 }
 module.exports = app;
