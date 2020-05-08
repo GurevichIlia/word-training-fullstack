@@ -4,10 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
-    "build": "ng build ",
+    "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "server":"cd dist/word-training && http-server --proxy http://localhost:3000"
   },
   "private": true,
   "dependencies": {
@@ -24,6 +25,7 @@
     "@angular/platform-browser": "^9.0.0",
     "@angular/platform-browser-dynamic": "^9.0.0",
     "@angular/router": "^9.0.0",
+    "@angular/service-worker": "^9.0.0",
     "@nebular/eva-icons": "^4.6.0",
     "@nebular/theme": "^4.6.0",
     "bootstrap": "^4.4.1",

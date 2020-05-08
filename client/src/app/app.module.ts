@@ -17,6 +17,8 @@ import { HeaderComponent } from './header/header.component';
 
 import * as Hammer from 'hammerjs';
 import { NbListModule, NbThemeModule, NbToastrModule, NbMenuModule, NbSidebarModule, NbDialogModule } from '@nebular/theme';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 
 @Injectable()
@@ -49,7 +51,7 @@ export class MyHammerConfig extends HammerGestureConfig {
     NbMenuModule.forRoot(),
     NbThemeModule.forRoot({ name: 'default' }),
     NbSidebarModule.forRoot(), // NbSidebarModule.forRoot(), //if this is your app.module
-    NbDialogModule.forRoot(),
+    NbDialogModule.forRoot(), ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
 
 
 
