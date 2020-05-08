@@ -12,7 +12,7 @@
     "server": "nodemon src/index.ts",
     "client-install": "npm install --prefix client",
     "build": "tsc",
-    "client": "npm run build --prefix client",
+    "client": "npm run build --prod --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run build && npm run client-install && npm run build --prefix client"
   },
