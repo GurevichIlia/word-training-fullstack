@@ -1,7 +1,8 @@
+import { switchMap } from 'rxjs/operators';
 import { GeneralState } from './../general.state';
 import { VocabularyService } from './../vocabulary/vocabulary.service';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { Word } from '../shared/interfaces';
 
 @Injectable({
@@ -73,7 +74,25 @@ export class WordTrainingService {
   }
 
 
-  setTrainMode() {
+  setSelectedGroupForTraining(groupId: string) {
+    this.generalState.setSelectedGroupForTraining(groupId);
+  }
 
+  getSelectedGroupForTraining() {
+    return this.generalState.getSelectedGroupForTraining();
+  }
+
+  getFiltredWordsByGroup() {
+    return combineLatest(
+      [
+        this.getUserWords(),
+        this.getSelectedGroupForTraining()
+      ]
+    )
+      .pipe(
+        switchMap(([words, selectedGroupForTraining]) => {
+          return of(words.filter(word => word.assignedGroups.includes(selectedGroupForTraining)));
+        })
+      );
   }
 }

@@ -40,7 +40,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.getIsLoggedIn();
     this.getUserName();
     this.menuService.onItemClick()
-      .pipe(takeUntil(this.unsubscribe$))
+      .pipe(
+        takeUntil(this.unsubscribe$)
+        )
       .subscribe(data => {
         if (data.item.title === 'Log out') {
           this.logout();
@@ -49,23 +51,29 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.getCurrentLanguage();
     this.getquantityWords();
   }
+
   getUserName() {
 
     this.user = this.authService.getCurrentUser();
   }
+
   getIsLoggedIn() {
     this.isLoggedIn$ = this.authService.isAuthenticated$().pipe(tap(res => console.log(res)));
   }
+
   logout() {
     // console.log('log')
     this.authService.logOut();
   }
+
   getCurrentLanguage() {
     this.currentLanguage$ = this.generalFacade.getCurrentLanguage$().pipe(tap(lang => console.log('LANGUAGE HEADER', lang)));
   }
+
   getquantityWords() {
     this.quantityWords$ = this.generalFacade.getWordsQuantity$().pipe(tap(q => console.log('QUANTITY', q)));
   }
+
   ngOnDestroy(): void {
     // Called once, before the instance is destroyed.
     // Add 'implements OnDestroy' to the class.

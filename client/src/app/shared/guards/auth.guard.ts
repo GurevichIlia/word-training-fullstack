@@ -2,7 +2,6 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { take, map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +28,10 @@ export class AuthGuard implements CanActivate {
     //   );
 
     // }
+
+
+
+
     return this.auth.isAuthenticated();
 
   }

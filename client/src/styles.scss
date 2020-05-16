@@ -1,5 +1,52 @@
 /* You can add global styles to this file, and also import other style files */
 
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.level-row {
+  justify-content: space-between;
+}
+
+.bad {
+  background-color: #e81a1ac2 !important;
+  border-color: #e81a1ac2 !important;
+  color: white !important;
+}
+
+.better {
+  background-color: #ff7f24bf !important;
+  border-color: #ff7f24bf !important;
+  color: white !important;
+}
+
+.medium {
+  background-color: #f4e25f !important;
+  border-color: #f4e25f !important;
+  color: white !important;
+}
+
+.good {
+  background-color: #81db64db !important;
+  border-color: #81db64db !important;
+  color: white !important;
+}
+
+.excellent {
+  background-color: #6c7bec !important;
+  border-color: #6c7bec !important;
+  color: white !important;
+}
+
+.basic {
+  background-color: whitesmoke !important;
+  border-color: whitesmoke !important;
+  color: rgb(22, 17, 17) !important;
+}

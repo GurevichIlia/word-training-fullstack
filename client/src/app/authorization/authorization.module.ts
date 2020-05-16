@@ -6,11 +6,14 @@ import { AuthorizationComponent } from './authorization.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { SharedModule } from './../shared/shared.module';
 import { LoginComponent } from './login/login.component';
+import { AuthGuard } from '../shared/guards/auth.guard';
 
 const authRoutes: Routes = [
   { path: '', component: AuthorizationComponent,  pathMatch: 'full', redirectTo: 'login', },
-  { path: 'login', component: LoginComponent },
-  { path: 'registration', component: RegistrationComponent },
+  { path: 'login', component: LoginComponent,
+},
+  { path: 'registration', component: RegistrationComponent,
+},
 
 ];
 

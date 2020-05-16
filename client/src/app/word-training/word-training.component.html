@@ -1,30 +1,38 @@
 <div [nbSpinner]="loadingSpinner" nbSpinnerStatus="warning">
-      <div class="row align-items-center">
-            <nb-select [formControl]="groupForTraining" class="mb-3 col-1" placeholder="Select mode">
-                  <nb-option value="1">All words - {{userWords.length}}</nb-option>
-                  <nb-option value="2">Favorites - {{favoritesWordsQuantity}}</nb-option>
-                  <nb-option [value]="group._id" *ngFor="let group of wordGroups$ | async">{{group.name}}</nb-option>
+  <div class="row align-items-center">
+    <!-- <nb-select [formControl]="groupForTraining" class="mb-3 col-1" placeholder="Select mode">
+      <nb-option [value]="group._id" *ngFor="let group of wordGroups$ | async">{{group.name}}-{{group.wordQuantity}}
+      </nb-option> -->
+    <div class="col-12 text-center">
+      <app-groups *ngIf="!start" [wordGroups]="wordGroups$ | async" (selectGroup)="setGroupForTraining($event)">
 
-                  <!-- <nb-option *ngIf="unknownMode" value="unknown"> Unknown - {{userRandomWords.length }}</nb-option> -->
-            </nb-select>
-            <div class="col-3" *ngIf="start">
-                  <div class="row">
-                        <span class="col-12">Right:<strong>{{knownWords}}</strong></span>
-                        <span class="col-12">Wrong:<strong>{{notknownWords}}</strong></span>
-                  </div>
-            </div>
+      </app-groups>
+    </div>
 
+    <!-- <nb-option *ngIf="unknownMode" value="unknown"> Unknown - {{userRandomWords.length }}</nb-option> -->
+    <!-- </nb-select> -->
+    <!-- <div class="col-3" *ngIf="start">
+      <div class="row">
+        <span class="col-12">Right:<strong>{{knownWords}}</strong></span>
+        <span class="col-12">Wrong:<strong>{{notknownWords}}</strong></span>
       </div>
-      <app-instructions *ngIf="!start">
-            <button type="buttom" (click)="onStart()" class="col-10 mb-2" nbButton
-                  style="background-color: darkorchid; border-color: darkorchid">
-                  Start
-            </button>
-      </app-instructions>
-      <ng-container *ngIf="currentTrainingWord$ | async as word">
-            <app-train [animationState]="animationState" [word]="word" (resetAnimationState)="resetAnimationState()"
-                  (setKnowledgeLevel)="nextWordAndSetWordLevel($event)" *ngIf="start">
-            </app-train>
-      </ng-container>
+    </div> -->
+
+  </div>
+  <!-- <app-instructions *ngIf="!start">
+
+      </app-instructions> -->
+  <div class="text-center" *ngIf="!start">
+    <button type="buttom" (click)="onStart()" class="col-10 mb-2" nbButton
+      style="background-color: darkorchid; border-color: darkorchid">
+      Start
+    </button>
+  </div>
+
+  <ng-container *ngIf="currentTrainingWord$ | async as word">
+    <app-train [animationState]="animationState" [word]="word" (resetAnimationState)="resetAnimationState()"
+      (setKnowledgeLevel)="nextWordAndSetWordLevel($event)" (toTrainResult)="goToTrainResult()" *ngIf="start">
+    </app-train>
+  </ng-container>
 
 </div>

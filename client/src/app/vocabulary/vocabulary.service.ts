@@ -77,6 +77,7 @@ export class VocabularyService {
     return words.findIndex(existingWord => existingWord._id === word._id);
   }
 
+
   // deleteWord(word: Word) {
   //   const index = this.findWordIndex(this.words.value, word);
   //   this.words.getValue().splice(index, 1);

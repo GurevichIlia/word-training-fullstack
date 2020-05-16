@@ -50,14 +50,21 @@ export class LoginComponent implements OnInit, OnDestroy {
     console.log(this.loginForm.value);
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value)
-        .pipe(takeUntil(this.subscription$))
+        .pipe(
+          takeUntil(this.subscription$)
+        )
         .subscribe(res => {
           if (res) {
             console.log('AFTER LOGIN', res);
             this.authService.setIsAuthenticated(true);
             this.localStorageService.setItem('token', res.token);
-            this.generalFacade.setCurrentLanguage(res.currentLanguage);
-            this.router.navigate(['vocabulary']);
+            if (res.currentLanguage) {
+              this.generalFacade.setCurrentLanguage(res.currentLanguage);
+              this.router.navigate(['vocabulary']);
+            } else {
+              this.router.navigate(['languages']);
+
+            }
             this.notifications.success('', res.message);
 
           }
@@ -66,35 +73,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         });
     }
   }
-
-  //   .then((data) => {
-  //   this.authService.userName.next(data.user.displayName);
-  //   this.authService.isLogged.next(true);
-  //   this.authService.userUid.next(data.user.uid);
-  //   this.toastr.success('Successfully');
-  //   this.router.navigate(['/home']);
-  //   console.log('DATA', data);
-  // }).catch(error => {
-  //   if (error) {
-  //     // if (error.code === 'auth/wrong-password') {
-  //     this.startAnimation('swing');
-
-  //     this.emailInputColor = 'danger';
-  //     this.passwordInputColor = 'danger';
-  //     this.errorMessage = 'Password or email is wrong!';
-  //     this.changeDetector.detectChanges();
-  //     // } else if (error.code === 'auth/user-not-found') {
-  //     //   this.passwordInputColor = 'danger';
-  //     //   this.errorMessage = error.message;
-  //     //   // this.changeDetector.detectChanges();
-  //     // }
-  //   } else {
-  //   this.emailInputColor = '';
-  //   this.passwordInputColor = '';
-  // }
-  // console.log('ERROR', error);
-  //     });
-  //   }
 
   startAnimation(state) {
     console.log(state);

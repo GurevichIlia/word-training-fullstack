@@ -1,20 +1,28 @@
 <div *ngIf="allLanguages$ | async as languages; else loader">
 
-      <app-select-language (selectLanguage)="addLanguageToCandidates($event)" (addLanguages)="addUserLanguages()" (action)="getActionFromChildren($event)" *ngIf="languages.length !== 0 && mode === 'initial'"
-            [currentlanguageId]="(currentLearningLanguage$ | async)?._id" [allLanguages]="languages" [userLanguages]="userLanguages$ | async">
-      </app-select-language>
+  <app-select-language
+    *ngIf="languages.length !== 0"
+    [currentlanguageId]="(currentLearningLanguage$ | async)?._id"
+    [allLanguages]="languages"
+	[userLanguages]="userLanguages$ | async"
 
-      <app-new-language (changeMode)="changeMode('initial')"  *ngIf="languages.length === 0 || mode === 'newlanguage'">
-      </app-new-language>
+    (addLanguage)="addLanguageToUserLanguages($event)"
+  (deleteUserLanguage)="deleteUserLanguage($event)"
+  (selectUserLanguageForLearning)="setCurrentLearningLanguage($event)"
 
-      <app-edit-language (changeMode)="changeMode('initial')"  [language]="editingLanguage$ | async"  *ngIf="languages.length !== 0 && mode === 'editlanguage'"></app-edit-language>
+
+
+	>
+  </app-select-language>
+
+
 
 </div>
 
 <ng-template #loader>
-      <nb-card [nbSpinner]="true" nbSpinnerStatus="basic">
-            <nb-card-body>
-                  Loading...
-            </nb-card-body>
-      </nb-card>
+  <nb-card [nbSpinner]="true" nbSpinnerStatus="basic">
+    <nb-card-body>
+      Loading...
+    </nb-card-body>
+  </nb-card>
 </ng-template>

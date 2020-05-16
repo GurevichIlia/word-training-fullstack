@@ -1,5 +1,5 @@
 .cardHeaderFront {
-  background-color: #9c2e7b !important
+  background-color: #d16455 !important
 }
 
 .level {
@@ -9,26 +9,7 @@
 }
 
 
-.level-row {
-  justify-content: space-between;
-
-  .bad {
-    background-color: whitesmoke;
-  }
-
-  .better {
-    background-color: whitesmoke;
-  }
-
-  .medium {
-    background-color: whitesmoke;
-  }
-
-  .good {
-    background-color: whitesmoke;
-  }
-
-  .excellent {
-    background-color: whitesmoke;
-  }
+.knowledge-level-panel {
+  box-shadow: none;
+  background-color: transparent;
 }

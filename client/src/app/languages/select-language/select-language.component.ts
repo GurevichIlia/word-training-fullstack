@@ -9,30 +9,41 @@ import { NbSelectComponent } from '@nebular/theme';
   styleUrls: ['./select-language.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SelectLanguageComponent implements OnChanges {
+export class SelectLanguageComponent {
+  selectedLanguage = new FormControl('');
   @Input() allLanguages: Language[];
   @Input() userLanguages: Language[];
 
-  @Input() currentlanguageId: string;
-  @Output() action = new EventEmitter();
-  @Output() addLanguages = new EventEmitter();
-  @Output() selectLanguage = new EventEmitter();
+  @Input() set currentlanguageId(currentlanguageId: string) {
+    if (currentlanguageId) {
+      this.selectedLanguage.patchValue(currentlanguageId);
+    }
+  }
+  @Output() addLanguage = new EventEmitter();
+  @Output() selectUserLanguageForLearning = new EventEmitter();
+  @Output() deleteUserLanguage = new EventEmitter();
   constructor() { }
 
-  ngOnChanges() {
+  // onSelectLanguageFromAllLanguages(event: Event, language: Language, ) {
+  //   event.preventDefault();
+  //   this.selectLanguage.emit(language);
+  // }
+  addLanguageToUserLanguages(language: Language) {
+    this.addLanguage.emit(language);
+  }
+  // onAddSelectedLanguagesToUserLanguages() {
+  //   this.addLanguages.emit(this.allLanguages);
+  // }
+
+  onDeleteUserLanguage(languageId: string) {
+    this.deleteUserLanguage.emit(languageId);
   }
 
-  dispatchAction(action: string, payload?: any) {
-    // const payload = this.languages.find(lang => lang._id === id);
-    this.action.emit({ action, payload });
-    console.log({ action, payload });
+  onSelectUserLanguageForLearning(languageId: string, userLanguages: Language[]) {
+    this.selectUserLanguageForLearning.emit({ languageId, userLanguages });
   }
 
-  onSelectLanguage(language: Language) {
-    this.selectLanguage.emit(language)
-  }
-
-  onAddLanguages() {
-    this.addLanguages.emit();
-  }
+  // onCloseAllLanguages() {
+  //   this.closeAllLanguages.emit();
+  // }
 }

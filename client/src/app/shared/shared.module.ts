@@ -1,3 +1,4 @@
+import { GroupsComponent } from './../vocabulary/groups/groups.component';
 import { RouterModule } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
 import { NgModule } from '@angular/core';
@@ -18,14 +19,19 @@ import { MatCardModule } from '@angular/material/card';
 import { FilterPipe } from './pipes/filter.pipe';
 import { EditWordComponent } from './modals/edit-word/edit-word.component';
 import { AskQuestionComponent } from './modals/ask-question/ask-question.component';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FooterComponent } from './components/footer/footer.component';
 import { HomeComponent } from '../modules/home/home/home.component';
 
 
 
 @NgModule({
-  declarations: [FilterPipe, AskQuestionComponent, FooterComponent],
+  declarations: [
+    FilterPipe,
+    AskQuestionComponent,
+    FooterComponent,
+    GroupsComponent
+  ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -48,8 +54,9 @@ import { HomeComponent } from '../modules/home/home/home.component';
     NgxPrettyCheckboxModule,
     MatCardModule,
     MatMenuModule,
-    NbAccordionModule
-    
+    NbAccordionModule,
+
+
   ],
   exports: [
     ReactiveFormsModule,
@@ -76,7 +83,9 @@ import { HomeComponent } from '../modules/home/home/home.component';
     MatCardModule,
     FilterPipe,
     MatMenuModule,
-    FooterComponent
+    FooterComponent,
+    GroupsComponent
+
 
   ],
   entryComponents: [EditWordComponent, AskQuestionComponent]

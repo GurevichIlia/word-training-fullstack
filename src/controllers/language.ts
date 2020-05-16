@@ -48,7 +48,7 @@ export class LanguagesController {
     public deleteLanguage = async (req: Request, res: Response) => {
         try {
             await Language.remove({ _id: req.params.id });
-            await Word.remove({ category: req.params.id });
+            // await Word.remove({ category: req.params.id });
             res.status(200).json({
                 message: "Language removed"
             });
@@ -87,7 +87,8 @@ export class LanguagesController {
             const currentLanguage = await Language.findOne({ _id: req.body.currentLanguage }) as LangModel;
 
             user.currentLanguage = currentLanguage
-            const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }) as UserModel
+            const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true }) as UserModel
+
             res.status(200).json({
                 currentLanguage: updatedUser.currentLanguage,
                 message: 'Language selected'
@@ -131,12 +132,13 @@ export class LanguagesController {
 
 
             const promises = await selectedUserLanguages.map(async language => {
+
                 const lang = await Language.findOne({ _id: language }) as LangModel
                 return lang;
             })
 
             const userLanguages = await Promise.all(promises);
-  
+
 
             if (user.userLanguages) {
                 user.userLanguages = [...user.userLanguages, ...userLanguages]
@@ -160,8 +162,18 @@ export class LanguagesController {
             const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
 
             user.userLanguages = user.userLanguages.filter(language => req.body.languageId != language._id)
-            
+            console.log('USER', user, user.userLanguages.length)
+
+            if (user.userLanguages.length === 0) {
+                user.currentLanguage = undefined
+            }
+
+            console.log('USER CURRENT LANG', user.currentLanguage)
+
             const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }) as UserModel
+
+            console.log('USER CURRENT LANG AFTER UPDATE', updatedUser.currentLanguage)
+
             res.status(200).json({
                 userLanguages: updatedUser.userLanguages,
                 message: 'Language removed'

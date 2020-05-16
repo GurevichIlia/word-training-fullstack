@@ -1,9 +1,10 @@
+import { WordGroup } from 'src/app/shared/interfaces';
 import { GeneralFacade } from 'src/app/general.facade';
 import { ApiWordsService } from './../shared/services/api/api-words.service';
 import { BehaviorSubject, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { GeneralState } from '../general.state';
-import { startWith, switchMap, map, tap } from 'rxjs/operators';
+import { startWith, switchMap, map, tap, filter } from 'rxjs/operators';
 import { Word } from '../shared/interfaces';
 
 @Injectable({
@@ -20,7 +21,10 @@ export class VocabularyFacade {
 
 
   getAllUserWords$() {
-    return this.generalState.getUserWords$();
+    return this.generalState.getUserWords$()
+      .pipe(
+        filter(words => words !== null)
+      );
   }
 
   getUserWordsFiltredByGroup(selectedGroup$: BehaviorSubject<string>) {
@@ -29,7 +33,12 @@ export class VocabularyFacade {
         startWith('1'),
         switchMap(groupId => {
           if (groupId === '1') {
+            return this.getAllUserWords$();
+          } else if (groupId === '2') {
             return this.getAllUserWords$()
+              .pipe(
+                map(words => words.filter(word => word.isFavorite))
+              )
           } else {
             return this.getAllUserWords$()
               .pipe(
@@ -45,7 +54,8 @@ export class VocabularyFacade {
   }
 
   getWordsGroups$() {
-    return this.generalState.getWordsGroups$();
+    return this.generalState.getWordsGroups$()
+
   }
 
   addNewWord(word: Word) {
@@ -58,11 +68,13 @@ export class VocabularyFacade {
   }
 
   editWord(word: Word) {
-    return of([])
+    const language = this.generalState.getCurrentLearningLanguage();
+
+    return this.apiWords.editWord(word, language)
   }
 
   deleteWordFromServer(wordId: string) {
-    return of([])
+    return this.apiWords.deleteWordFromServer(wordId);
 
   }
 
@@ -71,7 +83,7 @@ export class VocabularyFacade {
     of([])
   }
 
-    createWordGroup(name: string, ) {
+  createWordGroup(name: string) {
 
     return of([])
   }

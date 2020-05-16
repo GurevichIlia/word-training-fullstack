@@ -1,38 +1,69 @@
 <!-- <form [formGroup]="editForm"> -->
-<div class="row">
+<div class="container">
+  <div class="row">
 
-      <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
-      <mat-menu #menu="matMenu" class="matmenu">
-            <div class="menu">
-                  <div (click)="dispatchAction('EDIT WORD', word)" class="menuitem">
-                        <nb-icon icon="trash-2-outline"></nb-icon>
-                        <span class="ml-2">Edit</span>
-                  </div>
-                  <div (click)="dispatchAction('DELETE WORD', word)" class="menuitem">
-                        <nb-icon icon="edit-2-outline"></nb-icon>
-                        <span class="ml-2">Delete</span>
-                  </div>
-            </div>
-
-
-      </mat-menu>
+    <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
+    <mat-menu #menu="matMenu" class="matmenu">
+      <div class="menu">
+        <div (click)="dispatchAction('EDIT WORD', word)" class="menuitem">
+          <nb-icon icon="trash-2-outline"></nb-icon>
+          <span class="ml-2">Edit</span>
+        </div>
+        <div (click)="dispatchAction('DELETE WORD', word)" class="menuitem">
+          <nb-icon icon="edit-2-outline"></nb-icon>
+          <span class="ml-2">Delete</span>
+        </div>
+      </div>
 
 
-      <h5 class="col-9"> {{word.word}}</h5>
-      <div class="col-1 ">
-            <!-- <nb-checkbox formControlName="favorite" (change)="onSaveEditedWord()" status="success"></nb-checkbox>
+    </mat-menu>
+
+
+    <div class="col-9">
+      <h5> {{word.word}}</h5>
+      <span style="font-size: 17px"><i>{{word.translation}}</i></span>
+
+    </div>
+
+    <div class="col-2">
+      <!-- <nb-checkbox formControlName="favorite" (change)="onSaveEditedWord()" status="success"></nb-checkbox>
                                           <span style="font-size: 12px">favorite</span> </nb-checkbox> -->
 
-            <img (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="!word.isFavorite" style="width: 30px; height: 30px"
-                  src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
-                  alt="">
-            <img (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="word.isFavorite" style="width: 30px; height: 30px"
-                  src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png"
-                  alt="">
-      </div>
-      <span style="font-size: 17px" class="ml-3 col-9 mb-3"><i>{{word.translation}}</i></span>
+      <img class="mb-3" (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="!word.isFavorite" style="width: 30px; height: 30px"
+        src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png" alt="">
+      <img class="mb-3" (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="word.isFavorite" style="width: 30px; height: 30px"
+        src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png" alt="">
 
-      <ng-content></ng-content>
+      <span class="ml-auto" [ngSwitch]="word.levelKnowledge">
+        <p *ngSwitchCase="1">
+          <button class="col-2 level bad " size="small" [disabled]="true" nbButton>1</button>
+        </p>
+        <p *ngSwitchCase="2">
+          <button class="col-2 level better" size="small" [disabled]="true" nbButton>2</button>
+
+        </p>
+        <p *ngSwitchCase="3">
+          <button class="col-2 level medium" size="small" [disabled]="true" nbButton>3</button>
+
+        </p>
+        <p *ngSwitchCase="4">
+          <button class="col-2 level good" size="small" [disabled]="true" nbButton>4</button>
+
+        </p>
+        <p *ngSwitchCase="5">
+          <button class="col-2 level excellent" size="small" [disabled]="true" nbButton>5</button>
+
+        </p>
+        <p *ngSwitchDefault>
+          <button class="col-2 level" size="small" status="basic" [disabled]="true" nbButton>0</button>
+
+        </p>
+      </span>
+    </div>
+
+    <ng-content></ng-content>
+  </div>
 </div>
+
 
 <hr>

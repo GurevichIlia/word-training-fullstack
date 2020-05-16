@@ -5,8 +5,8 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Language } from '../shared/interfaces';
 import { LanguagesService } from './languages.service';
 import { NotificationsService } from './../shared/services/notifications.service';
-import { Observable, Subject, of, combineLatest } from 'rxjs';
-import { tap, takeUntil, map, switchMap } from 'rxjs/operators';
+import { Observable, Subject, of, combineLatest, pipe } from 'rxjs';
+import { tap, takeUntil, map, switchMap, shareReplay, startWith } from 'rxjs/operators';
 
 
 
@@ -22,23 +22,23 @@ export class LanguagesComponent implements OnInit, OnDestroy {
   userLanguages$: Observable<Language[]>;
 
   currentLearningLanguage$: Observable<Language>;
-  editingLanguage$: Observable<Language>;
-  isNewLanguage = false;
-  mode = 'initial'; // initial, editlanguage, newlanguage
   subscription$ = new Subject();
-  languagesCandidateToAdd: Language[] = [];
   constructor(
     private notifications: NotificationsService,
     private languagesService: LanguagesService,
     private router: Router,
   ) {
-    // this.selectedLang = new FormControl('');
   }
 
   ngOnInit() {
-    this.getUserLAnguages();
+    this.getUserLanguages();
     this.getAllLanguages();
 
+    this.getCurrentLearningLanguage();
+
+  }
+
+  getCurrentLearningLanguage() {
     this.currentLearningLanguage$ = this.languagesService.getCurrentLanguage$();
 
   }
@@ -58,15 +58,18 @@ export class LanguagesComponent implements OnInit, OnDestroy {
 
           });
         }),
+        shareReplay(),
         tap(res => console.log('ALL LANGUAGES', res)));
   }
 
-  getUserLAnguages() {
+  getUserLanguages() {
     this.userLanguages$ = this.languagesService.getUserLanguages()
       .pipe(
+        tap(res => console.log('USER LANGUAGES', res)),
+        // tap(langauges => langauges.length === 0 ? this.setCurrentLearningLanguage('') : ''),
         map(languages => languages.map(langauge => ({ ...langauge, isSelected: true }))),
-        tap(res => console.log('USER LANGUAGES', res)
-        ));
+
+      );
 
   }
 
@@ -74,66 +77,39 @@ export class LanguagesComponent implements OnInit, OnDestroy {
     this.router.navigate(['vocabulary']);
   }
 
-  setCurrentLearningLanguage(languageId: string) {
+  setCurrentLearningLanguage({ languageId, userLanguages }) {
+    if (userLanguages.length === 0) {
+      return this.notifications.warning('', 'Please add language');
+    }
+
     if (languageId) {
-      this.languagesService.setCurrentLanguageOnServer(languageId).subscribe(res => {
-        if (res) {
-          this.goToVocabulary();
-        }
-      },
-        err => this.notifications.error('', err.error.message));
+      this.languagesService.setCurrentLanguageOnServer(languageId).
+        pipe(
+          takeUntil(this.subscription$)
+        )
+        .subscribe(res => {
+          if (res.currentLanguage._id) {
+            this.goToVocabulary();
+            this.languagesService.setCurrentLearningLanguage(res.currentLanguage);
+          }
+        },
+          err => this.notifications.error('', err.error.message));
     } else {
       this.notifications.warning('', 'Please select language');
     }
   }
 
-  // addNewLang(language: string) {
-  //   if (language) {
-  //     const newLanguage = { name: language };
-  //     this.languagesService.addLanguage(newLanguage)
-  //       .pipe(takeUntil(this.subscription$))
-  //       .subscribe(res => {
-  //         this.getLanguages();
-  //         this.isNewLanguage = !this.isNewLanguage;
-  //         this.notifications.success(newLanguage.name, 'Successfully added');
-  //         this.changeMode('initial');
-  //       }, err => this.notifications.error('', err.error.message));
-  //   } else {
-  //     this.notifications.warning('', 'Language name required');
-  //   }
 
-  // }
 
-  onEdit(langId: string) {
-    if (langId) {
-      this.editingLanguage$ = this.findLanguage(langId, this.allLanguages$);
-      this.changeMode('editlanguage');
-    } else {
-      this.notifications.warning('', 'Please select language');
-    }
-  }
-
-  // editLang(lang: Language) {
-  //   this.languagesService.editLanguage(lang)
-  //     .pipe(takeUntil(this.subscription$))
-  //     .subscribe(res => {
-  //       this.getLanguages();
-  //       this.changeMode('initial');
-  //     }, err => this.notifications.error('', err.error.message));
-
-  // }
-
-  // deleteLang(langId: string) {
+  // onEdit(langId: string) {
   //   if (langId) {
-  //     this.languagesService.deleteLanguage(langId)
-  //       .pipe(takeUntil(this.subscription$))
-  //       .subscribe(res => {
-  //         this.getLanguages();
-  //       }, err => this.notifications.error('', err.error.message));
+  //     this.editingLanguage$ = this.findLanguage(langId, this.allLanguages$);
+  //     this.changeMode('editlanguage');
   //   } else {
   //     this.notifications.warning('', 'Please select language');
   //   }
   // }
+
 
   findLanguage(id: string, languages$: Observable<Language[]>) {
     return languages$
@@ -141,64 +117,18 @@ export class LanguagesComponent implements OnInit, OnDestroy {
         map(languages => languages.find(lang => lang._id === id))
       );
   }
-  // Change bitween add and select language
-  // changeMode() {
-  //   // this.isNewLanguage = !this.isNewLanguage;
-  //   // this.language = {} as Language;
-  // }
 
-  addUserLanguages() {
-    const languages = this.languagesCandidateToAdd;
-    console.log('USER LANGUAGES ', languages);
-    this.languagesService.addUserLanguages(languages)
+  addLanguageToUserLanguages(language: Language) {
+    this.languagesService.addUserLanguages([language])
       .pipe(
         takeUntil(this.subscription$)
       )
       .subscribe(res => {
-        this.getUserLAnguages();
+        this.getUserLanguages();
         this.getAllLanguages();
-
         console.log('AFTER ADD LANGUAGES', res);
       }, err => this.notifications.error('', err.error.message));
 
-  }
-
-  getActionFromChildren({ action, payload }) {
-    switch (action) {
-      case 'CHANGE MODE': this.changeMode(payload);
-        // tslint:disable-next-line: align
-        break;
-      case 'SELECT': this.setCurrentLearningLanguage(payload as string);
-        // tslint:disable-next-line: align
-        break;
-      // case 'SAVE': this.addNewLang(payload);
-      //   // tslint:disable-next-line: align
-      //   break;
-      case 'EDIT': this.onEdit(payload as string);
-        // tslint:disable-next-line: align
-        break;
-      case 'CANCEL': this.cleareCandidates();
-        // tslint:disable-next-line: align
-        break;
-      case 'DELETE': this.deleteUserLanguage(payload);
-        // tslint:disable-next-line: align
-        break;
-      default:
-        break;
-    }
-  }
-
-  changeMode(modeName: string) {
-    this.mode = modeName;
-  }
-
-  addLanguageToCandidates(language: Language) {
-    this.languagesCandidateToAdd = this.languagesService.addToCandidates([...this.languagesCandidateToAdd], language);
-    console.log('Candidates', this.languagesCandidateToAdd)
-  }
-
-  cleareCandidates() {
-    this.languagesCandidateToAdd = [];
   }
 
   deleteUserLanguage(languageId: string) {
@@ -207,8 +137,9 @@ export class LanguagesComponent implements OnInit, OnDestroy {
         takeUntil(this.subscription$)
       )
       .subscribe(res => {
-        this.getUserLAnguages();
+        this.getUserLanguages();
         this.getAllLanguages();
+        this.getCurrentLearningLanguage();
         console.log('AFTER Delete LANGUAGE', res);
       }, err => this.notifications.error('', err.error.message));
 

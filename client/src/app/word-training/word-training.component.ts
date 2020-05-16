@@ -1,17 +1,13 @@
-import { GeneralFacade } from 'src/app/general.facade';
 import { NotificationsService } from './../shared/services/notifications.service';
-import { VocabularyService } from './../vocabulary/vocabulary.service';
 import { WordTrainingService } from './word-training.service';
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { Subject, Observable, BehaviorSubject } from 'rxjs';
-import { FormControl, FormBuilder } from '@angular/forms';
+import { Component, OnInit, OnDestroy} from '@angular/core';
+import { Subject, Observable, BehaviorSubject, combineLatest, of } from 'rxjs';
 
 
 
-import * as kf from '../shared/keyframes';
 import { Word, WordGroup } from '../shared/interfaces';
 import { Router } from '@angular/router';
-import { takeUntil, tap, switchMap, map, startWith } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-word-training',
@@ -21,40 +17,25 @@ import { takeUntil, tap, switchMap, map, startWith } from 'rxjs/operators';
 })
 export class WordTrainingComponent implements OnInit, OnDestroy {
   unsubscribe$ = new Subject();
-  userWords: Word[] = [];
-  userRandomWords: Word[] = [];
-  wordsFiltredByMode: Word[] = [];
   start = false;
-  favoriteMode: FormControl;
   loadingSpinner = false;
-  knownWords = 0;
-  notknownWords = 0;
-  wordIndex = 0;
-  favoritesWordsQuantity = 0;
   animationState: string;
-  wordsForResult: Word[] = [];
-  unknownMode = false;
-
   trainingWordsQuantity: number;
-  currentOrderIndex$ = new BehaviorSubject<number>(1);
-  groupForTraining = new FormControl('1');
-  currentTrainingWord$: Observable<Word>;
-  trainingWords$: Observable<Word[]>;
 
+  currentOrderIndex$ = new BehaviorSubject<number>(0);
+  currentTrainingWord$: Observable<Word>;
   wordGroups$: Observable<WordGroup[]>;
   constructor(
     private wordTrainingService: WordTrainingService,
-    private fb: FormBuilder,
     private router: Router,
     private notification: NotificationsService,
   ) {
-    this.favoriteMode = this.fb.control('all');
 
   }
 
-  get selectedGroupForTraining$(): Observable<string> {
-    return this.groupForTraining.valueChanges;
-  }
+  // get selectedGroupForTraining$(): Observable<string> {
+  //   return this.groupForTraining.valueChanges;
+  // }
 
   get currentOrderIndex() {
     return this.currentOrderIndex$.getValue();
@@ -62,31 +43,7 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.trainingWords$ = this.selectedGroupForTraining$.
-      pipe(
-        startWith('1'),
-        switchMap(selectedGroupId => {
-          return this.wordTrainingService.getUserWords()
-            .pipe(
-              map(words => {
-                return words.filter(word => word.assignedGroups.includes(selectedGroupId));
-              }),
-              map(trainingWords => this.wordTrainingService.getRandomOrder(trainingWords)),
-              tap(words => this.trainingWordsQuantity = words.length - 1),
-              tap(trainingWords => console.log('TrainingWords', trainingWords))
-            );
-        }));
-
-    this.currentTrainingWord$ = this.currentOrderIndex$
-      .pipe(
-        startWith('1'),
-        switchMap(index => {
-          return this.trainingWords$
-            .pipe(
-              map(words => words[index]),
-              tap(word => console.log('Training Word', word))
-            );
-        }));
+    this.getCurrentTrainingWord();
 
     this.wordGroups$ = this.wordTrainingService.getWordGroups()
       .pipe(tap(groups => console.log('GROUPS', groups)));
@@ -102,6 +59,27 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
     // });
   }
 
+  getCurrentTrainingWord() {
+    this.currentTrainingWord$ = combineLatest(
+      [
+        this.wordTrainingService.getFiltredWordsByGroup(),
+        this.currentOrderIndex$,
+      ]
+    )
+      .pipe(
+        map(([trainingWords, currentOrderIndex]) => {
+
+          this.trainingWordsQuantity = trainingWords.length - 1;
+          console.log('WORDS FOR TRAIN', trainingWords);
+          return trainingWords[currentOrderIndex];
+        }));
+  }
+
+  setGroupForTraining(groupId: string) {
+    // this.groupForTraining.patchValue(groupId);
+    this.wordTrainingService.setSelectedGroupForTraining(groupId);
+    this.currentOrderIndex$.next(0);
+  }
 
   setWordKnowledgeLevel(wordId: string, level: number) {
     this.wordTrainingService.setWordKnowledgeLevel(wordId, level);
@@ -115,16 +93,8 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
   onStart() {
     this.startAnimation('bounceInDown');
     this.start = true;
-    console.log('GROUP VALUE', this.groupForTraining.value)
-    this.getRandomWords(this.wordsFiltredByMode);
   }
-  onFavorite() {
-    // this.user
-  }
-  /** Create list of random words from words of user */
-  getRandomWords(arrayOfWords: Word[]) {
-    this.userRandomWords = this.wordTrainingService.getRandomOrder(arrayOfWords);
-  }
+
 
   nextWord() {
     this.startAnimation('bounceInDown');
@@ -237,11 +207,11 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
   //   this.knownWords++;
   // }
 
-  restartGame() {
-    this.notknownWords = 0;
-    this.knownWords = 0;
-    this.clearWordsForResult();
-  }
+  // restartGame() {
+  //   this.notknownWords = 0;
+  //   this.knownWords = 0;
+  //   this.clearWordsForResult();
+  // }
 
   // setFavorite(word: Word) {
 
@@ -285,7 +255,7 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
   }
 
   goToTrainResult() {
-    this.wordTrainingService.setTrainResult(this.wordsForResult);
+    // this.wordTrainingService.setTrainResult(this.wordsForResult);
     this.router.navigate(['train-result']);
   }
 
@@ -298,17 +268,16 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
   //       }
   //     });
   // }
-  clearWordsForResult() {
-    this.wordsForResult = [];
-  }
-  setDefaultMode() {
-    this.favoriteMode.patchValue('all');
-  }
+  // clearWordsForResult() {
+  //   this.wordsForResult = [];
+  // }
+  // setDefaultMode() {
+  //   this.favoriteMode.patchValue('all');
+  // }
   ngOnDestroy(): void {
     // Called once, before the instance is destroyed.
     // Add 'implements OnDestroy' to the class.
-    console.log(this.favoriteMode.value);
-    this.unknownMode = false;
+    // console.log(this.favoriteMode.value);
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }

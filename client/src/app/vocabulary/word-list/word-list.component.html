@@ -4,7 +4,7 @@
             <app-word
                   *ngFor="let word of words | filter: filterValue?.value | slice:0:pageSize ; trackBy: trackWords; let i = index"
                   (action)="sendAction($event)" [word]="word">
-                  <nb-checkbox [checked]="word.assignedGroups.includes(selectedGroup)"></nb-checkbox>
+                  <!-- <nb-checkbox [checked]="word.assignedGroups.includes(selectedGroup)"></nb-checkbox> -->
             </app-word>
 
       </ng-container>

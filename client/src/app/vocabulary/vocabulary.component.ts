@@ -1,11 +1,10 @@
 import { VocabularyFacade } from './vocabulary.facade';
-import { LanguagesService } from './../languages/languages.service';
 import { AskQuestionComponent } from './../shared/modals/ask-question/ask-question.component';
 import { Router } from '@angular/router';
 import { Component, OnInit, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 
-import { switchMap, takeUntil, tap, startWith, map, filter } from 'rxjs/operators';
+import { switchMap, takeUntil, shareReplay } from 'rxjs/operators';
 import { Observable, EMPTY, Subject, BehaviorSubject } from 'rxjs';
 import { Word, WordGroup } from './../shared/interfaces';
 
@@ -39,6 +38,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   groupModal: NbDialogRef<any>;
 
   selectedWordsForAssignGroups$ = new BehaviorSubject<string[]>([]);
+  loader = false;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -50,9 +50,15 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.createNewWordForm();
 
-    this.allWords$ = this.vocabularyFacade.getAllUserWords$();
+    this.allWords$ = this.vocabularyFacade.getAllUserWords$()
+      .pipe(
+        shareReplay()
+      );
+
+
     this.wordsFiltredByGroup$ = this.vocabularyFacade.getUserWordsFiltredByGroup(this.selectedGroup$);
-    this.wordGroups$ = this.vocabularyFacade.getWordsGroups$();
+    this.wordGroups$ = this.vocabularyFacade.getWordsGroups$()
+
 
   }
 
@@ -93,7 +99,9 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     // this.vocabularyFacade.onEdit(editeWord);
     if (editeWord) {
       this.vocabularyFacade.editWord(editeWord)
-        .pipe(takeUntil(this.subscription$))
+        .pipe(
+          takeUntil(this.subscription$)
+        )
         .subscribe(editedWord => {
           if (editedWord) {
             this.notification.success('', 'Successfully');
@@ -120,8 +128,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
 
   setFavorite(word: Word) {
     if (word) {
-      const wordCopy = Object.assign({}, word);
-      wordCopy.isFavorite = !wordCopy.isFavorite;
+      const wordCopy = { ...word, isFavorite: !word.isFavorite };
       this.updateWord(word, wordCopy);
     }
 

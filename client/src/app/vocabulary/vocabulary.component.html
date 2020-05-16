@@ -1,10 +1,10 @@
-<nb-card style="height: 100%">
+<nb-card style="height: 100%" *ngIf="wordsFiltredByGroup$ | async as words; else loader">
 
       <nb-card-header>
             <app-search [filterValue]="filterValue" (addWord)="getActionFromChildren($event)"></app-search>
       </nb-card-header>
 
-      <nb-card-body>
+      <nb-card-body >
 
             <app-groups [wordGroups]="wordGroups$ | async" (selectGroup)="selectedGroup$.next($event)">
 
@@ -29,15 +29,20 @@
 
             </app-groups>
 
-            <app-word-list (action)="getActionFromChildren($event)" [pageSize]="pageSize" [trackWords]="trackWords"
-                  [filterValue]="filterValue" [selectedGroup]="selectedGroup$ | async" [words]="wordsFiltredByGroup$ | async">
+            <app-word-list  (action)="getActionFromChildren($event)" [pageSize]="pageSize" [trackWords]="trackWords"
+                  [filterValue]="filterValue" [selectedGroup]="selectedGroup$ | async" [words]="words">
             </app-word-list>
       </nb-card-body>
 
-
-
 </nb-card>
 
+<ng-template #loader>
+  <nb-card [nbSpinner]="true" nbSpinnerStatus="basic">
+    <nb-card-body>
+      Loading...
+    </nb-card-body>
+  </nb-card>
+</ng-template>
 
 <ng-template #wordModal let-data let-ref="dialogRef">
       <nb-card class="wordDialogBox">

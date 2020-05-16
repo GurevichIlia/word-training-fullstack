@@ -45,4 +45,9 @@ export class ApiWordsService {
   getAllWordsGroups(language: Language) {
     return this.http.get<WordGroup[]>(`/api/word-group/getAll/${language._id}`);
   }
+
+  updateWords(words: Word[], language: Language) {
+    return this.http.post<Word[]>(`/api/vocabulary/updateWords/${language._id}`, { words });
+
+  }
 }

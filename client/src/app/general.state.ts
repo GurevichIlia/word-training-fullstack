@@ -6,64 +6,94 @@ import { Language, Word } from '../app/shared/interfaces';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-      providedIn: 'root'
+  providedIn: 'root'
 })
 export class GeneralState {
-      readonly currentLearningLanguage$ = new BehaviorSubject<Language>(null);
-      readonly quantityWords$ = new BehaviorSubject<number>(null);
-      readonly userWords$ = new BehaviorSubject<Word[]>([]);
-      readonly userWordsGroups$ = new BehaviorSubject<WordGroup[]>([]);
+  defaultGroups: WordGroup[] = [{
+    _id: '1',
+    name: 'All',
+    wordQuantity: 0,
+    shareForAll: false
+  },
+  {
+    _id: '2',
+    name: 'Favorites',
+    wordQuantity: 0,
+    shareForAll: false
+  }];
 
-      readonly userName$ = new BehaviorSubject<string>('');
+  readonly currentLearningLanguage$ = new BehaviorSubject<Language>(null);
+  readonly quantityWords$ = new BehaviorSubject<number>(null);
+  readonly userWords$ = new BehaviorSubject<Word[]>(null);
+  readonly userWordsGroups$ = new BehaviorSubject<WordGroup[]>(this.defaultGroups);
 
+  readonly userName$ = new BehaviorSubject<string>('');
 
-      constructor() {
+  readonly selectedGroupForTraining$ = new BehaviorSubject<string>('1');
 
-      }
+  constructor() {
 
-      setCurrentLanguage(language: Language) {
-            this.currentLearningLanguage$.next(language);
-      }
+  }
 
-      getCurrentLearningLanguage$() {
-            return this.currentLearningLanguage$.asObservable();
-      }
+  setCurrentLanguage(language: Language) {
+    this.currentLearningLanguage$.next(language);
+  }
 
-      getCurrentLearningLanguage() {
-            return this.currentLearningLanguage$.getValue();
-      }
+  getCurrentLearningLanguage$() {
+    return this.currentLearningLanguage$.asObservable();
+  }
 
-      setUserWords(words: Word[]) {
-            return this.userWords$.next(words)
-      }
+  getCurrentLearningLanguage() {
+    return this.currentLearningLanguage$.getValue();
+  }
 
-      getUserWords$() {
-            return this.userWords$.asObservable();
-      }
+  setUserWords(words: Word[]) {
+    return this.userWords$.next(words);
+  }
 
-      getUserWords() {
-            return this.userWords$.getValue()
-      }
+  getUserWords$() {
+    return this.userWords$.asObservable();
+  }
 
-      setWordsGroups(wordsGroups: WordGroup[]) {
-            return this.userWordsGroups$.next(wordsGroups);
-      }
+  getUserWords() {
+    return this.userWords$.getValue();
+  }
 
-      getWordsGroups$() {
-            return this.userWordsGroups$.asObservable();
-      }
+  setWordsGroups(wordsGroups: WordGroup[]) {
+    return this.userWordsGroups$.next(wordsGroups);
+  }
 
-      getWordsGroups() {
-            return this.userWordsGroups$.getValue();
-      }
+  getWordsGroups$() {
+    return this.userWordsGroups$.asObservable();
+  }
 
-      setQuantityWords$(value: number) {
-            this.quantityWords$.next(value);
-      }
+  getWordsGroups() {
+    return this.userWordsGroups$.getValue();
+  }
 
-      getQuantityWords$() {
-            return this.quantityWords$.asObservable();
-      }
+  setQuantityWords$(value: number) {
+    this.quantityWords$.next(value);
+  }
 
+  getQuantityWords$() {
+    return this.quantityWords$.asObservable();
+  }
 
+  setSelectedGroupForTraining(groupId: string) {
+    this.selectedGroupForTraining$.next(groupId);
+  }
+
+  getSelectedGroupForTraining() {
+    return this.selectedGroupForTraining$.asObservable();
+  }
+
+  refreshGeneralState() {
+    this.setCurrentLanguage(null);
+    this.setUserWords(null);
+    this.setQuantityWords$(0);
+    this.userName$.next('');
+    this.setWordsGroups(this.defaultGroups);
+    this.setSelectedGroupForTraining('');
+    console.log('STATE REFRESHED');
+  }
 }

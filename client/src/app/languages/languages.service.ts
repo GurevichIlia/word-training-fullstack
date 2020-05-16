@@ -1,8 +1,10 @@
-import { Language } from '../shared/interfaces';
+import { GeneralFacade } from './../general.facade';
+import { Language, LanguageResponse } from '../shared/interfaces';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,10 @@ import { map, shareReplay } from 'rxjs/operators';
 )
 export class LanguagesService {
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private generalFacade: GeneralFacade
+  ) { }
 
   getAllLanguages(): Observable<Language[]> {
     return this.http.get<Language[]>(`/api/languages/getAllLanguages`);
@@ -43,7 +48,7 @@ export class LanguagesService {
   }
 
   setCurrentLanguageOnServer(languageId: string) {
-    return this.http.post<Language>(`/api/languages/setCurrentLanguage`, { currentLanguage: languageId });
+    return this.http.post<LanguageResponse>(`/api/languages/setCurrentLanguage`, { currentLanguage: languageId });
 
   }
 
@@ -52,7 +57,9 @@ export class LanguagesService {
 
   }
 
-
+  setCurrentLearningLanguage(language: Language) {
+    this.generalFacade.setCurrentLanguage(language);
+  }
 
   addToCandidates(candidates: Language[], language: Language) {
 

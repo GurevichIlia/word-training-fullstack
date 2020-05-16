@@ -1,4 +1,4 @@
-import { takeUntil, startWith } from 'rxjs/operators';
+import { takeUntil, startWith, switchMap, take } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { VocabularyService } from './../../../vocabulary/vocabulary.service';
 import { Subject } from 'rxjs';
@@ -18,34 +18,29 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.generaFacade.isUpdateWordList$()
       .pipe(
-        startWith(' ')
+        startWith(' '),
+        takeUntil(this.subscription$)
+
       )
       .subscribe(() => this.getUserWords());
-
-    this.getWordsGroup();
   }
 
   getUserWords() {
-    this.generaFacade.getAllWordsFromServerAndSetCurrentLanguage()
+    this.generaFacade.getUserWordsFromServer()
       .pipe(
+        take(1),
         takeUntil(this.subscription$)
-      )
-      .subscribe(res => {
-        this.generaFacade.setWordsQuantity();
-      });
+
+      ).subscribe(() => console.log('USER WORD GOT'));
   }
 
-  getWordsGroup() {
-    this.generaFacade.getWordsGroups()
-      .pipe(
-        takeUntil(this.subscription$)
-      )
-      .subscribe();
-  }
+
+
 
 
   ngOnDestroy() {
-    this.subscription$.next()
-    this.subscription$.complete()
+    this.subscription$.next();
+    this.subscription$.complete();
+    this.generaFacade.refreshGeneralState();
   }
 }

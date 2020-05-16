@@ -20,8 +20,13 @@ export class AuthService {
     private localStorage: LocalstorageService,
     private router: Router,
   ) {
+
     if (localStorage.getItem('token')) {
       this.setIsAuthenticated(true);
+      this.router.navigate(['/vocabulary']);
+    } else {
+      this.setIsAuthenticated(false);
+      this.router.navigate(['/login']);
     }
   }
 

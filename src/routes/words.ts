@@ -27,6 +27,12 @@ export class WordsRoutes {
             this.wordsController.createNewWord
         );
 
+        this.router.post(
+            "/updateWords/:languageId",
+            passport.authenticate("jwt", { session: false }),
+            this.wordsController.updateWords
+        );
+
         this.router.patch(
             "/editWord/:languageId",
             passport.authenticate("jwt", { session: false }),

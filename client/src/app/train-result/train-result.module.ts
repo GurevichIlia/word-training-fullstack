@@ -11,7 +11,7 @@ const resultRoutes: Routes = [
 @NgModule({
   declarations: [TrainResultComponent],
   imports: [
-        CommonModule,
+    CommonModule,
     SharedModule,
     RouterModule.forChild(resultRoutes)
   ]
