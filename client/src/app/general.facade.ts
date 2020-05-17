@@ -125,4 +125,6 @@ export class GeneralFacade {
   refreshGeneralState() {
     this.generalState.refreshGeneralState();
   }
+
+
 }

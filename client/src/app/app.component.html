@@ -24,7 +24,7 @@
   <nb-layout-footer fixed>
     <!-- Insert footer here -->
     <div class="fixed-footer">
-      <app-footer></app-footer>
+      <app-footer [isShowMenu]="isShowFooterMenu$ | async"></app-footer>
     </div>
   </nb-layout-footer>
 
