@@ -9,11 +9,19 @@ import { LoginComponent } from './login/login.component';
 import { AuthGuard } from '../shared/guards/auth.guard';
 
 const authRoutes: Routes = [
-  { path: '', component: AuthorizationComponent,  pathMatch: 'full', redirectTo: 'login', },
-  { path: 'login', component: LoginComponent,
-},
-  { path: 'registration', component: RegistrationComponent,
-},
+  {
+    path: '', component: AuthorizationComponent, children: [
+      { path: '', pathMatch: 'full', redirectTo: '/login' },
+      {
+        path: 'login', component: LoginComponent,
+      },
+      {
+        path: 'registration', component: RegistrationComponent,
+      },
+    ]
+  },
+
+  { path: '**', redirectTo: '/login' },
 
 ];
 

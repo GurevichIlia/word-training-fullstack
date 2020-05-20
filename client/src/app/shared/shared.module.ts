@@ -1,3 +1,4 @@
+import { HeaderComponent } from './../header/header.component';
 import { GroupsComponent } from './../vocabulary/groups/groups.component';
 import { RouterModule } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
@@ -30,7 +31,8 @@ import { HomeComponent } from '../modules/home/home/home.component';
     FilterPipe,
     AskQuestionComponent,
     FooterComponent,
-    GroupsComponent
+    GroupsComponent,
+    HeaderComponent
   ],
   imports: [
     CommonModule,
@@ -83,8 +85,12 @@ import { HomeComponent } from '../modules/home/home/home.component';
     MatCardModule,
     FilterPipe,
     MatMenuModule,
+
+
     FooterComponent,
-    GroupsComponent
+    GroupsComponent,
+    HeaderComponent
+
 
 
   ],

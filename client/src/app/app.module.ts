@@ -31,7 +31,7 @@ export class MyHammerConfig extends HammerGestureConfig {
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
+
     // UserDataComponent,
     // HomeComponent,
     // WordListComponent,

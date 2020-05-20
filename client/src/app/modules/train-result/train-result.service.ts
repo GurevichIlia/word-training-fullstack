@@ -1,9 +1,9 @@
-import { ApiWordsService } from './../shared/services/api/api-words.service';
-import { GeneralState } from './../general.state';
+import { ApiWordsService } from '../../shared/services/api/api-words.service';
+import { GeneralState } from '../../general.state';
 import { Injectable } from '@angular/core';
-import { WordTrainingService } from '../word-training/word-training.service';
+import { WordTrainingService } from '../../word-training/word-training.service';
 import { map } from 'rxjs/operators';
-import { Word } from '../shared/interfaces';
+import { Word } from '../../shared/interfaces';
 
 @Injectable({
   providedIn: 'root'

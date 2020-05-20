@@ -1,42 +1,33 @@
-<div class="row justify-content-center">
-      <div class="col-xs-12 col-sm-col-12 col-md-12 col-lg-12 col-xl-12 mb-3 text-right">
-            <h3 class="text-center">Registration</h3>
-            <nb-card class="text-center">
-                  <nb-card-body>
-                        <form [formGroup]="registrationForm" (ngSubmit)="createUser()">
-                              <input formControlName="nickName" class="mb-2" type="text" nbInput fullWidth
-                                    [status]="nameInputColor" placeholder="Name" required>
-                              <div class="mb-2">
-                                    <input formControlName="email" type="text" nbInput fullWidth
-                                          [status]="emailInputColor" placeholder="Email">
-                                          <span style="font-size: 12px; color: red" *ngIf="emailError !== ''">{{emailError}}</span>
-                              </div>
+<h3 class="text-center">Registration</h3>
+
+<form [formGroup]="registrationForm" (ngSubmit)="createUser()" class="text-center">
+  <input formControlName="nickName" class="mb-2" type="text" nbInput fullWidth [status]="nameInputColor"
+    placeholder="Name" required>
+  <div class="mb-2">
+    <input formControlName="email" type="text" nbInput fullWidth [status]="emailInputColor" placeholder="Email">
+    <span style="font-size: 12px; color: red" *ngIf="emailError !== ''">{{emailError}}</span>
+  </div>
 
 
-                              <div class="mb-1">
-                                    <input formControlName="password" type="password" nbInput fullWidth
-                                          [status]="passwordInputColor" placeholder="Password">
-                                    <span style="font-size: 12px; color: red" *ngIf="passwordIncorrect">Passwords do not
-                                          match.</span>
-                              </div>
-                              <div class="mb-4">
-                                    <input formControlName="confPassword" type="password" nbInput fullWidth
-                                          [status]="passwordInputColor" placeholder="Confirm password">
-                                    <span style="font-size: 12px; color: red" *ngIf="passwordIncorrect">Passwords do not
-                                          match.</span>
-                              </div>
+  <div class="mb-1">
+    <input formControlName="password" type="password" nbInput fullWidth [status]="passwordInputColor"
+      placeholder="Password">
+    <span style="font-size: 12px; color: red" *ngIf="passwordIncorrect">Passwords do not
+      match.</span>
+  </div>
+  <div class="mb-4">
+    <input formControlName="confPassword" type="password" nbInput fullWidth [status]="passwordInputColor"
+      placeholder="Confirm password">
+    <span style="font-size: 12px; color: red" *ngIf="passwordIncorrect">Passwords do not
+      match.</span>
+  </div>
 
-                              <div class="row justify-content-center">
+  <div class="row justify-content-center">
 
-                                    <button type="submit" class="col-6 mb-2" nbButton
-                                          [disabled]="registrationForm.invalid || passwordIncorrect? 'true' : 'false'"
-                                          status="success">Submit</button>
-                                    <div class="col-12">
-                                          <span><a style="cursor: pointer" (click)="goToLogin()">Login</a></span>
-                                    </div>
-                              </div>
-                        </form>
-                  </nb-card-body>
-            </nb-card>
-      </div>
-</div>
+    <button type="submit" class="col-6 mb-2" nbButton
+      [disabled]="registrationForm.invalid || passwordIncorrect? 'true' : 'false'" status="success">Submit</button>
+    <div class="col-12">
+      <span><a style="cursor: pointer" (click)="goToLogin()">Login</a></span>
+    </div>
+  </div>
+</form>>

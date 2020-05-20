@@ -3,7 +3,7 @@ import { TrainResultService } from './train-result.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
-import { Word } from '../shared/interfaces';
+import { Word } from '../../shared/interfaces';
 
 @Component({
   selector: 'app-train-result',

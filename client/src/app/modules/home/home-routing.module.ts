@@ -11,20 +11,22 @@ const routes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: '/vocabulary' },
       {
         path: 'languages', loadChildren: () => import('./../../languages/languages.module').then(m => m.LanguagesModule),
-        canActivate: [AuthGuard]
+        // canActivate: [AuthGuard]
       },
       {
         path: 'word-training', loadChildren: () => import('./../../word-training/word-training.module').then(m => m.WordTrainingModule),
-        canActivate: [WordsTrainGuard]
+        // canActivate: [WordsTrainGuard]
       },
       {
         path: 'vocabulary', loadChildren: () => import('./../../vocabulary/vocabulary.module').then(m => m.VocabularyModule),
-        canActivate: [AuthGuard]
+        // canActivate: [AuthGuard]
       },
       {
-        path: 'train-result', loadChildren: () => import('./../../train-result/train-result.module').then(m => m.TrainResultModule),
-        canActivate: [WordsTrainGuard]
+        path: 'train-result', loadChildren: () => import('../train-result/train-result.module').then(m => m.TrainResultModule),
+        // canActivate: [WordsTrainGuard]
       },
+      { path: '**', redirectTo: '/vocabulary' },
+
     ]
   },
 

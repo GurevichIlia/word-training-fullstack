@@ -5,16 +5,16 @@ import { WordsTrainGuard } from './shared/guards/words-train.guard';
 
 
 const routes: Routes = [
-
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
-    path: '', loadChildren: () => import('./authorization/authorization.module').then(m => m.AuthorizationModule),
+    path: 'auth', loadChildren: () => import('./authorization/authorization.module').then(m => m.AuthorizationModule),
   },
 
   {
     path: '', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule),
   },
 
-  { path: '**', redirectTo: '/login' },
+  { path: '**', redirectTo: '/auth' },
 ];
 
 

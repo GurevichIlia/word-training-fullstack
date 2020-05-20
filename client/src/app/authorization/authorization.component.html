@@ -1,1 +1,25 @@
-<router-outlet></router-outlet>
+<nb-layout class="full-block">
+
+
+
+  <nb-layout-column class="full-block">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-xs-12 col-xl-6 p-0">
+          <!-- [@loginAnimator]="animationState" (@loginAnimator.done)="resetAnimationState()" -->
+          <nb-card class="text-center card">
+            <nb-card-body size="medium">
+              <router-outlet></router-outlet>
+            </nb-card-body>
+          </nb-card>
+
+
+        </div>
+
+      </div>
+    </div>
+  </nb-layout-column>
+
+
+
+</nb-layout>
