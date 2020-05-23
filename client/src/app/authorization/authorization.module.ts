@@ -1,12 +1,11 @@
-import { Routes, RouterModule } from '@angular/router';
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { AuthorizationComponent } from './authorization.component';
-import { RegistrationComponent } from './registration/registration.component';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from './../shared/shared.module';
+import { AuthorizationComponent } from './authorization.component';
 import { LoginComponent } from './login/login.component';
-import { AuthGuard } from '../shared/guards/auth.guard';
+import { RegistrationComponent } from './registration/registration.component';
+
 
 const authRoutes: Routes = [
   {
@@ -20,9 +19,6 @@ const authRoutes: Routes = [
       },
     ]
   },
-
-  { path: '**', redirectTo: '/login' },
-
 ];
 
 

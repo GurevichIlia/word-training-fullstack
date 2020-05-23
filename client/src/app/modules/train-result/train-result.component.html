@@ -12,9 +12,11 @@
   </nb-card-header>
   <nb-card-body>
     <nb-list>
-      <nb-list-item *ngFor="let word of words">
+      <nb-list-item *ngFor="let word of words" class="d-block">
         <span><strong>{{ word.word }}</strong></span>
-        <span class="ml-auto" [ngSwitch]="word.levelKnowledge">
+        <nb-progress-bar class="custom-progress-bar mt-3" [value]="word.levelKnowledge | convertToPercent" size="tiny" [displayValue]="true"></nb-progress-bar>
+
+        <!-- <span class="ml-auto" [ngSwitch]="word.levelKnowledge">
           <p *ngSwitchCase="1">
             <button class="col-2 level bad " size="small" [disabled]="true" nbButton>1</button>
           </p>
@@ -38,7 +40,7 @@
             <button class="col-2 level" size="small" status="basic" [disabled]="true" nbButton>0</button>
 
           </p>
-        </span>
+        </span> -->
         <!-- <span class="ml-auto">{{word.levelKnowledge}}</span> -->
         <!-- <img style="float: right" class="icons" *ngIf="word.knowen === true"
                               src="../../../assets/Photos/icons8-checkmark-48.png" alt="">

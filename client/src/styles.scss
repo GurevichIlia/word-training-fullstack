@@ -50,3 +50,30 @@ body {
   border-color: whitesmoke !important;
   color: rgb(22, 17, 17) !important;
 }
+
+.purpleButton {
+  background-color: darkorchid !important;
+  border-color: darkorchid !important;
+}
+
+.custom-progress-bar {
+  .progress-value {
+    background-color: #9932cc !important;
+    border-color: #9932cc !important;
+    font-size: 11px !important;
+    transition: 1.5s;
+    animation: move 2s;
+
+    @keyframes move {
+      from {
+        width: 0px;
+      }
+    }
+  }
+
+  .progress-container {
+    height: 10px !important;
+  }
+
+
+}

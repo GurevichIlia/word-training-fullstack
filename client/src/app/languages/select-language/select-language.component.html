@@ -1,8 +1,8 @@
 <nb-card>
   <nb-card-body>
 
-    <nb-tabset>
-      <nb-tab class="p-0" tabTitle="User languages" [badgeText]="userLanguages?.length" badgeStatus="warning">
+    <nb-tabset [fullWidth]="true">
+      <nb-tab class="p-0 text-center" tabTitle="User languages" [badgeText]="userLanguages?.length" badgeStatus="warning">
 
         <nb-select class="col-12 mt-3 mb-3" placeholder="Select language" [formControl]="selectedLanguage">
           <nb-option *ngFor="let language of userLanguages" [value]="language._id">
@@ -11,15 +11,17 @@
             </nb-icon>
           </nb-option>
         </nb-select>
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-xl-5 submitBtnBox">
+              <button type="button" class="w-100 purpleButton" size="medium" nbButton
+                (click)="onSelectUserLanguageForLearning(selectedLanguage.value, userLanguages)"
+                status="success">Submit</button>
 
-        <div class="row justify-content-center">
-          <div class="col-xl-5 submitBtnBox">
-            <button type="button" class="w-100" size="medium" nbButton
-              (click)="onSelectUserLanguageForLearning(selectedLanguage.value, userLanguages)"
-              status="success">Submit</button>
-
+            </div>
           </div>
         </div>
+
       </nb-tab>
       <nb-tab class="p-0" tabTitle="All languages" [badgeText]="allLanguages?.length" badgeStatus="warning">
 

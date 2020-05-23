@@ -1,12 +1,11 @@
-import { GeneralFacade } from 'src/app/general.facade';
-import { GeneralService } from './../shared/services/general.service';
-import { User, Language } from './../shared/interfaces';
-import { AuthService } from './../shared/services/auth.service';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import {  NbMenuItem, NbMenuService } from '@nebular/theme';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { NbMenuItem, NbMenuService } from '@nebular/theme';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
+import { GeneralFacade } from 'src/app/general.facade';
+import { Language, User } from './../shared/interfaces';
+import { AuthService } from './../shared/services/auth.service';
 
 @Component({
   selector: 'app-header',

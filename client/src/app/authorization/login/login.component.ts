@@ -1,17 +1,16 @@
-import { GeneralFacade } from 'src/app/general.facade';
-import { GeneralService } from './../../shared/services/general.service';
-import { FormBuilder, FormGroup, Validators, } from '@angular/forms';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { animate, keyframes, transition, trigger } from '@angular/animations';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-
-import { NotificationsService } from '../../shared/services/notifications.service';
-import { LocalstorageService } from '../../shared/services/localstorage.service';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
-import { trigger, keyframes, animate, transition } from '@angular/animations';
+import { GeneralFacade } from 'src/app/general.facade';
 import * as kf from '../../shared/keyframes';
 import { AuthService } from '../../shared/services/auth.service';
-import { Subject } from 'rxjs';
+import { LocalstorageService } from '../../shared/services/localstorage.service';
+import { NotificationsService } from '../../shared/services/notifications.service';
+
+
 
 @Component({
   selector: 'app-login',

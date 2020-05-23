@@ -1,11 +1,12 @@
 import { WordGroup } from 'src/app/shared/interfaces';
 import { GeneralFacade } from 'src/app/general.facade';
 import { ApiWordsService } from './../shared/services/api/api-words.service';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, of, Observable, combineLatest } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { GeneralState } from '../general.state';
 import { startWith, switchMap, map, tap, filter } from 'rxjs/operators';
 import { Word } from '../shared/interfaces';
+import { AbstractControl } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -27,35 +28,62 @@ export class VocabularyFacade {
       );
   }
 
-  getUserWordsFiltredByGroup(selectedGroup$: BehaviorSubject<string>) {
-    return selectedGroup$
+  getUserWordsFiltredByGroup(selectedGroup$: Observable<string>, searchValue$: Observable<string>) {
+    return combineLatest([selectedGroup$.pipe(startWith('1')), searchValue$.pipe(startWith(''))])
       .pipe(
-        startWith('1'),
-        switchMap(groupId => {
-          if (groupId === '1') {
-            return this.getAllUserWords$();
-          } else if (groupId === '2') {
-            return this.getAllUserWords$()
-              .pipe(
-                map(words => words.filter(word => word.isFavorite))
-              )
+        switchMap(([groupId, searchValue]) => {
+          const All_GROUPS = '1';
+          const FAVORITES = '2';
+          if (groupId === All_GROUPS) {
+
+            return this.filterBySearcValue(searchValue, this.getAllUserWords$());
+
+          } else if (groupId === FAVORITES) {
+
+            return this.filterBySearcValue(searchValue, this.filterWordsByFavorite(this.getAllUserWords$()));
+
           } else {
-            return this.getAllUserWords$()
+
+            return this.filterBySearcValue(searchValue, this.getAllUserWords$()
               .pipe(
                 map(words => words.filter(word => word.assignedGroups.includes(groupId)))
-              )
+              ))
           }
 
         }),
-        map(words => words.reverse()),
+        // map(words => words.reverse()),
         tap(res => console.log('WORDS', res))
 
       )
   }
 
+  filterBySearcValue(searchValue: string, words: Observable<Word[]>) {
+    return words
+      .pipe(
+        map(wordsForFilter => {
+
+          if (searchValue) {
+
+            return wordsForFilter.filter(word => word.word.toLowerCase().includes(searchValue.toLowerCase()) ||
+              word.translation.toLowerCase().includes(searchValue.toLowerCase()));
+
+          } else {
+
+            return wordsForFilter;
+
+          }
+        }));
+  }
+
   getWordsGroups$() {
     return this.generalState.getWordsGroups$()
 
+  }
+
+  filterWordsByFavorite(allWords: Observable<Word[]>) {
+    return allWords.pipe(
+      map(words => words.filter(word => word.isFavorite))
+    )
   }
 
   addNewWord(word: Word) {

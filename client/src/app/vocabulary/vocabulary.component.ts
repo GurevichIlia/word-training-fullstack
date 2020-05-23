@@ -1,15 +1,15 @@
-import { VocabularyFacade } from './vocabulary.facade';
-import { AskQuestionComponent } from './../shared/modals/ask-question/ask-question.component';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Component, OnInit, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
-import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
-
-import { switchMap, takeUntil, shareReplay } from 'rxjs/operators';
-import { Observable, EMPTY, Subject, BehaviorSubject } from 'rxjs';
+import { NbDialogRef, NbDialogService } from '@nebular/theme';
+import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
+import { shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { Word, WordGroup } from './../shared/interfaces';
-
-import { NbDialogService, NbDialogRef } from '@nebular/theme';
+import { AskQuestionComponent } from './../shared/modals/ask-question/ask-question.component';
 import { NotificationsService } from './../shared/services/notifications.service';
+import { VocabularyFacade } from './vocabulary.facade';
+
+
 
 
 @Component({
@@ -56,8 +56,12 @@ export class VocabularyComponent implements OnInit, OnDestroy {
       );
 
 
-    this.wordsFiltredByGroup$ = this.vocabularyFacade.getUserWordsFiltredByGroup(this.selectedGroup$);
-    this.wordGroups$ = this.vocabularyFacade.getWordsGroups$()
+    this.wordsFiltredByGroup$ = this.vocabularyFacade.getUserWordsFiltredByGroup(
+      this.selectedGroup$.asObservable(),
+      this.filterValue.valueChanges
+    );
+
+    this.wordGroups$ = this.vocabularyFacade.getWordsGroups$();
 
 
   }
@@ -146,8 +150,6 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     switch (event.action) {
 
       case 'IS FAVORITE': this.setFavorite(event.payload);
-        break
-      case 'ADD WORD MODAL': this.openWordModal('Add word');
         break
       case 'DELETE WORD': this.deleteWord(event.payload);
         break;

@@ -1,5 +1,5 @@
 <div>
-  <nb-flip-card #flipCard [showToggleButton]="'false'">
+  <nb-flip-card #flipCard [showToggleButton]="'false'" class="pr-3 pl-3">
     <nb-card-front #flipCard>
       <nb-card [@wordCardAnimator]="animationState" (@wordCardAnimator.done)="onResetAnimationState()"
         style="height: 200px">
@@ -77,7 +77,7 @@
   </nb-flip-card>
 </div>
 
-<nb-card class="knowledge-level-panel">
+<nb-card class="knowledge-level-panel pr-3 pl-3">
   <div class="row level-row justify-content-around">
     <button class="col-2 level bad" size="small" (click)="onSetKnowledgeLevel(word._id, 1)" nbButton>1</button>
     <button class="col-2 level better" size="small" (click)="onSetKnowledgeLevel(word._id, 2)" nbButton>2</button>

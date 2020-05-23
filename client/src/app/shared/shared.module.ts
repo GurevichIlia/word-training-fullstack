@@ -1,38 +1,36 @@
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatMenuModule } from '@angular/material/menu';
+import { RouterModule } from '@angular/router';
+import { NbEvaIconsModule } from '@nebular/eva-icons';
+import {
+  NbAccordionModule, NbActionsModule, NbButtonModule, NbCardModule,
+  NbCheckboxModule, NbContextMenuModule, NbIconModule, NbInputModule,
+  NbLayoutModule, NbListModule, NbMenuModule, NbSelectModule, NbSpinnerModule,
+  NbTabsetModule, NbThemeModule, NbToastrModule, NbUserModule, NbProgressBarModule
+} from '@nebular/theme';
+import { NgxPrettyCheckboxModule } from 'ngx-pretty-checkbox';
 import { HeaderComponent } from './../header/header.component';
 import { GroupsComponent } from './../vocabulary/groups/groups.component';
-import { RouterModule } from '@angular/router';
-import { MatSelectModule } from '@angular/material/select';
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { MatMenuModule } from '@angular/material/menu';
-
-
-import {
-  NbThemeModule, NbLayoutModule, NbSidebarModule, NbButtonModule,
-  NbInputModule, NbCardModule, NbSelectModule, NbToastrModule, NbListModule,
-  NbTabsetModule, NbIconModule, NbActionsModule, NbCheckboxModule, NbSpinnerModule,
-  NbContextMenuModule, NbUserModule, NbMenuModule, NbDialogModule, NbAccordionModule
-} from '@nebular/theme';
-import { NbEvaIconsModule } from '@nebular/eva-icons';
-import { NgxPrettyCheckboxModule } from 'ngx-pretty-checkbox';
-import { MatCardModule } from '@angular/material/card';
-import { FilterPipe } from './pipes/filter.pipe';
-import { EditWordComponent } from './modals/edit-word/edit-word.component';
-import { AskQuestionComponent } from './modals/ask-question/ask-question.component';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FooterComponent } from './components/footer/footer.component';
-import { HomeComponent } from '../modules/home/home/home.component';
+import { AskQuestionComponent } from './modals/ask-question/ask-question.component';
+import { EditWordComponent } from './modals/edit-word/edit-word.component';
+import { ConvertToPercentPipe } from './pipes/convert-to-percent.pipe';
+
+
 
 
 
 @NgModule({
   declarations: [
-    FilterPipe,
     AskQuestionComponent,
     FooterComponent,
     GroupsComponent,
-    HeaderComponent
+    HeaderComponent,
+
+    ConvertToPercentPipe
   ],
   imports: [
     CommonModule,
@@ -57,7 +55,7 @@ import { HomeComponent } from '../modules/home/home/home.component';
     MatCardModule,
     MatMenuModule,
     NbAccordionModule,
-
+    NbProgressBarModule
 
   ],
   exports: [
@@ -83,14 +81,14 @@ import { HomeComponent } from '../modules/home/home/home.component';
     NbAccordionModule,
     NgxPrettyCheckboxModule,
     MatCardModule,
-    FilterPipe,
     MatMenuModule,
-
+    NbProgressBarModule,
 
     FooterComponent,
     GroupsComponent,
-    HeaderComponent
+    HeaderComponent,
 
+    ConvertToPercentPipe
 
 
   ],

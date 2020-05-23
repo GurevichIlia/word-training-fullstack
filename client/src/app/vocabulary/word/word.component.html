@@ -4,18 +4,14 @@
 
     <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
     <mat-menu #menu="matMenu" class="matmenu">
-      <div class="menu">
-        <div (click)="dispatchAction('EDIT WORD', word)" class="menuitem">
-          <nb-icon icon="trash-2-outline"></nb-icon>
-          <span class="ml-2">Edit</span>
-        </div>
-        <div (click)="dispatchAction('DELETE WORD', word)" class="menuitem">
-          <nb-icon icon="edit-2-outline"></nb-icon>
-          <span class="ml-2">Delete</span>
-        </div>
+      <div (click)="dispatchAction('EDIT WORD', word)" class="menuitem">
+        <nb-icon icon="trash-2-outline"></nb-icon>
+        <span class="ml-2">Edit</span>
       </div>
-
-
+      <div (click)="dispatchAction('DELETE WORD', word)" class="menuitem">
+        <nb-icon icon="edit-2-outline"></nb-icon>
+        <span class="ml-2">Delete</span>
+      </div>
     </mat-menu>
 
 
@@ -29,12 +25,14 @@
       <!-- <nb-checkbox formControlName="favorite" (change)="onSaveEditedWord()" status="success"></nb-checkbox>
                                           <span style="font-size: 12px">favorite</span> </nb-checkbox> -->
 
-      <img class="mb-3" (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="!word.isFavorite" style="width: 30px; height: 30px"
+      <img class="mb-3" (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="!word.isFavorite"
+        style="width: 30px; height: 30px"
         src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png" alt="">
-      <img class="mb-3" (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="word.isFavorite" style="width: 30px; height: 30px"
+      <img class="mb-3" (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="word.isFavorite"
+        style="width: 30px; height: 30px"
         src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png" alt="">
 
-      <span class="ml-auto" [ngSwitch]="word.levelKnowledge">
+      <!-- <span class="ml-auto" [ngSwitch]="word.levelKnowledge">
         <p *ngSwitchCase="1">
           <button class="col-2 level bad " size="small" [disabled]="true" nbButton>1</button>
         </p>
@@ -58,11 +56,13 @@
           <button class="col-2 level" size="small" status="basic" [disabled]="true" nbButton>0</button>
 
         </p>
-      </span>
+      </span> -->
     </div>
 
     <ng-content></ng-content>
   </div>
+  <nb-progress-bar class="custom-progress-bar mt-3" [value]="word.levelKnowledge | convertToPercent" size="tiny" [displayValue]="true"></nb-progress-bar>
+
 </div>
 
 

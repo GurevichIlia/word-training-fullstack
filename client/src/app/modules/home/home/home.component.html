@@ -1,31 +1,36 @@
-<nb-layout>
+<div class="loading-screen text-center" *ngIf="isShowMainScreen$ | async; else mainContent">
+  <img class="image" src="../../../../assets/icons/on-white-192.png" alt="">
+</div>
+<ng-template #mainContent>
+  <nb-layout>
 
-  <nb-layout-header fixed>
-    <!-- Insert header here -->
-    <div class="container-fluid header">
-      <app-header></app-header>
-    </div>
-  </nb-layout-header>
+    <nb-layout-header fixed>
+      <!-- Insert header here -->
+      <div class="container-fluid header">
+        <app-header></app-header>
+      </div>
+    </nb-layout-header>
 
 
-  <nb-layout-column class="">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-xs-12 col-xl-6 p-0">
-          <router-outlet></router-outlet>
+    <nb-layout-column class="pr-0 pl-0">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-xs-12 col-xl-6 p-0">
+            <router-outlet></router-outlet>
+
+          </div>
 
         </div>
-
       </div>
-    </div>
-  </nb-layout-column>
+    </nb-layout-column>
 
 
-  <nb-layout-footer fixed>
-    <!-- Insert footer here -->
-    <div class="fixed-footer">
-      <app-footer></app-footer>
-    </div>
-  </nb-layout-footer>
+    <nb-layout-footer fixed>
+      <!-- Insert footer here -->
+      <div class="fixed-footer">
+        <app-footer></app-footer>
+      </div>
+    </nb-layout-footer>
 
-</nb-layout>
+  </nb-layout>
+</ng-template>

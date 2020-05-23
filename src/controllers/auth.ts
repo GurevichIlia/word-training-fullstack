@@ -24,7 +24,7 @@ export class AuthController {
                         userId: candidate._id
                     },
                     keys.jwt,
-                    { expiresIn: 90 * 90 }
+                    { expiresIn: 390 * 90 }
                 );
 
                 res.status(200).json({

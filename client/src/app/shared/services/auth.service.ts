@@ -41,7 +41,7 @@ export class AuthService {
   logOut() {
     this.setIsAuthenticated(false);
     this.localStorage.removeItem('token');
-    this.router.navigate(['authorization/login']);
+    this.router.navigate(['/login']);
   }
 
   setIsAuthenticated(value: boolean) {

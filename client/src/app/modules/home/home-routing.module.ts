@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { WordsTrainGuard } from 'src/app/shared/guards/words-train.guard';
+import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { AuthGuard } from 'src/app/shared/guards/auth.guard';
 
 
 const routes: Routes = [

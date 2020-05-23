@@ -1,12 +1,12 @@
 
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { map, shareReplay, takeUntil, tap } from 'rxjs/operators';
 import { Language } from '../shared/interfaces';
-import { LanguagesService } from './languages.service';
 import { NotificationsService } from './../shared/services/notifications.service';
-import { Observable, Subject, of, combineLatest, pipe } from 'rxjs';
-import { tap, takeUntil, map, switchMap, shareReplay, startWith } from 'rxjs/operators';
+import { LanguagesService } from './languages.service';
+
 
 
 

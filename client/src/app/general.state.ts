@@ -22,14 +22,14 @@ export class GeneralState {
     shareForAll: false
   }];
 
-  readonly currentLearningLanguage$ = new BehaviorSubject<Language>(null);
-  readonly quantityWords$ = new BehaviorSubject<number>(null);
-  readonly userWords$ = new BehaviorSubject<Word[]>(null);
-  readonly userWordsGroups$ = new BehaviorSubject<WordGroup[]>(this.defaultGroups);
+  private readonly currentLearningLanguage$ = new BehaviorSubject<Language>(null);
+  private readonly quantityWords$ = new BehaviorSubject<number>(null);
+  private readonly userWords$ = new BehaviorSubject<Word[]>(null);
+  private readonly userWordsGroups$ = new BehaviorSubject<WordGroup[]>(this.defaultGroups);
 
-  readonly userName$ = new BehaviorSubject<string>('');
+  private readonly userName$ = new BehaviorSubject<string>('');
 
-  readonly selectedGroupForTraining$ = new BehaviorSubject<string>('1');
+  private readonly selectedGroupForTraining$ = new BehaviorSubject<string>('1');
 
   constructor() {
 
