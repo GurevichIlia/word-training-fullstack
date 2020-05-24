@@ -5,14 +5,10 @@ import { Language } from '../../interfaces';
 import { map, shareReplay } from 'rxjs/operators';
 
 export let BASE_URL;
-declare let process: any;
-const env = process.env.NODE_ENV;
 
-if (env === 'production') {
-  BASE_URL = 'http://localhost:3000';
-} else {
-  BASE_URL = '';
-}
+
+BASE_URL = '';
+
 
 
 @Injectable({
