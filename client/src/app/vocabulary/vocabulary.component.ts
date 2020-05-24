@@ -108,7 +108,6 @@ export class VocabularyComponent implements OnInit, OnDestroy {
         )
         .subscribe(editedWord => {
           if (editedWord) {
-            this.notification.success('', 'Successfully');
             this.closeWordModal();
             this.vocabularyFacade.updateWordList();
           }
