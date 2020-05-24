@@ -1,10 +1,19 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Language } from '../../interfaces';
 import { map, shareReplay } from 'rxjs/operators';
 
-export const BASE_URL = 'http://localhost:3000';
+export let BASE_URL;
+declare let process: any;
+const env = process.env.NODE_ENV;
+
+if (env === 'production') {
+  BASE_URL = 'http://localhost:3000';
+} else {
+  BASE_URL = '';
+}
+
 
 @Injectable({
   providedIn: 'root'
