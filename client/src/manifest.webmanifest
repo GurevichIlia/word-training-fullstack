@@ -1,11 +1,11 @@
 {
-  "name": "word-training",
-  "short_name": "word-training",
-  "theme_color": "linear-gradient(266deg, #f98d3a 0%, #85168a 90%)",
+  "name": "Word Training",
+  "short_name": "Word Training",
+  "theme_color": "whitesmoke",
   "background_color": "#fafafa",
   "display": "standalone",
   "scope": "./",
-  "start_url": "./",
+  "start_url": "index.html",
   "icons": [
     {
       "src": "assets/icons/on-white-72.png",
