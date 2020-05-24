@@ -10,18 +10,18 @@ export class NotificationsService {
   ) { }
 
   success(message: string, title?: string) {
-    this.toastr.success(message, title);
+    // this.toastr.success(message, title);
   }
 
   warning(message: string, title?: string) {
-    this.toastr.warning(message, title);
+    // this.toastr.warning(message, title);
   }
 
   error(message: string, title?: string) {
-    this.toastr.danger(message, title);
+    // this.toastr.danger(message, title);
   }
 
   info(message: string, title?: string) {
-    this.toastr.info(message, title);
+    // this.toastr.info(message, title);
   }
 }
