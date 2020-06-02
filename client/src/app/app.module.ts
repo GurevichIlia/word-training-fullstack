@@ -20,6 +20,7 @@ import { NbListModule, NbThemeModule, NbToastrModule, NbMenuModule, NbSidebarMod
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 @Injectable()
 export class MyHammerConfig extends HammerGestureConfig {
@@ -61,6 +62,7 @@ export class MyHammerConfig extends HammerGestureConfig {
 
   ],
   providers: [
+    {provide: LocationStrategy, useClass: HashLocationStrategy},
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptorService, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ServerErrorInterceptor, multi: true },
 
