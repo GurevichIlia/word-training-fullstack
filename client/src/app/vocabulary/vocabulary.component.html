@@ -6,10 +6,10 @@
 
     <!-- <h3>Add your words here<button (click)="getWordsFromText()" class="purpleButton" type="submit" nbButton size="small">Parse</button>
     </h3>
-    <textarea [formControl]="wordsList"  nbInput fullWidth placeholder="Add your words here"></textarea>
+    <textarea [formControl]="wordsList"  nbInput fullWidth placeholder="Add your words here"></textarea> -->
 
     <button (click)="openWordModal('Add word')" class="purpleButton" type="submit" nbButton size="small">Add
-      word</button> -->
+      word</button>
     <app-search [filterValue]="filterValue" (addWord)="getActionFromChildren($event)"></app-search>
   </nb-card-header>
 
