@@ -2,7 +2,7 @@ import { ApiWordsService } from '../../shared/services/api/api-words.service';
 import { GeneralState } from '../../general.state';
 import { Injectable } from '@angular/core';
 import { WordTrainingService } from '../../word-training/word-training.service';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Word } from '../../shared/interfaces';
 
 @Injectable({
@@ -30,4 +30,14 @@ export class TrainResultService {
     const allWords = this.generalState.getUserWords();
     return this.wordApiService.updateWords(allWords, this.generalState.getCurrentLearningLanguage());
   }
+
+  getTrainedGroup() {
+    return this.trainingService.getSelectedGroupForTraining()
+      .pipe(
+        switchMap(id => {
+          return this.trainingService.getWordGroups().pipe(map(groups => groups.find(group => group._id === id)));
+        }));
+  }
+
+
 }

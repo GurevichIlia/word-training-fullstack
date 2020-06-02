@@ -1,8 +1,8 @@
-import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Language } from '../../interfaces';
 import { map, shareReplay } from 'rxjs/operators';
+import { Language } from '../../interfaces';
 
 export let BASE_URL;
 
@@ -24,7 +24,7 @@ export class ApiLanguagesService {
 
   getCurrentLanguage$() {
     // tslint:disable-next-line: max-line-length
-    return this.http.get<{ currentLang: Language }>(`${BASE_URL}/api/languages/getCurrentLanguage`).pipe(map(({ currentLang }) => currentLang), shareReplay(1));
+    return this.http.get<{ currentLang: Language }>(`${BASE_URL}/api/languages/getCurrentLanguage`).pipe(map(({ currentLang }) => currentLang), shareReplay());
   }
 
   getUserLanguages(): Observable<Language[]> {

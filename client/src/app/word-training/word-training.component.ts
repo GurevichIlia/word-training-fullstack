@@ -1,6 +1,6 @@
 import { NotificationsService } from './../shared/services/notifications.service';
 import { WordTrainingService } from './word-training.service';
-import { Component, OnInit, OnDestroy} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, Observable, BehaviorSubject, combineLatest, of } from 'rxjs';
 
 
@@ -46,7 +46,9 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
     this.getCurrentTrainingWord();
 
     this.wordGroups$ = this.wordTrainingService.getWordGroups()
-      .pipe(tap(groups => console.log('GROUPS', groups)));
+      .pipe(
+        tap(groups => console.log('GROUPS', groups))
+      );
 
     // this.getUserWords();
     // this.favoriteMode.valueChanges.pipe(takeUntil(this.unsubscribe$)).subscribe((value: string) => {
@@ -58,6 +60,12 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
     //   }
     // });
   }
+
+  startTrain() {
+    this.startAnimation('bounceInDown');
+    this.start = true;
+  }
+
 
   getCurrentTrainingWord() {
     this.currentTrainingWord$ = combineLatest(
@@ -89,12 +97,6 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
     this.nextWord();
     this.setWordKnowledgeLevel(payload.wordId, payload.level);
   }
-
-  onStart() {
-    this.startAnimation('bounceInDown');
-    this.start = true;
-  }
-
 
   nextWord() {
     this.startAnimation('bounceInDown');

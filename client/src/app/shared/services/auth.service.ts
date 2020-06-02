@@ -22,7 +22,7 @@ export class AuthService {
     private router: Router,
   ) {
 
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('words-token')) {
       this.setIsAuthenticated(true);
       this.router.navigate(['/vocabulary']);
     } else {
@@ -41,7 +41,7 @@ export class AuthService {
 
   logOut() {
     this.setIsAuthenticated(false);
-    this.localStorage.removeItem('token');
+    this.localStorage.removeItem('words-token');
     this.router.navigate(['/login']);
   }
 

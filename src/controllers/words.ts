@@ -2,14 +2,13 @@ import { Request, Response } from "express";
 import errorHandler from "../utils/errorHandler";
 import Word from "../Models/Word";
 import { WordModel, UserModel } from "../interfaces";
-import User from "../Models/User";
 
 export class WordsController {
     public getAllWords = async (req: Request, res: Response) => {
         try {
             const user = req.user as { _id: string, email: string }
             const words = await Word.find({
-                language: req.params.languageId,
+                language: req.query.languageId,
                 user: user._id
             });
 
@@ -32,7 +31,7 @@ export class WordsController {
                 word: req.body.word,
                 translation: req.body.translation,
                 isFavorite: req.body.isFavorite,
-                language: req.params.languageId,
+                language: req.query.languageId,
                 user: req.user
             }).save();
             res.status(201).json(newWord);
@@ -55,7 +54,7 @@ export class WordsController {
             await Promise.all(promises);
 
             const updatedWords = await Word.find({
-                language: req.params.languageId,
+                language: req.query.languageId,
                 user: user._id
             });
 

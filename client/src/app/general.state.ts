@@ -23,7 +23,7 @@ export class GeneralState {
   }];
 
   private readonly currentLearningLanguage$ = new BehaviorSubject<Language>(null);
-  private readonly quantityWords$ = new BehaviorSubject<number>(null);
+  private readonly quantityAllWords$ = new BehaviorSubject<number>(null);
   private readonly userWords$ = new BehaviorSubject<Word[]>(null);
   private readonly userWordsGroups$ = new BehaviorSubject<WordGroup[]>(this.defaultGroups);
 
@@ -72,11 +72,11 @@ export class GeneralState {
   }
 
   setQuantityWords$(value: number) {
-    this.quantityWords$.next(value);
+    this.quantityAllWords$.next(value);
   }
 
   getQuantityWords$() {
-    return this.quantityWords$.asObservable();
+    return this.quantityAllWords$.asObservable();
   }
 
   setSelectedGroupForTraining(groupId: string) {

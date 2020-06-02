@@ -1,6 +1,13 @@
 <nb-card style="height: 100%" *ngIf="wordsFiltredByGroup$ | async as words; else loader">
 
+
+
   <nb-card-header>
+
+    <h3>Add your words here<button (click)="getWordsFromText()" class="purpleButton" type="submit" nbButton size="small">Parse</button>
+    </h3>
+    <textarea [formControl]="wordsList"  nbInput fullWidth placeholder="Add your words here"></textarea>
+
     <button (click)="openWordModal('Add word')" class="purpleButton" type="submit" nbButton size="small">Add
       word</button>
     <app-search [filterValue]="filterValue" (addWord)="getActionFromChildren($event)"></app-search>
@@ -75,8 +82,8 @@
     </nb-card-body>
     <nb-card-footer class="wordDialogFooter">
       <button nbButton status="danger" (click)="groupModal.close()">Cancel</button>
-      <button *ngIf="titleForModal === 'Add group'" nbButton status="success" (click)="createNewGroup()">Submit</button>
-      <button *ngIf="titleForModal === 'Edit group'" nbButton status="success">Update</button>
+      <button *ngIf="titleForModal === 'Add group'" nbButton (click)="createNewGroup()">Submit</button>
+      <button *ngIf="titleForModal === 'Edit group'" nbButton s>Update</button>
     </nb-card-footer>
   </nb-card>
 </ng-template>

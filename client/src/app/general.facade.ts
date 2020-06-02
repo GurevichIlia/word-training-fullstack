@@ -50,6 +50,7 @@ export class GeneralFacade {
       );
   }
 
+
   getCurrentLanguage$() {
     if (!this.generalState.getCurrentLearningLanguage()) {
       this.apiLanguageService.getCurrentLanguage$()

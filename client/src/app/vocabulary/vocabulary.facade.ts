@@ -1,13 +1,13 @@
-import { WordGroup } from 'src/app/shared/interfaces';
-import { GeneralFacade } from 'src/app/general.facade';
-import { ApiWordsService } from './../shared/services/api/api-words.service';
-import { BehaviorSubject, of, Observable, combineLatest } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { combineLatest, Observable, of } from 'rxjs';
+import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { GeneralFacade } from 'src/app/general.facade';
 import { GeneralState } from '../general.state';
-import { startWith, switchMap, map, tap, filter } from 'rxjs/operators';
 import { Word } from '../shared/interfaces';
-import { AbstractControl } from '@angular/forms';
+import { ApiWordsService } from './../shared/services/api/api-words.service';
 
+export const ALL_WORDS = '1';
+export const FAVORITES = '2';
 @Injectable({
   providedIn: 'root'
 })
@@ -29,12 +29,11 @@ export class VocabularyFacade {
   }
 
   getUserWordsFiltredByGroup(selectedGroup$: Observable<string>, searchValue$: Observable<string>) {
-    return combineLatest([selectedGroup$.pipe(startWith('1')), searchValue$.pipe(startWith(''))])
+    return combineLatest([selectedGroup$.pipe(startWith(ALL_WORDS)), searchValue$.pipe(startWith(''))])
       .pipe(
         switchMap(([groupId, searchValue]) => {
-          const All_GROUPS = '1';
-          const FAVORITES = '2';
-          if (groupId === All_GROUPS) {
+
+          if (groupId === ALL_WORDS) {
 
             return this.filterBySearcValue(searchValue, this.getAllUserWords$());
 
@@ -76,14 +75,14 @@ export class VocabularyFacade {
   }
 
   getWordsGroups$() {
-    return this.generalState.getWordsGroups$()
+    return this.generalState.getWordsGroups$();
 
   }
 
   filterWordsByFavorite(allWords: Observable<Word[]>) {
     return allWords.pipe(
       map(words => words.filter(word => word.isFavorite))
-    )
+    );
   }
 
   addNewWord(word: Word) {
@@ -114,5 +113,40 @@ export class VocabularyFacade {
   createWordGroup(name: string) {
 
     return of([])
+  }
+
+  updateWord(word: Word) {
+    const words = this.generalState.getUserWords().map(existWord => existWord._id === word._id ? { ...existWord, ...word } : existWord);
+
+    this.generalState.setUserWords(words);
+  }
+
+  parseText(text: string) {
+
+    for (let i = 0; i < text.length; i++) {
+      const letter = text[i];
+      if (letter === '{') {
+        debugger
+        const start = i > 9 ? (i - 4) : (i - 3)
+        const cutted = text.slice(i, text.indexOf('}'));
+        console.log(cutted);
+      }
+      // const line = text.substr(text.indexOf(i.toString()), text.indexOf((i + 1).toString()));
+
+    }
+    console.log(text)
+
+    // const splited = text.split(/\n/g).map(stringFromText => {
+    //   const newString = stringFromText.substr(stringFromText.indexOf('{'), stringFromText.indexOf('}'))
+    //   const cutString = newString.slice(1, -1);
+    //   const array = cutString.split(',').map(val => {
+    //     const newval = val.split(':');
+    //     return { [newval[0].replace('"', '')]: newval[1] };
+    //   });
+    //   return array
+    // });
+    // console.log(splited);
+
+
   }
 }

@@ -1,7 +1,6 @@
-import { takeUntil, startWith, switchMap, take, finalize } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { VocabularyService } from './../../../vocabulary/vocabulary.service';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { startWith, take, takeUntil } from 'rxjs/operators';
 import { GeneralFacade } from 'src/app/general.facade';
 
 @Component({
@@ -30,14 +29,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.generaFacade.getUserWordsFromServer()
       .pipe(
         take(1),
-        finalize(() => this.isShowMainScreen$.next(false)),
         takeUntil(this.subscription$)
 
       ).subscribe(() => console.log('USER WORD GOT'));
   }
-
-
-
 
 
   ngOnDestroy() {

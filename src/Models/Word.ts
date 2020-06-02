@@ -22,7 +22,7 @@ const wordSchema = new Schema({
     },
     assignedGroups: {
         type: Array,
-        default: ['1','2']
+        default: ['1']
     },
     language: {
         ref: "languages",

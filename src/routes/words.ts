@@ -12,32 +12,29 @@ export class WordsRoutes {
 
     routes() {
         this.router.get(
-            "/:languageId",
+            "/getAllWords",
             passport.authenticate("jwt", { session: false }),
             this.wordsController.getAllWords
         );
-        // this.router.get(
-        //     "/getWordById",
-        //     passport.authenticate("jwt", { session: false }),
-        //     this.wordsController.editWordById
-        // );uuu
+
         this.router.post(
-            "/:languageId",
+            "/createWord",
             passport.authenticate("jwt", { session: false }),
             this.wordsController.createNewWord
         );
 
         this.router.post(
-            "/updateWords/:languageId",
+            "/updateWords",
             passport.authenticate("jwt", { session: false }),
             this.wordsController.updateWords
         );
 
         this.router.patch(
-            "/editWord/:languageId",
+            "/editWord",
             passport.authenticate("jwt", { session: false }),
             this.wordsController.editWordById
         );
+
 
         this.router.delete(
             "/deleteWord/:wordId",

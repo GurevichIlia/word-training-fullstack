@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           if (res) {
             console.log('AFTER LOGIN', res);
             this.authService.setIsAuthenticated(true);
-            this.localStorageService.setItem('token', res.token);
+            this.localStorageService.setItem('words-token', res.token);
             if (res.currentLanguage) {
               this.generalFacade.setCurrentLanguage(res.currentLanguage);
               this.router.navigate(['vocabulary']);

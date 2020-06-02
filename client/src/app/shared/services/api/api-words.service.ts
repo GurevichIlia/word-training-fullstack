@@ -16,17 +16,17 @@ export class ApiWordsService {
   ) { }
 
   getWordsFromServer(langId: string): Observable<Word[]> {
-    return this.http.get<Word[]>(`${BASE_URL}/api/vocabulary/${langId}`);
+    return this.http.get<Word[]>(`${BASE_URL}/api/vocabulary/getAllWords?languageId=${langId}`);
   }
 
   addWord(word: Word, language: Language): Observable<Word> {
 
-    return this.http.post<Word>(`${BASE_URL}/api/vocabulary/${language._id}`, word);
+    return this.http.post<Word>(`${BASE_URL}/api/vocabulary/createWord?languageId=${language._id}`, word);
   }
 
   editWord(word: Word, language: Language): Observable<Word> {
 
-    return this.http.patch<Word>(`${BASE_URL}/api/vocabulary/editWord/${language._id}`, word);
+    return this.http.patch<Word>(`${BASE_URL}/api/vocabulary/editWord?languageId=${language._id}`, word);
   }
 
   deleteWordFromServer(wordId: string): Observable<Word[]> {
@@ -44,11 +44,11 @@ export class ApiWordsService {
   }
 
   getAllWordsGroups(language: Language) {
-    return this.http.get<WordGroup[]>(`${BASE_URL}/api/word-group/getAll/${language._id}`);
+    return this.http.get<WordGroup[]>(`${BASE_URL}/api/word-group/getAll?languageId=${language._id}`);
   }
 
   updateWords(words: Word[], language: Language) {
-    return this.http.post<Word[]>(`${BASE_URL}/api/vocabulary/updateWords/${language._id}`, { words });
+    return this.http.post<Word[]>(`${BASE_URL}/api/vocabulary/updateWords?languageId=${language._id}`, { words });
 
   }
 }

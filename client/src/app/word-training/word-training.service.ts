@@ -1,9 +1,10 @@
-import { switchMap } from 'rxjs/operators';
-import { GeneralState } from './../general.state';
-import { VocabularyService } from './../vocabulary/vocabulary.service';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
+import { startWith, switchMap } from 'rxjs/operators';
 import { Word } from '../shared/interfaces';
+import { ALL_WORDS, FAVORITES } from '../vocabulary/vocabulary.facade';
+import { GeneralState } from './../general.state';
+import { VocabularyFacade } from './../vocabulary/vocabulary.facade';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ export class WordTrainingService {
   private trainingResult = new BehaviorSubject<Word[]>([]);
   currentTrainingResult$ = this.trainingResult.asObservable();
   constructor(
-    private generalState: GeneralState
+    private generalState: GeneralState,
+    private vocabularyFacade: VocabularyFacade
   ) {
   }
   getUserWords() {
@@ -85,13 +87,26 @@ export class WordTrainingService {
   getFiltredWordsByGroup() {
     return combineLatest(
       [
-        this.getUserWords(),
+        this.getUserWords().pipe(startWith([] as Word[])),
         this.getSelectedGroupForTraining()
       ]
     )
       .pipe(
         switchMap(([words, selectedGroupForTraining]) => {
-          return of(words.filter(word => word.assignedGroups.includes(selectedGroupForTraining)));
+
+          if (selectedGroupForTraining === ALL_WORDS) {
+
+            return of(words);
+
+          } else if (selectedGroupForTraining === FAVORITES) {
+
+            return this.vocabularyFacade.filterWordsByFavorite(of(words));
+
+          } else {
+
+            return of(words.filter(word => word.assignedGroups.includes(selectedGroupForTraining)))
+          }
+
         })
       );
   }

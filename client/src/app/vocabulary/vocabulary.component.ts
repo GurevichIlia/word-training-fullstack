@@ -3,12 +3,11 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
-import { shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { Word, WordGroup } from './../shared/interfaces';
 import { AskQuestionComponent } from './../shared/modals/ask-question/ask-question.component';
 import { NotificationsService } from './../shared/services/notifications.service';
-import { VocabularyFacade } from './vocabulary.facade';
-
+import { ALL_WORDS, VocabularyFacade } from './vocabulary.facade';
 
 
 
@@ -30,15 +29,16 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   wordModal: NbDialogRef<any>;
   editWordOldValue: Word;
 
-  allWords$: Observable<Word[]>;
+  // allWords$: Observable<Word[]>;
   wordsFiltredByGroup$: Observable<Word[]>;
   wordGroups$: Observable<WordGroup[]>;
-  selectedGroup$ = new BehaviorSubject<string>('1');
+  selectedGroup$ = new BehaviorSubject<string>(ALL_WORDS);
   groupName = new FormControl('', Validators.required);
   groupModal: NbDialogRef<any>;
 
   selectedWordsForAssignGroups$ = new BehaviorSubject<string[]>([]);
   loader = false;
+  wordsList = this.fb.control('');
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -48,25 +48,35 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.createNewWordForm();
 
-    this.allWords$ = this.vocabularyFacade.getAllUserWords$()
-      .pipe(
-        shareReplay()
-      );
+    this.getWordsFilteredByGroup();
 
+    this.getWordsGroups();
 
+    // this.wordsList.valueChanges.subscribe(value => this.getWordsFromText());
+  }
+
+  // getAllWords() {
+  //   this.allWords$ = this.vocabularyFacade.getAllUserWords$()
+  //     .pipe(
+  //       shareReplay()
+  //     );
+  // }
+
+  getWordsFilteredByGroup() {
     this.wordsFiltredByGroup$ = this.vocabularyFacade.getUserWordsFiltredByGroup(
       this.selectedGroup$.asObservable(),
       this.filterValue.valueChanges
     );
+  }
+
+  getWordsGroups() {
 
     this.wordGroups$ = this.vocabularyFacade.getWordsGroups$();
 
-
   }
 
-  createNewWordForm() {
+  wordFormInitial() {
     this.newWordForm = this.fb.group({
       word: ['', Validators.required],
       translation: ['', Validators.required],
@@ -102,6 +112,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   updateWord(oldValue: Word, editeWord: Word) {
     // this.vocabularyFacade.onEdit(editeWord);
     if (editeWord) {
+      this.vocabularyFacade.updateWord(editeWord);
       this.vocabularyFacade.editWord(editeWord)
         .pipe(
           takeUntil(this.subscription$)
@@ -109,7 +120,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
         .subscribe(editedWord => {
           if (editedWord) {
             this.closeWordModal();
-            this.vocabularyFacade.updateWordList();
+            // this.vocabularyFacade.updateWordList();
           }
         }, err => {
           // this.vocabularyFacade.onEdit(oldValue);
@@ -172,7 +183,9 @@ export class VocabularyComponent implements OnInit, OnDestroy {
       } else {
         return EMPTY;
       }
-    })).pipe(takeUntil(this.subscription$))
+    })).pipe(
+      takeUntil(this.subscription$)
+    )
       .subscribe(res => {
         this.notification.success('', `Word ${word.word} removed`);
         this.vocabularyFacade.updateWordList();
@@ -184,6 +197,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   }
 
   openWordModal(title: string) {
+    this.wordFormInitial();
     this.titleForModal = title;
     this.wordModal = this.dialogService.open(this.wordModalRef);
   }
@@ -228,6 +242,12 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     // this.selectedWordsForAssignGroups$.next(selectedProduct);
     console.log('SELECTED WORDS FOR ASSIGN GROUPS', this.selectedWordsForAssignGroups$.getValue());
   }
+
+  getWordsFromText() {
+    this.vocabularyFacade.parseText(this.wordsList.value);
+
+  }
+
 
   unsubscribe() {
     this.subscription$.next();

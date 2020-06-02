@@ -19,7 +19,7 @@ export class TrainResultComponent implements OnInit, OnDestroy {
   // unknownWordsQuantity = 0;
   // trainedWords: Word[];
   // unknownWords: Word[];
-
+  trainedGroup$ = this.trainResultService.getTrainedGroup();
   constructor(
     private trainResultService: TrainResultService,
     private router: Router
