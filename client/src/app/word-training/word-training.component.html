@@ -1,28 +1,36 @@
 <div [nbSpinner]="loadingSpinner" nbSpinnerStatus="warning">
-  <div class="row align-items-center">
-    <!-- <nb-select [formControl]="groupForTraining" class="mb-3 col-1" placeholder="Select mode">
+  <div class="container">
+    <div class="row align-items-center">
+      <!-- <nb-select [formControl]="groupForTraining" class="mb-3 col-1" placeholder="Select mode">
       <nb-option [value]="group._id" *ngFor="let group of wordGroups$ | async">{{group.name}}-{{group.wordQuantity}}
       </nb-option> -->
-    <div class="col-12 text-center">
-      <app-groups *ngIf="!start" [wordGroups]="wordGroups$ | async" (selectGroup)="setGroupForTraining($event)">
+      <div class="col-12 text-center">
 
-      </app-groups>
-    </div>
+        <div class="instruction-title"  *ngIf="!start">
+          <span> Select group you want to train</span>
+        </div>
 
-    <!-- <nb-option *ngIf="unknownMode" value="unknown"> Unknown - {{userRandomWords.length }}</nb-option> -->
-    <!-- </nb-select> -->
-    <!-- <div class="col-3" *ngIf="start">
+        <app-groups *ngIf="!start" [wordGroups]="wordGroups$ | async" (selectGroup)="setGroupForTraining($event)">
+
+        </app-groups>
+      </div>
+
+      <!-- <nb-option *ngIf="unknownMode" value="unknown"> Unknown - {{userRandomWords.length }}</nb-option> -->
+      <!-- </nb-select> -->
+      <!-- <div class="col-3" *ngIf="start">
       <div class="row">
         <span class="col-12">Right:<strong>{{knownWords}}</strong></span>
         <span class="col-12">Wrong:<strong>{{notknownWords}}</strong></span>
       </div>
     </div> -->
 
+    </div>
   </div>
+
   <!-- <app-instructions *ngIf="!start">
 
       </app-instructions> -->
-  <div class="text-center" *ngIf="!start">
+  <div class="text-center start-btn" *ngIf="!start">
     <button type="buttom" (click)="startTrain()" class="col-10 mb-2" nbButton
       style="background-color: darkorchid; border-color: darkorchid">
       Start

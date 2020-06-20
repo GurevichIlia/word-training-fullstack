@@ -1,3 +1,5 @@
+@import '../../styles/variables.scss';
+
 .wordDialogBox {
   width: 340px;
 }
@@ -30,4 +32,13 @@
 .menuitem:hover {
   background-color: whitesmoke;
   cursor: pointer;
+}
+
+.modal-header {
+  background-color: whitesmoke !important;
+  margin-bottom: 20px;
+
+  h4 {
+    color: $titleColor !important
+  }
 }

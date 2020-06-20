@@ -4,7 +4,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounce, debounceTime, tap } from 'rxjs/operators';
 
 import { AuthService } from '../../shared/services/auth.service';
 @Component({
@@ -14,11 +14,8 @@ import { AuthService } from '../../shared/services/auth.service';
 })
 export class RegistrationComponent implements OnInit, OnDestroy {
   registrationForm: FormGroup;
-  passwordIncorrect: boolean;
-  passwordInputColor = '';
-  emailInputColor = '';
-  nameInputColor = '';
-  emailError = '';
+  registrationError = false;
+  isPasswordsDontMatch = false;
   unsubscribe$ = new Subject();
   constructor(
     private authService: AuthService,
@@ -34,15 +31,15 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       password: ['', Validators.required],
       confPassword: ['', Validators.required]
     });
+
+    this.checkPasswordsToMatching();
   }
 
   get email() {
     return this.registrationForm.get('email');
   }
 
-  get registrForm() {
-    return this.registrationForm;
-  }
+
   get password() {
     return this.registrationForm.get('password');
   }
@@ -52,43 +49,58 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   goToLogin() {
-    this.router.navigate(['authorization/login']);
+    this.router.navigate(['/login']);
+  }
+
+  checkPasswordsToMatching() {
+    this.registrationForm.valueChanges
+      .pipe(
+        debounceTime(1000),
+        tap(formValue => {
+          if (formValue.password && formValue.confPassword) {
+            this.isPasswordsDontMatch = !this.authService.isPasswordsMatch(formValue.password, formValue.confPassword)
+          }
+        }
+        ),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe();
   }
 
   createUser() {
-    if (this.registrationForm.valid) {
-      if (this.authService.isPasswordsMatch(this.password.value, this.confirmPassword.value)) {
-        this.authService.registration(this.registrationForm.value)
-          .pipe(takeUntil(this.unsubscribe$))
-          .subscribe(user => {
-            if (user) {
-              this.authService.setCurrentUser(user);
-              this.goToLogin();
-            }
-          }, err => {
-            this.notifications.error(err.error.message, 'Error');
-          });
-      } else {
-        this.notifications.warning('', 'Passwords do not match');
-
-      }
-    } else {
-      this.notifications.warning('', 'Form is invalid');
-
+    if (this.registrationForm.invalid) {
+      this.registrationForm.markAllAsTouched();
+      return;
     }
 
-    // this.authService.registration(this.registrForm.value).then(error => {
-    //   if (error) {
-    //     if (error.code === 'auth/email-already-in-use') {
-    //       this.emailInputColor = 'danger';
-    //       this.emailError = error.message;
-    //       this.changeDetector.detectChanges();
-    //     }
-    //   }
 
-    // });
-    // console.log('work!');
+    this.authService.registration(this.registrationForm.value)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(user => {
+        if (user) {
+          this.authService.setCurrentUser(user);
+          this.goToLogin();
+        }
+      }, err => {
+
+        if (err.error.message === 'This email is already exist') {
+          this.registrationError = true;
+        }
+      });
   }
+
+  // this.authService.registration(this.registrForm.value).then(error => {
+  //   if (error) {
+  //     if (error.code === 'auth/email-already-in-use') {
+  //       this.emailInputColor = 'danger';
+  //       this.emailError = error.message;
+  //       this.changeDetector.detectChanges();
+  //     }
+  //   }
+
+  // });
+  // console.log('work!');
+
 
 
 

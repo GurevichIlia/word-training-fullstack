@@ -110,4 +110,9 @@ export class WordTrainingService {
         })
       );
   }
+
+
+  sortWordsForTraining(words: Word[]) {
+
+  }
 }

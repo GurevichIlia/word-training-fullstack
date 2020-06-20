@@ -16,9 +16,6 @@ const vocabularyRoutes: Routes = [
 @NgModule({
   declarations: [
     VocabularyComponent,
-    WordComponent,
-    WordListComponent,
-    SearchComponent,
 
   ],
   imports: [

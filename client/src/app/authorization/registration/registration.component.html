@@ -1,33 +1,49 @@
 <h3 class="text-center">Registration</h3>
 
+<div class="error-box" *ngIf="registrationError">
+  <span class="error-message ">This email already exists</span>
+</div>
+
 <form [formGroup]="registrationForm" (ngSubmit)="createUser()" class="text-center">
-  <input formControlName="nickName" class="mb-2" type="text" nbInput fullWidth [status]="nameInputColor"
-    placeholder="Name" required>
+  <input formControlName="nickName" class="mb-2" type="text" nbInput fullWidth placeholder="Name" required>
+  <ng-container *ngIf="registrationForm.get('nickName').touched && registrationForm.get('nickName').hasError">
+    <span class="error-message" *ngIf="registrationForm.get('nickName').hasError('required') ">
+      Name should not be empty</span>
+  </ng-container>
+
+
   <div class="mb-2">
-    <input formControlName="email" type="text" nbInput fullWidth [status]="emailInputColor" placeholder="Email">
-    <span style="font-size: 12px; color: red" *ngIf="emailError !== ''">{{emailError}}</span>
+    <input formControlName="email" type="text" nbInput fullWidth placeholder="Email">
+    <ng-container *ngIf="registrationForm.get('email').touched && registrationForm.get('email').hasError">
+      <span class="error-message" *ngIf="registrationForm.get('email').hasError('required') ">
+        Email should not be empty</span>
+      <span class="error-message" *ngIf="registrationForm.get('email').hasError('email')">
+        Email format is not correct</span>
+    </ng-container>
   </div>
 
 
   <div class="mb-1">
-    <input formControlName="password" type="password" nbInput fullWidth [status]="passwordInputColor"
+    <input formControlName="password" [ngClass]="{'error': isPasswordsDontMatch}" type="password" nbInput fullWidth
       placeholder="Password">
-    <span style="font-size: 12px; color: red" *ngIf="passwordIncorrect">Passwords do not
+    <span class="error-message"
+      *ngIf="registrationForm.get('password').touched && registrationForm.get('password').hasError('required')">
+      Password should not be empty</span>
+    <span class="error-message" *ngIf="isPasswordsDontMatch">Passwords do not
       match.</span>
   </div>
   <div class="mb-4">
-    <input formControlName="confPassword" type="password" nbInput fullWidth [status]="passwordInputColor"
+    <input formControlName="confPassword" [ngClass]="{'error': isPasswordsDontMatch}" type="password" nbInput fullWidth
       placeholder="Confirm password">
-    <span style="font-size: 12px; color: red" *ngIf="passwordIncorrect">Passwords do not
+    <span class="error-message" *ngIf="isPasswordsDontMatch">Passwords do not
       match.</span>
   </div>
 
-  <div class="row justify-content-center">
+  <div class="row justify-content-center mt-5">
 
-    <button type="submit" class="col-6 mb-2 purpleButton" nbButton
-      [disabled]="registrationForm.invalid || passwordIncorrect? 'true' : 'false'" >Submit</button>
-    <div class="col-12">
-      <span><a style="cursor: pointer" (click)="goToLogin()">Login</a></span>
+    <button type="submit" class="col-8 mb-2 confirm-btn" nbButton>Sign Up</button>
+    <div class="col-12 mt-2">
+      <span>Already have an account?<a style="cursor: pointer" (click)="goToLogin()"> Sign In</a></span>
     </div>
   </div>
-</form>>
+</form>

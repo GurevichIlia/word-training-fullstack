@@ -121,32 +121,23 @@ export class VocabularyFacade {
     this.generalState.setUserWords(words);
   }
 
-  parseText(text: string) {
+  parseText(oldWords: string) {
+    const language = this.generalState.getCurrentLearningLanguage();
 
-    for (let i = 0; i < text.length; i++) {
-      const letter = text[i];
-      if (letter === '{') {
-        debugger
-        const start = i > 9 ? (i - 4) : (i - 3)
-        const cutted = text.slice(i, text.indexOf('}'));
-        console.log(cutted);
-      }
-      // const line = text.substr(text.indexOf(i.toString()), text.indexOf((i + 1).toString()));
+    const words = JSON.parse(oldWords);
 
-    }
-    console.log(text)
+    const mapedWords = words.map(word =>
+      ({
+        word: word.word,
+        translation: word.translate,
+        language: language._id.trim(),
+        isFavorite: false,
+        levelKnowledge: 0,
+        assignedGroups: ['1']
+      }));
 
-    // const splited = text.split(/\n/g).map(stringFromText => {
-    //   const newString = stringFromText.substr(stringFromText.indexOf('{'), stringFromText.indexOf('}'))
-    //   const cutString = newString.slice(1, -1);
-    //   const array = cutString.split(',').map(val => {
-    //     const newval = val.split(':');
-    //     return { [newval[0].replace('"', '')]: newval[1] };
-    //   });
-    //   return array
-    // });
-    // console.log(splited);
-
-
+    console.log(mapedWords);
+    this.apiWords.addWords(mapedWords)
+      .subscribe();
   }
 }

@@ -2,15 +2,20 @@ import { Request, Response } from "express";
 import errorHandler from "../utils/errorHandler";
 import Word from "../Models/Word";
 import { WordModel, UserModel } from "../interfaces";
+import User from "../Models/User";
 
 export class WordsController {
-    public getAllWords = async (req: Request, res: Response) => {
+    public getAllWordsForCurrentUser = async (req: Request, res: Response) => {
         try {
-            const user = req.user as { _id: string, email: string }
-            const words = await Word.find({
-                language: req.query.languageId,
-                user: user._id
-            });
+            // const user = req.user as { _id: string, email: string }
+            // const words = await Word.find({
+            //     language: req.query.languageId,
+            //     user: user._id
+            // });
+
+            const user = await User.findOne({ _id: req.user }) as UserModel
+
+            const words = user.words.filter(word => word.language == req.query.languageId);
 
             res.status(200).json(words);
         } catch (error) {
@@ -25,40 +30,63 @@ export class WordsController {
     //     }
     // };
 
-    public createNewWord = async (req: Request, res: Response) => {
+    public createNewWordForUser = async (req: Request, res: Response) => {
         try {
+            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
             const newWord: WordModel = await new Word({
                 word: req.body.word,
                 translation: req.body.translation,
                 isFavorite: req.body.isFavorite,
                 language: req.query.languageId,
-                user: req.user
-            }).save();
-            res.status(201).json(newWord);
+            });
+
+
+            user.words.unshift(newWord)
+
+            const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
+            res.status(201).json({ newWord, updatedUser });
         } catch (error) {
             errorHandler(res, error);
         }
     };
 
-    public updateWords = async (req: Request, res: Response) => {
+    public addNewWords = async (req: Request, res: Response) => {
+        try {
+            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
+            const newWords = req.body.words
+            const words = await new Word().collection.insertMany(newWords);
+
+            user.words = [...user.words, ...words.ops]
+
+            const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
+
+            res.status(201).json(updatedUser?.words);
+        } catch (error) {
+            errorHandler(res, error);
+        }
+    }
+
+    public updateUserWords = async (req: Request, res: Response) => {
         try {
 
             const words = req.body.words as WordModel[];
-            console.log('WORDS FROM CLIENT', words)
-            const promises = words.map(async word => {
-                const updatedWord = await Word.findOneAndUpdate({ _id: word._id }, { $set: word })
-                return updatedWord
-            })
-            const user = req.user as { _id: string, email: string }
+            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
 
-            await Promise.all(promises);
+
+
+            // const promises = words.map(async word => {
+            //     const updatedWord = await Word.findOneAndUpdate({ _id: word._id }, { $set: word })
+            //     return updatedWord
+            // })
+            // // const user = req.user as { _id: string, email: string }
+
+            // await Promise.all(promises);
 
             const updatedWords = await Word.find({
                 language: req.query.languageId,
                 user: user._id
             });
 
-            console.log('UPDATED WORD', updatedWords)
             res.status(201).json(updatedWords);
         } catch (error) {
             errorHandler(res, error);
@@ -66,22 +94,38 @@ export class WordsController {
     };
 
 
-    public editWordById = async (req: Request, res: Response) => {
+    public editWordByIdForCurrentUser = async (req: Request, res: Response) => {
         try {
-            const editedWord = await Word.findOneAndUpdate(
-                { _id: req.body._id },
-                { $set: req.body },
-                { new: true }
-            )
+
+            const user = await User.findOne({ _id: req.user }) as UserModel;
+
+            const editedWord = req.body
+            console.log('EDITED WORD', editedWord)
+
+            user.words = user.words.map(word => {
+                return word._id == editedWord._id ? { ...word, ...editedWord } : word
+            })
+
+            const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
+            // const editedWord = await Word.findOneAndUpdate(
+            //     { _id: req.body._id },
+            //     { $set: req.body },
+            //     { new: true }
+            // )
             res.status(200).json(editedWord)
         } catch (error) {
             errorHandler(res, error);
         }
     };
 
-    public deleteWordById = async (req: Request, res: Response) => {
+    public deleteWordByIdForCurrentUser = async (req: Request, res: Response) => {
         try {
-            const deletedWord = await Word.findOneAndRemove({ _id: req.params.wordId })
+            const user = await User.findOne({ _id: req.user }) as UserModel;
+
+            const deletedWordIndex = user.words.findIndex(word => word._id.toString() == req.params.wordId)
+            const deletedWord = user.words.splice(deletedWordIndex, 1)
+            const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
+
             res.status(200).json({
                 word: deletedWord,
                 message: 'Removed'
@@ -91,6 +135,41 @@ export class WordsController {
         }
     };
 
+
+    public addWordsToGeneralList = async (req: Request, res: Response) => {
+        try {
+
+            const newWords: [] = req.body.words
+            const words = await new Word().collection.insertMany(newWords);
+
+
+            res.status(201).json(words);
+
+        } catch (error) {
+            errorHandler(res, error)
+        }
+    }
+
+    public getGeneralWords = async (req: Request, res: Response) => {
+        try {
+            const words = await Word.find({ language: req.query.languageId });
+            console.log('GENERAL WORDS', words)
+            res.status(200).json(words);
+        } catch (error) {
+            errorHandler(res, error)
+        }
+    }
+    // public deleteWordById = async (req: Request, res: Response) => {
+    //     try {
+    //         const deletedWord = await Word.findOneAndRemove({ _id: req.params.wordId })
+    //         res.status(200).json({
+    //             word: deletedWord,
+    //             message: 'Removed'
+    //         })
+    //     } catch (error) {
+    //         errorHandler(res, error);
+    //     }
+    // };
 }
 
 // this.router.get("words/getAllWords", this.wordsController);

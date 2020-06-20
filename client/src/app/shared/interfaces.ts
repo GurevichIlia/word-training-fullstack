@@ -9,7 +9,7 @@ export interface User {
 export interface Word {
   word: string;
   translation: string;
-  isFavorite: boolean;
+  isFavorite?: boolean;
   readonly _id?: string;
   knowen?: boolean;
   levelKnowledge?: number;

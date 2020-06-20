@@ -23,6 +23,10 @@ const routes: Routes = [
         path: 'train-result', loadChildren: () => import('../train-result/train-result.module').then(m => m.TrainResultModule),
         // canActivate: [WordsTrainGuard]
       },
+      {
+        path: 'general-words', loadChildren: () => import('../general-words/general-words.module').then(m => m.GeneralWordsModule),
+        // canActivate: [WordsTrainGuard]
+      },
       { path: '**', redirectTo: '/vocabulary' },
 
     ]

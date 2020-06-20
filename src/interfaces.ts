@@ -1,3 +1,4 @@
+
 import { Document } from "mongoose";
 
 export interface UserModel extends Document {
@@ -7,7 +8,8 @@ export interface UserModel extends Document {
       password: string;
       currentLanguage?: Language,
       userLanguages: Language[],
-      wordGroups: WordGroupModel[]
+      wordGroups: WordGroupModel[],
+      words: WordModel[]
 }
 
 export interface WordModel extends Document {
@@ -16,7 +18,8 @@ export interface WordModel extends Document {
       translate: string;
       isFavorite?: boolean;
       levelKnowledge: number;
-      assignedGroups: string[]
+      assignedGroups: string[];
+      language: string
 }
 
 export interface Language extends Document {

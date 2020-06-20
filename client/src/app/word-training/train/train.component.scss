@@ -1,3 +1,5 @@
+@import '../../../styles/variables.scss';
+
 .cardHeaderFront {
   background-color: #d16455 !important
 }
@@ -12,4 +14,22 @@
 .knowledge-level-panel {
   box-shadow: none;
   background-color: transparent;
+}
+
+.question-title {
+  span {
+    font-size: 16px;
+    color: $titleColor;
+  }
+
+  margin-bottom: 10px
+}
+
+.word-card {
+  min-height: 200px;
+  max-height: 250px;
+}
+
+.card-title {
+  color: $titleColor
 }

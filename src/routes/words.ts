@@ -14,34 +14,52 @@ export class WordsRoutes {
         this.router.get(
             "/getAllWords",
             passport.authenticate("jwt", { session: false }),
-            this.wordsController.getAllWords
+            this.wordsController.getAllWordsForCurrentUser
         );
 
         this.router.post(
             "/createWord",
             passport.authenticate("jwt", { session: false }),
-            this.wordsController.createNewWord
+            this.wordsController.createNewWordForUser
+        );
+
+        this.router.post(
+            "/addWords",
+            passport.authenticate("jwt", { session: false }),
+            this.wordsController.addNewWords
         );
 
         this.router.post(
             "/updateWords",
             passport.authenticate("jwt", { session: false }),
-            this.wordsController.updateWords
+            this.wordsController.updateUserWords
         );
 
         this.router.patch(
             "/editWord",
             passport.authenticate("jwt", { session: false }),
-            this.wordsController.editWordById
+            this.wordsController.editWordByIdForCurrentUser
         );
 
 
         this.router.delete(
             "/deleteWord/:wordId",
             passport.authenticate("jwt", { session: false }),
-            this.wordsController.deleteWordById
+            this.wordsController.deleteWordByIdForCurrentUser
         );
 
- 
+        this.router.post(
+            "/addWordsToGeneralList",
+            passport.authenticate("jwt", { session: false }),
+            this.wordsController.addWordsToGeneralList
+        );
+
+        this.router.get(
+            "/getGeneralWords",
+            passport.authenticate("jwt", { session: false }),
+            this.wordsController.getGeneralWords
+        );
+
+
     }
 }

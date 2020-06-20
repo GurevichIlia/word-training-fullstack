@@ -36,6 +36,7 @@ export class AuthService {
   }
 
   login(user: User): Observable<{ token: string, message: string, currentLanguage: Language }> {
+    user.email = user.email.toLowerCase();
     return this.http.post<{ token: string, message: string, currentLanguage: Language }>(`${BASE_URL}/api/auth/login`, user);
   }
 

@@ -28,7 +28,7 @@ export class GeneralFacade {
         retry(1),
         switchMap(currentLang => {
           if (currentLang) {
-            return this.apiWordsService.getWordsFromServer(currentLang._id);
+            return this.apiWordsService.getWordsFromServerForUser(currentLang._id);
           } else {
             this.router.navigate(['languages']);
             return of([]);
@@ -63,6 +63,49 @@ export class GeneralFacade {
     return this.generalState.getCurrentLearningLanguage$().pipe(filter(lang => lang !== null));
 
   }
+
+
+  // getUserWordsFromServer() {
+  //   return this.getCurrentLanguage$()
+  //     .pipe(
+  //       retry(1),
+  //       switchMap(currentLang => {
+  //         if (currentLang) {
+  //           return this.apiWordsService.getWordsFromServer(currentLang._id);
+  //         } else {
+  //           this.router.navigate(['languages']);
+  //           return of([]);
+  //         }
+  //       }),
+  //       catchError(err => {
+  //         this.notifications.error(err.message, err.error);
+  //         return throwError(err);
+  //       }),
+
+  //       // tap(words => this.generalService.setQuantityWords(words.length)),
+  //       tap(words => words ? this.generalState.setUserWords(words) : []),
+  //       tap(words => {
+  //         this.setWordsQuantity();
+  //         this.setQuantityWordsInGroups(words);
+  //       }
+  //       ),
+  //       tap(words => console.log('USER WORDS', words)),
+  //     );
+  // }
+
+
+  // getCurrentLanguage$() {
+  //   if (!this.generalState.getCurrentLearningLanguage()) {
+  //     this.apiLanguageService.getCurrentLanguage$()
+  //       .pipe(
+  //         take(1),
+  //         tap(lang => this.generalState.setCurrentLanguage(lang)
+  //         )).subscribe(() => console.log('LANG GOT'), err => console.log(err), () => console.log('COMPLETE LANG SUBS'));
+  //   }
+
+  //   return this.generalState.getCurrentLearningLanguage$().pipe(filter(lang => lang !== null));
+
+  // }
 
   setUserWords(words: Word[]) {
     this.generalState.setUserWords(words);

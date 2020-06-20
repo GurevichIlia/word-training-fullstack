@@ -26,6 +26,10 @@ const userSchema = new Schema({
             type: Array,
             default: []
       },
+      words: {
+            type: Array,
+            default: []
+      },
       userLanguages: {
             type: Array,
             default: []

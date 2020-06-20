@@ -15,13 +15,22 @@ export class ApiWordsService {
     private generalService: GeneralService
   ) { }
 
-  getWordsFromServer(langId: string): Observable<Word[]> {
+  getWordsFromServerForUser(langId: string): Observable<Word[]> {
     return this.http.get<Word[]>(`${BASE_URL}/api/vocabulary/getAllWords?languageId=${langId}`);
+  }
+
+  getGeneralWordsForAll(langId: string): Observable<Word[]> {
+    return this.http.get<Word[]>(`${BASE_URL}/api/vocabulary/getGeneralWords?languageId=${langId}`);
   }
 
   addWord(word: Word, language: Language): Observable<Word> {
 
     return this.http.post<Word>(`${BASE_URL}/api/vocabulary/createWord?languageId=${language._id}`, word);
+  }
+
+  addWords(words: Word[]): Observable<Word> {
+
+    return this.http.post<Word>(`${BASE_URL}/api/vocabulary/addWords`, { words });
   }
 
   editWord(word: Word, language: Language): Observable<Word> {

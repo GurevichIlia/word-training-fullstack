@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   errorMessage = '';
   animationState: string;
   subscription$ = new Subject();
+  isShowLoginError = false;
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -47,30 +48,38 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   login() {
     console.log(this.loginForm.value);
-    if (this.loginForm.valid) {
-      this.authService.login(this.loginForm.value)
-        .pipe(
-          takeUntil(this.subscription$)
-        )
-        .subscribe(res => {
-          if (res) {
-            console.log('AFTER LOGIN', res);
-            this.authService.setIsAuthenticated(true);
-            this.localStorageService.setItem('words-token', res.token);
-            if (res.currentLanguage) {
-              this.generalFacade.setCurrentLanguage(res.currentLanguage);
-              this.router.navigate(['vocabulary']);
-            } else {
-              this.router.navigate(['languages']);
 
-            }
-            this.notifications.success('', res.message);
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    this.authService.login(this.loginForm.value)
+      .pipe(
+        takeUntil(this.subscription$)
+      )
+      .subscribe(res => {
+        if (res) {
+          console.log('AFTER LOGIN', res);
+          this.authService.setIsAuthenticated(true);
+          this.localStorageService.setItem('words-token', res.token);
+          if (res.currentLanguage) {
+            this.generalFacade.setCurrentLanguage(res.currentLanguage);
+            this.router.navigate(['vocabulary']);
+          } else {
+            this.router.navigate(['languages']);
 
           }
-        }, err => {
-          this.notifications.error('', err.error.message);
-        });
-    }
+          this.notifications.success('', res.message);
+
+        }
+      }, err => {
+        if (err.error.message === 'Email is not found' || err.error.message === 'Password is not correct') {
+          this.isShowLoginError = true;
+        }
+        this.notifications.error('', err.error.message);
+      });
+
   }
 
   startAnimation(state) {

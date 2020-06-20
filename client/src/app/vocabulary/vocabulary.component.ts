@@ -48,6 +48,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.wordFormInitial();
 
     this.getWordsFilteredByGroup();
 
@@ -100,6 +101,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
             this.notification.success('', 'Successfully');
             this.closeWordModal();
             this.vocabularyFacade.updateWordList();
+            this.getWordsGroups();
 
           }
         }, err => this.notification.error('', err.message.error));
@@ -197,7 +199,6 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   }
 
   openWordModal(title: string) {
-    this.wordFormInitial();
     this.titleForModal = title;
     this.wordModal = this.dialogService.open(this.wordModalRef);
   }

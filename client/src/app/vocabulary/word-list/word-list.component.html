@@ -1,9 +1,19 @@
 <div #scrollframe *ngIf="words; else loader">
   <ng-container *ngIf="words.length !== 0 ; else empty">
-    <app-word *ngFor="let word of words  | slice:0:pageSize ; trackBy: trackWords; let i = index"
-      (action)="sendAction($event)" [word]="word">
-      <!-- <nb-checkbox [checked]="word.assignedGroups.includes(selectedGroup)"></nb-checkbox> -->
-    </app-word>
+
+    <div
+    class="search-results"
+    infiniteScroll
+    [infiniteScrollDistance]="2"
+    [infiniteScrollThrottle]="20"
+    (scrolled)="onScroll()"
+  >
+  <app-word *ngFor="let word of words ; trackBy: trackWords; let i = index"
+  (action)="sendAction($event)" [word]="word">
+  <!-- <nb-checkbox [checked]="word.assignedGroups.includes(selectedGroup)"></nb-checkbox> -->
+</app-word>
+</div>
+
 
   </ng-container>
   <ng-template #empty>

@@ -18,8 +18,13 @@ import { FooterComponent } from './components/footer/footer.component';
 import { AskQuestionComponent } from './modals/ask-question/ask-question.component';
 import { EditWordComponent } from './modals/edit-word/edit-word.component';
 import { ConvertToPercentPipe } from './pipes/convert-to-percent.pipe';
+import { ReverseArrayPipe } from './pipes/reverse-array.pipe';
+import { WordComponent } from '../vocabulary/word/word.component';
+import { WordListComponent } from '../vocabulary/word-list/word-list.component';
+import { SearchComponent } from '../vocabulary/search/search.component';
 
 
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 
 
@@ -30,7 +35,13 @@ import { ConvertToPercentPipe } from './pipes/convert-to-percent.pipe';
     GroupsComponent,
     HeaderComponent,
 
-    ConvertToPercentPipe
+    WordComponent,
+    WordListComponent,
+    SearchComponent,
+
+    ConvertToPercentPipe,
+
+    ReverseArrayPipe
   ],
   imports: [
     CommonModule,
@@ -55,7 +66,8 @@ import { ConvertToPercentPipe } from './pipes/convert-to-percent.pipe';
     MatCardModule,
     MatMenuModule,
     NbAccordionModule,
-    NbProgressBarModule
+    NbProgressBarModule,
+    InfiniteScrollModule
 
   ],
   exports: [
@@ -87,8 +99,13 @@ import { ConvertToPercentPipe } from './pipes/convert-to-percent.pipe';
     FooterComponent,
     GroupsComponent,
     HeaderComponent,
+    WordComponent,
+    WordListComponent,
+    SearchComponent,
 
-    ConvertToPercentPipe
+    ConvertToPercentPipe,
+    ReverseArrayPipe,
+    InfiniteScrollModule
 
 
   ],

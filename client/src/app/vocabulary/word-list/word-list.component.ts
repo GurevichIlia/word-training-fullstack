@@ -19,7 +19,9 @@ export class WordListComponent {
 
   @Output() action = new EventEmitter();
 
-
+  onScroll() {
+    console.log('qweqwe')
+  }
   sendAction({ action, payload }) {
     this.action.emit({ action, payload });
   }
