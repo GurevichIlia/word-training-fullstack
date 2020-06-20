@@ -1,0 +1,21 @@
+<div class=" d-flex justify-content-center logo">
+  <span class="mr-3">
+    <img src="../../../../assets/Photos/word-training-logo.png" width="auto" height="50px" alt="word-training">
+
+  </span>
+  <span class="mr-3">
+    <img src="../../../../assets/Photos/word-training.png" width="auto" height="50px" alt="word-training">
+
+  </span>
+
+</div>
+
+<app-toolbar [title]="'Change learning language: ' + (learningLanguage$ | async)?.name"
+  (click)="onChangeLearningLanguage()">
+  <i class="fa fa-arrow-right" aria-hidden="true"></i>
+</app-toolbar>
+
+
+<app-toolbar [title]="'Logout'" (click)="onLogOut()">
+  <i class="fa fa-sign-out" aria-hidden="true"></i>
+</app-toolbar>

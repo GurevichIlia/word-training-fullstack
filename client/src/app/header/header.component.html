@@ -1,11 +1,12 @@
-<div class="container">
-      <div class="row" *ngIf="isLoggedIn$ | async">
-            <div class="col-2 text-right" *ngIf="currentLanguage$ | async as language">
-                  <nb-user shape="round" [nbContextMenu]="items" [title]="language.name"
+<div class="container-fluid header">
+  <div class="row align-items-center h-100" *ngIf="isLoggedIn$ | async">
+    <div class="col-12" *ngIf="currentLanguage$ | async as language">
+      <span class="language-name">{{language.name}}:</span> <span class="words-quantity">{{ quantityWords$ | async}} words</span>
+      <!-- <nb-user shape="round" [nbContextMenu]="items" [title]="language.name"
                         [badgeText]="quantityWords$ | async" badgeStatus="success" size="medium"
-                        badgePosition="bottom end" [name]="user?.nickName"></nb-user>
+                        badgePosition="bottom end" [name]="user?.nickName"></nb-user> -->
 
-                  <!-- <div class="row">
+      <!-- <div class="row">
                         <div class="col-12">
                               <a [routerLink]="[ 'home/user-data']" outline status="accent" size="small">Vocabulary</a>
                               <a class="ml-2" [routerLink]="[ 'home/word-trainer']" outline status="accent"
@@ -14,8 +15,8 @@
                                     size="small">Language </a>
                         </div>
                   </div> -->
-            </div>
-            <!-- <div class="col-3">
+    </div>
+    <!-- <div class="col-3">
                   <nb-icon #Menu style="font-size: 35px" [nbContextMenu]="items" size="large" icon="menu-outline"></nb-icon>
                   <div class="row" style="justify-content: flex-end">
                         <div class="col-11">
@@ -28,5 +29,5 @@
             </div> -->
 
 
-      </div>
+  </div>
 </div>

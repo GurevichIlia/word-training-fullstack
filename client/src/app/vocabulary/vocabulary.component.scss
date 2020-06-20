@@ -1,5 +1,19 @@
 @import '../../styles/variables.scss';
 
+.main-content {
+  height: 100%;
+  margin-top: -15px;
+
+  nb-card-header {
+    z-index: 100;
+    position: sticky;
+    top: 0;
+    background-color: whitesmoke;
+    padding: 10px 15px 10px 15px;
+    text-align: center;
+  }
+}
+
 .wordDialogBox {
   width: 340px;
 }
@@ -41,4 +55,10 @@
   h4 {
     color: $titleColor !important
   }
+
+}
+
+.search {
+  width: 100%;
+  margin-left: 5px;
 }

@@ -1,10 +1,12 @@
+@import '../../../styles/variables.scss';
+
 form {
   margin-top: 40px;
 }
 
 .confirm-btn {
-  background-color: rgb(49, 190, 49) !important;
-  border-color: rgb(49, 190, 49) !important;
+  background-color: $purple !important;
+  border-color: $purple !important;
 
 }
 
@@ -21,4 +23,9 @@ form {
 
 .error {
   background-color: #ff000026 !important;
+}
+
+.login-title {
+  font-size: 30px;
+
 }

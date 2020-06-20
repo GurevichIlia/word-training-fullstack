@@ -15,9 +15,9 @@
         </nb-card-header>
         <nb-card-body>
 
-          <div style="width: 300px">
-            <h3 [ngStyle]="{'font-size': word?.word.length > 11 ? '30px' : '40px'}" class="text-center">
-              <i>{{word?.word}}</i></h3>
+          <div class="word">
+            <span [ngStyle]="{'font-size': word?.word.length > 11 ? '30px' : '35px'}">
+              {{word?.word}}</span>
 
           </div>
 
@@ -51,14 +51,14 @@
         'excellent': word.levelKnowledge == 5,
         'basic': word.levelKnowledge == 0
  }">
-          <span class="card-title">Translate</span>
+          <span class="card-title">Translation</span>
         </nb-card-header>
         <nb-card-body style="height: 100%">
-          <div style="width: 300px">
-            <h3 [ngStyle]="{'font-size': word?.translation.length > 11 ? '30px' : '40px'}" class="text-center">
-              <i>{{word?.translation}}
+          <div  class="word">
+            <span [ngStyle]="{'font-size': word?.translation.length > 11 ? '30px' : '35px'}" >
+              {{word?.translation}}
 
-              </i></h3>
+            </span>
           </div>
 
           <div>

@@ -1,3 +1,4 @@
+import { WordModel } from './../interfaces';
 import { UserModel, Language } from '../interfaces';
 import mongoose from 'mongoose'
 
@@ -28,11 +29,11 @@ const userSchema = new Schema({
       },
       words: {
             type: Array,
-            default: []
+            default: <WordModel[]>[]
       },
       userLanguages: {
             type: Array,
-            default: []
+            default: <Language[]>[]
       }
 
 })

@@ -176,7 +176,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   deleteWord(word: Word) {
     // tslint:disable-next-line: max-line-length
     const title = `Would you like to remove word ${word.word} ?`;
-    const result$ = this.dialogService.open(AskQuestionComponent, { context: { title }, hasBackdrop: false });
+    const result$ = this.dialogService.open(AskQuestionComponent, { context: { title }, hasBackdrop: true });
 
     result$.onClose.pipe(switchMap(res => {
       if (res) {
