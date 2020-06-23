@@ -1,3 +1,4 @@
+import { ApiWordsService } from './../shared/services/api/api-words.service';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, of, Observable } from 'rxjs';
 import { startWith, switchMap, map } from 'rxjs/operators';
@@ -17,7 +18,8 @@ export class WordTrainingService {
   currentTrainingResult$ = this.trainingResult.asObservable();
   constructor(
     private generalState: GeneralState,
-    private vocabularyFacade: VocabularyFacade
+    private vocabularyFacade: VocabularyFacade,
+    private wordsApiService: ApiWordsService
   ) {
   }
   getUserWords() {
@@ -178,6 +180,10 @@ export class WordTrainingService {
 
 
     }
+  }
+  updateWords() {
+    const allWords = this.generalState.getUserWords();
+    return this.wordsApiService.updateWords(allWords, this.generalState.getCurrentLearningLanguage());
   }
 
   sortWordsForTraining(words: Word[]) {

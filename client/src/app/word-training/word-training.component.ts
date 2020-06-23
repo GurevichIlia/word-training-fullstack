@@ -7,7 +7,7 @@ import { Subject, Observable, BehaviorSubject, combineLatest, of } from 'rxjs';
 
 import { Word, WordGroup } from '../shared/interfaces';
 import { Router } from '@angular/router';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-word-training',
@@ -26,6 +26,7 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
   currentTrainingWord$: Observable<Word>;
   wordGroups$: Observable<WordGroup[]>;
   priority = 0;
+  previousWord$: Observable<Word>;
   constructor(
     private wordTrainingService: WordTrainingService,
     private router: Router,
@@ -113,13 +114,14 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
     // } else {
     //   this.currentOrderIndex$.next(this.currentOrderIndex + 1);
     // }
-    this.getCurrentTrainingWord()
+    this.previousWord$ = this.currentTrainingWord$;
+    this.getCurrentTrainingWord();
 
   }
 
   prevWord() {
     this.startAnimation('bounceInLeft');
-
+    this.currentTrainingWord$ = this.previousWord$;
     // console.log('works');
     // if (this.currentOrderIndex === 0) {
     //   this.currentOrderIndex$.next(this.trainingWordsQuantity);
@@ -129,6 +131,13 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
 
   }
 
+  saveWordsTrainingProgress() {
+    this.wordTrainingService.updateWords()
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(res => console.log('WORDS AFTER UPDATE', res));
+  }
 
 
 
@@ -290,6 +299,7 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
     // Called once, before the instance is destroyed.
     // Add 'implements OnDestroy' to the class.
     // console.log(this.favoriteMode.value);
+    this.saveWordsTrainingProgress();
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
