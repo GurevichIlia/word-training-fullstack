@@ -1,5 +1,5 @@
-<div>
-  <nb-flip-card #flipCard [showToggleButton]="'false'" class="pr-3 pl-3">
+<div class="container">
+  <nb-flip-card #flipCard [showToggleButton]="'false'">
     <nb-card-front #flipCard>
       <nb-card class="word-card" [@wordCardAnimator]="animationState"
         (@wordCardAnimator.done)="onResetAnimationState()">

@@ -34,3 +34,11 @@ export interface WordGroupModel extends Document {
       shareForAll: boolean;
 }
 
+export interface GeneralWord extends Document{
+      readonly _id: number;
+      word: string;
+      translate: string;
+      assignedGroups: string[];
+      language: string    
+}
+

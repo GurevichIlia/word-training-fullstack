@@ -3,6 +3,7 @@ import errorHandler from "../utils/errorHandler";
 import Word from "../Models/Word";
 import { WordModel, UserModel } from "../interfaces";
 import User from "../Models/User";
+import GeneralWord from "../Models/GeneralWord";
 
 export class WordsController {
     public getAllWordsForCurrentUser = async (req: Request, res: Response) => {
@@ -69,25 +70,45 @@ export class WordsController {
     public updateUserWords = async (req: Request, res: Response) => {
         try {
 
-            const words = req.body.words as WordModel[];
-            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
+            const wordsToUpdate = req.body.words as WordModel[];
+
+            const user = await User.findOne({ _id: req.user }) as UserModel
+
+            const words = user.words.filter(word => word.language == req.query.languageId);
+
+            const updatedWords = wordsToUpdate.map(word => {
+
+                const findedWord = words.find(existWord => existWord.id === word.id);
+
+                if (findedWord) {
+                    return { ...findedWord, ...word }
+                } else {
+                    return word;
+                }
+
+            })
 
 
+            user.words = updatedWords as WordModel[]
 
-            // const promises = words.map(async word => {
-            //     const updatedWord = await Word.findOneAndUpdate({ _id: word._id }, { $set: word })
-            //     return updatedWord
-            // })
+            const updatedUser = await User.findOneAndUpdate({ _id: req.user }, { $set: user }, { new: true })
+
+
+            // const updatedWord = await Word.findOneAndUpdate({ _id: word._id }, { $set: word })
+            // return updatedWord
+
             // // const user = req.user as { _id: string, email: string }
 
-            // await Promise.all(promises);
+            // const test = await Promise.all(promises);
 
-            const updatedWords = await Word.find({
-                language: req.query.languageId,
-                user: user._id
-            });
+            // const updatedWords = await Word.find({
+            //     language: req.query.languageId,
+            //     user: user._id
+            // });
 
-            res.status(201).json(updatedWords);
+            // console.log()
+
+            res.status(201).json(updatedUser);
         } catch (error) {
             errorHandler(res, error);
         }
@@ -140,8 +161,7 @@ export class WordsController {
         try {
 
             const newWords: [] = req.body.words
-            const words = await new Word().collection.insertMany(newWords);
-
+            const words = await new GeneralWord().collection.insertMany(newWords);
 
             res.status(201).json(words);
 

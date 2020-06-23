@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, of } from 'rxjs';
-import { startWith, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, of, Observable } from 'rxjs';
+import { startWith, switchMap, map } from 'rxjs/operators';
 import { Word } from '../shared/interfaces';
 import { ALL_WORDS, FAVORITES } from '../vocabulary/vocabulary.facade';
 import { GeneralState } from './../general.state';
@@ -112,7 +112,77 @@ export class WordTrainingService {
   }
 
 
+  getWordByPriority(priority: number, wordsByGroup: Observable<Word[]> = this.getFiltredWordsByGroup()) {
+    // console.log(priority)
+    // const index = Math.floor(Math.random() * words.length);
+    // // tslint:disable-next-line: prefer-for-of
+    // if (priority === 0 || priority === 1 || priority === 2 || priority === 3) {
+
+    //   // tslint:disable-next-line: max-line-length
+    //   if (words[index].levelKnowledge === 0 || words[index].levelKnowledge === 1 || words[index].levelKnowledge === 2 || words[index].levelKnowledge === 3) {
+
+    //     return words[index];
+    //   } else {
+    //     const word = this.getWordByPriority(priority);
+    //     return word;
+    //   }
+
+
+    // } else {
+    //   // tslint:disable-next-line: max-line-length
+    //   if (words[index].levelKnowledge === 4 || words[index].levelKnowledge === 5) {
+    //     return words[index];
+    //   } else {
+    //     const word = this.getWordByPriority(priority);
+    //     return word;
+    //   }
+
+
+    // }
+
+
+    // tslint:disable-next-line: prefer-for-of
+    if (priority === 0 || priority === 1 || priority === 4 || priority === 3) {
+
+      // tslint:disable-next-line: max-line-length
+      return wordsByGroup.pipe(
+        map(words => {
+          // tslint:disable-next-line: max-line-length
+          const firstPriority = words.filter(word => word.levelKnowledge === 0 || word.levelKnowledge === 1 || word.levelKnowledge === 2 || word.levelKnowledge === 3);
+          const index = Math.floor(Math.random() * firstPriority.length);
+          return firstPriority[index];
+        }));
+
+
+
+    } else {
+      // tslint:disable-next-line: max-line-length
+      return wordsByGroup.pipe(
+        map(words => {
+          // tslint:disable-next-line: max-line-length
+          const secondPriority = words.filter(word => word.levelKnowledge === 2 || word.levelKnowledge === 5);
+          const index = Math.floor(Math.random() * secondPriority.length);
+          return secondPriority[index];
+        }));
+
+
+
+
+      // // tslint:disable-next-line: max-line-length
+      // if (words[index].levelKnowledge === 4 || words[index].levelKnowledge === 5) {
+      //   return words[index];
+      // } else {
+      //   const word = this.getWordByPriority(priority);
+      //   return word;
+      // }
+
+
+    }
+  }
+
   sortWordsForTraining(words: Word[]) {
 
   }
+
+
 }
