@@ -151,9 +151,19 @@ export class WordTrainingService {
         map(words => {
           // tslint:disable-next-line: max-line-length
           const firstPriority = words.filter(word => word.levelKnowledge === 0 || word.levelKnowledge === 1 || word.levelKnowledge === 2 || word.levelKnowledge === 3);
-          const index = Math.floor(Math.random() * firstPriority.length);
-          return firstPriority[index];
+
+          if (firstPriority.length !== 0) {
+            const index = Math.floor(Math.random() * firstPriority.length);
+            return firstPriority[index];
+
+          } else {
+            const index = Math.floor(Math.random() * words.length);
+
+            return words[index];
+          }
+
         }));
+
 
 
 
@@ -163,8 +173,16 @@ export class WordTrainingService {
         map(words => {
           // tslint:disable-next-line: max-line-length
           const secondPriority = words.filter(word => word.levelKnowledge === 2 || word.levelKnowledge === 5);
-          const index = Math.floor(Math.random() * secondPriority.length);
-          return secondPriority[index];
+
+          if (secondPriority.length !== 0) {
+            const index = Math.floor(Math.random() * secondPriority.length);
+            return secondPriority[index];
+
+          } else {
+            const index = Math.floor(Math.random() * words.length);
+
+            return words[index];
+          }
         }));
 
 
