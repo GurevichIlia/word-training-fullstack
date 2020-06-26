@@ -1,4 +1,4 @@
-<nb-select (selectedChange)="onSelectGroup($event)" [formControl]="groupControl" class="mb-3 col-1 p-0 select"
+<nb-select (selectedChange)="onSelectGroup()" [formControl]="groupControl" class="mb-3 col-1 p-0 select"
       placeholder="Select group">
       <nb-option [value]="group._id" *ngFor="let group of _wordGroups">{{group.name}} - {{group.wordQuantity}}</nb-option>
 
