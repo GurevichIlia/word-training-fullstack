@@ -15,6 +15,8 @@ export class WordListComponent {
   @Input() trackWords;
   @Input() pageSize: number;
   @Input() selectedGroup: string;
+  @Input() isShowDefaultOptions = true;
+
 
 
   @Output() action = new EventEmitter();

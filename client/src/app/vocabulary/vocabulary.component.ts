@@ -1,9 +1,10 @@
+import { AssignWordListComponent } from './assign-word-list/assign-word-list.component';
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil, filter, tap } from 'rxjs/operators';
 import { Word, WordGroup } from './../shared/interfaces';
 import { AskQuestionComponent } from './../shared/modals/ask-question/ask-question.component';
 import { NotificationsService } from './../shared/services/notifications.service';
@@ -29,7 +30,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   wordModal: NbDialogRef<any>;
   editWordOldValue: Word;
 
-  // allWords$: Observable<Word[]>;
+  allWords$: Observable<Word[]>;
   wordsFiltredByGroup$: Observable<Word[]>;
   wordGroups$: Observable<WordGroup[]>;
   selectedGroup$ = new BehaviorSubject<string>(ALL_WORDS);
@@ -48,6 +49,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.allWords$ = this.vocabularyFacade.getAllUserWords$();
     this.wordFormInitial();
 
     this.getWordsFilteredByGroup();
@@ -100,7 +102,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
           if (word) {
             this.notification.success('', 'Successfully');
             this.closeWordModal();
-            this.vocabularyFacade.updateWordList();
+            this.vocabularyFacade.updateWordsAndGroups();
             this.getWordsGroups();
 
           }
@@ -122,7 +124,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
         .subscribe(editedWord => {
           if (editedWord) {
             this.closeWordModal();
-            // this.vocabularyFacade.updateWordList();
+            // this.vocabularyFacade.updateWordsAndGroups();
           }
         }, err => {
           // this.vocabularyFacade.onEdit(oldValue);
@@ -174,23 +176,27 @@ export class VocabularyComponent implements OnInit, OnDestroy {
 
 
   deleteWord(word: Word) {
-    // tslint:disable-next-line: max-line-length
-    const title = `Would you like to remove word ${word.word} ?`;
-    const result$ = this.dialogService.open(AskQuestionComponent, { context: { title }, hasBackdrop: true });
+    // // tslint:disable-next-line: max-line-length
+    // const title = `Would you like to remove word ${word.word} ?`;
+    // const result$ = this.vocabularyFacade.askQuestion(title);
 
-    result$.onClose.pipe(switchMap(res => {
-      if (res) {
-        // this.vocabularyFacade.deleteWord(word);
-        return this.vocabularyFacade.deleteWordFromServer(word._id);
-      } else {
-        return EMPTY;
-      }
-    })).pipe(
-      takeUntil(this.subscription$)
-    )
+    // result$.onClose.pipe(
+    //   switchMap(res => {
+    //     if (res) {
+    //       // this.vocabularyFacade.deleteWord(word);
+    //       return this.vocabularyFacade.deleteWordFromServer(word._id);
+    //     } else {
+    //       return EMPTY;
+    //     }
+    //   }),
+    //   takeUntil(this.subscription$)
+    // )
+    this.vocabularyFacade.deleteWordFromServer(word)
+      .pipe(
+        takeUntil(this.subscription$))
       .subscribe(res => {
-        this.notification.success('', `Word ${word.word} removed`);
-        this.vocabularyFacade.updateWordList();
+        // this.notification.success('', `Word ${word.word} removed`);
+        this.vocabularyFacade.updateWordsAndGroups();
         // this.getWords();
       }, err => {
         this.notification.error('', err.error.message);
@@ -217,10 +223,28 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     }
 
     this.vocabularyFacade.createWordGroup(this.groupName.value)
-      .subscribe(res => {
+      .pipe(
+        takeUntil(this.subscription$))
+      .subscribe(group => {
+        this.vocabularyFacade.updateWordsAndGroups();
+        this.groupName.patchValue('');
         this.groupModal.close();
+        this.selectedGroup$.next(group._id);
+
         // this.getGroups();
-        console.log('RES AFTER SAVE GROUP', res);
+        console.log('RES AFTER SAVE GROUP', group);
+      })
+  }
+
+  deleteWordGroup(groupId: string) {
+
+    this.vocabularyFacade.deleteWordGroup(groupId)
+      .pipe(takeUntil(this.subscription$))
+      .subscribe(res => {
+        this.vocabularyFacade.updateWordsAndGroups();
+        this.selectedGroup$.next('1');
+        // this.getGroups();
+        console.log('RES AFTER DELETE GROUP', res);
       })
   }
 
@@ -233,8 +257,8 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     this.groupModal = this.dialogService.open(this.groupModalRef);
   }
 
-  toggleShowWordsForAssign(test) {
-
+  showWordsForAssign() {
+    this.dialogService.open(AssignWordListComponent, { context: { words$: this.allWords$, group: this.selectedGroup$.getValue() } });
   }
 
   toggleWordAssignToGroup(wordId: string) {

@@ -23,7 +23,8 @@
 
   <nb-card-body>
 
-    <app-groups [wordGroups]="wordGroups$ | async" (selectGroup)="selectedGroup$.next($event)">
+    <app-groups [wordGroups]="wordGroups$ | async" [selectedGroup]="selectedGroup$ | async"
+      (selectGroup)="selectedGroup$.next($event)">
 
       <nb-icon class="ml-1" [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
       <mat-menu #menu="matMenu" class="matmenu">
@@ -31,14 +32,14 @@
           <nb-icon icon="trash-2-outline"></nb-icon>
           <span class="ml-2" (click)="openGroupModal('Add group')">Create</span>
         </div>
-        <div class="menuitem">
+        <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'">
           <nb-icon icon="trash-2-outline"></nb-icon>
-          <span class="ml-2" (click)="toggleShowWordsForAssign('Show words for assign')">Add
+          <span class="ml-2" (click)="showWordsForAssign()">Add
             words</span>
         </div>
-        <div class="menuitem">
+        <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'">
           <nb-icon icon="edit-2-outline"></nb-icon>
-          <span class="ml-2">Delete</span>
+          <span class="ml-2" (click)="deleteWordGroup(selectedGroup$.getValue())">Delete</span>
         </div>
       </mat-menu>
 

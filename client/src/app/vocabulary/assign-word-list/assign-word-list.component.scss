@@ -1,0 +1,14 @@
+.main-box {
+  background-color: white;
+  height: 600px;
+  overflow: auto;
+  padding: 20px;
+}
+
+.submit-btn-box {
+  padding: 20px;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 10;
+}

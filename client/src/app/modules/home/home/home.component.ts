@@ -22,7 +22,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         takeUntil(this.subscription$)
 
       )
-      .subscribe(() => this.getUserWords());
+      .subscribe(() => {
+        this.getUserWords();
+        this.getUserGroups();
+      });
   }
 
   getUserWords() {
@@ -34,7 +37,14 @@ export class HomeComponent implements OnInit, OnDestroy {
       ).subscribe(() => console.log('USER WORD GOT'));
   }
 
+  getUserGroups() {
+    this.generaFacade.getWordsGroups()
+      .pipe(
+        take(1),
+        takeUntil(this.subscription$)
 
+      ).subscribe(() => console.log('USER GROUPS GOT'));
+  }
   ngOnDestroy() {
     this.subscription$.next();
     this.subscription$.complete();

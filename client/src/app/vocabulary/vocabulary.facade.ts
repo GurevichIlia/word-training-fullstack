@@ -1,10 +1,12 @@
+import { NbDialogService } from '@nebular/theme';
 import { Injectable } from '@angular/core';
-import { combineLatest, Observable, of } from 'rxjs';
+import { combineLatest, Observable, of, EMPTY } from 'rxjs';
 import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { GeneralFacade } from 'src/app/general.facade';
 import { GeneralState } from '../general.state';
 import { Word } from '../shared/interfaces';
 import { ApiWordsService } from './../shared/services/api/api-words.service';
+import { AskQuestionComponent } from '../shared/modals/ask-question/ask-question.component';
 
 export const ALL_WORDS = '1';
 export const FAVORITES = '2';
@@ -15,7 +17,8 @@ export class VocabularyFacade {
   constructor(
     private generalState: GeneralState,
     private apiWords: ApiWordsService,
-    private generalFacade: GeneralFacade
+    private generalFacade: GeneralFacade,
+    private dialogService: NbDialogService
   ) {
 
   }
@@ -90,7 +93,7 @@ export class VocabularyFacade {
     return this.apiWords.addWord(word, language);
   }
 
-  updateWordList() {
+  updateWordsAndGroups() {
     this.generalFacade.updateWordList();
   }
 
@@ -100,8 +103,22 @@ export class VocabularyFacade {
     return this.apiWords.editWord(word, language)
   }
 
-  deleteWordFromServer(wordId: string) {
-    return this.apiWords.deleteWordFromServer(wordId);
+  deleteWordFromServer(word: Word) {
+    const title = `Would you like to remove word ${word.word} ?`;
+    const result$ = this.askQuestion(title);
+
+    return result$.onClose.pipe(
+      switchMap(res => {
+        if (res) {
+          // this.vocabularyFacade.deleteWord(word);
+          return this.apiWords.deleteWordFromServer(word._id);
+        } else {
+          return EMPTY;
+        }
+      }),
+    );
+
+    // return this.apiWords.deleteWordFromServer(wordId);
 
   }
 
@@ -110,15 +127,38 @@ export class VocabularyFacade {
     of([])
   }
 
-  createWordGroup(name: string) {
+  createWordGroup(name: string,) {
+    const language = this.generalState.getCurrentLearningLanguage();
+    return this.apiWords.createWordGroup(name, language);
+  }
 
-    return of([])
+  deleteWordGroup(groupId: string) {
+    const title = `Would you like to remove group ${this.generalState.getWordsGroups().find(group => group._id === groupId).name} ?`;
+    const result$ = this.askQuestion(title);
+
+    return result$.onClose.pipe(
+      switchMap(res => {
+        if (res) {
+          // this.vocabularyFacade.deleteWord(word);
+          return this.apiWords.deleteWordGroup(groupId);
+        } else {
+          return EMPTY;
+        }
+      }),
+    );
+
   }
 
   updateWord(word: Word) {
     const words = this.generalState.getUserWords().map(existWord => existWord._id === word._id ? { ...existWord, ...word } : existWord);
 
     this.generalState.setUserWords(words);
+  }
+
+
+  askQuestion(text: string) {
+    const answer$ = this.dialogService.open(AskQuestionComponent, { context: { title: text }, hasBackdrop: true });
+    return answer$;
   }
 
   parseText(oldWords: string) {

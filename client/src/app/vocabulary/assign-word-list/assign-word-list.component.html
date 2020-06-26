@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="submit-btn-box" *ngIf="selectedWords.length > 0">
+        <button class="purpleButton"  nbButton
+          (click)="assignWords(group, selectedWords)">Submit</button>
+      </div>
+      <div class="main-box">
+
+
+        <h4>Select words</h4>
+
+        <hr>
+
+        <app-word-list [words]="words$ | async" (action)="getAction($event)" [isShowDefaultOptions]="false">
+        </app-word-list>
+
+      </div>
+
+    </div>
+  </div>
+</div>

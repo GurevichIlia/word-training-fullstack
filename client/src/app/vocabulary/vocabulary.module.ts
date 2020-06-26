@@ -7,6 +7,7 @@ import { SharedModule } from '../shared/shared.module';
 import { WordComponent } from './word/word.component';
 import { WordListComponent } from './word-list/word-list.component';
 import { SearchComponent } from './search/search.component';
+import { AssignWordListComponent } from './assign-word-list/assign-word-list.component';
 
 const vocabularyRoutes: Routes = [
   { path: '', component: VocabularyComponent }
@@ -16,6 +17,7 @@ const vocabularyRoutes: Routes = [
 @NgModule({
   declarations: [
     VocabularyComponent,
+    AssignWordListComponent,
 
   ],
   imports: [

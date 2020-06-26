@@ -2,17 +2,20 @@
 <div class="container">
   <div class="row">
 
-    <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
-    <mat-menu #menu="matMenu" class="matmenu">
-      <div (click)="dispatchAction('EDIT WORD', word)" class="menuitem">
-        <nb-icon icon="trash-2-outline"></nb-icon>
-        <span class="ml-2">Edit</span>
-      </div>
-      <div (click)="dispatchAction('DELETE WORD', word)" class="menuitem">
-        <nb-icon icon="edit-2-outline"></nb-icon>
-        <span class="ml-2">Delete</span>
-      </div>
-    </mat-menu>
+    <ng-container *ngIf="isShowDefaultOptions">
+      <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
+      <mat-menu #menu="matMenu" class="matmenu">
+        <div (click)="dispatchAction('EDIT WORD', word)" class="menuitem">
+          <nb-icon icon="trash-2-outline"></nb-icon>
+          <span class="ml-2">Edit</span>
+        </div>
+        <div (click)="dispatchAction('DELETE WORD', word)" class="menuitem">
+          <nb-icon icon="edit-2-outline"></nb-icon>
+          <span class="ml-2">Delete</span>
+        </div>
+      </mat-menu>
+    </ng-container>
+
 
 
     <div class="col-9">
@@ -23,15 +26,21 @@
     </div>
 
     <div class="col-2">
-      <!-- <nb-checkbox formControlName="favorite" (change)="onSaveEditedWord()" status="success"></nb-checkbox>
-                                          <span style="font-size: 12px">favorite</span> </nb-checkbox> -->
 
-      <img class="mb-3" (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="!word.isFavorite"
-        style="width: 30px; height: 30px"
-        src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png" alt="">
-      <img class="mb-3" (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="word.isFavorite"
-        style="width: 30px; height: 30px"
-        src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png" alt="">
+      <ng-container *ngIf="!isShowDefaultOptions">
+        <nb-checkbox (checkedChange)="dispatchAction('assign', word._id)"></nb-checkbox>
+
+      </ng-container>
+
+      <ng-container *ngIf="isShowDefaultOptions">
+        <img class="mb-3" (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="!word.isFavorite"
+          style="width: 30px; height: 30px"
+          src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png" alt="">
+        <img class="mb-3" (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="word.isFavorite"
+          style="width: 30px; height: 30px"
+          src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png" alt="">
+      </ng-container>
+
 
       <!-- <span class="ml-auto" [ngSwitch]="word.levelKnowledge">
         <p *ngSwitchCase="1">
@@ -62,7 +71,11 @@
 
     <ng-content></ng-content>
   </div>
-  <nb-progress-bar class="custom-progress-bar mt-3" [value]="word.levelKnowledge | convertToPercent" size="tiny" [displayValue]="true"></nb-progress-bar>
+  <ng-container *ngIf="isShowDefaultOptions">
+    <nb-progress-bar class="custom-progress-bar mt-3" [value]="word.levelKnowledge | convertToPercent" size="tiny"
+      [displayValue]="true"></nb-progress-bar>
+  </ng-container>
+
 
 </div>
 

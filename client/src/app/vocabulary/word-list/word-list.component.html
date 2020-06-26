@@ -9,7 +9,7 @@
     (scrolled)="onScroll()"
   >
   <app-word *ngFor="let word of words ; trackBy: trackWords; let i = index"
-  (action)="sendAction($event)" [word]="word">
+  (action)="sendAction($event)" [word]="word" [isShowDefaultOptions]="isShowDefaultOptions">
   <!-- <nb-checkbox [checked]="word.assignedGroups.includes(selectedGroup)"></nb-checkbox> -->
 </app-word>
 </div>

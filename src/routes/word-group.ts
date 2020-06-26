@@ -12,7 +12,7 @@ export class WordGroupRoutes {
 
       routes() {
             this.router.get(
-                  "/getAll/:languageId",
+                  "/getAllGroups",
                   passport.authenticate("jwt", { session: false }),
                   this.wordGroupController.getAllWordGroups
             );
@@ -21,6 +21,12 @@ export class WordGroupRoutes {
                   "/create",
                   passport.authenticate("jwt", { session: false }),
                   this.wordGroupController.createNewWordGroup
+            );
+
+            this.router.post(
+                  "/deleteGroup",
+                  passport.authenticate("jwt", { session: false }),
+                  this.wordGroupController.deleteWordGroup
             );
 
             this.router.post(

@@ -45,7 +45,12 @@ export class ApiWordsService {
 
   createWordGroup(name: string, language: Language) {
     const languageId = language._id;
-    return this.http.post<Word>(`${BASE_URL}/api/word-group/create`, { name, languageId });
+    return this.http.post<WordGroup>(`${BASE_URL}/api/word-group/create`, { name, languageId });
+  }
+
+  deleteWordGroup(groupId: string) {
+    return this.http.post<Word>(`${BASE_URL}/api/word-group/deleteGroup`, { groupId });
+
   }
 
   assignGroup(groupId: string, selectedWords: string[]) {
@@ -53,7 +58,7 @@ export class ApiWordsService {
   }
 
   getAllWordsGroups(language: Language) {
-    return this.http.get<WordGroup[]>(`${BASE_URL}/api/word-group/getAll?languageId=${language._id}`);
+    return this.http.get<WordGroup[]>(`${BASE_URL}/api/word-group/getAllGroups?languageId=${language._id}`);
   }
 
   updateWords(words: Word[], language: Language) {

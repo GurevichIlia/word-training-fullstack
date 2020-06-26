@@ -9,20 +9,25 @@ import { FormControl } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GroupsComponent {
-  @Input() wordGroups: WordGroup[];
-  // @Input() set selectedGroup(groupId: string) {
-  //   if (groupId) {
-  //     this.groupControl.patchValue(groupId)
+  _wordGroups = [];
+  @Input() set wordGroups(wordGroups: WordGroup[]) {
+    this._wordGroups = [...wordGroups];
 
-  //   }
-  // }
+  };
+  @Input() set selectedGroup(groupId: string) {
+    if (groupId) {
+      this.groupControl.patchValue(groupId);
+
+    }
+  }
   @Output() selectGroup = new EventEmitter();
 
-  groupControl = new FormControl('1');
+  groupControl = new FormControl('');
 
 
 
   onSelectGroup() {
+
     this.selectGroup.emit(this.groupControl.value);
   }
 

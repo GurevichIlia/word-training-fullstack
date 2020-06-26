@@ -87,6 +87,10 @@ export class GeneralState {
     return this.selectedGroupForTraining$.asObservable();
   }
 
+  getDefaultGroups() {
+    return this.defaultGroups;
+  }
+
   refreshGeneralState() {
     this.setCurrentLanguage(null);
     this.setUserWords(null);

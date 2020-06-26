@@ -115,7 +115,7 @@ export class GeneralFacade {
     return this.generalState.getUserWords()
   }
 
-  getWordsGroups(words: Word[]) {
+  getWordsGroups() {
     return this.generalState.getCurrentLearningLanguage$()
       .pipe(
         filter(language => language !== null),
@@ -126,7 +126,7 @@ export class GeneralFacade {
           this.notifications.error(err, '');
           return throwError(err);
         }),
-        map(groups => groups ? this.generalState.setWordsGroups(groups) : [])
+        map(groups => groups ? this.generalState.setWordsGroups([...this.generalState.getDefaultGroups(), ...groups]) : [])
       );
   }
 

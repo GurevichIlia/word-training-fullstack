@@ -1,19 +1,21 @@
 import { Request, Response } from "express";
 import errorHandler from "../utils/errorHandler";
 import Word from "../Models/Word";
-import { WordModel, WordGroupModel } from "../interfaces";
+import { WordModel, WordGroupModel, UserModel } from "../interfaces";
 import WordGroup from "../Models/WordGroup";
+import User from "../Models/User";
 
 export class WordGroupController {
 
       public getAllWordGroups = async (req: Request, res: Response) => {
             try {
                   const user = req.user as { _id: string, email: string }
+
+
                   const groups = await WordGroup.find({
-                        language: req.params.languageId,
+                        language: req.query.languageId,
                         user: user._id
                   });
-
                   res.status(200).json(groups);
             } catch (error) {
                   errorHandler(res, error);
@@ -36,36 +38,66 @@ export class WordGroupController {
             }
       };
 
+      public deleteWordGroup = async (req: Request, res: Response) => {
+            try {
+                  const removedGroup = await WordGroup.findOneAndRemove({ _id: req.body.groupId })
+
+                  res.status(200).json({
+                        removedGroup
+                  })
+            } catch (error) {
+                  errorHandler(res, error);
+
+            }
+      }
+
 
       public assignGroup = async (req: Request, res: Response) => {
             try {
                   const groupIdForAssign = req.body.groupId as string;
                   const selectedWords = req.body.selectedWords as string[];
+                  const user = await User.findOne({ _id: req.user }) as UserModel;
 
                   console.log('groupIdForAssign', groupIdForAssign)
+                  console.log('selected words', selectedWords)
 
-                  const promises = selectedWords.map(async wordId => {
+                  selectedWords.forEach(wordId => {
 
-                        const word = await Word.findOne({ _id: wordId }) as WordModel
-                        console.log('BEFORE PUSH', word)
+                        const existingWords = [...user.words]
 
-                        if (!word.assignedGroups.includes(groupIdForAssign)) {
-                              word.assignedGroups.push(groupIdForAssign)
-                        }
-                        console.log('AFTER PUSH', word)
-                        const updatedWord = await Word.findOneAndUpdate({ _id: wordId }, { $set: { assignedGroups: word.assignedGroups } });
-                        console.log('AFTER  UPDATE', updatedWord)
+                        user.words = existingWords.map(word => {
 
-                        return updatedWord;
+                              if (word._id.toString() == wordId) {
+                                    if (!word.assignedGroups.includes(groupIdForAssign)) {
+                                          const groups = [...word.assignedGroups]
+                                          groups.push(groupIdForAssign)
+                                          const newWord = { ...word, assignedGroups: groups }
+                                          console.log('NEW WORD', newWord)
+
+                                          return newWord;
+                                    } else {
+                                          return word
+                                    }
+
+                              } else {
+                                    return word
+                              }
+
+
+                        }) as WordModel[]
+
+                        console.log('UPDATED USER', user.words)
+
+
 
                   })
 
-                  const wordsAfterAssignGroup = await Promise.all(promises);
+                  const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true });
 
-                  console.log('WORDS AFTER ASSIGN', wordsAfterAssignGroup)
+
 
                   res.status(200).json({
-                        wordsAfterAssign: wordsAfterAssignGroup,
+                        wordsAfterAssign: updatedUser?.words,
                         message: 'Group assigned'
                   })
 
