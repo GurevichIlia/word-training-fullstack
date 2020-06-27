@@ -60,7 +60,7 @@ export class GeneralState {
   }
 
   setWordsGroups(wordsGroups: WordGroup[]) {
-    return this.userWordsGroups$.next(wordsGroups);
+    this.userWordsGroups$.next(wordsGroups);
   }
 
   getWordsGroups$() {

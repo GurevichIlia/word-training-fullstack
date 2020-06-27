@@ -21,7 +21,7 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
   loadingSpinner = false;
   animationState: string;
   trainingWordsQuantity: number;
-
+  selectedTrainingGroups$ = this.wordTrainingService.getSelectedGroupForTraining();
   currentOrderIndex$ = new BehaviorSubject<number>(0);
   currentTrainingWord$: Observable<Word>;
   wordGroups$: Observable<WordGroup[]>;

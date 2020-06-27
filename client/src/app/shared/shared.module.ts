@@ -25,7 +25,7 @@ import { SearchComponent } from '../vocabulary/search/search.component';
 
 
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-
+import {MatSelectModule} from '@angular/material/select';
 
 
 @NgModule({
@@ -65,6 +65,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     NgxPrettyCheckboxModule,
     MatCardModule,
     MatMenuModule,
+    MatSelectModule,
     NbAccordionModule,
     NbProgressBarModule,
     InfiniteScrollModule
@@ -94,6 +95,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     NgxPrettyCheckboxModule,
     MatCardModule,
     MatMenuModule,
+    MatSelectModule,
     NbProgressBarModule,
 
     FooterComponent,

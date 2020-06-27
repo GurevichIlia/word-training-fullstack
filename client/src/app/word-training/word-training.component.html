@@ -10,7 +10,7 @@
           <span> Select group you want to train</span>
         </div>
 
-        <app-groups *ngIf="!start" [wordGroups]="wordGroups$ | async" (selectGroup)="setGroupForTraining($event)">
+        <app-groups *ngIf="!start" [wordGroups]="wordGroups$ | async" [selectedGroup]="selectedTrainingGroups$ | async" (selectGroup)="setGroupForTraining($event)">
 
         </app-groups>
       </div>

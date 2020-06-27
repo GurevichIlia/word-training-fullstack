@@ -1,3 +1,4 @@
+import { WordGroup } from 'src/app/shared/interfaces';
 import { GeneralService } from './shared/services/general.service';
 import { NotificationsService } from './shared/services/notifications.service';
 import { ApiWordsService } from './shared/services/api/api-words.service';
@@ -43,7 +44,7 @@ export class GeneralFacade {
         tap(words => words ? this.generalState.setUserWords(words) : []),
         tap(words => {
           this.setWordsQuantity();
-          this.setQuantityWordsInGroups(words);
+          // this.setQuantityWordsInGroups(words);
         }
         ),
         tap(words => console.log('USER WORDS', words)),
@@ -126,21 +127,37 @@ export class GeneralFacade {
           this.notifications.error(err, '');
           return throwError(err);
         }),
-        map(groups => groups ? this.generalState.setWordsGroups([...this.generalState.getDefaultGroups(), ...groups]) : [])
+        map(groups => {
+          return groups ? [...this.generalState.getDefaultGroups(), ...groups] : [];
+
+        }),
+        switchMap((groups: WordGroup[]) => this.setQuantityWordsInGroups(groups)),
+        tap(groups => this.generalState.setWordsGroups(groups)),
       );
   }
 
-  setQuantityWordsInGroups(words: Word[]) {
-    const groups = this.generalState.getWordsGroups();
+  setQuantityWordsInGroups(groups: WordGroup[]) {
 
-    const updatedGroups = groups.map(group => {
-      if (group._id === '2') {
-        return { ...group, wordQuantity: words.filter(word => word.isFavorite === true).length };
-      }
-      return { ...group, wordQuantity: words.filter(word => word.assignedGroups.includes(group._id)).length };
-    });
+    const words$ = this.generalState.getUserWords$();
 
-    this.generalState.setWordsGroups(updatedGroups);
+    return words$.pipe(
+      map(words => {
+
+        if (!words) {
+          return [] as WordGroup[];
+        }
+        const updatedGroups = groups.map(group => {
+          if (group._id === '2') {
+            const updatedGroup: WordGroup = { ...group, wordQuantity: words.filter(word => word.isFavorite === true).length };
+            return updatedGroup;
+          }
+          const newGroup: WordGroup = { ...group, wordQuantity: words.filter(word => word.assignedGroups.includes(group._id)).length };
+
+          return newGroup
+        });
+        return updatedGroups;
+      })
+    );
   }
 
   updateWordList() {
