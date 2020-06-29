@@ -37,7 +37,7 @@ export interface WordGroupModel extends Document {
 export interface GeneralWord extends Document{
       readonly _id: number;
       word: string;
-      translate: string;
+      translation: string;
       assignedGroups: string[];
       language: string    
 }

@@ -1,5 +1,6 @@
 import { AuthController } from '../controllers/auth';
 import { Router } from 'express'
+import passport from 'passport';
 
 
 export class AuthRoutes {
@@ -14,5 +15,8 @@ export class AuthRoutes {
       routes() {
             this.router.post('/login', this.authController.login);
             this.router.post('/registration', this.authController.registration)
+            this.router.get('/getUserId',
+                  passport.authenticate("jwt", { session: false }),
+                  this.authController.getUserId)
       }
 }

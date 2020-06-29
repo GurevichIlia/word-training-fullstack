@@ -2,32 +2,46 @@
 <div class="container">
   <div class="row">
 
-    <ng-container *ngIf="isShowDefaultOptions">
+    <ng-container *ngIf="isShowMenu && menuItems">
       <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
       <mat-menu #menu="matMenu" class="matmenu">
-        <div (click)="dispatchAction('EDIT WORD', word)" class="menuitem">
-          <nb-icon icon="trash-2-outline"></nb-icon>
-          <span class="ml-2">Edit</span>
+        <ng-container *ngFor="let item of menuItems">
+          <div [hidden]="(item.action === 'DELETE FROM GENERAL LIST') && userId !== word['user'] || (item.action === 'ADD TO MY WORDS') && userId === word['user'] " (click)="dispatchAction(item.action, word)"
+            class="menuitem">
+            <nb-icon [icon]="item.icon"></nb-icon>
+            <span class="ml-2">{{item.title}}</span>
+          </div>
+        </ng-container>
+
+        <!-- trash-2-outline -->
+        <!-- <div (click)="dispatchAction('SHARE FOR ALL', word)" class="menuitem">
+          <nb-icon icon="share"></nb-icon>
+          <span class="ml-2">Share for all</span>
         </div>
         <div (click)="dispatchAction('DELETE WORD', word)" class="menuitem">
           <nb-icon icon="edit-2-outline"></nb-icon>
           <span class="ml-2">Delete</span>
-        </div>
+        </div> -->
+
       </mat-menu>
     </ng-container>
 
 
 
-    <div class="col-9">
+    <div class="col-8">
       <span class="word"> {{word.word}}</span>
       <br>
       <span class="translation">{{word.translation}}</span>
-
     </div>
 
-    <div class="col-2">
+    <div class="col-1 ml-auto pr-5" *ngIf="word['user'] && word['user'] == userId">
 
-      <ng-container *ngIf="!isShowDefaultOptions">
+      <span class="own-word">You <br> added</span>
+    </div>
+
+    <div class="col-2 ml-auto" *ngIf="!userId">
+
+      <ng-container *ngIf="!isShowDefaultOptions && !isShowMenu">
         <nb-checkbox (checkedChange)="dispatchAction('assign', word._id)"></nb-checkbox>
 
       </ng-container>
@@ -72,7 +86,7 @@
     <ng-content></ng-content>
   </div>
   <ng-container *ngIf="isShowDefaultOptions">
-    <nb-progress-bar class="custom-progress-bar mt-3" [value]="word.levelKnowledge | convertToPercent" size="tiny"
+    <nb-progress-bar class="custom-progress-bar mt-3" [value]="(word.levelKnowledge) | convertToPercent" size="tiny"
       [displayValue]="true"></nb-progress-bar>
   </ng-container>
 

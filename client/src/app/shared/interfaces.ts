@@ -16,6 +16,10 @@ export interface Word {
   assignedGroups?: string[];
 }
 
+export interface GeneralWord extends Word {
+  user: string;
+}
+
 export interface Language {
   name: string;
   _id?: string;
@@ -32,4 +36,15 @@ export interface WordGroup {
 export interface LanguageResponse {
   currentLanguage: Language;
   message: string;
+}
+
+export class MenuItem {
+  constructor(
+    public title: string,
+    public action: string,
+    public icon: string
+  ) {
+
+  }
+
 }

@@ -60,6 +60,18 @@ export class WordsRoutes {
             this.wordsController.getGeneralWords
         );
 
+        this.router.delete(
+            "/deleteWordFromGeneralList",
+            passport.authenticate("jwt", { session: false }),
+            this.wordsController.deleteWordFromGeneralList
+        );
+
+        // this.router.post(
+        //     "/addWordToMyWords",
+        //     passport.authenticate("jwt", { session: false }),
+        //     this.wordsController.add
+        // );
+
 
     }
 }

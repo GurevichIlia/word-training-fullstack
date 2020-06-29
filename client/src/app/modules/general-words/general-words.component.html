@@ -1,6 +1,28 @@
 <nb-card>
+  <nb-card-header class="title">
+    <span>Shared words</span>
+  </nb-card-header>
   <nb-card-body>
-    <app-word-list [words]="generalWords$ | async">
+    <div class="sub-title">
+      <span> Add new words to your list or share your words with everyone.</span>
+    </div>
+
+    <div class="search">
+      <div>
+        <app-search [filterValue]="filterValue" (addWord)="getActionFromChildren($event)"></app-search>
+
+      </div>
+    </div>
+
+  </nb-card-body>
+</nb-card>
+
+
+
+<nb-card>
+  <nb-card-body>
+    <app-word-list [userId]="userId$ | async" [isShowDefaultOptions]="false"
+      (action)="getActionFromChildren($event)" [menuItems]="wordMenuItems" [words]="generalWords$ | async">
     </app-word-list>
   </nb-card-body>
 </nb-card>

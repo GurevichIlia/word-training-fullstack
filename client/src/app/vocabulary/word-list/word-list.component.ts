@@ -1,5 +1,6 @@
+import { GeneralWord } from './../../../../../src/interfaces';
 import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
-import { Word } from 'src/app/shared/interfaces';
+import { Word, MenuItem } from 'src/app/shared/interfaces';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 
@@ -10,12 +11,16 @@ import { Observable } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WordListComponent {
-  @Input() words: Word[];
+  @Input() words: Word[] | GeneralWord[];
   @Input() filterValue: Observable<string>;
   @Input() trackWords;
   @Input() pageSize: number;
   @Input() selectedGroup: string;
   @Input() isShowDefaultOptions = true;
+  @Input() isShowMenu = true;
+  @Input() menuItems: MenuItem[];
+  @Input() userId: string;
+
 
 
 

@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../Models/User";
 import errorHandler from "../utils/errorHandler";
+import { userInfo } from "os";
 // import keys from "../config/keys";
 const keys = require('./../config/keys')
 export class AuthController {
@@ -30,6 +31,7 @@ export class AuthController {
                 res.status(200).json({
                     token: `Bearer ${token}`,
                     message: "Successfully",
+                    userId: candidate._id,
                     currentLanguage: candidate.currentLanguage
                 });
             } else {
@@ -70,7 +72,21 @@ export class AuthController {
             }
         }
     };
+
+    public getUserId = async (req: Request, res: Response) => {
+        try {
+            const user = await User.findOne({ _id: req.user })
+
+            if (user) {
+                res.status(200).json({ userId: user._id })
+            }
+        } catch (error) {
+            errorHandler(res, error);
+
+        }
+    }
 }
+
 
 // export const login = async (req: Request, res: Response) => {
 //       await console.log('REQUEST', req.body)

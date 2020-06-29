@@ -1,3 +1,5 @@
+import { GeneralWord } from './../../../../src/interfaces';
+import { NotificationsService } from './../shared/services/notifications.service';
 import { NbDialogService } from '@nebular/theme';
 import { Injectable } from '@angular/core';
 import { combineLatest, Observable, of, EMPTY } from 'rxjs';
@@ -18,7 +20,8 @@ export class VocabularyFacade {
     private generalState: GeneralState,
     private apiWords: ApiWordsService,
     private generalFacade: GeneralFacade,
-    private dialogService: NbDialogService
+    private dialogService: NbDialogService,
+    private notification: NotificationsService
   ) {
 
   }
@@ -59,7 +62,7 @@ export class VocabularyFacade {
       )
   }
 
-  filterBySearcValue(searchValue: string, words: Observable<Word[]>) {
+  filterBySearcValue(searchValue: string, words: Observable<(Word | GeneralWord)[]>) {
     return words
       .pipe(
         map(wordsForFilter => {
@@ -161,23 +164,35 @@ export class VocabularyFacade {
     return answer$;
   }
 
-  parseText(oldWords: string) {
+
+  addWordsToGeneralList(words: Word[]) {
     const language = this.generalState.getCurrentLearningLanguage();
 
-    const words = JSON.parse(oldWords);
+    return this.apiWords.addWordsToGeneralList(words, language)
+      .pipe(
+        tap(res => console.log('AFTER SHARE', res)),
+        tap(res => this.notification.success('Shared'))
+      )
+      ;
 
-    const mapedWords = words.map(word =>
-      ({
-        word: word.word,
-        translation: word.translate,
-        language: language._id.trim(),
-        isFavorite: false,
-        levelKnowledge: 0,
-        assignedGroups: ['1']
-      }));
-
-    console.log(mapedWords);
-    this.apiWords.addWords(mapedWords)
-      .subscribe();
   }
+  // parseText(oldWords: string) {
+  //   const language = this.generalState.getCurrentLearningLanguage();
+
+  //   const words = JSON.parse(oldWords);
+
+  //   const mapedWords = words.map(word =>
+  //     ({
+  //       word: word.word,
+  //       translation: word.translate,
+  //       language: language._id.trim(),
+  //       isFavorite: false,
+  //       levelKnowledge: 0,
+  //       assignedGroups: ['1']
+  //     }));
+
+  //   console.log(mapedWords);
+  //   this.apiWords.addWords(mapedWords)
+  //     .subscribe();
+  // }
 }

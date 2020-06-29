@@ -10,7 +10,7 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { Word } from 'src/app/shared/interfaces';
+import { Word, MenuItem, GeneralWord } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-word',
@@ -19,13 +19,15 @@ import { Word } from 'src/app/shared/interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WordComponent implements OnInit {
-  @Input() word: Word;
+  @Input() word: Word | GeneralWord;
+  @Input() isShowMenu = true;
   @Input() isShowDefaultOptions = true;
+  @Input() menuItems: MenuItem[];
+  @Input() userId: string;
   @Output() action = new EventEmitter();
-  items = [{ title: 'Edit' }, { title: 'Delete' }];
 
   constructor(
-   ) { }
+  ) { }
 
 
   ngOnInit() {

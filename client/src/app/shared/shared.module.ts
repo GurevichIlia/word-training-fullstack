@@ -25,7 +25,8 @@ import { SearchComponent } from '../vocabulary/search/search.component';
 
 
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import {MatSelectModule} from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import {MatSelectModule} from '@angular/material/select';
     MatSelectModule,
     NbAccordionModule,
     NbProgressBarModule,
-    InfiniteScrollModule
+    InfiniteScrollModule,
+    MatSnackBarModule
 
   ],
   exports: [
@@ -107,7 +109,8 @@ import {MatSelectModule} from '@angular/material/select';
 
     ConvertToPercentPipe,
     ReverseArrayPipe,
-    InfiniteScrollModule
+    InfiniteScrollModule,
+    MatSnackBarModule
 
 
   ],

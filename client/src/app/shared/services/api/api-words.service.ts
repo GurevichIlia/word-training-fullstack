@@ -1,3 +1,6 @@
+import { User } from './../../interfaces';
+import { shareReplay } from 'rxjs/operators';
+import { GeneralWord } from './../../../../../../src/interfaces';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GeneralService } from '../general.service';
@@ -19,8 +22,9 @@ export class ApiWordsService {
     return this.http.get<Word[]>(`${BASE_URL}/api/vocabulary/getAllWords?languageId=${langId}`);
   }
 
-  getGeneralWordsForAll(langId: string): Observable<Word[]> {
-    return this.http.get<Word[]>(`${BASE_URL}/api/vocabulary/getGeneralWords?languageId=${langId}`);
+  getGeneralWordsForAll(langId: string): Observable<GeneralWord[]> {
+    return this.http.get<GeneralWord[]>(`${BASE_URL}/api/vocabulary/getGeneralWords?languageId=${langId}`)
+      .pipe(shareReplay());
   }
 
   addWord(word: Word, language: Language): Observable<Word> {
@@ -64,5 +68,17 @@ export class ApiWordsService {
   updateWords(words: Word[], language: Language) {
     return this.http.post<Word[]>(`${BASE_URL}/api/vocabulary/updateWords?languageId=${language._id}`, { words });
 
+  }
+
+  addWordsToGeneralList(words: Word[], language: Language) {
+    return this.http.post(`${BASE_URL}/api/vocabulary/addWordsToGeneralList?languageId=${language._id}`, { words })
+  }
+
+  deleteWordFromGeneralList(wordId: string) {
+    return this.http.delete<{ word: GeneralWord, message: string }>(`${BASE_URL}/api/vocabulary/deleteWordFromGeneralList?wordId=${wordId}`)
+  }
+
+  getUserId() {
+    return this.http.get<{ userId: string }>(`${BASE_URL}/api/auth/getUserId`);
   }
 }

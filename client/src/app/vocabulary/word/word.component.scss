@@ -25,7 +25,7 @@
 }
 
 .menuitem {
-  width: 140px;
+  min-width: 150px;
   background-color: white;
   padding: 20px;
 }
@@ -37,4 +37,11 @@
 
 img {
   cursor: pointer;
+}
+
+.own-word {
+  text-align: center;
+  color: orange;
+  font-size: 12px;
+  display: flex;
 }

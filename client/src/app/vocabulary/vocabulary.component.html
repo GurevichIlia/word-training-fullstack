@@ -46,7 +46,7 @@
     </app-groups>
 
     <app-word-list (action)="getActionFromChildren($event)" [pageSize]="pageSize" [trackWords]="trackWords"
-      [filterValue]="filterValue.valueChanges" [selectedGroup]="selectedGroup$ | async" [words]="words">
+      [filterValue]="filterValue.valueChanges" [menuItems]="wordMenuItems" [selectedGroup]="selectedGroup$ | async" [words]="words">
     </app-word-list>
   </nb-card-body>
 

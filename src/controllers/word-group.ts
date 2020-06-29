@@ -31,7 +31,6 @@ export class WordGroupController {
                         language: req.body.languageId,
                         user: req.user
                   }).save();
-                  console.log('NEW GROUP', newWordGroup)
                   res.status(201).json(newWordGroup);
             } catch (error) {
                   errorHandler(res, error);
@@ -58,8 +57,6 @@ export class WordGroupController {
                   const selectedWords = req.body.selectedWords as string[];
                   const user = await User.findOne({ _id: req.user }) as UserModel;
 
-                  console.log('groupIdForAssign', groupIdForAssign)
-                  console.log('selected words', selectedWords)
 
                   selectedWords.forEach(wordId => {
 
@@ -72,7 +69,6 @@ export class WordGroupController {
                                           const groups = [...word.assignedGroups]
                                           groups.push(groupIdForAssign)
                                           const newWord = { ...word, assignedGroups: groups }
-                                          console.log('NEW WORD', newWord)
 
                                           return newWord;
                                     } else {
@@ -86,7 +82,6 @@ export class WordGroupController {
 
                         }) as WordModel[]
 
-                        console.log('UPDATED USER', user.words)
 
 
 

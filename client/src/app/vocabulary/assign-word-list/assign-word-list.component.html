@@ -2,8 +2,7 @@
   <div class="row">
     <div class="col-12">
       <div class="submit-btn-box" *ngIf="selectedWords.length > 0">
-        <button class="purpleButton"  nbButton
-          (click)="assignWords(group, selectedWords)">Submit</button>
+        <button class="purpleButton" nbButton (click)="assignWords(group, selectedWords)">Submit</button>
       </div>
       <div class="main-box">
 
@@ -12,7 +11,8 @@
 
         <hr>
 
-        <app-word-list [words]="words$ | async" (action)="getAction($event)" [isShowDefaultOptions]="false">
+        <app-word-list [words]="words$ | async" (action)="getAction($event)" [isShowMenu]="false"
+          [isShowDefaultOptions]="false">
         </app-word-list>
 
       </div>

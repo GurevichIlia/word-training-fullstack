@@ -1,9 +1,11 @@
+import { GeneralWord as GeneralWordModel } from './../interfaces';
 import { Request, Response } from "express";
 import errorHandler from "../utils/errorHandler";
 import Word from "../Models/Word";
 import { WordModel, UserModel } from "../interfaces";
 import User from "../Models/User";
 import GeneralWord from "../Models/GeneralWord";
+
 
 export class WordsController {
     public getAllWordsForCurrentUser = async (req: Request, res: Response) => {
@@ -121,7 +123,7 @@ export class WordsController {
             const user = await User.findOne({ _id: req.user }) as UserModel;
 
             const editedWord = req.body
-            console.log('EDITED WORD', editedWord)
+
 
             user.words = user.words.map(word => {
                 return word._id == editedWord._id ? { ...word, ...editedWord } : word
@@ -157,39 +159,73 @@ export class WordsController {
     };
 
 
-    public addWordsToGeneralList = async (req: Request, res: Response) => {
-        try {
+    // public addWordsToGeneralList = async (req: Request, res: Response) => {
+    //     try {
 
-            const newWords: [] = req.body.words
-            const words = await new GeneralWord().collection.insertMany(newWords);
+    //         const newWords: [] = req.body.words
+    //         const words = await new GeneralWord().collection.insertMany(newWords);
 
-            res.status(201).json(words);
+    //         res.status(201).json(words);
 
-        } catch (error) {
-            errorHandler(res, error)
-        }
-    }
+    //     } catch (error) {
+    //         errorHandler(res, error)
+    //     }
+    // }
 
     public getGeneralWords = async (req: Request, res: Response) => {
         try {
-            const words = await Word.find({ language: req.query.languageId });
-            console.log('GENERAL WORDS', words)
+            const words = await GeneralWord.find({ language: req.query.languageId });
             res.status(200).json(words);
         } catch (error) {
             errorHandler(res, error)
         }
     }
-    // public deleteWordById = async (req: Request, res: Response) => {
-    //     try {
-    //         const deletedWord = await Word.findOneAndRemove({ _id: req.params.wordId })
-    //         res.status(200).json({
-    //             word: deletedWord,
-    //             message: 'Removed'
-    //         })
-    //     } catch (error) {
-    //         errorHandler(res, error);
-    //     }
-    // };
+
+    public addWordsToGeneralList = async (req: Request, res: Response) => {
+        try {
+            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
+
+            const words = req.body.words as GeneralWordModel[]
+
+            if (words && words.length > 0) {
+                words.forEach(async word => {
+                    const newWord = await new GeneralWord({
+                        word: word.word,
+                        translation: word.translation,
+                        language: req.query.languageId,
+                        assignedGroups: word.assignedGroups,
+                        user: user._id
+                    }).save();
+                })
+            }
+
+
+
+
+            res.status(201).json({ addedWord: '' });
+        } catch (error) {
+            errorHandler(res, error);
+        }
+    };
+
+
+    public deleteWordFromGeneralList = async (req: Request, res: Response) => {
+        try {
+            console.log('WORD ID', req.query.wordId)
+            const deletedWord = await GeneralWord.findOneAndRemove({ _id: req.query.wordId })
+            if (deletedWord) {
+                res.status(200).json({
+                    word: deletedWord,
+                    message: 'Removed'
+                })
+            } else {
+                throw new Error()
+            }
+
+        } catch (error) {
+            errorHandler(res, error);
+        }
+    };
 }
 
 // this.router.get("words/getAllWords", this.wordsController);

@@ -172,7 +172,7 @@ export class WordTrainingService {
       return wordsByGroup.pipe(
         map(words => {
           // tslint:disable-next-line: max-line-length
-          const secondPriority = words.filter(word => word.levelKnowledge === 2 || word.levelKnowledge === 5);
+          const secondPriority = words.filter(word => word.levelKnowledge === 2 || word.levelKnowledge === 3);
 
           if (secondPriority.length !== 0) {
             const index = Math.floor(Math.random() * secondPriority.length);

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil, filter, tap } from 'rxjs/operators';
-import { Word, WordGroup } from './../shared/interfaces';
+import { Word, WordGroup, MenuItem } from './../shared/interfaces';
 import { AskQuestionComponent } from './../shared/modals/ask-question/ask-question.component';
 import { NotificationsService } from './../shared/services/notifications.service';
 import { ALL_WORDS, VocabularyFacade } from './vocabulary.facade';
@@ -40,6 +40,12 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   selectedWordsForAssignGroups$ = new BehaviorSubject<string[]>([]);
   loader = false;
   wordsList = this.fb.control('');
+
+  wordMenuItems = [
+    new MenuItem('Edit', 'EDIT WORD', 'edit-2-outline'),
+    new MenuItem('Share for all', 'SHARE FOR ALL', 'share'),
+    new MenuItem('Delete', 'DELETE WORD', 'trash-2-outline'),
+  ]
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -70,7 +76,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     this.wordsFiltredByGroup$ = this.vocabularyFacade.getUserWordsFiltredByGroup(
       this.selectedGroup$.asObservable(),
       this.filterValue.valueChanges
-    );
+    ) as Observable<Word[]>;
   }
 
   getWordsGroups() {
@@ -100,7 +106,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
         )
         .subscribe(word => {
           if (word) {
-            this.notification.success('', 'Successfully');
+            this.notification.success('', 'Word added');
             this.closeWordModal();
             this.vocabularyFacade.updateWordsAndGroups();
             this.getWordsGroups();
@@ -162,7 +168,8 @@ export class VocabularyComponent implements OnInit, OnDestroy {
 
   getActionFromChildren(event: { action: string, payload?: Word }) {
     switch (event.action) {
-
+      case 'SHARE FOR ALL': this.shareWordsForAll([event.payload]);
+        break
       case 'IS FAVORITE': this.setFavorite(event.payload);
         break
       case 'DELETE WORD': this.deleteWord(event.payload);
@@ -196,6 +203,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
         takeUntil(this.subscription$))
       .subscribe(res => {
         // this.notification.success('', `Word ${word.word} removed`);
+        this.notification.success('Removed');
         this.vocabularyFacade.updateWordsAndGroups();
         // this.getWords();
       }, err => {
@@ -268,9 +276,17 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     console.log('SELECTED WORDS FOR ASSIGN GROUPS', this.selectedWordsForAssignGroups$.getValue());
   }
 
-  getWordsFromText() {
-    this.vocabularyFacade.parseText(this.wordsList.value);
+  // getWordsFromText() {
+  //   this.vocabularyFacade.parseText(this.wordsList.value);
 
+  // }
+
+  shareWordsForAll(word: Word[]) {
+    this.vocabularyFacade.addWordsToGeneralList(word)
+      .pipe(
+        takeUntil(this.subscription$)
+      )
+      .subscribe();
   }
 
 

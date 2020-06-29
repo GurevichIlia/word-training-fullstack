@@ -15,6 +15,10 @@ const generalWordSchema = new Schema({
             type: Array,
             default: []
       },
+      user: {
+            ref: "users",
+            type: Schema.Types.ObjectId
+      },
       language: {
             ref: "languages",
             type: Schema.Types.ObjectId
