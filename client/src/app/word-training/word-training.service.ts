@@ -150,7 +150,10 @@ export class WordTrainingService {
       return wordsByGroup.pipe(
         map(words => {
           // tslint:disable-next-line: max-line-length
-          const firstPriority = words.filter(word => word.levelKnowledge === 0 || word.levelKnowledge === 1 || word.levelKnowledge === 2 || word.levelKnowledge === 3);
+          const randomNumber = Math.floor(Math.random() * 3);
+          console.log('RANDOM',randomNumber)
+
+          const firstPriority = words.filter(word => word.levelKnowledge === randomNumber);
 
           if (firstPriority.length !== 0) {
             const index = Math.floor(Math.random() * firstPriority.length);
@@ -172,7 +175,7 @@ export class WordTrainingService {
       return wordsByGroup.pipe(
         map(words => {
           // tslint:disable-next-line: max-line-length
-          const secondPriority = words.filter(word => word.levelKnowledge === 2 || word.levelKnowledge === 3);
+          const secondPriority = words.filter(word => word.levelKnowledge === 2 || word.levelKnowledge === 5);
 
           if (secondPriority.length !== 0) {
             const index = Math.floor(Math.random() * secondPriority.length);
