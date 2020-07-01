@@ -9,7 +9,7 @@ import {
   NbAccordionModule, NbActionsModule, NbButtonModule, NbCardModule,
   NbCheckboxModule, NbContextMenuModule, NbIconModule, NbInputModule,
   NbLayoutModule, NbListModule, NbMenuModule, NbSelectModule, NbSpinnerModule,
-  NbTabsetModule, NbThemeModule, NbToastrModule, NbUserModule, NbProgressBarModule
+   NbThemeModule, NbUserModule, NbProgressBarModule
 } from '@nebular/theme';
 import { NgxPrettyCheckboxModule } from 'ngx-pretty-checkbox';
 import { HeaderComponent } from './../header/header.component';
@@ -27,6 +27,8 @@ import { SearchComponent } from '../vocabulary/search/search.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
+import {MatBadgeModule} from '@angular/material/badge';
 
 
 @NgModule({
@@ -56,7 +58,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     NbEvaIconsModule,
     NbSelectModule,
     NbListModule,
-    NbTabsetModule,
     NbIconModule,
     NbActionsModule,
     NbCheckboxModule,
@@ -70,7 +71,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     NbAccordionModule,
     NbProgressBarModule,
     InfiniteScrollModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTabsModule,
+    MatBadgeModule
 
   ],
   exports: [
@@ -83,9 +86,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     NbCardModule,
     NbEvaIconsModule,
     NbSelectModule,
-    NbToastrModule,
     NbListModule,
-    NbTabsetModule,
     NbIconModule,
     NbActionsModule,
     NbCheckboxModule,
@@ -110,8 +111,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     ConvertToPercentPipe,
     ReverseArrayPipe,
     InfiniteScrollModule,
-    MatSnackBarModule
-
+    MatSnackBarModule,
+    MatTabsModule,
+    MatBadgeModule
 
   ],
   entryComponents: [EditWordComponent, AskQuestionComponent]

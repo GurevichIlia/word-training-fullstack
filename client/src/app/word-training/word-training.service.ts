@@ -55,7 +55,7 @@ export class WordTrainingService {
   }
 
   getWordGroups() {
-    return this.generalState.getWordsGroups$();
+    return this.vocabularyFacade.getWordsGroups();
   }
   // setTrainWords(words: Word[]) {
   //   this.trainWords.next(words);
@@ -144,7 +144,7 @@ export class WordTrainingService {
 
 
     // tslint:disable-next-line: prefer-for-of
-    if (priority === 0 || priority === 1 || priority === 4 || priority === 3) {
+    if (priority === 0 || priority === 1 || priority === 4 || priority === 3 || priority === 6) {
 
       // tslint:disable-next-line: max-line-length
       return wordsByGroup.pipe(

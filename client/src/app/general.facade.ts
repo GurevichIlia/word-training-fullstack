@@ -119,9 +119,12 @@ export class GeneralFacade {
   getWordsGroups() {
     return this.generalState.getCurrentLearningLanguage$()
       .pipe(
+        map(language => language ? language : null),
         filter(language => language !== null),
-        switchMap(language =>
-          this.apiWordsService.getAllWordsGroups(language)
+        switchMap(language => {
+          return this.apiWordsService.getAllWordsGroups(language);
+
+        }
         ),
         catchError(err => {
           this.notifications.error(err, '');
@@ -132,7 +135,7 @@ export class GeneralFacade {
 
         }),
         switchMap((groups: WordGroup[]) => this.setQuantityWordsInGroups(groups)),
-        tap(groups => this.generalState.setWordsGroups(groups)),
+        // tap(groups => this.generalState.setWordsGroups(groups)),
       );
   }
 

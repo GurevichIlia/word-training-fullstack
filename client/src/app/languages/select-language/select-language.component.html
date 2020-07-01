@@ -1,9 +1,17 @@
 <nb-card>
-  <nb-card-body>
+  <nb-card-header class="justify-content-center">
+    <span class="title">Languages</span>
 
-    <nb-tabset [fullWidth]="true">
-      <nb-tab class="p-0 text-center" tabTitle="User languages" [badgeText]="userLanguages?.length" badgeStatus="warning">
+  </nb-card-header>
+  <nb-card-body class="text-center">
 
+    <span class="sub-title">Select languages you want to learn</span>
+
+    <mat-tab-group [selectedIndex]="userLanguages?.length > 0 ? 0: 1">
+      <mat-tab [disabled]="userLanguages?.length === 0">
+        <ng-template mat-tab-label>
+          <span [matBadge]="userLanguages?.length" matBadgeColor="primary">User languages</span>
+        </ng-template>
         <nb-select class="col-12 mt-3 mb-3" placeholder="Select language" [formControl]="selectedLanguage">
           <nb-option *ngFor="let language of userLanguages" [value]="language._id">
             {{language.name}}
@@ -21,9 +29,12 @@
             </div>
           </div>
         </div>
+      </mat-tab>
 
-      </nb-tab>
-      <nb-tab class="p-0" tabTitle="All languages" [badgeText]="allLanguages?.length" badgeStatus="warning">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <span [matBadge]="allLanguages?.length" matBadgeColor="primary"> All languages</span>
+        </ng-template>
 
         <nb-list class="col-12 mt-3 mb-3 p-0">
           <nb-list-item *ngFor="let language of allLanguages">
@@ -39,8 +50,21 @@
 
           </nb-list-item>
         </nb-list>
+      </mat-tab>
 
-        <!-- <div class="row justify-content-center">
+
+    </mat-tab-group>
+
+
+
+
+
+    <!-- </nb-tab>
+    <nb-tab [active]="userLanguages?.length === 0" class="p-0" tabTitle="All languages"
+      [badgeText]="allLanguages?.length" badgeStatus="warning"> -->
+
+
+    <!-- <div class="row justify-content-center">
           <div class="col-6 col-xl-5 ">
             <button class="w-50" type="button" size="medium" nbButton (click)="onAddSelectedLanguagesToUserLanguages()"
               status="success">Submit</button>
@@ -54,9 +78,9 @@
 
 
 
-      </nb-tab>
+    <!-- </nb-tab>
 
-    </nb-tabset>
+    </nb-tabset> -->
 
   </nb-card-body>
 </nb-card>

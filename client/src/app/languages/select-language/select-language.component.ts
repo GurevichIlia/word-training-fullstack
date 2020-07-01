@@ -1,7 +1,7 @@
 import { FormControl } from '@angular/forms';
 import { Language } from './../../shared/interfaces';
-import { Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, ViewChild, ElementRef } from '@angular/core';
-import { NbSelectComponent } from '@nebular/theme';
+import { Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { NbSelectComponent, NbTabsetComponent, NbTabComponent } from '@nebular/theme';
 
 @Component({
   selector: 'app-select-language',
@@ -22,7 +22,9 @@ export class SelectLanguageComponent {
   @Output() addLanguage = new EventEmitter();
   @Output() selectUserLanguageForLearning = new EventEmitter();
   @Output() deleteUserLanguage = new EventEmitter();
-  constructor() { }
+  constructor() {
+  }
+
 
   // onSelectLanguageFromAllLanguages(event: Event, language: Language, ) {
   //   event.preventDefault();

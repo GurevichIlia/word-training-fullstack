@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
-import { switchMap, takeUntil, filter, tap } from 'rxjs/operators';
+import { switchMap, takeUntil, filter, tap, take } from 'rxjs/operators';
 import { Word, WordGroup, MenuItem } from './../shared/interfaces';
 import { AskQuestionComponent } from './../shared/modals/ask-question/ask-question.component';
 import { NotificationsService } from './../shared/services/notifications.service';
@@ -59,7 +59,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     this.wordFormInitial();
 
     this.getWordsFilteredByGroup();
-
+    // this.getUserGroups()
     this.getWordsGroups();
 
     // this.wordsList.valueChanges.subscribe(value => this.getWordsFromText());
@@ -79,9 +79,18 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     ) as Observable<Word[]>;
   }
 
+  // getUserGroups() {
+  //   this.vocabularyFacade.getWordsGroups()
+  //     .pipe(
+  //       take(1),
+  //       takeUntil(this.subscription$)
+
+  //     ).subscribe(() => console.log('USER GROUPS GOT'));
+  // }
+
   getWordsGroups() {
 
-    this.wordGroups$ = this.vocabularyFacade.getWordsGroups$();
+    this.wordGroups$ = this.vocabularyFacade.getWordsGroups();
 
   }
 
@@ -244,9 +253,9 @@ export class VocabularyComponent implements OnInit, OnDestroy {
       })
   }
 
-  deleteWordGroup(groupId: string) {
+  deleteWordGroup(groupId: string, groups: WordGroup[]) {
 
-    this.vocabularyFacade.deleteWordGroup(groupId)
+    this.vocabularyFacade.deleteWordGroup(groupId, groups)
       .pipe(takeUntil(this.subscription$))
       .subscribe(res => {
         this.vocabularyFacade.updateWordsAndGroups();

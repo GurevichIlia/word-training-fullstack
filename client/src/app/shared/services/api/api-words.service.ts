@@ -62,7 +62,8 @@ export class ApiWordsService {
   }
 
   getAllWordsGroups(language: Language) {
-    return this.http.get<WordGroup[]>(`${BASE_URL}/api/word-group/getAllGroups?languageId=${language._id}`);
+    return this.http.get<WordGroup[]>(`${BASE_URL}/api/word-group/getAllGroups?languageId=${language._id}`)
+      .pipe(shareReplay());
   }
 
   updateWords(words: Word[], language: Language) {

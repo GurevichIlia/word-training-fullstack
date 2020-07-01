@@ -1,3 +1,4 @@
+import { WordGroup } from './../shared/interfaces';
 import { GeneralWord } from './../../../../src/interfaces';
 import { NotificationsService } from './../shared/services/notifications.service';
 import { NbDialogService } from '@nebular/theme';
@@ -135,8 +136,8 @@ export class VocabularyFacade {
     return this.apiWords.createWordGroup(name, language);
   }
 
-  deleteWordGroup(groupId: string) {
-    const title = `Would you like to remove group ${this.generalState.getWordsGroups().find(group => group._id === groupId).name} ?`;
+  deleteWordGroup(groupId: string, groups: WordGroup[]) {
+    const title = `Would you like to remove group ${groups.find(group => group._id === groupId).name} ?`;
     const result$ = this.askQuestion(title);
 
     return result$.onClose.pipe(
@@ -175,6 +176,10 @@ export class VocabularyFacade {
       )
       ;
 
+  }
+
+  getWordsGroups() {
+    return this.generalFacade.getWordsGroups();
   }
   // parseText(oldWords: string) {
   //   const language = this.generalState.getCurrentLearningLanguage();

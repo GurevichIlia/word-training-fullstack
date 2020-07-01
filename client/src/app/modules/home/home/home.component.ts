@@ -24,7 +24,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         this.getUserWords();
-        this.getUserGroups();
       });
   }
 
@@ -37,14 +36,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       ).subscribe(() => console.log('USER WORD GOT'));
   }
 
-  getUserGroups() {
-    this.generaFacade.getWordsGroups()
-      .pipe(
-        take(1),
-        takeUntil(this.subscription$)
 
-      ).subscribe(() => console.log('USER GROUPS GOT'));
-  }
   ngOnDestroy() {
     this.subscription$.next();
     this.subscription$.complete();

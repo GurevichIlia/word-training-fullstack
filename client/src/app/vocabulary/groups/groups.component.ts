@@ -11,7 +11,10 @@ import { FormControl } from '@angular/forms';
 export class GroupsComponent {
   _wordGroups = [];
   @Input() set wordGroups(wordGroups: WordGroup[]) {
-    this._wordGroups = [...wordGroups];
+    if (wordGroups) {
+      this._wordGroups = [...wordGroups];
+
+    }
 
   };
   @Input() set selectedGroup(groupId: string) {
