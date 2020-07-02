@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         take(1),
         takeUntil(this.subscription$)
 
-      ).subscribe(() => console.log('USER WORD GOT'));
+      ).subscribe(() => console.log('USER WORD'));
   }
 
   swipeDown() {
