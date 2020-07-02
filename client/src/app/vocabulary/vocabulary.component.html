@@ -21,32 +21,45 @@
     </div>
   </nb-card-header>
 
-  <nb-card-body *ngIf="wordGroups$ | async as groups">
+  <nb-card-body>
 
-    <app-groups [wordGroups]="groups" [selectedGroup]="selectedGroup$ | async"
-      (selectGroup)="selectedGroup$.next($event)">
+    <ng-container *ngIf="wordGroups$ | async as groups; else loader">
+      <app-groups [wordGroups]="wordGroups$ | async" [selectedGroup]="selectedGroup$ | async"
+        (selectGroup)="selectedGroup$.next($event)">
 
-      <nb-icon class="ml-1" [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
-      <mat-menu #menu="matMenu" class="matmenu">
-        <div class="menuitem">
-          <nb-icon icon="plus-outline"></nb-icon>
-          <span class="ml-2" (click)="openGroupModal('Add group')">Create group</span>
-        </div>
-        <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'">
-          <nb-icon icon="plus-circle-outline"></nb-icon>
-          <span class="ml-2" (click)="showWordsForAssign()">Add
-            words</span>
-        </div>
-        <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'">
-          <nb-icon icon="trash-2-outline"></nb-icon>
-          <span class="ml-2" (click)="deleteWordGroup(selectedGroup$.getValue(), groups)">Delete group</span>
-        </div>
-      </mat-menu>
+        <nb-icon class="ml-1" [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
+        <mat-menu #menu="matMenu" class="matmenu">
+          <div class="menuitem">
+            <nb-icon icon="plus-outline"></nb-icon>
+            <span class="ml-2" (click)="openGroupModal('Add group')">Create group</span>
+          </div>
+          <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'">
+            <nb-icon icon="plus-circle-outline"></nb-icon>
+            <span class="ml-2" (click)="showWordsForAssign()">Add
+              words</span>
+          </div>
+          <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'">
+            <nb-icon icon="trash-2-outline"></nb-icon>
+            <span class="ml-2" (click)="deleteWordGroup(selectedGroup$.getValue(), groups)">Delete
+              group</span>
+          </div>
+        </mat-menu>
 
-    </app-groups>
+      </app-groups>
+    </ng-container>
+
+    <ng-template #loader>
+      <nb-card [nbSpinner]="true" nbSpinnerStatus="basic">
+        <nb-card-body>
+          Loading...
+        </nb-card-body>
+      </nb-card>
+    </ng-template>
+
 
     <app-word-list (action)="getActionFromChildren($event)" [pageSize]="pageSize" [trackWords]="trackWords"
-      [filterValue]="filterValue.valueChanges" [menuItems]="wordMenuItems" [selectedGroup]="selectedGroup$ | async" [words]="words">
+      [filterValue]="filterValue.valueChanges" [menuItems]="wordMenuItems" [selectedGroup]="selectedGroup$ | async"
+      [words]="words">
     </app-word-list>
   </nb-card-body>
 

@@ -299,7 +299,10 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
     // Called once, before the instance is destroyed.
     // Add 'implements OnDestroy' to the class.
     // console.log(this.favoriteMode.value);
-    this.saveWordsTrainingProgress();
+    if (this.start) {
+      this.saveWordsTrainingProgress();
+
+    }
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }

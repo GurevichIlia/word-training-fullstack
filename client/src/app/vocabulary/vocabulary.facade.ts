@@ -101,6 +101,9 @@ export class VocabularyFacade {
     this.generalFacade.updateWordList();
   }
 
+  isUpdateGroups() {
+    return this.generalFacade.isUpdateWordList$();
+  }
   editWord(word: Word) {
     const language = this.generalState.getCurrentLearningLanguage();
 

@@ -62,7 +62,9 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     // this.getUserGroups()
     this.getWordsGroups();
 
-    // this.wordsList.valueChanges.subscribe(value => this.getWordsFromText());
+    this.vocabularyFacade.isUpdateGroups()
+      .pipe(takeUntil(this.subscription$))
+      .subscribe(() => this.getWordsGroups())
   }
 
   // getAllWords() {

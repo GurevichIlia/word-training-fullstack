@@ -4,7 +4,7 @@ import { NotificationsService } from './shared/services/notifications.service';
 import { ApiWordsService } from './shared/services/api/api-words.service';
 import { ApiLanguagesService } from './shared/services/api/api-languages.service';
 import { Injectable } from '@angular/core';
-import { tap, switchMap, filter, map, catchError, retry, take } from 'rxjs/operators';
+import { tap, switchMap, filter, map, catchError, retry, take, shareReplay } from 'rxjs/operators';
 import { GeneralState } from './general.state';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
@@ -113,30 +113,41 @@ export class GeneralFacade {
   }
 
   getUserWords() {
-    return this.generalState.getUserWords()
+    return this.generalState.getUserWords();
   }
 
   getWordsGroups() {
-    return this.generalState.getCurrentLearningLanguage$()
-      .pipe(
-        map(language => language ? language : null),
-        filter(language => language !== null),
-        switchMap(language => {
-          return this.apiWordsService.getAllWordsGroups(language);
+    if (!this.generalState.getWordsGroups$()) {
 
-        }
-        ),
-        catchError(err => {
-          this.notifications.error(err, '');
-          return throwError(err);
-        }),
-        map(groups => {
-          return groups ? [...this.generalState.getDefaultGroups(), ...groups] : [];
+      const groups$ = this.generalState.getCurrentLearningLanguage$()
+        .pipe(
+          map(language => language ? language : null),
+          filter(language => language !== null),
+          switchMap(language => {
+            return this.apiWordsService.getAllWordsGroups(language);
 
-        }),
-        switchMap((groups: WordGroup[]) => this.setQuantityWordsInGroups(groups)),
-        // tap(groups => this.generalState.setWordsGroups(groups)),
-      );
+          }
+          ),
+          catchError(err => {
+            this.notifications.error(err, '');
+            return throwError(err);
+          }),
+          shareReplay(1)
+        );
+
+
+      this.generalState.setWordsGroups(groups$);
+    }
+
+    return this.generalState.getWordsGroups$().pipe(
+      map(groups => {
+        return groups ? [...this.generalState.getDefaultGroups(), ...groups] : [];
+
+      }),
+      switchMap((groups: WordGroup[]) => this.setQuantityWordsInGroups(groups)),
+    );
+
+
   }
 
   setQuantityWordsInGroups(groups: WordGroup[]) {
@@ -164,6 +175,8 @@ export class GeneralFacade {
   }
 
   updateWordList() {
+    this.generalState.setWordsGroups(null);
+
     this.generalService.updateWordList();
   }
 

@@ -3,7 +3,7 @@ import { WordGroup } from './shared/interfaces';
 import { Injectable } from '@angular/core';
 import { Language, Word } from '../app/shared/interfaces';
 
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,9 @@ export class GeneralState {
   private readonly currentLearningLanguage$ = new BehaviorSubject<Language>(null);
   private readonly quantityAllWords$ = new BehaviorSubject<number>(null);
   private readonly userWords$ = new BehaviorSubject<Word[]>(null);
-  private readonly userWordsGroups$ = new BehaviorSubject<WordGroup[]>(this.defaultGroups);
+  // private readonly userWordsGroups$ = new BehaviorSubject<WordGroup[]>(this.defaultGroups);
+
+  private userWordsGroups$: Observable<WordGroup[]>;
 
   private readonly userName$ = new BehaviorSubject<string>('');
 
@@ -59,17 +61,17 @@ export class GeneralState {
     return this.userWords$.getValue();
   }
 
-  setWordsGroups(wordsGroups: WordGroup[]) {
-    this.userWordsGroups$.next(wordsGroups);
+  setWordsGroups(wordsGroups: Observable<WordGroup[]>) {
+    this.userWordsGroups$ = wordsGroups;
   }
 
   getWordsGroups$() {
-    return this.userWordsGroups$.asObservable();
+    return this.userWordsGroups$;
   }
 
-  getWordsGroups() {
-    return this.userWordsGroups$.getValue();
-  }
+  // getWordsGroups() {
+  //   return this.userWordsGroups$.getValue();
+  // }
 
   setQuantityWords$(value: number) {
     this.quantityAllWords$.next(value);
@@ -96,7 +98,7 @@ export class GeneralState {
     this.setUserWords(null);
     this.setQuantityWords$(0);
     this.userName$.next('');
-    this.setWordsGroups(this.defaultGroups);
+    this.setWordsGroups(null);
     this.setSelectedGroupForTraining('');
     console.log('STATE REFRESHED');
   }

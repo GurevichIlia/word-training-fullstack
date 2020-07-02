@@ -36,6 +36,11 @@ export class HomeComponent implements OnInit, OnDestroy {
       ).subscribe(() => console.log('USER WORD GOT'));
   }
 
+  swipeDown() {
+    console.log('SWIPED DOWN');
+    window.location.reload();
+    // this.getUserWords()
+  }
 
   ngOnDestroy() {
     this.subscription$.next();
