@@ -22,7 +22,7 @@
 
 
   <nb-card>
-    <nb-card-body (swipeDown)="updateWordsList()">
+    <nb-card-body >
       <app-word-list [userId]="userId$ | async" [isShowDefaultOptions]="false" (action)="getActionFromChildren($event)"
         [menuItems]="wordMenuItems" [words]="words">
       </app-word-list>

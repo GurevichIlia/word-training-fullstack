@@ -1,9 +1,9 @@
 import { AssignWordListComponent } from './assign-word-list/assign-word-list.component';
-import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NbDialogRef, NbDialogService } from '@nebular/theme';
-import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
+import { NbDialogRef, NbDialogService, NbCardBackComponent, NbCardBodyComponent } from '@nebular/theme';
+import { BehaviorSubject, EMPTY, Observable, Subject, fromEvent } from 'rxjs';
 import { switchMap, takeUntil, filter, tap, take } from 'rxjs/operators';
 import { Word, WordGroup, MenuItem } from './../shared/interfaces';
 import { AskQuestionComponent } from './../shared/modals/ask-question/ask-question.component';
@@ -17,7 +17,7 @@ import { ALL_WORDS, VocabularyFacade } from './vocabulary.facade';
   templateUrl: './vocabulary.component.html',
   styleUrls: ['./vocabulary.component.scss']
 })
-export class VocabularyComponent implements OnInit, OnDestroy {
+export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('wordModal') wordModalRef: TemplateRef<any>;
   @ViewChild('groupModalRef') groupModalRef: TemplateRef<any>;
 
@@ -66,6 +66,11 @@ export class VocabularyComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.subscription$))
       .subscribe(() => this.getWordsGroups())
   }
+
+  ngAfterViewInit() {
+
+  }
+
 
   // getAllWords() {
   //   this.allWords$ = this.vocabularyFacade.getAllUserWords$()

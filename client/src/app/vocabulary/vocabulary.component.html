@@ -10,9 +10,8 @@
     </div>
   </nb-card-header>
 
-
-  <nb-card-body (swipeDown)="updateWordsList()">
-    <ng-container *ngIf="wordGroups$ | async as groups; else loader">
+  <nb-card-body >
+          <ng-container *ngIf="wordGroups$ | async as groups; else loader">
       <app-groups [wordGroups]="wordGroups$ | async" [selectedGroup]="selectedGroup$ | async"
         (selectGroup)="selectedGroup$.next($event)">
 
@@ -76,6 +75,8 @@
 
 
     </ng-container>
+
+
 
 
     <!-- <ng-template #loader>
