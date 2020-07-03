@@ -39,4 +39,16 @@ export class WordComponent implements OnInit {
     this.action.emit({ action, payload });
   }
 
+  isHideDeleteButton() {
+    const adminId = '5e2b1984d72eaf2478d678f4';
+
+    if (adminId === this.userId) {
+      return false;
+    } else if (this.userId === this.word['user']) {
+      return false;
+    } else {
+      return true;
+    }
+
+  }
 }

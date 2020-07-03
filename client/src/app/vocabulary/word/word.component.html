@@ -6,8 +6,9 @@
       <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
       <mat-menu #menu="matMenu" class="matmenu">
         <ng-container *ngFor="let item of menuItems">
-          <div [hidden]="(item.action === 'DELETE FROM GENERAL LIST') && userId !== word['user'] || (item.action === 'ADD TO MY WORDS') && userId === word['user'] " (click)="dispatchAction(item.action, word)"
-            class="menuitem">
+          <div [hidden]="((item.action === 'DELETE FROM GENERAL LIST') && isHideDeleteButton())
+             || (item.action === 'ADD TO MY WORDS') && userId === word['user'] "
+            (click)="dispatchAction(item.action, word)" class="menuitem">
             <nb-icon [icon]="item.icon"></nb-icon>
             <span class="ml-2">{{item.title}}</span>
           </div>

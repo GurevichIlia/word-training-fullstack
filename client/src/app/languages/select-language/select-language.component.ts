@@ -1,6 +1,6 @@
 import { FormControl } from '@angular/forms';
 import { Language } from './../../shared/interfaces';
-import { Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { NbSelectComponent, NbTabsetComponent, NbTabComponent } from '@nebular/theme';
 
 @Component({
@@ -11,14 +11,20 @@ import { NbSelectComponent, NbTabsetComponent, NbTabComponent } from '@nebular/t
 })
 export class SelectLanguageComponent {
   selectedLanguage = new FormControl('');
+  @Input() set candidateToLearn(candidateId: string) {
+    this.selectedLanguage.patchValue(candidateId);
+  }
   @Input() allLanguages: Language[];
   @Input() userLanguages: Language[];
+  @Input() selectedTab: 0 | 1;
 
   @Input() set currentlanguageId(currentlanguageId: string) {
-    if (currentlanguageId) {
-      this.selectedLanguage.patchValue(currentlanguageId);
-    }
+
+    this.selectedLanguage.patchValue(currentlanguageId);
+
+
   }
+
   @Output() addLanguage = new EventEmitter();
   @Output() selectUserLanguageForLearning = new EventEmitter();
   @Output() deleteUserLanguage = new EventEmitter();

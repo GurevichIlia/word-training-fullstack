@@ -3,64 +3,90 @@
 
 
   <nb-card-header>
-    <!--
-    <h3>Add your words here<button (click)="getWordsFromText()" class="purpleButton" type="submit" nbButton size="small">Parse</button>
-    </h3>
-    <textarea [formControl]="wordsList"  nbInput fullWidth placeholder="Add your words here"></textarea> -->
-    <!--
-    <button (click)="openWordModal('Add word')" class="purpleButton" type="submit" nbButton size="small">Add
-      word</button> -->
     <div class="d-flex">
-      <span>
-        <button (click)="openWordModal('Add word')" class="purpleButton" type="submit" nbButton size="small">Add
-          word</button>
-      </span>
-      <span class="search">
+      <span class="search" *ngIf="words && words.length">
         <app-search [filterValue]="filterValue" (addWord)="getActionFromChildren($event)"></app-search>
       </span>
     </div>
   </nb-card-header>
 
-  <nb-card-body>
 
+  <nb-card-body (swipeDown)="updateWordsList()">
     <ng-container *ngIf="wordGroups$ | async as groups; else loader">
       <app-groups [wordGroups]="wordGroups$ | async" [selectedGroup]="selectedGroup$ | async"
         (selectGroup)="selectedGroup$.next($event)">
 
         <nb-icon class="ml-1" [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
         <mat-menu #menu="matMenu" class="matmenu">
-          <div class="menuitem">
+          <div class="menuitem" (click)="openGroupModal('Add group')">
             <nb-icon icon="plus-outline"></nb-icon>
-            <span class="ml-2" (click)="openGroupModal('Add group')">Create group</span>
+            <span class="ml-2" >Create group</span>
           </div>
-          <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'">
+          <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'" (click)="showWordsForAssign()">
             <nb-icon icon="plus-circle-outline"></nb-icon>
-            <span class="ml-2" (click)="showWordsForAssign()">Add
+            <span class="ml-2" >Add
               words</span>
           </div>
-          <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'">
+          <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'" (click)="deleteWordGroup(selectedGroup$.getValue(), groups)">
             <nb-icon icon="trash-2-outline"></nb-icon>
-            <span class="ml-2" (click)="deleteWordGroup(selectedGroup$.getValue(), groups)">Delete
+            <span class="ml-2" >Delete
               group</span>
           </div>
         </mat-menu>
 
       </app-groups>
+
+      <button (click)="openWordModal('Add word')" class="purpleButton mb-3 w-100" type="submit" nbButton
+        size="small">Add
+        word</button>
+
+      <ng-container *ngIf="words.length; else empty">
+
+        <app-word-list (action)="getActionFromChildren($event)" [pageSize]="pageSize" [trackWords]="trackWords"
+          [filterValue]="filterValue.valueChanges" [menuItems]="wordMenuItems" [selectedGroup]="selectedGroup$ | async"
+          [words]="words">
+        </app-word-list>
+      </ng-container>
+
+      <ng-template #empty>
+        <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
+          <div class="text-center mt-2" *ngIf="selectedGroup !== '2'">
+            <span class="first-word-title"> Add your first word</span>
+          </div>
+
+          <div class="text-center mt-2" *ngIf="selectedGroup === '1'">
+            <span class="first-word-title">or take from <a routerLink="/general-words">Shared words <i
+                  class="fas fa-users"></i></a></span>
+          </div>
+
+
+          <div class="text-center mt-2" *ngIf="selectedGroup === '2'">
+            <span class="first-word-title">Click <img class="mb-3" style="width: 25px; height: 25px"
+                src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
+                alt="">
+              to add word to this group</span>
+          </div>
+        </ng-container>
+
+
+      </ng-template>
+
+
+
+
+
     </ng-container>
 
-    <ng-template #loader>
+
+    <!-- <ng-template #loader>
       <nb-card [nbSpinner]="true" nbSpinnerStatus="basic">
         <nb-card-body>
           Loading...
         </nb-card-body>
       </nb-card>
-    </ng-template>
+    </ng-template> -->
 
 
-    <app-word-list (action)="getActionFromChildren($event)" [pageSize]="pageSize" [trackWords]="trackWords"
-      [filterValue]="filterValue.valueChanges" [menuItems]="wordMenuItems" [selectedGroup]="selectedGroup$ | async"
-      [words]="words">
-    </app-word-list>
   </nb-card-body>
 
 </nb-card>

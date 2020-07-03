@@ -16,6 +16,7 @@ import { tap, map, takeUntil } from 'rxjs/operators';
 
 })
 export class WordTrainingComponent implements OnInit, OnDestroy {
+  allWords$: Observable<Word[]> = this.wordTrainingService.getUserWords();
   unsubscribe$ = new Subject();
   start = false;
   loadingSpinner = false;

@@ -1,18 +1,23 @@
 <div [nbSpinner]="loadingSpinner" nbSpinnerStatus="warning">
   <div class="container">
-    <div class="row align-items-center">
+    <div class="row align-items-center justify-content-center" *ngIf="allWords$ | async as words">
       <!-- <nb-select [formControl]="groupForTraining" class="mb-3 col-1" placeholder="Select mode">
       <nb-option [value]="group._id" *ngFor="let group of wordGroups$ | async">{{group.name}}-{{group.wordQuantity}}
       </nb-option> -->
-      <div class="col-12 text-center">
+      <div class="col-12 text-center" *ngIf="!start && words?.length >= 5">
 
-        <div class="instruction-title"  *ngIf="!start">
+        <div class="instruction-title">
           <span> Select group you want to train</span>
         </div>
 
-        <app-groups *ngIf="!start" [wordGroups]="wordGroups$ | async" [selectedGroup]="selectedTrainingGroups$ | async" (selectGroup)="setGroupForTraining($event)">
+        <app-groups *ngIf="!start" [wordGroups]="wordGroups$ | async" [selectedGroup]="selectedTrainingGroups$ | async"
+          (selectGroup)="setGroupForTraining($event)">
 
         </app-groups>
+      </div>
+
+      <div class="empty-word-list-warning mt-5" *ngIf="words?.length < 5">
+        <span>Add at least 5 words to continue</span>
       </div>
 
       <!-- <nb-option *ngIf="unknownMode" value="unknown"> Unknown - {{userRandomWords.length }}</nb-option> -->
@@ -31,10 +36,13 @@
 
       </app-instructions> -->
   <div class="text-center start-btn" *ngIf="!start">
-    <button type="buttom" (click)="startTrain()" class="col-10 mb-2" nbButton
-      style="background-color: darkorchid; border-color: darkorchid">
-      Start
-    </button>
+    <ng-container *ngIf="allWords$ | async as words">
+      <button type="buttom" [disabled]="words?.length < 5" [ngClass]="{'purpleButton': words?.length >= 5 }"
+        (click)=" startTrain()" class="col-10 mb-2" nbButton>
+        Start
+      </button>
+    </ng-container>
+
   </div>
 
   <ng-container *ngIf="currentTrainingWord$ | async as word">

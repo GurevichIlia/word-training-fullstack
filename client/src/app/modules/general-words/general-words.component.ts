@@ -68,6 +68,11 @@ export class GeneralWordsComponent implements OnInit {
       .subscribe();
   }
 
+  updateWordsList() {
+    this.getGeneralWords();
+    console.log('SWIPED')
+  }
+
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.

@@ -10,7 +10,7 @@
 
 </div>
 
-<app-toolbar [title]="'Change learning language: ' + (learningLanguage$ | async)?.name"
+<app-toolbar [title]="'Change learning language: ' + ((learningLanguage$ | async)?.name || 'undefined')"
   (click)="onChangeLearningLanguage()">
   <i class="fa fa-arrow-right" aria-hidden="true"></i>
 </app-toolbar>

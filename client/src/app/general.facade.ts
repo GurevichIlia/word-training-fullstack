@@ -31,7 +31,7 @@ export class GeneralFacade {
           if (currentLang) {
             return this.apiWordsService.getWordsFromServerForUser(currentLang._id);
           } else {
-            this.router.navigate(['languages']);
+            // this.router.navigate(['/languages']);
             return of([]);
           }
         }),
@@ -57,6 +57,8 @@ export class GeneralFacade {
       this.apiLanguageService.getCurrentLanguage$()
         .pipe(
           take(1),
+          // tap(language => language ? language : this.router.navigate(['/languages'])),
+
           tap(lang => this.generalState.setCurrentLanguage(lang)
           )).subscribe(() => console.log('LANG GOT'), err => console.log(err), () => console.log('COMPLETE LANG SUBS'));
     }
@@ -65,6 +67,9 @@ export class GeneralFacade {
 
   }
 
+  getCurrentLearningLanguage() {
+    return this.generalState.getCurrentLearningLanguage();
+  }
 
   // getUserWordsFromServer() {
   //   return this.getCurrentLanguage$()

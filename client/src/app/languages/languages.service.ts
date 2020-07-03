@@ -5,7 +5,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
-
 @Injectable({
   providedIn: 'root'
 
@@ -19,7 +18,7 @@ export class LanguagesService {
   ) { }
 
   getAllLanguages(): Observable<Language[]> {
-    return this.http.get<Language[]>(`/api/languages/getAllLanguages`);
+    return this.http.get<Language[]>(`/api/languages/getAllLanguages`)
   }
 
   getCurrentLanguage$() {
@@ -53,7 +52,10 @@ export class LanguagesService {
   }
 
   deleteUserLanguage(languageId: string) {
-    return this.http.post<Language>(`/api/languages/deleteUserLanguage`, { languageId });
+    if (confirm('Would toy like to delete this langauge?')) {
+      return this.http.post<Language>(`/api/languages/deleteUserLanguage`, { languageId });
+
+    }
 
   }
 
@@ -71,5 +73,36 @@ export class LanguagesService {
       candidates.push(language);
     }
     return candidates;
+  }
+
+  addFlagToLanguage(language: Language) {
+    const lang = { ...language };
+    switch (language.name) {
+      case 'Hebrew':
+        lang.flag = '../../assets/icons/Flags/iconfinder_flag-israel_748123.png'
+        break;
+      case 'English':
+        lang.flag = '../../assets/icons/Flags/iconfinder_flag-united-kingdom_748024.png'
+        break;
+      case 'Spain':
+        lang.flag = '../../assets/icons/Flags/iconfinder_flag-spain_748120.png'
+        break;
+      case 'Germany':
+        lang.flag = '../../assets/icons/Flags/iconfinder_flag-germany_748067.png'
+        break;
+      case 'Dutch':
+        lang.flag = '../../assets/icons/Flags/iconfinder_flag-the-netherlands_748017.png'
+        break;
+      case 'France':
+        lang.flag = '../../assets/icons/Flags/iconfinder_flag-france_748130.png'
+        break;
+
+    }
+
+    return lang;
+  }
+
+  getCurrentLearningLanguage() {
+    return this.generalFacade.getCurrentLearningLanguage();
   }
 }

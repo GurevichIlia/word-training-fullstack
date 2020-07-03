@@ -24,6 +24,7 @@ export interface Language {
   name: string;
   _id?: string;
   isSelected?: boolean;
+  flag?: string;
 }
 
 export interface WordGroup {

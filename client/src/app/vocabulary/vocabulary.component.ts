@@ -300,6 +300,10 @@ export class VocabularyComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
+  updateWordsList() {
+    this.vocabularyFacade.updateWordsAndGroups();
+
+  }
 
   unsubscribe() {
     this.subscription$.next();

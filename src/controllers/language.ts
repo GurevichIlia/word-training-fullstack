@@ -32,11 +32,10 @@ export class LanguagesController {
 
     public createLanguage = async (req: Request, res: Response) => {
         try {
-            const user = req.user as { _id: string; email: string };
+            // const user = req.user as { _id: string; email: string };
 
             const newLanguage = await new Language({
                 name: req.body.name,
-                user: user
             });
             await newLanguage.save();
             res.status(201).json(newLanguage);

@@ -23,6 +23,8 @@ export class LanguagesComponent implements OnInit, OnDestroy {
 
   currentLearningLanguage$: Observable<Language>;
   subscription$ = new Subject();
+  languageIdCandidateToLearn: string;
+  selectedTab: 0 | 1;
   constructor(
     private notifications: NotificationsService,
     private languagesService: LanguagesService,
@@ -58,6 +60,8 @@ export class LanguagesComponent implements OnInit, OnDestroy {
 
           });
         }),
+        map(languages => languages.map(language => this.languagesService.addFlagToLanguage(language))),
+
         shareReplay(),
         tap(res => console.log('ALL LANGUAGES', res)));
   }
@@ -65,7 +69,9 @@ export class LanguagesComponent implements OnInit, OnDestroy {
   getUserLanguages() {
     this.userLanguages$ = this.languagesService.getUserLanguages()
       .pipe(
-        tap(res => console.log('USER LANGUAGES', res)),
+        tap(languages => console.log('USER LANGUAGES', languages)),
+        tap(languages => languages.length > 0 ? this.selectedTab = 0 : this.selectedTab = 1),
+
         // tap(langauges => langauges.length === 0 ? this.setCurrentLearningLanguage('') : ''),
         map(languages => languages.map(langauge => ({ ...langauge, isSelected: true }))),
 
@@ -83,22 +89,26 @@ export class LanguagesComponent implements OnInit, OnDestroy {
     }
 
     if (languageId) {
-      this.languagesService.setCurrentLanguageOnServer(languageId).
-        pipe(
-          takeUntil(this.subscription$)
-        )
-        .subscribe(res => {
-          if (res.currentLanguage._id) {
-            this.goToVocabulary();
-            this.languagesService.setCurrentLearningLanguage(res.currentLanguage);
-          }
-        },
-          err => this.notifications.error('', err.error.message));
+      this.languageIdCandidateToLearn = null;
+      this.setCurrentLanguageOnServer(languageId)
     } else {
       this.notifications.warning('', 'Please select language');
     }
   }
 
+  setCurrentLanguageOnServer(languageId) {
+    this.languagesService.setCurrentLanguageOnServer(languageId).
+      pipe(
+        takeUntil(this.subscription$)
+      )
+      .subscribe(res => {
+        if (res && res.currentLanguage && res.currentLanguage._id) {
+          this.goToVocabulary();
+          this.languagesService.setCurrentLearningLanguage(res.currentLanguage);
+        }
+      },
+        err => this.notifications.error('', err.error.message));
+  }
 
 
   // onEdit(langId: string) {
@@ -119,13 +129,15 @@ export class LanguagesComponent implements OnInit, OnDestroy {
   }
 
   addLanguageToUserLanguages(language: Language) {
+    this.languageIdCandidateToLearn = language._id;
     this.languagesService.addUserLanguages([language])
       .pipe(
         takeUntil(this.subscription$)
       )
       .subscribe(res => {
-        this.getUserLanguages();
+
         this.getAllLanguages();
+        this.getUserLanguages();
         console.log('AFTER ADD LANGUAGES', res);
       }, err => this.notifications.error('', err.error.message));
 
@@ -137,6 +149,9 @@ export class LanguagesComponent implements OnInit, OnDestroy {
         takeUntil(this.subscription$)
       )
       .subscribe(res => {
+        if (this.languagesService.getCurrentLearningLanguage() && languageId === this.languagesService.getCurrentLearningLanguage()._id) {
+          this.setCurrentLanguageOnServer(undefined);
+        }
         this.getUserLanguages();
         this.getAllLanguages();
         this.getCurrentLearningLanguage();

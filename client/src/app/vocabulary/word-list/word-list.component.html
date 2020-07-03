@@ -1,12 +1,12 @@
-<div #scrollframe *ngIf="words; else loader">
-  <ng-container *ngIf="words.length !== 0 ; else empty">
+<div *ngIf="words">
+  <ng-container *ngIf="words.length !== 0">
 
     <div class="search-results" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="20"
       (scrolled)="onScroll()">
       <ng-container *ngFor="let word of words ; trackBy: trackWords; let i = index">
 
-        <app-word (action)="sendAction($event)" [userId]="userId" [word]="word" [isShowMenu]="isShowMenu" [menuItems]="menuItems"
-          [isShowDefaultOptions]="isShowDefaultOptions">
+        <app-word (action)="sendAction($event)" [userId]="userId" [word]="word" [isShowMenu]="isShowMenu"
+          [menuItems]="menuItems" [isShowDefaultOptions]="isShowDefaultOptions">
         </app-word>
 
 
@@ -16,20 +16,17 @@
 
 
   </ng-container>
-  <ng-template #empty>
-    <span class="m-auto">No one word yet</span>
 
-  </ng-template>
 
   <!-- <button class="col-12" (click)="showMore()" type="button" nbButton outline status="default"
                   size="small">Show
                   more</button> -->
 </div>
 
-<ng-template #loader>
+<!-- <ng-template #loader>
   <nb-card [nbSpinner]="true" nbSpinnerStatus="basic">
     <nb-card-body>
       Loading...
     </nb-card-body>
   </nb-card>
-</ng-template>
+</ng-template> -->

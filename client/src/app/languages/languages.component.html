@@ -1,23 +1,17 @@
-<div *ngIf="allLanguages$ | async as languages; else loader">
 
   <app-select-language
-    *ngIf="languages.length !== 0"
+  [candidateToLearn]="languageIdCandidateToLearn"
     [currentlanguageId]="(currentLearningLanguage$ | async)?._id"
-    [allLanguages]="languages"
-	[userLanguages]="userLanguages$ | async"
+    [userLanguages]="userLanguages$ | async"
+    [allLanguages]="allLanguages$ | async"
+    [selectedTab]="selectedTab"
 
     (addLanguage)="addLanguageToUserLanguages($event)"
   (deleteUserLanguage)="deleteUserLanguage($event)"
   (selectUserLanguageForLearning)="setCurrentLearningLanguage($event)"
 
-
-
 	>
   </app-select-language>
-
-
-
-</div>
 
 <ng-template #loader>
   <nb-card [nbSpinner]="true" nbSpinnerStatus="basic">
