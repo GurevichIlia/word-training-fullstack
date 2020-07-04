@@ -9,7 +9,7 @@ import {
   NbAccordionModule, NbActionsModule, NbButtonModule, NbCardModule,
   NbCheckboxModule, NbContextMenuModule, NbIconModule, NbInputModule,
   NbLayoutModule, NbListModule, NbMenuModule, NbSelectModule, NbSpinnerModule,
-   NbThemeModule, NbUserModule, NbProgressBarModule
+  NbThemeModule, NbUserModule, NbProgressBarModule
 } from '@nebular/theme';
 import { NgxPrettyCheckboxModule } from 'ngx-pretty-checkbox';
 import { HeaderComponent } from './../header/header.component';
@@ -28,7 +28,8 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
-import {MatBadgeModule} from '@angular/material/badge';
+import { MatBadgeModule } from '@angular/material/badge';
+import {MatDialogModule} from '@angular/material/dialog';
 
 
 @NgModule({
@@ -73,8 +74,8 @@ import {MatBadgeModule} from '@angular/material/badge';
     InfiniteScrollModule,
     MatSnackBarModule,
     MatTabsModule,
-    MatBadgeModule
-
+    MatBadgeModule,
+    MatDialogModule
   ],
   exports: [
     ReactiveFormsModule,
@@ -96,9 +97,7 @@ import {MatBadgeModule} from '@angular/material/badge';
     NbMenuModule,
     NbAccordionModule,
     NgxPrettyCheckboxModule,
-    MatCardModule,
-    MatMenuModule,
-    MatSelectModule,
+
     NbProgressBarModule,
 
     FooterComponent,
@@ -110,10 +109,15 @@ import {MatBadgeModule} from '@angular/material/badge';
 
     ConvertToPercentPipe,
     ReverseArrayPipe,
+
     InfiniteScrollModule,
     MatSnackBarModule,
     MatTabsModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatDialogModule,
+    MatCardModule,
+    MatMenuModule,
+    MatSelectModule,
 
   ],
   entryComponents: [EditWordComponent, AskQuestionComponent]

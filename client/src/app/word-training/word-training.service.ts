@@ -150,7 +150,8 @@ export class WordTrainingService {
       return wordsByGroup.pipe(
         map(words => {
           // tslint:disable-next-line: max-line-length
-          const randomNumber = Math.floor(Math.random() * 3);
+
+          const randomNumber = Math.floor(Math.random() * 4);
           console.log('RANDOM',randomNumber)
 
           const firstPriority = words.filter(word => word.levelKnowledge === randomNumber);

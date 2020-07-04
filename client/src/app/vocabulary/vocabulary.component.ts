@@ -4,11 +4,13 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbCardBackComponent, NbCardBodyComponent } from '@nebular/theme';
 import { BehaviorSubject, EMPTY, Observable, Subject, fromEvent } from 'rxjs';
-import { switchMap, takeUntil, filter, tap, take } from 'rxjs/operators';
+import { switchMap, takeUntil, filter, tap, take, delay } from 'rxjs/operators';
 import { Word, WordGroup, MenuItem } from './../shared/interfaces';
 import { AskQuestionComponent } from './../shared/modals/ask-question/ask-question.component';
 import { NotificationsService } from './../shared/services/notifications.service';
 import { ALL_WORDS, VocabularyFacade } from './vocabulary.facade';
+import { InstallSuggestionComponent } from '../core/install-app/install-suggestion/install-suggestion.component';
+import { MatDialog } from '@angular/material/dialog';
 
 
 
@@ -45,13 +47,16 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     new MenuItem('Edit', 'EDIT WORD', 'edit-2-outline'),
     new MenuItem('Share for all', 'SHARE FOR ALL', 'share'),
     new MenuItem('Delete', 'DELETE WORD', 'trash-2-outline'),
-  ]
+  ];
+
+  deferredPrompt // For 'beforeinstallprompt' event
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private notification: NotificationsService,
     private dialogService: NbDialogService,
-    private vocabularyFacade: VocabularyFacade
+    private vocabularyFacade: VocabularyFacade,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -64,7 +69,9 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.vocabularyFacade.isUpdateGroups()
       .pipe(takeUntil(this.subscription$))
-      .subscribe(() => this.getWordsGroups())
+      .subscribe(() => this.getWordsGroups());
+
+    this.showInstallAppSuggestion();
   }
 
   ngAfterViewInit() {
@@ -307,6 +314,29 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
 
   updateWordsList() {
     this.vocabularyFacade.updateWordsAndGroups();
+
+  }
+
+  showInstallAppSuggestion() {
+    const beforeinstallprompt$ = fromEvent(window, 'beforeinstallprompt');
+    beforeinstallprompt$
+      .pipe(
+        delay(4000),
+        takeUntil(this.subscription$)
+      )
+      .subscribe(e => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        // Update UI notify the user they can install the PWA
+        this.showInstallPromotion(e);
+        console.log(e, 'BEFORE INSTALL');
+      });
+  }
+
+  showInstallPromotion(e?: Event) {
+    this.vocabularyFacade.showInstallSuggestion(e);
+    this.dialog.open(InstallSuggestionComponent, { width: '95%', maxWidth: '300px', height: '180px', panelClass: 'padding-0' });
 
   }
 

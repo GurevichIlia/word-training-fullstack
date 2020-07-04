@@ -1,8 +1,11 @@
+@import '../../../styles/variables.scss';
+
 .main-box {
   background-color: white;
   height: 600px;
   overflow: auto;
   padding: 20px;
+  min-width: 330px;
 }
 
 .submit-btn-box {
@@ -11,4 +14,8 @@
   top: 0;
   background-color: white;
   z-index: 10;
+}
+.first-word-title {
+  color: $titleColor;
+
 }

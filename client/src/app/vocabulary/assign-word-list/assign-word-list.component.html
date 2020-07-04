@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-    <div class="col-12">
+    <div class="col-12 w-100">
       <div class="submit-btn-box" *ngIf="selectedWords.length > 0">
         <button class="purpleButton" nbButton (click)="assignWords(group, selectedWords)">Submit</button>
       </div>
@@ -10,10 +10,19 @@
         <h4>Select words</h4>
 
         <hr>
+        <ng-container *ngIf="words$ | async as words">
+          <ng-container *ngIf="words.length > 0; else empty">
+            <app-word-list [words]="words" (action)="getAction($event)" [isShowMenu]="false"
+              [isShowDefaultOptions]="false">
+            </app-word-list>
+          </ng-container>
+          <ng-template #empty>
+            <div class="text-center mt-2" >
+              <span class="first-word-title">No words yet</span>
+            </div>
+          </ng-template>
+        </ng-container>
 
-        <app-word-list [words]="words$ | async" (action)="getAction($event)" [isShowMenu]="false"
-          [isShowDefaultOptions]="false">
-        </app-word-list>
 
       </div>
 

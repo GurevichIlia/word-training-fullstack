@@ -47,7 +47,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   login() {
-    console.log(this.loginForm.value);
 
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -60,7 +59,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       )
       .subscribe(res => {
         if (res) {
-          console.log('AFTER LOGIN', res);
           this.authService.setIsAuthenticated(true);
           this.localStorageService.setItem('words-token', res.token);
           if (res.currentLanguage) {

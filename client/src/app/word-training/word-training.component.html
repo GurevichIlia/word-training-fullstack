@@ -4,16 +4,19 @@
       <!-- <nb-select [formControl]="groupForTraining" class="mb-3 col-1" placeholder="Select mode">
       <nb-option [value]="group._id" *ngFor="let group of wordGroups$ | async">{{group.name}}-{{group.wordQuantity}}
       </nb-option> -->
+
       <div class="col-12 text-center" *ngIf="!start && words?.length >= 5">
 
         <div class="instruction-title">
           <span> Select group you want to train</span>
         </div>
 
-        <app-groups *ngIf="!start" [wordGroups]="wordGroups$ | async" [selectedGroup]="selectedTrainingGroups$ | async"
+        <app-groups *ngIf="!start" [wordGroups]="wordGroups$ | async" [selectedGroup]="selectedTrainingGroup$ | async"
           (selectGroup)="setGroupForTraining($event)">
 
         </app-groups>
+
+
       </div>
 
       <div class="empty-word-list-warning mt-5" *ngIf="words?.length < 5">

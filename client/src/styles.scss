@@ -78,6 +78,13 @@ body {
 
 
 }
+
 mat-tab-group .mat-tab-labels {
   justify-content: space-around;
+}
+
+.padding-0 {
+  mat-dialog-container {
+    padding: 0 !important
+  }
 }

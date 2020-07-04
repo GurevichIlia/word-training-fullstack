@@ -10,8 +10,9 @@
     </div>
   </nb-card-header>
 
-  <nb-card-body >
-          <ng-container *ngIf="wordGroups$ | async as groups; else loader">
+  <nb-card-body>
+    <ng-container *ngIf="wordGroups$ | async as groups; else loader">
+
       <app-groups [wordGroups]="wordGroups$ | async" [selectedGroup]="selectedGroup$ | async"
         (selectGroup)="selectedGroup$.next($event)">
 
@@ -19,16 +20,18 @@
         <mat-menu #menu="matMenu" class="matmenu">
           <div class="menuitem" (click)="openGroupModal('Add group')">
             <nb-icon icon="plus-outline"></nb-icon>
-            <span class="ml-2" >Create group</span>
+            <span class="ml-2">Create group</span>
           </div>
-          <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'" (click)="showWordsForAssign()">
+          <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'"
+            (click)="showWordsForAssign()">
             <nb-icon icon="plus-circle-outline"></nb-icon>
-            <span class="ml-2" >Add
+            <span class="ml-2">Add
               words</span>
           </div>
-          <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'" (click)="deleteWordGroup(selectedGroup$.getValue(), groups)">
+          <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'"
+            (click)="deleteWordGroup(selectedGroup$.getValue(), groups)">
             <nb-icon icon="trash-2-outline"></nb-icon>
-            <span class="ml-2" >Delete
+            <span class="ml-2">Delete
               group</span>
           </div>
         </mat-menu>
@@ -49,11 +52,14 @@
 
       <ng-template #empty>
         <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
-          <div class="text-center mt-2" *ngIf="selectedGroup !== '2'">
-            <span class="first-word-title"> Add your first word</span>
+          <div class="text-center" *ngIf="selectedGroup !== '2'">
+            <span class="first-word-title">Empty group
+            </span>
+            <br>
+            <div class="mt-2"><strong (click)="showWordsForAssign()">Add words</strong></div>
           </div>
 
-          <div class="text-center mt-2" *ngIf="selectedGroup === '1'">
+          <div class="text-center mt-2" *ngIf="selectedGroup === '1' && !filterValue">
             <span class="first-word-title">or take from <a routerLink="/general-words">Shared words <i
                   class="fas fa-users"></i></a></span>
           </div>

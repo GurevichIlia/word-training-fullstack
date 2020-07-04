@@ -7,7 +7,7 @@ import { Subject, Observable, BehaviorSubject, combineLatest, of } from 'rxjs';
 
 import { Word, WordGroup } from '../shared/interfaces';
 import { Router } from '@angular/router';
-import { tap, map, takeUntil } from 'rxjs/operators';
+import { tap, map, takeUntil, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-word-training',
@@ -22,12 +22,13 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
   loadingSpinner = false;
   animationState: string;
   trainingWordsQuantity: number;
-  selectedTrainingGroups$ = this.wordTrainingService.getSelectedGroupForTraining();
+  selectedTrainingGroup$ = this.wordTrainingService.getSelectedGroupForTraining();
   currentOrderIndex$ = new BehaviorSubject<number>(0);
   currentTrainingWord$: Observable<Word>;
   wordGroups$: Observable<WordGroup[]>;
   priority = 0;
   previousWord$: Observable<Word>;
+
   constructor(
     private wordTrainingService: WordTrainingService,
     private router: Router,

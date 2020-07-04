@@ -21,6 +21,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { InstallSuggestionComponent } from './core/install-app/install-suggestion/install-suggestion.component';
 
 @Injectable()
 export class MyHammerConfig extends HammerGestureConfig {
@@ -32,6 +33,7 @@ export class MyHammerConfig extends HammerGestureConfig {
 @NgModule({
   declarations: [
     AppComponent,
+    InstallSuggestionComponent,
 
     // UserDataComponent,
     // HomeComponent,
@@ -52,7 +54,8 @@ export class MyHammerConfig extends HammerGestureConfig {
     NbMenuModule.forRoot(),
     NbThemeModule.forRoot({ name: 'default' }),
     NbSidebarModule.forRoot(), // NbSidebarModule.forRoot(), //if this is your app.module
-    NbDialogModule.forRoot(), ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    NbDialogModule.forRoot(),
+     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
 
 
 

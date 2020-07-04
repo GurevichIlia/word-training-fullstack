@@ -10,6 +10,7 @@ import { GeneralState } from '../general.state';
 import { Word } from '../shared/interfaces';
 import { ApiWordsService } from './../shared/services/api/api-words.service';
 import { AskQuestionComponent } from '../shared/modals/ask-question/ask-question.component';
+import { InstallAppService } from '../core/install-app/install-app.service';
 
 export const ALL_WORDS = '1';
 export const FAVORITES = '2';
@@ -22,7 +23,8 @@ export class VocabularyFacade {
     private apiWords: ApiWordsService,
     private generalFacade: GeneralFacade,
     private dialogService: NbDialogService,
-    private notification: NotificationsService
+    private notification: NotificationsService,
+    private installApp: InstallAppService
   ) {
 
   }
@@ -183,6 +185,10 @@ export class VocabularyFacade {
 
   getWordsGroups() {
     return this.generalFacade.getWordsGroups();
+  }
+
+  showInstallSuggestion(e: Event) {
+    this.installApp.showInstallSuggestion(e);
   }
   // parseText(oldWords: string) {
   //   const language = this.generalState.getCurrentLearningLanguage();
