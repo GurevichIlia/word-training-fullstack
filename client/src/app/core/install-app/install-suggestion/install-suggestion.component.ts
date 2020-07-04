@@ -12,17 +12,23 @@ export class InstallSuggestionComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<InstallSuggestionComponent>,
-
+    @Inject(MAT_DIALOG_DATA) public data: { isIos: boolean },
     public installApp: InstallAppService,
   ) { }
 
   ngOnInit() {
 
   }
+
   onInstallApp() {
     this.installApp.installApp();
     this.dialogRef.close();
   }
 
+  iosInstallSuggestion() {
+    this.dialogRef.close();
+
+    localStorage.setItem('installedOnIos', 'true');
+  }
 
 }

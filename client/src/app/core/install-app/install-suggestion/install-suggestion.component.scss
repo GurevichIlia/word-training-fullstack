@@ -13,4 +13,26 @@
     color: $titleColor;
 
   }
+
+  .ios-title {
+    color: white;
+
+    nb-icon {
+      font-size: 20px;
+    }
+  }
+
+  .add-home {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: -20px;
+  }
+
+  .click-title {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    margin-bottom: -20px;
+  }
 }

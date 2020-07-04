@@ -1,6 +1,7 @@
 import { AuthService } from './shared/services/auth.service';
 import { Component, OnInit } from '@angular/core';
-import { Observable, fromEvent } from 'rxjs';
+import { Observable, fromEvent, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/internal/operators';
 
 @Component({
   selector: 'app-root',
@@ -10,34 +11,26 @@ import { Observable, fromEvent } from 'rxjs';
 export class AppComponent implements OnInit {
   title = 'word-training';
   isShowFooterMenu$: Observable<boolean>;
-  deferredPrompt
+  subscription$ = new Subject();
   constructor(private authService: AuthService) {
     this.isShowFooterMenu$ = this.authService.isAuthenticated$();
   }
 
   ngOnInit() {
-
-
-
-    const isAlreadyInstalled$ = fromEvent(window, 'appinstalled');
-
-    isAlreadyInstalled$.subscribe(res => console.log(res, 'INSTALLED'))
-
-
-  }
-  installApp() {
-    this.deferredPrompt.prompt();
-    // Wait for the user to respond to the prompt
-    this.deferredPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('User accepted the install prompt');
-      } else {
-        console.log('User dismissed the install prompt');
-      }
-    });
+    const beforeinstallprompt$ = fromEvent(window, 'beforeinstallprompt');
+    beforeinstallprompt$
+      .pipe(
+        takeUntil(this.subscription$)
+      )
+      .subscribe(e => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        // Update UI notify the user they can install the PWA
+        console.log(e, 'BEFORE INSTALL');
+      });
   }
 
-  showInstallPromotion() {
-    console.log('SHOW PROMOTION');
-  }
+
+
 }

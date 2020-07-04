@@ -11,6 +11,7 @@ import { NotificationsService } from './../shared/services/notifications.service
 import { ALL_WORDS, VocabularyFacade } from './vocabulary.facade';
 import { InstallSuggestionComponent } from '../core/install-app/install-suggestion/install-suggestion.component';
 import { MatDialog } from '@angular/material/dialog';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 
 
@@ -26,7 +27,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   newWordForm: FormGroup;
   addWordByList: string;
   pageSize = 20;
-  filterValue = new FormControl('');
+  filterControl = new FormControl('');
   subscription$ = new Subject();
   titleForModal: string;
   wordModal: NbDialogRef<any>;
@@ -56,7 +57,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     private notification: NotificationsService,
     private dialogService: NbDialogService,
     private vocabularyFacade: VocabularyFacade,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -72,6 +73,8 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(() => this.getWordsGroups());
 
     this.showInstallAppSuggestion();
+
+    this.detectDevice();
   }
 
   ngAfterViewInit() {
@@ -89,7 +92,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   getWordsFilteredByGroup() {
     this.wordsFiltredByGroup$ = this.vocabularyFacade.getUserWordsFiltredByGroup(
       this.selectedGroup$.asObservable(),
-      this.filterValue.valueChanges
+      this.filterControl.valueChanges
     ) as Observable<Word[]>;
   }
 
@@ -329,6 +332,9 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
         e.preventDefault();
         // Stash the event so it can be triggered later.
         // Update UI notify the user they can install the PWA
+        if (this.vocabularyFacade.appIsInstalling()) {
+          return;
+        }
         this.showInstallPromotion(e);
         console.log(e, 'BEFORE INSTALL');
       });
@@ -337,6 +343,26 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   showInstallPromotion(e?: Event) {
     this.vocabularyFacade.showInstallSuggestion(e);
     this.dialog.open(InstallSuggestionComponent, { width: '95%', maxWidth: '300px', height: '180px', panelClass: 'padding-0' });
+
+  }
+
+  detectDevice() {
+    const device = this.vocabularyFacade.detectDevice();
+
+    if (device.os.toLowerCase() === 'ios') {
+      const isInstalled = localStorage.getItem('installedOnIos');
+
+      if (isInstalled) {
+        return;
+      }
+
+      setTimeout(() => {
+        this.dialog.open(InstallSuggestionComponent,
+          { width: '95%', maxWidth: '300px', height: '180px', panelClass: 'padding-0', data: { ios: true } });
+
+      }, 4000);
+
+    }
 
   }
 

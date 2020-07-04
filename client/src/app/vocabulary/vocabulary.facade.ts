@@ -190,6 +190,14 @@ export class VocabularyFacade {
   showInstallSuggestion(e: Event) {
     this.installApp.showInstallSuggestion(e);
   }
+
+  appIsInstalling() {
+    return this.installApp.appIsInstalling();
+  }
+
+  detectDevice() {
+    return this.installApp.detectDevice();
+  }
   // parseText(oldWords: string) {
   //   const language = this.generalState.getCurrentLearningLanguage();
 

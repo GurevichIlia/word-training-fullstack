@@ -31,6 +31,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatBadgeModule } from '@angular/material/badge';
 import {MatDialogModule} from '@angular/material/dialog';
 
+import { DeviceDetectorModule } from 'ngx-device-detector';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,9 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatSnackBarModule,
     MatTabsModule,
     MatBadgeModule,
-    MatDialogModule
+    MatDialogModule,
+
+    DeviceDetectorModule
   ],
   exports: [
     ReactiveFormsModule,
@@ -118,6 +121,8 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatCardModule,
     MatMenuModule,
     MatSelectModule,
+
+    DeviceDetectorModule
 
   ],
   entryComponents: [EditWordComponent, AskQuestionComponent]
