@@ -335,35 +335,14 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.vocabularyFacade.appIsInstalling()) {
           return;
         }
-        this.showInstallPromotion(e);
+
+        this.vocabularyFacade.showInstallPromotion(e);
         console.log(e, 'BEFORE INSTALL');
       });
   }
 
-  showInstallPromotion(e?: Event) {
-    this.vocabularyFacade.showInstallSuggestion(e);
-    this.dialog.open(InstallSuggestionComponent, { width: '95%', maxWidth: '300px', height: '180px', panelClass: 'padding-0' });
-
-  }
-
   detectDevice() {
-    const device = this.vocabularyFacade.detectDevice();
-
-    if (device.os.toLowerCase() === 'ios') {
-      const isInstalled = localStorage.getItem('installedOnIos');
-
-      if (isInstalled) {
-        return;
-      }
-
-      setTimeout(() => {
-        this.dialog.open(InstallSuggestionComponent,
-          { width: '95%', maxWidth: '300px', height: '180px', panelClass: 'padding-0', data: { ios: true } });
-
-      }, 4000);
-
-    }
-
+   this.vocabularyFacade.detectDevice();
   }
 
   unsubscribe() {

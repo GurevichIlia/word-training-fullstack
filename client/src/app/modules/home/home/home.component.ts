@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { startWith, take, takeUntil } from 'rxjs/operators';
 import { GeneralFacade } from 'src/app/general.facade';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -12,10 +13,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   subscription$ = new Subject();
   isShowMainScreen$ = new BehaviorSubject(true);
   constructor(
-    private generaFacade: GeneralFacade
+    private generaFacade: GeneralFacade,
+    private router: Router
   ) { }
 
   ngOnInit() {
+    // this.checkRoute();
     this.generaFacade.isUpdateWordList$()
       .pipe(
         startWith(' '),
@@ -36,7 +39,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       ).subscribe(() => console.log('USER WORD'));
   }
 
-
+  // checkRoute() {
+  //   this.router.events.subscribe(res => console.log('ROUTE', res));
+  // }
 
   ngOnDestroy() {
     this.subscription$.next();

@@ -14,7 +14,9 @@
     <h5 class="group-name" *ngIf="trainedGroup$ | async as group">Group name: {{group.name}}</h5>
     <nb-list>
       <nb-list-item *ngFor="let word of words" class="d-block">
-        <span><strong>{{ word.word }}</strong></span>
+        <span class="word"> {{word.word}}</span>
+        <br>
+        <span class="translation">{{word.translation}}</span>
         <nb-progress-bar class="custom-progress-bar mt-3" [value]="word.levelKnowledge | convertToPercent" size="tiny"
           [displayValue]="true"></nb-progress-bar>
 

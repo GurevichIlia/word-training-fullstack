@@ -1,10 +1,12 @@
+import { VocabularyFacade } from './../vocabulary.facade';
 import { GeneralFacade } from 'src/app/general.facade';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, switchMap, startWith } from 'rxjs/operators';
 import { AssignWordsService } from './../assign-words.service';
 import { Component, OnInit, Input, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { Word } from 'src/app/shared/interfaces';
 import { Observable, Subject } from 'rxjs';
 import { NbDialogRef } from '@nebular/theme';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-assign-word-list',
@@ -13,17 +15,27 @@ import { NbDialogRef } from '@nebular/theme';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AssignWordListComponent implements OnInit, OnDestroy {
-  @Input() words$: Observable<Word[]>;
+  words$: Observable<Word[]>;
   @Input() group: string;
   selectedWords = [];
   subscription$ = new Subject();
+  filterControl = new FormControl('');
   constructor(
     protected dialogRef: NbDialogRef<AssignWordListComponent>,
     private generalFacade: GeneralFacade,
-    private assignService: AssignWordsService) { }
+    private assignService: AssignWordsService,
+    private vocabularyFacade: VocabularyFacade
+  ) { }
 
   ngOnInit() {
+    this.getWords();
+  }
 
+  getWords() {
+    this.words$ = this.filterControl.valueChanges
+      .pipe(
+        startWith(''),
+        switchMap(value => this.vocabularyFacade.filterBySearcValue(value, this.vocabularyFacade.getAllUserWords$()) as Observable<Word[]>))
   }
 
   getAction({ action, payload }) {
@@ -52,6 +64,10 @@ export class AssignWordListComponent implements OnInit, OnDestroy {
       });
 
 
+  }
+
+  filterBySearchValue() {
+    this.vocabularyFacade
   }
 
   ngOnDestroy(): void {

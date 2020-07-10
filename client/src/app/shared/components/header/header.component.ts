@@ -4,8 +4,8 @@ import { NbMenuItem, NbMenuService } from '@nebular/theme';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
 import { GeneralFacade } from 'src/app/general.facade';
-import { Language, User } from './../shared/interfaces';
-import { AuthService } from './../shared/services/auth.service';
+import { Language, User } from '../../../shared/interfaces';
+import { AuthService } from '../../../shared/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -24,6 +24,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     { title: 'Word train', link: 'word-training' },
     { title: 'Change language', link: 'languages' },
     { title: 'Log out', link: '/login', icon: 'log-out' }];
+
+  location$: Observable<{ name: string }>
   constructor(
     private authService: AuthService,
     private menuService: NbMenuService,
@@ -41,7 +43,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.menuService.onItemClick()
       .pipe(
         takeUntil(this.unsubscribe$)
-        )
+      )
       .subscribe(data => {
         if (data.item.title === 'Log out') {
           this.logout();
@@ -66,7 +68,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   getCurrentLanguage() {
-    this.currentLanguage$ = this.generalFacade.getCurrentLanguage$().pipe(tap(lang => console.log('LANGUAGE HEADER', lang)));
+    this.currentLanguage$ = this.generalFacade.getCurrentLearningLanguage$().pipe(tap(lang => console.log('LANGUAGE HEADER', lang)));
   }
 
   getquantityWords() {

@@ -41,7 +41,7 @@ export class LanguagesComponent implements OnInit, OnDestroy {
   }
 
   getCurrentLearningLanguage() {
-    this.currentLearningLanguage$ = this.languagesService.getCurrentLanguage$();
+    this.currentLearningLanguage$ = this.languagesService.getCurrentLearningLanguage$();
 
   }
 
@@ -104,7 +104,7 @@ export class LanguagesComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         if (res && res.currentLanguage && res.currentLanguage._id) {
           this.goToVocabulary();
-          this.languagesService.setCurrentLearningLanguage(res.currentLanguage);
+          // this.languagesService.setCurrentLearningLanguage(res.currentLanguage);
         }
       },
         err => this.notifications.error('', err.error.message));
@@ -149,9 +149,7 @@ export class LanguagesComponent implements OnInit, OnDestroy {
         takeUntil(this.subscription$)
       )
       .subscribe(res => {
-        if (this.languagesService.getCurrentLearningLanguage() && languageId === this.languagesService.getCurrentLearningLanguage()._id) {
-          this.setCurrentLanguageOnServer(undefined);
-        }
+
         this.getUserLanguages();
         this.getAllLanguages();
         this.getCurrentLearningLanguage();

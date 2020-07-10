@@ -1,5 +1,5 @@
+import { InstallHelperFunctionsService } from './install-helper-functions.service';
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Injectable({
@@ -8,14 +8,24 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 export class InstallAppService {
   deferredPrompt;
   isInstalling = false;
+
   constructor(
-    private deviceService: DeviceDetectorService
 
-  ) {
+  ) { }
 
 
-  }
 
+  // showInstallPromotion(e?: Event) {
+  //   this.installHelper.showInstallPromotion(e);
+  // }
+
+  // appIsInstalling() {
+  //   return this.installHelper.appIsInstalling();
+  // }
+
+  // detectDevice() {
+  //   return this.installHelper.detectDevice();
+  // }
   showInstallSuggestion(e: Event) {
     this.deferredPrompt = e;
   }
@@ -33,21 +43,8 @@ export class InstallAppService {
     });
   }
 
+
   appIsInstalling() {
     return this.isInstalling;
-  }
-
-
-  detectDevice() {
-    const deviceInfo = this.deviceService.getDeviceInfo();
-    const isMobile = this.deviceService.isMobile();
-    const isTablet = this.deviceService.isTablet();
-    const isDesktopDevice = this.deviceService.isDesktop();
-    console.log(deviceInfo);
-    console.log(isMobile);  // returns if the device is a mobile device (android / iPhone / windows-phone etc)
-    console.log(isTablet);  // returns if the device us a tablet (iPad etc)
-    console.log(isDesktopDevice); // returns if the app is running on a Desktop browser.
-
-    return deviceInfo;
   }
 }

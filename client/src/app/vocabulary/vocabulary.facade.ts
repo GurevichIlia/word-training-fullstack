@@ -1,3 +1,4 @@
+import { InstallHelperFunctionsService } from './../core/install-app/install-helper-functions.service';
 import { WordGroup } from './../shared/interfaces';
 import { GeneralWord } from './../../../../src/interfaces';
 import { NotificationsService } from './../shared/services/notifications.service';
@@ -24,7 +25,8 @@ export class VocabularyFacade {
     private generalFacade: GeneralFacade,
     private dialogService: NbDialogService,
     private notification: NotificationsService,
-    private installApp: InstallAppService
+    private installApp: InstallAppService,
+    private installAppHelper: InstallHelperFunctionsService
   ) {
 
   }
@@ -95,8 +97,11 @@ export class VocabularyFacade {
   }
 
   addNewWord(word: Word) {
-    const language = this.generalState.getCurrentLearningLanguage();
-    return this.apiWords.addWord(word, language);
+    return this.generalFacade.getCurrentLearningLanguage$()
+      .pipe(
+        switchMap(language =>
+          this.apiWords.addWord(word, language)
+        ));
   }
 
   updateWordsAndGroups() {
@@ -106,10 +111,14 @@ export class VocabularyFacade {
   isUpdateGroups() {
     return this.generalFacade.isUpdateWordList$();
   }
-  editWord(word: Word) {
-    const language = this.generalState.getCurrentLearningLanguage();
 
-    return this.apiWords.editWord(word, language)
+  editWord(word: Word) {
+    return this.generalFacade.getCurrentLearningLanguage$()
+      .pipe(
+        switchMap(language =>
+          this.apiWords.editWord(word, language)
+        ));
+
   }
 
   deleteWordFromServer(word: Word) {
@@ -137,8 +146,12 @@ export class VocabularyFacade {
   }
 
   createWordGroup(name: string,) {
-    const language = this.generalState.getCurrentLearningLanguage();
-    return this.apiWords.createWordGroup(name, language);
+    // const language = this.generalState.getCurrentLearningLanguage$();
+    return this.generalState.getCurrentLearningLanguage$()
+      .pipe(
+        switchMap(language =>
+          this.apiWords.createWordGroup(name, language)
+        ));
   }
 
   deleteWordGroup(groupId: string, groups: WordGroup[]) {
@@ -172,14 +185,17 @@ export class VocabularyFacade {
 
 
   addWordsToGeneralList(words: Word[]) {
-    const language = this.generalState.getCurrentLearningLanguage();
-
-    return this.apiWords.addWordsToGeneralList(words, language)
+    return this.generalFacade.getCurrentLearningLanguage$()
       .pipe(
-        tap(res => console.log('AFTER SHARE', res)),
-        tap(res => this.notification.success('Shared'))
-      )
-      ;
+        switchMap(language =>
+          this.apiWords.addWordsToGeneralList(words, language)
+            .pipe(
+              tap(res => console.log('AFTER SHARE', res)),
+              tap(res => this.notification.success('Shared'))
+            )
+        ));
+
+
 
   }
 
@@ -187,8 +203,11 @@ export class VocabularyFacade {
     return this.generalFacade.getWordsGroups();
   }
 
-  showInstallSuggestion(e: Event) {
-    this.installApp.showInstallSuggestion(e);
+  // showInstallSuggestion(e: Event) {
+  //   this.installApp.showInstallSuggestion(e);
+  // }
+  showInstallPromotion(e?: Event) {
+    this.installAppHelper.showInstallPromotion(e);
   }
 
   appIsInstalling() {
@@ -196,7 +215,7 @@ export class VocabularyFacade {
   }
 
   detectDevice() {
-    return this.installApp.detectDevice();
+    return this.installAppHelper.detectDevice();
   }
   // parseText(oldWords: string) {
   //   const language = this.generalState.getCurrentLearningLanguage();

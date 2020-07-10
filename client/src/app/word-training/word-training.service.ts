@@ -1,3 +1,4 @@
+import { GeneralFacade } from 'src/app/general.facade';
 import { ApiWordsService } from './../shared/services/api/api-words.service';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, of, Observable } from 'rxjs';
@@ -19,7 +20,8 @@ export class WordTrainingService {
   constructor(
     private generalState: GeneralState,
     private vocabularyFacade: VocabularyFacade,
-    private wordsApiService: ApiWordsService
+    private wordsApiService: ApiWordsService,
+    private generalFacade: GeneralFacade
   ) {
   }
   getUserWords() {
@@ -114,48 +116,22 @@ export class WordTrainingService {
   }
 
 
-  getWordByPriority(priority: number, wordsByGroup: Observable<Word[]> = this.getFiltredWordsByGroup()) {
-    // console.log(priority)
-    // const index = Math.floor(Math.random() * words.length);
-    // // tslint:disable-next-line: prefer-for-of
-    // if (priority === 0 || priority === 1 || priority === 2 || priority === 3) {
+  getWordByPriority(priority: number) {
 
-    //   // tslint:disable-next-line: max-line-length
-    //   if (words[index].levelKnowledge === 0 || words[index].levelKnowledge === 1 || words[index].levelKnowledge === 2 || words[index].levelKnowledge === 3) {
-
-    //     return words[index];
-    //   } else {
-    //     const word = this.getWordByPriority(priority);
-    //     return word;
-    //   }
-
-
-    // } else {
-    //   // tslint:disable-next-line: max-line-length
-    //   if (words[index].levelKnowledge === 4 || words[index].levelKnowledge === 5) {
-    //     return words[index];
-    //   } else {
-    //     const word = this.getWordByPriority(priority);
-    //     return word;
-    //   }
-
-
-    // }
-
-
-    // tslint:disable-next-line: prefer-for-of
     if (priority === 0 || priority === 1 || priority === 4 || priority === 3 || priority === 6) {
 
       // tslint:disable-next-line: max-line-length
-      return wordsByGroup.pipe(
+      return this.getFiltredWordsByGroup().pipe(
         map(words => {
           // tslint:disable-next-line: max-line-length
 
-          const randomNumber = Math.floor(Math.random() * 4);
-          console.log('RANDOM',randomNumber)
+          const randomLevelKnowledge = Math.floor(Math.random() * 4);
+          console.log('RANDOM', randomLevelKnowledge);
 
-          const firstPriority = words.filter(word => word.levelKnowledge === randomNumber);
-
+          const firstPriority = words.filter(word => word.levelKnowledge === randomLevelKnowledge);
+          // console.log('PRIORITY:', priority)
+          // console.log('LEVEL KNOwLEDGE:', randomLevelKnowledge)
+          // console.log('WORDS:', firstPriority)
           if (firstPriority.length !== 0) {
             const index = Math.floor(Math.random() * firstPriority.length);
             return firstPriority[index];
@@ -173,11 +149,14 @@ export class WordTrainingService {
 
     } else {
       // tslint:disable-next-line: max-line-length
-      return wordsByGroup.pipe(
+
+      return this.getFiltredWordsByGroup().pipe(
         map(words => {
           // tslint:disable-next-line: max-line-length
           const secondPriority = words.filter(word => word.levelKnowledge === 2 || word.levelKnowledge === 5);
-
+          // console.log('PRIORITY:', priority)
+          // console.log('LEVEL KNOwLEDGE:', 2, 5)
+          // console.log('WORDS:', secondPriority)
           if (secondPriority.length !== 0) {
             const index = Math.floor(Math.random() * secondPriority.length);
             return secondPriority[index];
@@ -202,10 +181,17 @@ export class WordTrainingService {
 
 
     }
+
+
   }
   updateWords() {
     const allWords = this.generalState.getUserWords();
-    return this.wordsApiService.updateWords(allWords, this.generalState.getCurrentLearningLanguage());
+
+    return this.generalFacade.getCurrentLearningLanguage$()
+      .pipe(
+        switchMap(language => this.wordsApiService.updateWords(allWords, language))
+      )
+
   }
 
   sortWordsForTraining(words: Word[]) {

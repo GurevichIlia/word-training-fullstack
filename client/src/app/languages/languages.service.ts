@@ -3,7 +3,7 @@ import { Language, LanguageResponse } from '../shared/interfaces';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, shareReplay, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ import { map, shareReplay } from 'rxjs/operators';
 }
 )
 export class LanguagesService {
-
+  // shareReplay(1));
   constructor(
     private http: HttpClient,
     private generalFacade: GeneralFacade
@@ -21,9 +21,15 @@ export class LanguagesService {
     return this.http.get<Language[]>(`/api/languages/getAllLanguages`)
   }
 
-  getCurrentLanguage$() {
-    // tslint:disable-next-line: max-line-length
-    return this.http.get<{ currentLang: Language }>(`/api/languages/getCurrentLanguage`).pipe(map(({ currentLang }) => currentLang), shareReplay(1));
+  getCurrentLearningLanguage$() {
+    // if (!this.currentLang$) {
+    //   this.currentLang$ = this.http.get<{ currentLang: Language }>(`/api/languages/getCurrentLanguage`).pipe(map(({ currentLang }) => currentLang),
+
+    // }
+    // // tslint:disable-next-line: max-line-length
+    // return this.currentLang$;
+
+    return this.generalFacade.getCurrentLearningLanguage$();
   }
 
   getUserLanguages(): Observable<Language[]> {
@@ -53,15 +59,26 @@ export class LanguagesService {
 
   deleteUserLanguage(languageId: string) {
     if (confirm('Would toy like to delete this langauge?')) {
-      return this.http.post<Language>(`/api/languages/deleteUserLanguage`, { languageId });
+
+      return this.getCurrentLearningLanguage$()
+        .pipe(
+          switchMap(currentLanguage => {
+            if (currentLanguage && currentLanguage._id === languageId) {
+              this.setCurrentLanguageOnServer(undefined);
+              return this.http.post<Language>(`/api/languages/deleteUserLanguage`, { languageId });
+
+            }
+          })
+        )
+
 
     }
 
   }
 
-  setCurrentLearningLanguage(language: Language) {
-    this.generalFacade.setCurrentLanguage(language);
-  }
+  // setCurrentLearningLanguage(language: Language) {
+  //   this.generalFacade.setCurrentLanguage(language);
+  // }
 
   addToCandidates(candidates: Language[], language: Language) {
 
@@ -102,7 +119,7 @@ export class LanguagesService {
     return lang;
   }
 
-  getCurrentLearningLanguage() {
-    return this.generalFacade.getCurrentLearningLanguage();
-  }
+  // getCurrentLearningLanguage() {
+  //   return this.generalFacade.getCurrentLearningLanguage();
+  // }
 }

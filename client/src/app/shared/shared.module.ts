@@ -12,7 +12,7 @@ import {
   NbThemeModule, NbUserModule, NbProgressBarModule
 } from '@nebular/theme';
 import { NgxPrettyCheckboxModule } from 'ngx-pretty-checkbox';
-import { HeaderComponent } from './../header/header.component';
+import { HeaderComponent } from './components/header/header.component';
 import { GroupsComponent } from './../vocabulary/groups/groups.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { AskQuestionComponent } from './modals/ask-question/ask-question.component';

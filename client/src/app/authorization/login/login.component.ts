@@ -2,7 +2,7 @@ import { animate, keyframes, transition, trigger } from '@angular/animations';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { GeneralFacade } from 'src/app/general.facade';
 import * as kf from '../../shared/keyframes';
@@ -62,7 +62,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.authService.setIsAuthenticated(true);
           this.localStorageService.setItem('words-token', res.token);
           if (res.currentLanguage) {
-            this.generalFacade.setCurrentLanguage(res.currentLanguage);
+            this.generalFacade.setCurrentLanguage(of(res.currentLanguage));
             this.router.navigate(['vocabulary']);
           } else {
             this.router.navigate(['languages']);

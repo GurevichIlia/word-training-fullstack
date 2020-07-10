@@ -1,13 +1,13 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Word, WordGroup } from '../shared/interfaces';
 import { NotificationsService } from './../shared/services/notifications.service';
 import { WordTrainingService } from './word-training.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, Observable, BehaviorSubject, combineLatest, of } from 'rxjs';
 
 
 
-import { Word, WordGroup } from '../shared/interfaces';
-import { Router } from '@angular/router';
-import { tap, map, takeUntil, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-word-training',
@@ -22,13 +22,21 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
   loadingSpinner = false;
   animationState: string;
   trainingWordsQuantity: number;
-  selectedTrainingGroup$ = this.wordTrainingService.getSelectedGroupForTraining();
+  selectedTrainingGroupId$ = this.wordTrainingService.getSelectedGroupForTraining();
   currentOrderIndex$ = new BehaviorSubject<number>(0);
   currentTrainingWord$: Observable<Word>;
   wordGroups$: Observable<WordGroup[]>;
   priority = 0;
   previousWord$: Observable<Word>;
-
+  isBlockStart$: Observable<boolean> = this.selectedTrainingGroupId$
+    .pipe(
+      switchMap(groupId => {
+        return this.wordGroups$
+          .pipe(
+            map(groups => groups.find(group => group._id === groupId)),
+            map(group => group.wordQuantity < 5)
+          )
+      }));
   constructor(
     private wordTrainingService: WordTrainingService,
     private router: Router,
@@ -47,11 +55,10 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.getCurrentTrainingWord();
 
     this.wordGroups$ = this.wordTrainingService.getWordGroups()
       .pipe(
-        tap(groups => console.log('GROUPS', groups))
+        shareReplay(),
       );
 
     // this.getUserWords();
@@ -68,16 +75,22 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
   startTrain() {
     this.startAnimation('bounceInDown');
     this.start = true;
+    this.getCurrentTrainingWord();
+
   }
 
 
   getCurrentTrainingWord() {
-    this.currentTrainingWord$ = this.wordTrainingService.getWordByPriority(this.priority);
-    this.priority++;
+    this.currentTrainingWord$ = this.wordTrainingService.getWordByPriority(this.priority)
+      .pipe(tap(() => {
+        this.priority = this.priority + 1;
+        if (this.priority === 6) {
+          this.priority = 0;
+        }
+        console.log('INVOKE');
+      }));
 
-    if (this.priority === 6) {
-      this.priority = 0;
-    }
+
     // = combineLatest(
     //   [
     //     this.wordTrainingService.getFiltredWordsByGroup(),

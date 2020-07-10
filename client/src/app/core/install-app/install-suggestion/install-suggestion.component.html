@@ -6,15 +6,19 @@
     <ng-container *ngIf="!data; else iosSuggestion">
       <button nbButton size="medium" shape="round" class="purpleButton mt-2 mb-2"
         (click)="onInstallApp()">Install</button>
-        <br>
-        <small class="sub-title" (click)="dialogRef.close()">Not now</small>
+      <br>
+      <small class="sub-title" (click)="dialogRef.close()">Not now</small>
     </ng-container>
 
     <ng-template #iosSuggestion>
-      <div class="click-title"><div class="ios-title">Click</div> <img width="25px" height="25px"
-          src="../../../../assets/icons/14_upload_share_playlist_import_data_file-512.png" alt=""></div>
+      <div class="click-title">
+        <div class="ios-title">Click</div> <img width="25px" height="25px"
+          src="../../../../assets/icons/14_upload_share_playlist_import_data_file-512.png" alt="">
+      </div>
+      and
       <br>
-      <span class="ios-title add-home">Add to Home Screen <nb-icon icon="plus-square-outline"></nb-icon></span>
+      <span class="ios-title add-home">Add to Home Screen <nb-icon icon="plus-square-outline">
+        </nb-icon></span>
       <br>
       <small class="sub-title" (click)="iosInstallSuggestion()">Got it</small>
     </ng-template>

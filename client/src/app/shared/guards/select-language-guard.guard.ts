@@ -1,3 +1,4 @@
+import { GeneralFacade } from 'src/app/general.facade';
 import { NotificationsService } from './../services/notifications.service';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
@@ -11,7 +12,7 @@ import { LanguagesService } from './../../languages/languages.service';
 export class SelectLanguageGuardGuard implements CanActivate {
 
   constructor(
-    private languageService: LanguagesService,
+    private generalFacade: GeneralFacade,
     private router: Router,
     private notification: NotificationsService) {
 
@@ -21,7 +22,7 @@ export class SelectLanguageGuardGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     let canActive = false;
-    return this.languageService.getCurrentLanguage$().pipe(
+    return this.generalFacade.getCurrentLearningLanguage$().pipe(
       take(1),
       map(lang => {
         console.log('GUARD LANG', lang);

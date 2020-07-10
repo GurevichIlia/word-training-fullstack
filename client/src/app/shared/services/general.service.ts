@@ -27,9 +27,9 @@ export class GeneralService {
     this.updateWords$.next();
   }
 
-  setCurrentLanguage(language: Language) {
-    this.generalState.setCurrentLanguage(language);
-  }
+  // setCurrentLanguage(language: Language) {
+  //   this.generalState.setCurrentLanguage(language);
+  // }
   // setCurrentLanguage(language: Language) {
   //   this.currentLearningLanguage.next(language);
 

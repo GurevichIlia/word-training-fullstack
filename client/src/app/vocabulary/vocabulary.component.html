@@ -18,7 +18,7 @@
 
         <nb-icon class="ml-1" [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
         <mat-menu #menu="matMenu" class="matmenu">
-          <div class="menuitem" (click)="openGroupModal('Add group')">
+          <div class="menuitem" (click)="openGroupModal('New group')">
             <nb-icon icon="plus-outline"></nb-icon>
             <span class="ml-2">Create group</span>
           </div>
@@ -37,16 +37,20 @@
         </mat-menu>
 
       </app-groups>
+      <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
+        <button *ngIf="selectedGroup === '1'" (click)="openWordModal('New word')" class="purpleButton mb-3 w-100" type="submit" nbButton
+          size="small">Add word</button>
 
-      <button (click)="openWordModal('Add word')" class="purpleButton mb-3 w-100" type="submit" nbButton
-        size="small">Add
-        word</button>
+        <button *ngIf="selectedGroup !== '1' && selectedGroup !== '2'" (click)="showWordsForAssign()" class="purpleButton mb-3 w-100" type="submit" nbButton
+          size="small">Add words</button>
+      </ng-container>
+
 
       <ng-container *ngIf="words.length; else empty">
 
         <app-word-list (action)="getActionFromChildren($event)" [pageSize]="pageSize" [trackWords]="trackWords"
-          [filterValue]="filterControl.valueChanges" [menuItems]="wordMenuItems" [selectedGroup]="selectedGroup$ | async"
-          [words]="words">
+          [filterValue]="filterControl.valueChanges" [menuItems]="wordMenuItems"
+          [selectedGroup]="selectedGroup$ | async" [words]="words">
         </app-word-list>
       </ng-container>
 
@@ -56,7 +60,7 @@
             <span class="first-word-title">Empty group
             </span>
             <br>
-            <div class="mt-2"><strong (click)="showWordsForAssign()">Add words</strong></div>
+            <!-- <div class="mt-2"><strong (click)="showWordsForAssign()">Add words</strong></div> -->
           </div>
           <div class="text-center" *ngIf="words?.length === 0 && filterControl.value">
             <span class="first-word-title">Word not found
@@ -64,7 +68,7 @@
 
           </div>
           <div class="text-center mt-2" *ngIf="selectedGroup === '1' && !filterControl.value">
-            <span class="first-word-title">or take from <a routerLink="/general-words">Shared words <i
+            <span class="first-word-title">Add your first word <br>  or take from <a routerLink="/general-words">Shared words <i
                   class="fas fa-users"></i></a></span>
           </div>
 
@@ -72,7 +76,7 @@
           <div class="text-center mt-2" *ngIf="selectedGroup === '2' && !filterControl.value">
             <span class="first-word-title">Click <img class="mb-3" style="width: 25px; height: 25px"
                 src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
-                alt="">
+                alt=""> in your word list <br>
               to add word to this group</span>
           </div>
         </ng-container>
@@ -124,7 +128,7 @@
     </nb-card-body>
     <nb-card-footer class="wordDialogFooter">
       <button nbButton status="danger" (click)="closeWordModal()">Cancel</button>
-      <button class="purpleButton" *ngIf="titleForModal === 'Add word'" nbButton (click)="addNewWord()">Submit</button>
+      <button class="purpleButton" *ngIf="titleForModal === 'New word'" nbButton (click)="addNewWord()">Submit</button>
       <button class="purpleButton" *ngIf="titleForModal === 'Edit word'" nbButton
         (click)="updateWord(editWordOldValue, newWordForm.value)">Update</button>
     </nb-card-footer>
@@ -141,7 +145,7 @@
     </nb-card-body>
     <nb-card-footer class="wordDialogFooter">
       <button nbButton status="danger" (click)="groupModal.close()">Cancel</button>
-      <button *ngIf="titleForModal === 'Add group'" nbButton (click)="createNewGroup()">Submit</button>
+      <button *ngIf="titleForModal === 'New group'" nbButton (click)="createNewGroup()">Submit</button>
       <button *ngIf="titleForModal === 'Edit group'" nbButton s>Update</button>
     </nb-card-footer>
   </nb-card>

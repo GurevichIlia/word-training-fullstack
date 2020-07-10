@@ -28,3 +28,18 @@ img {
 .group-name {
   color: $titleColor;
 }
+
+.word {
+  font-size: 22px;
+  font-family: 'Muli', "Helvetica Neue", sans-serif !important;
+  font-weight: 600;
+}
+
+.translation {
+  margin-left: 10px;
+  font-size: 18px;
+  font-style: italic;
+  font-family: 'Muli', "Helvetica Neue", sans-serif !important;
+  color: $titleColor;
+
+}

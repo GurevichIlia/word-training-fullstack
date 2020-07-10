@@ -6,7 +6,7 @@ import { ApiLanguagesService } from './shared/services/api/api-languages.service
 import { Injectable } from '@angular/core';
 import { tap, switchMap, filter, map, catchError, retry, take, shareReplay } from 'rxjs/operators';
 import { GeneralState } from './general.state';
-import { of, throwError } from 'rxjs';
+import { of, throwError, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { Language, Word } from './shared/interfaces';
 
@@ -24,7 +24,7 @@ export class GeneralFacade {
   ) { }
 
   getUserWordsFromServer() {
-    return this.getCurrentLanguage$()
+    return this.getCurrentLearningLanguage$()
       .pipe(
         retry(1),
         switchMap(currentLang => {
@@ -52,66 +52,26 @@ export class GeneralFacade {
   }
 
 
-  getCurrentLanguage$() {
-    if (!this.generalState.getCurrentLearningLanguage()) {
-      this.apiLanguageService.getCurrentLanguage$()
-        .pipe(
-          take(1),
-          // tap(language => language ? language : this.router.navigate(['/languages'])),
-
-          tap(lang => this.generalState.setCurrentLanguage(lang)
-          )).subscribe(() => console.log('LANG GOT'), err => console.log(err), () => console.log('COMPLETE LANG SUBS'));
+  getCurrentLearningLanguage$() {
+    if (!this.generalState.getCurrentLearningLanguage$()) {
+      this.generalState.setCurrentLanguage(this.apiLanguageService.getCurrentLanguage$());
     }
 
-    return this.generalState.getCurrentLearningLanguage$().pipe(filter(lang => lang !== null));
+    return this.generalState.getCurrentLearningLanguage$();
 
   }
 
-  getCurrentLearningLanguage() {
-    return this.generalState.getCurrentLearningLanguage();
+  extractValueForMethodFromObservable<T>(obs$: Observable<any>, callback): Observable<T> {
+    return obs$
+      .pipe(
+        switchMap(value => callback(value) as Observable<T>)
+      );
   }
-
-  // getUserWordsFromServer() {
-  //   return this.getCurrentLanguage$()
-  //     .pipe(
-  //       retry(1),
-  //       switchMap(currentLang => {
-  //         if (currentLang) {
-  //           return this.apiWordsService.getWordsFromServer(currentLang._id);
-  //         } else {
-  //           this.router.navigate(['languages']);
-  //           return of([]);
-  //         }
-  //       }),
-  //       catchError(err => {
-  //         this.notifications.error(err.message, err.error);
-  //         return throwError(err);
-  //       }),
-
-  //       // tap(words => this.generalService.setQuantityWords(words.length)),
-  //       tap(words => words ? this.generalState.setUserWords(words) : []),
-  //       tap(words => {
-  //         this.setWordsQuantity();
-  //         this.setQuantityWordsInGroups(words);
-  //       }
-  //       ),
-  //       tap(words => console.log('USER WORDS', words)),
-  //     );
+  // getCurrentLearningLanguage() {
+  //   return this.generalState.getCurrentLearningLanguage();
   // }
 
 
-  // getCurrentLanguage$() {
-  //   if (!this.generalState.getCurrentLearningLanguage()) {
-  //     this.apiLanguageService.getCurrentLanguage$()
-  //       .pipe(
-  //         take(1),
-  //         tap(lang => this.generalState.setCurrentLanguage(lang)
-  //         )).subscribe(() => console.log('LANG GOT'), err => console.log(err), () => console.log('COMPLETE LANG SUBS'));
-  //   }
-
-  //   return this.generalState.getCurrentLearningLanguage$().pipe(filter(lang => lang !== null));
-
-  // }
 
   setUserWords(words: Word[]) {
     this.generalState.setUserWords(words);
@@ -172,7 +132,7 @@ export class GeneralFacade {
           }
           const newGroup: WordGroup = { ...group, wordQuantity: words.filter(word => word.assignedGroups.includes(group._id)).length };
 
-          return newGroup
+          return newGroup;
         });
         return updatedGroups;
       })
@@ -190,7 +150,7 @@ export class GeneralFacade {
   }
 
 
-  setCurrentLanguage(language: Language) {
+  setCurrentLanguage(language: Observable<Language>) {
     this.setUserWords(null);
     this.generalState.setCurrentLanguage(language);
     this.updateWordList();
@@ -206,6 +166,14 @@ export class GeneralFacade {
 
   refreshGeneralState() {
     this.generalState.refreshGeneralState();
+  }
+
+  getLocation$() {
+    return this.generalState.getLocation$();
+  }
+
+  setLocation(location: { name: string }) {
+    this.generalState.setLocation(location);
   }
 
 

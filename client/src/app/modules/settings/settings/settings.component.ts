@@ -31,6 +31,6 @@ export class SettingsComponent implements OnInit {
   }
 
   getLearningLanguage() {
-    this.learningLanguage$ = this.generalFacade.getCurrentLanguage$();
+    this.learningLanguage$ = this.generalFacade.getCurrentLearningLanguage$();
   }
 }

@@ -22,7 +22,7 @@ export class GeneralState {
     shareForAll: false
   }];
 
-  private readonly currentLearningLanguage$ = new BehaviorSubject<Language>(null);
+  private currentLearningLanguage$: Observable<Language>;
   private readonly quantityAllWords$ = new BehaviorSubject<number>(null);
   private readonly userWords$ = new BehaviorSubject<Word[]>(null);
   // private readonly userWordsGroups$ = new BehaviorSubject<WordGroup[]>(this.defaultGroups);
@@ -33,21 +33,22 @@ export class GeneralState {
 
   private readonly selectedGroupForTraining$ = new BehaviorSubject<string>('1');
 
+  private currentLocation$ = new BehaviorSubject<{ name: string }>({ name: '' });
   constructor() {
 
   }
 
-  setCurrentLanguage(language: Language) {
-    this.currentLearningLanguage$.next(language);
+  setCurrentLanguage(language: Observable<Language>) {
+    this.currentLearningLanguage$ = language;
   }
 
   getCurrentLearningLanguage$() {
-    return this.currentLearningLanguage$.asObservable();
+    return this.currentLearningLanguage$;
   }
 
-  getCurrentLearningLanguage() {
-    return this.currentLearningLanguage$.getValue();
-  }
+  // getCurrentLearningLanguage() {
+  //   return this.currentLearningLanguage$.getValue();
+  // }
 
   setUserWords(words: Word[]) {
     return this.userWords$.next(words);
@@ -91,6 +92,14 @@ export class GeneralState {
 
   getDefaultGroups() {
     return this.defaultGroups;
+  }
+
+  setLocation(location: { name: string }) {
+    this.currentLocation$.next(location);
+  }
+
+  getLocation$() {
+    return this.currentLocation$.asObservable();
   }
 
   refreshGeneralState() {

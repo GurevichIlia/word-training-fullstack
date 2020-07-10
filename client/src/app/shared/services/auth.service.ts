@@ -32,6 +32,7 @@ export class AuthService {
   }
 
   registration(newUser: User): Observable<User> {
+    newUser.email = newUser.email.toLowerCase();
     return this.http.post<User>(`${BASE_URL}/api/auth/registration`, newUser);
   }
 

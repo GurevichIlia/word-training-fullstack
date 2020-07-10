@@ -1,3 +1,4 @@
+import { GeneralFacade } from 'src/app/general.facade';
 import { ApiWordsService } from '../../shared/services/api/api-words.service';
 import { GeneralState } from '../../general.state';
 import { Injectable } from '@angular/core';
@@ -11,6 +12,7 @@ import { Word } from '../../shared/interfaces';
 export class TrainResultService {
 
   constructor(
+    private generalFacade: GeneralFacade,
     private trainingService: WordTrainingService,
     private generalState: GeneralState,
     private wordApiService: ApiWordsService) { }
@@ -28,7 +30,11 @@ export class TrainResultService {
 
   updateWords() {
     const allWords = this.generalState.getUserWords();
-    return this.wordApiService.updateWords(allWords, this.generalState.getCurrentLearningLanguage());
+    return this.generalFacade.getCurrentLearningLanguage$()
+    .pipe(
+      switchMap(language => {
+      return this.wordApiService.updateWords(allWords, language);
+    }));
   }
 
   getTrainedGroup() {

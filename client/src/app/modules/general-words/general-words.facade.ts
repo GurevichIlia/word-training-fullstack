@@ -17,7 +17,6 @@ import { Observable } from 'rxjs';
 export class GeneralWordsFacade {
   constructor(
     private apiWords: ApiWordsService,
-    private generalState: GeneralState,
     private generalFacade: GeneralFacade,
     private notification: NotificationsService,
     private vocabularyFacade: VocabularyFacade
@@ -26,16 +25,22 @@ export class GeneralWordsFacade {
   }
 
   getGeneralWords() {
-    return this.apiWords.getGeneralWordsForAll(this.generalState.getCurrentLearningLanguage()._id);
+    return this.generalFacade.getCurrentLearningLanguage$()
+      .pipe(
+        switchMap(language => this.apiWords.getGeneralWordsForAll(language._id))
+      );
   }
 
   addWordToMyWords(word: Word) {
-    const language = this.generalState.getCurrentLearningLanguage();
-    return this.apiWords.addWord(word, language)
+    return this.generalFacade.getCurrentLearningLanguage$()
       .pipe(
-        tap(res => this.notification.success('Added to list')),
-        tap(res => this.generalFacade.updateWordList())
+        switchMap(language => this.apiWords.addWord(word, language)
+          .pipe(
+            tap(res => this.generalFacade.updateWordList())
+          ))
       );
+
+
   }
 
 

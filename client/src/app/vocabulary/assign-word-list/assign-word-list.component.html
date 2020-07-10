@@ -1,23 +1,36 @@
 <div class="container">
   <div class="row">
     <div class="col-12 w-100">
-      <div class="submit-btn-box" *ngIf="selectedWords.length > 0">
-        <button class="purpleButton" nbButton (click)="assignWords(group, selectedWords)">Submit</button>
-      </div>
+
       <div class="main-box">
 
+        <div class="d-flex header">
+          <h4>Select words</h4>
 
-        <h4>Select words</h4>
+        </div>
 
         <hr>
         <ng-container *ngIf="words$ | async as words">
           <ng-container *ngIf="words.length > 0; else empty">
-            <app-word-list [words]="words" (action)="getAction($event)" [isShowMenu]="false"
-              [isShowDefaultOptions]="false">
-            </app-word-list>
+
+            <div class="d-flex search-box">
+              <span class="search" [hidden]="!words && !words.length && !filterControl.value">
+                <app-search [filterValue]="filterControl"></app-search>
+              </span>
+              <button *ngIf="selectedWords.length > 0" class="purpleButton ml-2" size="small" nbButton
+                (click)="assignWords(group, selectedWords)">Add</button>
+            </div>
+            <div class="mt-4">
+              <app-word-list [words]="words" (action)="getAction($event)" [isShowMenu]="false"
+                [isShowDefaultOptions]="false">
+              </app-word-list>
+            </div>
+
+
+
           </ng-container>
           <ng-template #empty>
-            <div class="text-center mt-2" >
+            <div class="text-center mt-2">
               <span class="first-word-title">No words yet</span>
             </div>
           </ng-template>
