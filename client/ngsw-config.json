@@ -32,7 +32,8 @@
       "urls": [
         "/api/languages/getCurrentLanguage",
         "/api/word-group/getAllGroups",
-        "/api/vocabulary/getAllWords"
+        "/api/vocabulary/getAllWords",
+        "https://kit.fontawesome.com/0cef43f628.js"
 
       ],
       "cacheConfig": {
