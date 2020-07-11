@@ -13,7 +13,8 @@
           "/*.js"
         ]
       }
-    }, {
+    },
+    {
       "name": "assets",
       "installMode": "lazy",
       "updateMode": "prefetch",
@@ -22,6 +23,22 @@
           "/assets/**",
           "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)"
         ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "current-language",
+      "urls": [
+        "/api/languages/getCurrentLanguage",
+        "/api/word-group/getAllGroups",
+        "/api/vocabulary/getAllWords"
+
+      ],
+      "cacheConfig": {
+        "maxSize": 10,
+        "maxAge": "20m",
+        "strategy": "freshness"
       }
     }
   ]

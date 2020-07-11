@@ -88,11 +88,17 @@
   </div>
   <ng-container *ngIf="isShowDefaultOptions">
     <nb-progress-bar class="custom-progress-bar mt-3" [value]="(word.levelKnowledge) | convertToPercent" size="tiny"
-      [displayValue]="true"></nb-progress-bar>
-  </ng-container>
+      [displayValue]="true">
+    </nb-progress-bar>
 
+
+  </ng-container>
+  <div class="text-right" [style.color]="'#868383'">
+    <small>{{word.date ? 'Added '+(word.date | date : 'mediumDate') : ''}}</small>
+
+  </div>
 
 </div>
 
 
-<hr>
+<hr class="mt-0">

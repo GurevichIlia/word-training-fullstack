@@ -1,8 +1,8 @@
-import { GeneralWord } from './../../../../../src/interfaces';
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
-import { Word, MenuItem } from 'src/app/shared/interfaces';
-import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { fromEvent, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { MenuItem, Word, GeneralWord } from 'src/app/shared/interfaces';
+
 
 @Component({
   selector: 'app-word-list',
@@ -20,16 +20,26 @@ export class WordListComponent {
   @Input() isShowMenu = true;
   @Input() menuItems: MenuItem[];
   @Input() userId: string;
-
-
-
+  @Input() showenItems = 15;
+  isShowGoToTopButton$: Observable<boolean> = fromEvent(window, 'scroll').pipe(map(event => window.scrollY >= 1400));
 
   @Output() action = new EventEmitter();
 
   onScroll() {
-    console.log('qweqwe');
+    this.showMoreWords();
   }
+
   sendAction({ action, payload }) {
     this.action.emit({ action, payload });
   }
+
+  showMoreWords() {
+    this.showenItems += 15;
+  }
+
+  goToTop() {
+    window.scrollTo({ top: 50 });
+  }
+
+
 }

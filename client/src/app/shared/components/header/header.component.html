@@ -1,15 +1,15 @@
 <div class="container-fluid header">
   <div class="row align-items-center h-100" *ngIf="isLoggedIn$ | async">
-    <div class="col-3" *ngIf="currentLanguage$ | async as language">
+    <div class="col-4" *ngIf="currentLanguage$ | async as language">
       <span class="language-name">{{language.name}}</span>
       <br>
       <span class="words-quantity">{{ quantityWords$ | async}} words</span>
 
 
     </div>
-    <div class="col-6">
+    <div class="col-5">
       <div class="menu-title">
-        <span>{{location$ | async}}</span>
+        <span>{{ (location$ | async)}}</span>
 
       </div>
     </div>

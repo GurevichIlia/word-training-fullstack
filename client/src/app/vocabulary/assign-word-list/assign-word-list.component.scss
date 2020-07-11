@@ -2,9 +2,9 @@
 
 .main-box {
   background-color: white;
-  height: 600px;
+  height: 100vh;
   overflow: auto;
-  min-width: 330px;
+  width: 35vw;
 }
 
 .submit-btn-box {
@@ -38,4 +38,10 @@
 .header {
   padding: 10px 20px 0 20px;
   justify-content: space-around;
+}
+
+@media all and (max-width: 600px) {
+  .main-box {
+    width: 100vw
+  }
 }

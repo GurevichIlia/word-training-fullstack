@@ -20,6 +20,10 @@ const wordSchema = new Schema({
         type: Number,
         default: 0
     },
+    date: {
+        type: Date,
+        default: new Date()
+    },
     assignedGroups: {
         type: Array,
         default: ['1']

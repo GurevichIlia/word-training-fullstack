@@ -14,6 +14,7 @@ export interface Word {
   knowen?: boolean;
   levelKnowledge?: number;
   assignedGroups?: string[];
+  date: string;
 }
 
 export interface GeneralWord extends Word {

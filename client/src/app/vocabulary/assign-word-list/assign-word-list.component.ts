@@ -1,10 +1,10 @@
 import { VocabularyFacade } from './../vocabulary.facade';
 import { GeneralFacade } from 'src/app/general.facade';
-import { takeUntil, switchMap, startWith } from 'rxjs/operators';
+import { takeUntil, switchMap, startWith, map, tap } from 'rxjs/operators';
 import { AssignWordsService } from './../assign-words.service';
 import { Component, OnInit, Input, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { Word } from 'src/app/shared/interfaces';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
 import { NbDialogRef } from '@nebular/theme';
 import { FormControl } from '@angular/forms';
 
@@ -35,8 +35,14 @@ export class AssignWordListComponent implements OnInit, OnDestroy {
     this.words$ = this.filterControl.valueChanges
       .pipe(
         startWith(''),
-        switchMap(value => this.vocabularyFacade.filterBySearcValue(value, this.vocabularyFacade.getAllUserWords$()) as Observable<Word[]>))
+        switchMap(value =>
+          this.vocabularyFacade.filterBySearcValue(
+            value,
+            this.vocabularyFacade.removeWordsAlreadyExistInThisGroup(this.vocabularyFacade.getAllUserWords$(), this.group)
+          ))) as Observable<Word[]>;
   }
+
+
 
   getAction({ action, payload }) {
     if (action === 'assign') {
@@ -70,6 +76,13 @@ export class AssignWordListComponent implements OnInit, OnDestroy {
     this.vocabularyFacade
   }
 
+  closeDialog() {
+    this.dialogRef.close()
+  }
+
+  onScroll() {
+    console.log('Scrolled');
+  }
   ngOnDestroy(): void {
 
     this.subscription$.next();

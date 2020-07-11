@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbCardBackComponent, NbCardBodyComponent } from '@nebular/theme';
 import { BehaviorSubject, EMPTY, Observable, Subject, fromEvent } from 'rxjs';
-import { switchMap, takeUntil, filter, tap, take, delay } from 'rxjs/operators';
+import { switchMap, takeUntil, filter, tap, take, delay, shareReplay } from 'rxjs/operators';
 import { Word, WordGroup, MenuItem } from './../shared/interfaces';
 import { AskQuestionComponent } from './../shared/modals/ask-question/ask-question.component';
 import { NotificationsService } from './../shared/services/notifications.service';
@@ -50,7 +50,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     new MenuItem('Delete', 'DELETE WORD', 'trash-2-outline'),
   ];
 
-  deferredPrompt // For 'beforeinstallprompt' event
+  // deferredPrompt // For 'beforeinstallprompt' event
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -90,10 +90,10 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   // }
 
   getWordsFilteredByGroup() {
-    this.wordsFiltredByGroup$ = this.vocabularyFacade.getUserWordsFiltredByGroup(
+    this.wordsFiltredByGroup$ = (this.vocabularyFacade.getUserWordsFiltredByGroup(
       this.selectedGroup$.asObservable(),
       this.filterControl.valueChanges
-    ) as Observable<Word[]>;
+    ) as Observable<Word[]>).pipe(shareReplay());
   }
 
   // getUserGroups() {
@@ -342,7 +342,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   detectDevice() {
-   this.vocabularyFacade.detectDevice();
+    this.vocabularyFacade.detectDevice();
   }
 
   unsubscribe() {

@@ -1,16 +1,20 @@
-import { AssignWordsService } from './../assign-words.service';
-
 import {
-  Component,
-  OnInit,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  ChangeDetectionStrategy,
-  Output,
-  EventEmitter,
+  ChangeDetectionStrategy, Component,
+
+
+
+
+
+
+  EventEmitter, Input, OnInit,
+
+
+
+
+  Output
 } from '@angular/core';
-import { Word, MenuItem, GeneralWord } from 'src/app/shared/interfaces';
+import { GeneralWord, MenuItem, Word } from 'src/app/shared/interfaces';
+
 
 @Component({
   selector: 'app-word',

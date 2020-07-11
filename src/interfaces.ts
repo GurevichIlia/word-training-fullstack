@@ -19,7 +19,8 @@ export interface WordModel extends Document {
       isFavorite?: boolean;
       levelKnowledge: number;
       assignedGroups: string[];
-      language: string
+      language: string,
+      date: string
 }
 
 export interface Language extends Document {
@@ -34,11 +35,11 @@ export interface WordGroupModel extends Document {
       shareForAll: boolean;
 }
 
-export interface GeneralWord extends Document{
+export interface GeneralWord extends Document {
       readonly _id: number;
       word: string;
       translation: string;
       assignedGroups: string[];
-      language: string    
+      language: string
 }
 
