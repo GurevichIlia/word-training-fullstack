@@ -36,18 +36,27 @@ export class WordsController {
     public createNewWordForUser = async (req: Request, res: Response) => {
         try {
             const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
+
+            const isExistWord = user.words.find(word => word.word === req.body.word && word.translation === req.body.translation);
+
+            if (isExistWord) {
+                res.status(200).json({ newWord: isExistWord, message: 'Word already added' });
+                return
+            }
+
             const newWord: WordModel = await new Word({
                 word: req.body.word,
                 translation: req.body.translation,
                 isFavorite: req.body.isFavorite,
                 language: req.query.languageId,
+                assignedGroups: req.body.assignedGroups ? req.body.assignedGroups : []
             });
 
 
             user.words.unshift(newWord)
 
             const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
-            res.status(201).json({ newWord, updatedUser });
+            res.status(201).json({ newWord, message: 'Successfully added' });
         } catch (error) {
             errorHandler(res, error);
         }

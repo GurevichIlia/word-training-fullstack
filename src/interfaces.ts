@@ -15,7 +15,7 @@ export interface UserModel extends Document {
 export interface WordModel extends Document {
       readonly _id: number;
       word: string;
-      translate: string;
+      translation: string;
       isFavorite?: boolean;
       levelKnowledge: number;
       assignedGroups: string[];
