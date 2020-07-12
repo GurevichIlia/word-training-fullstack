@@ -13,7 +13,7 @@ import { ApiWordsService } from './../shared/services/api/api-words.service';
 import { AskQuestionComponent } from '../shared/modals/ask-question/ask-question.component';
 import { InstallAppService } from '../core/install-app/install-app.service';
 
-export const ALL_WORDS = '1';
+export const ALL_WORDS_GROUP = '1';
 export const FAVORITES = '2';
 @Injectable({
   providedIn: 'root'
@@ -40,11 +40,11 @@ export class VocabularyFacade {
   }
 
   getUserWordsFiltredByGroup(selectedGroup$: Observable<string>, searchValue$: Observable<string>) {
-    return combineLatest([selectedGroup$.pipe(startWith(ALL_WORDS)), searchValue$.pipe(startWith(''))])
+    return combineLatest([selectedGroup$.pipe(startWith(ALL_WORDS_GROUP )), searchValue$.pipe(startWith(''))])
       .pipe(
         switchMap(([groupId, searchValue]) => {
 
-          if (groupId === ALL_WORDS) {
+          if (groupId === ALL_WORDS_GROUP ) {
 
             return this.filterBySearcValue(searchValue, this.getAllUserWords$());
 
@@ -96,11 +96,12 @@ export class VocabularyFacade {
     );
   }
 
-  addNewWord(word: Word) {
+  addNewWord(word: Word, selectedGroupId?: string) {
+    const updatedWord = { ...word, assignedGroups: [ALL_WORDS_GROUP , selectedGroupId] };
     return this.generalFacade.getCurrentLearningLanguage$()
       .pipe(
         switchMap(language =>
-          this.apiWords.addWord(word, language)
+          this.apiWords.addWord(updatedWord, language)
         ));
   }
 

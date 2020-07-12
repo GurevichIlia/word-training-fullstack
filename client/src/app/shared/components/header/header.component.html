@@ -1,7 +1,7 @@
 <div class="container-fluid header">
   <div class="row align-items-center h-100" *ngIf="isLoggedIn$ | async">
-    <div class="col-4" *ngIf="currentLanguage$ | async as language">
-      <span class="language-name">{{language.name}}</span>
+    <div class="col-4" >
+      <span class="language-name">{{(currentLanguage$ | async)?.name}}</span>
       <br>
       <span class="words-quantity">{{ quantityWords$ | async}} words</span>
 

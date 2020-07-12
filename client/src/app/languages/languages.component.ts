@@ -104,7 +104,7 @@ export class LanguagesComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         if (res && res.currentLanguage && res.currentLanguage._id) {
           this.goToVocabulary();
-          // this.languagesService.setCurrentLearningLanguage(res.currentLanguage);
+          this.languagesService.setCurrentLearningLanguage({ ...res.currentLanguage });
         }
       },
         err => this.notifications.error('', err.error.message));

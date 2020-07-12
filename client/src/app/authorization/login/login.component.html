@@ -8,7 +8,7 @@
 <form [formGroup]="loginForm" (ngSubmit)="login()" class="text-center">
   <div class="mb-2">
 
-    <input [ngClass]="{'error': isShowLoginError}" formControlName="email" type="text" nbInput fullWidth
+    <input [ngClass]="{'error': isShowLoginError}" autocomplete formControlName="email" type="email" nbInput fullWidth
       placeholder="Email">
     <ng-container *ngIf="loginForm.get('email').touched && loginForm.get('email').hasError">
       <span class="error-message" *ngIf="loginForm.get('email').hasError('required') ">
@@ -20,7 +20,7 @@
 
   </div>
   <div class="mb-4">
-    <input formControlName="password" [ngClass]="{'error': isShowLoginError}" type="password" nbInput fullWidth
+    <input formControlName="password"  [ngClass]="{'error': isShowLoginError}" type="password" nbInput fullWidth
       placeholder="Password">
     <span class="error-message"
       *ngIf="loginForm.get('password').touched && loginForm.get('password').hasError('required')">

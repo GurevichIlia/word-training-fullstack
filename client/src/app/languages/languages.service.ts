@@ -2,7 +2,7 @@ import { GeneralFacade } from './../general.facade';
 import { Language, LanguageResponse } from '../shared/interfaces';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 
 @Injectable({
@@ -22,14 +22,12 @@ export class LanguagesService {
   }
 
   getCurrentLearningLanguage$() {
-    // if (!this.currentLang$) {
-    //   this.currentLang$ = this.http.get<{ currentLang: Language }>(`/api/languages/getCurrentLanguage`).pipe(map(({ currentLang }) => currentLang),
-
-    // }
-    // // tslint:disable-next-line: max-line-length
-    // return this.currentLang$;
 
     return this.generalFacade.getCurrentLearningLanguage$();
+  }
+
+  setCurrentLearningLanguage(language: Language) {
+    this.generalFacade.setCurrentLanguage(of(language));
   }
 
   getUserLanguages(): Observable<Language[]> {
@@ -58,7 +56,7 @@ export class LanguagesService {
   }
 
   deleteUserLanguage(languageId: string) {
-    if (confirm('Would toy like to delete this langauge?')) {
+    if (confirm('Would you like to delete this langauge?')) {
 
       return this.getCurrentLearningLanguage$()
         .pipe(

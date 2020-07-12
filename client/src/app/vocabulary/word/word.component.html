@@ -35,9 +35,15 @@
       <span class="translation">{{word.translation}}</span>
     </div>
 
-    <div class="col-1 ml-auto pr-5" *ngIf="word['user'] && word['user'] == userId">
+    <div class="col-1 ml-auto pr-5" *ngIf="word['user'] && userId">
 
-      <span class="own-word">You <br> added</span>
+      <span *ngIf="word['user'] == userId; else addToMyList" class="own-word">You <br> added</span>
+
+      <ng-template #addToMyList>
+        <button class="ml-auto purpleButton" nbButton size="tiny"
+          (click)="dispatchAction('ADD TO MY WORDS',word)">Add</button>
+      </ng-template>
+
     </div>
 
     <div class="col-2 ml-auto" *ngIf="!userId">

@@ -50,11 +50,11 @@
 
 
     <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
-      <button *ngIf="selectedGroup === '1'" (click)="openWordModal('New word')" class="purpleButton mb-3 w-100"
+      <button *ngIf="selectedGroup !== '2'" (click)="openWordModal('New word')" class="purpleButton mb-3 w-100"
         type="submit" nbButton size="small">Add word</button>
 
-      <button *ngIf="selectedGroup !== '1' && selectedGroup !== '2'" (click)="showWordsForAssign()"
-        class="purpleButton mb-3 w-100" type="submit" nbButton size="small">Add words</button>
+      <!-- <button *ngIf="selectedGroup !== '1' && selectedGroup !== '2'" (click)="showWordsForAssign()"
+        class="purpleButton mb-3 w-100" type="submit" nbButton size="small">Add words</button> -->
     </ng-container>
 
     <!-- <ng-container *ngIf="!(wordsFiltredByGroup$ | async)">

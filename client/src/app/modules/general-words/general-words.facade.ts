@@ -1,4 +1,4 @@
-import { switchMap, pluck } from 'rxjs/operators';
+import { switchMap, pluck, catchError } from 'rxjs/operators';
 import { VocabularyFacade } from './../../vocabulary/vocabulary.facade';
 import { NotificationsService } from './../../shared/services/notifications.service';
 import { Word } from 'src/app/shared/interfaces';
@@ -36,7 +36,12 @@ export class GeneralWordsFacade {
       .pipe(
         switchMap(language => this.apiWords.addWord(word, language)
           .pipe(
-            tap(res => this.generalFacade.updateWordList())
+            tap(res => this.notification.success(`${res.newWord.word} ${res.message}`)),
+            tap(res => this.generalFacade.updateWordList()),
+            catchError(err => {
+              this.notification.warning(err.error.message);
+              throw err;
+            })
           ))
       );
 

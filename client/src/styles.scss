@@ -55,6 +55,7 @@ body {
 .purpleButton {
   background-color: darkorchid !important;
   border-color: darkorchid !important;
+  color: #e0d8d8 !important;
 }
 
 .custom-progress-bar {
@@ -88,6 +89,26 @@ mat-tab-group .mat-tab-labels {
     padding: 0 !important
   }
 }
+
 html {
   scroll-behavior: smooth;
+}
+
+.custom-groups-select {
+
+  font-size: 10px !important;
+  ;
+
+
+  span {
+    font-size: 15px !important;
+  }
+
+  mat-select {
+    font-size: 15px !important;
+  }
+
+  .mat-select-arrow-wrapper {
+    transform: unset !important;
+  }
 }

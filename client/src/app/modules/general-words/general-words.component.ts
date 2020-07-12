@@ -65,7 +65,7 @@ export class GeneralWordsComponent implements OnInit {
         tap(res => this.getGeneralWords()),
         takeUntil(this.subscription$)
       )
-      .subscribe();
+      .subscribe(() => null);
   }
 
   updateWordsList() {

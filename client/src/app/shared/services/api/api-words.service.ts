@@ -27,9 +27,9 @@ export class ApiWordsService {
       .pipe(shareReplay());
   }
 
-  addWord(word: Word, language: Language): Observable<Word> {
+  addWord(word: Word, language: Language): Observable<{ newWord: Word, message: string }> {
 
-    return this.http.post<Word>(`${BASE_URL}/api/vocabulary/createWord?languageId=${language._id}`, word);
+    return this.http.post<{ newWord: Word, message: string }>(`${BASE_URL}/api/vocabulary/createWord?languageId=${language._id}`, word);
   }
 
   addWords(words: Word[]): Observable<Word> {

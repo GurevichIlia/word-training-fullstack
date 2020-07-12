@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, of, Observable } from 'rxjs';
 import { startWith, switchMap, map } from 'rxjs/operators';
 import { Word } from '../shared/interfaces';
-import { ALL_WORDS, FAVORITES } from '../vocabulary/vocabulary.facade';
+import { ALL_WORDS_GROUP, FAVORITES } from '../vocabulary/vocabulary.facade';
 import { GeneralState } from './../general.state';
 import { VocabularyFacade } from './../vocabulary/vocabulary.facade';
 
@@ -98,7 +98,7 @@ export class WordTrainingService {
       .pipe(
         switchMap(([words, selectedGroupForTraining]) => {
 
-          if (selectedGroupForTraining === ALL_WORDS) {
+          if (selectedGroupForTraining === ALL_WORDS_GROUP) {
 
             return of(words);
 

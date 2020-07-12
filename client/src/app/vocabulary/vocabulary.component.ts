@@ -8,7 +8,7 @@ import { switchMap, takeUntil, filter, tap, take, delay, shareReplay } from 'rxj
 import { Word, WordGroup, MenuItem } from './../shared/interfaces';
 import { AskQuestionComponent } from './../shared/modals/ask-question/ask-question.component';
 import { NotificationsService } from './../shared/services/notifications.service';
-import { ALL_WORDS, VocabularyFacade } from './vocabulary.facade';
+import { ALL_WORDS_GROUP, VocabularyFacade } from './vocabulary.facade';
 import { InstallSuggestionComponent } from '../core/install-app/install-suggestion/install-suggestion.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -36,7 +36,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   allWords$: Observable<Word[]>;
   wordsFiltredByGroup$: Observable<Word[]>;
   wordGroups$: Observable<WordGroup[]>;
-  selectedGroup$ = new BehaviorSubject<string>(ALL_WORDS);
+  selectedGroup$ = new BehaviorSubject<string>(ALL_WORDS_GROUP);
   groupName = new FormControl('', Validators.required);
   groupModal: NbDialogRef<any>;
 
@@ -126,7 +126,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
 
   addNewWord() {
     if (this.newWordForm.valid) {
-      this.vocabularyFacade.addNewWord(this.newWordForm.value)
+      this.vocabularyFacade.addNewWord(this.newWordForm.value, this.selectedGroup$.getValue())
         .pipe(
           takeUntil(this.subscription$)
         )

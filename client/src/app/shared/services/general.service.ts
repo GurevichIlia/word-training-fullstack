@@ -1,9 +1,8 @@
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 import { GeneralState } from './../../general.state';
 
-import { Injectable } from '@angular/core';
-import { Language } from './../interfaces';
 
-import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

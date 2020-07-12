@@ -49,7 +49,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
           this.logout();
         }
       });
-    this.getCurrentLanguage();
     this.getquantityWords();
   }
 
@@ -72,7 +71,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   getquantityWords() {
-    this.quantityWords$ = this.generalFacade.getWordsQuantity$().pipe(tap(q => console.log('QUANTITY', q)));
+    this.quantityWords$ = this.generalFacade.getWordsQuantity$()
+      .pipe(
+        tap(q => console.log('QUANTITY', q)),
+        tap(() => this.getCurrentLanguage()));
   }
 
   ngOnDestroy(): void {
