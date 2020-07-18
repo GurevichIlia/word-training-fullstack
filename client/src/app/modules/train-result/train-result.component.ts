@@ -1,3 +1,4 @@
+import { WordGroup } from 'src/app/shared/interfaces';
 import { takeUntil } from 'rxjs/operators';
 import { TrainResultService } from './train-result.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
@@ -11,15 +12,11 @@ import { Word } from '../../shared/interfaces';
   styleUrls: ['./train-result.component.scss']
 })
 export class TrainResultComponent implements OnInit, OnDestroy {
-  userWordsFilteredByTrainingGroup$: Observable<Word[]> = this.trainResultService.getFiltredWordsByGroup();
   subscription$ = new Subject();
-  // dontKnowWordsList: Word[];
-  // wordsForResult$: Observable<Word[]>;
-  // knownWordsQuantity = 0;
-  // unknownWordsQuantity = 0;
-  // trainedWords: Word[];
-  // unknownWords: Word[];
+
   trainedGroup$ = this.trainResultService.getTrainedGroup();
+  trainingResult$ = this.trainResultService.getTrainingResult$();
+  counterResult$ = this.trainResultService.counterResult$();
   constructor(
     private trainResultService: TrainResultService,
     private router: Router
@@ -27,47 +24,22 @@ export class TrainResultComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.saveWordsTrainingProgress();
-    // this.getWordsForResult();
-    // this.setTrainedWords([...this.trainingService.getTrainResult()]);
-  }
-  // getWordsForResult() {
 
-  //   this.wordsForResult$ = this.trainingService.getTrainResult$().pipe(map(words => {
-  //     this.knownWordsQuantity = 0;
-  //     this.unknownWordsQuantity = 0;
-  //     words.map(word => {
-  //       word.knowen === true ? this.knownWordsQuantity++ : '',
-  //         word.knowen === false ? this.unknownWordsQuantity++ : '';
-  //     });
-  //     console.log('Trained Owrds', this.trainedWords);
-  //     return words;
-  //   }));
-  // }
-  // setTrainedWords(words: Word[]) {
-  //   this.trainedWords = words;
-  //   this.setUnknownWords(words);
-  // }
-  // setUnknownWords(words: Word[]) {
-  //   this.unknownWords = words.filter(data => data.knowen === false);
-  //   console.log(this.unknownWords);
-  //   console.log(this.trainedWords);
-  //   console.log('IMUT WORDS', this.trainingService.getTrainResult());
-  // }
-  // getUnknownWords() {
-  //   return this.unknownWords;
-  // }
+  }
+
   changeGroup() {
-    // this.trainingService.setTrainWords(this.getUnknownWords());
     this.router.navigate(['word-training']);
   }
 
-  trainAgain() {
-    this.router.navigate(['word-training']);
+  trainAgain(group: WordGroup) {
+
+    this.trainResultService.clearCounterState();
+    this.trainResultService.setSelectedGroupForTraining(group);
+    this.trainResultService.startTraining();
+    this.router.navigate(['word-training/basic']);
   }
 
   goToVocabulary() {
-
-    this.trainResultService.setDefaultValueForSelectedGroupForTraining();
     this.router.navigate(['vocabulary']);
   }
 

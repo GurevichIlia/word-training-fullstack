@@ -17,21 +17,20 @@ export class GroupsComponent {
     }
 
   };
-  @Input() set selectedGroup(groupId: string) {
-    if (groupId) {
-      this.groupControl.patchValue(groupId);
-
+  @Input() set selectedGroup(group: WordGroup) {
+    if (group) {
+      this.groupControl.patchValue(group._id);
     }
   }
-  @Output() selectGroup = new EventEmitter();
+  @Output() selectGroup = new EventEmitter<WordGroup>();
 
   groupControl = new FormControl('');
 
 
 
-  onSelectGroup() {
+  onSelectGroup(group: WordGroup) {
 
-    this.selectGroup.emit(this.groupControl.value);
+    this.selectGroup.emit(group);
   }
 
 }

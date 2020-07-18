@@ -1,8 +1,7 @@
-import { GeneralWord } from './../../../../../src/interfaces';
 import { takeUntil, map, tap, startWith } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { GeneralWordsFacade } from './general-words.facade';
-import { MenuItem, Word, User } from 'src/app/shared/interfaces';
+import { MenuItem, Word, User, GeneralWord } from 'src/app/shared/interfaces';
 import { Subject } from 'rxjs/internal/Subject';
 import { Observable } from 'rxjs';
 import { FormControl } from '@angular/forms';

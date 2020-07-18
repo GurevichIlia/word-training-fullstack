@@ -1,8 +1,8 @@
 <div class="w-100 ">
   <mat-form-field class="p-0 select custom-groups-select" [appearance]="'outline'">
     <mat-label>Groups</mat-label>
-    <mat-select (selectionChange)="onSelectGroup()" [formControl]="groupControl" [placeholder]="'Groups'">
-      <mat-option [value]="group._id" *ngFor="let group of _wordGroups">
+    <mat-select  [formControl]="groupControl" [placeholder]="'Groups'">
+      <mat-option (click)="onSelectGroup(group)" [value]="group._id" *ngFor="let group of _wordGroups">
         {{group.name}} - {{group.wordQuantity}}
       </mat-option>
     </mat-select>

@@ -1,12 +1,14 @@
+import { WordCounterService } from './word-counter/word-counter.service';
+import { WordGroup } from 'src/app/shared/interfaces';
 import { GeneralFacade } from 'src/app/general.facade';
 import { ApiWordsService } from './../shared/services/api/api-words.service';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, of, Observable } from 'rxjs';
-import { startWith, switchMap, map } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, of, Observable, Subject } from 'rxjs';
+import { startWith, switchMap, map, tap } from 'rxjs/operators';
 import { Word } from '../shared/interfaces';
-import { ALL_WORDS_GROUP, FAVORITES } from '../vocabulary/vocabulary.facade';
-import { GeneralState } from './../general.state';
+import { GeneralState, ALL_WORDS_GROUP, FAVORITES } from './../general.state';
 import { VocabularyFacade } from './../vocabulary/vocabulary.facade';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -14,14 +16,20 @@ import { VocabularyFacade } from './../vocabulary/vocabulary.facade';
 export class WordTrainingService {
   // trainWords = new BehaviorSubject<Word[]>([]);
   // currentTrainWords$ = this.trainWords.asObservable();
+  private _isStarted$ = new BehaviorSubject<boolean>(false);
 
-  private trainingResult = new BehaviorSubject<Word[]>([]);
-  currentTrainingResult$ = this.trainingResult.asObservable();
+  private _currentTrainingWord$: Observable<Word>;
+  private _previousWord$: Observable<Word>;
+
+  priority = 0;
+  animationState$ = new BehaviorSubject('');
   constructor(
     private generalState: GeneralState,
-    private vocabularyFacade: VocabularyFacade,
+    // private vocabularyFacade: VocabularyFacade,
     private wordsApiService: ApiWordsService,
-    private generalFacade: GeneralFacade
+    private generalFacade: GeneralFacade,
+    private router: Router,
+    private counterService: WordCounterService
   ) {
   }
   getUserWords() {
@@ -43,21 +51,8 @@ export class WordTrainingService {
     return resultWords;
   }
 
-
-  setTrainResult(words: Word[]) {
-    this.trainingResult.next(words);
-  }
-
-  getTrainResult() {
-    return this.trainingResult.getValue();
-  }
-
-  getTrainResult$() {
-    return this.currentTrainingResult$;
-  }
-
   getWordGroups() {
-    return this.vocabularyFacade.getWordsGroups();
+    return this.generalFacade.getWordsGroups();
   }
   // setTrainWords(words: Word[]) {
   //   this.trainWords.next(words);
@@ -74,18 +69,26 @@ export class WordTrainingService {
 
   setWordKnowledgeLevel(wordId: string, level: number) {
     const currentWords = this.generalState.getUserWords()
-      .map(word => word._id === wordId ? { ...word, levelKnowledge: level } : word);
+      .map(word => {
+        if (word._id === wordId) {
+          const updatedWord = { ...word, levelKnowledge: level };
+          this.counterService.addWordToTrainResult(updatedWord);
+          return updatedWord;
+        } else {
+          return word;
+        }
+      });
 
     this.generalState.setUserWords(currentWords);
   }
 
 
-  setSelectedGroupForTraining(groupId: string) {
-    this.generalState.setSelectedGroupForTraining(groupId);
+  setSelectedGroupForTraining(group: WordGroup) {
+    this.generalState.setSelectedGroupForTraining(group);
   }
 
   getSelectedGroupForTraining() {
-    return this.generalState.getSelectedGroupForTraining();
+    return this.generalState.getSelectedGroupForTraining$();
   }
 
   getFiltredWordsByGroup() {
@@ -98,23 +101,41 @@ export class WordTrainingService {
       .pipe(
         switchMap(([words, selectedGroupForTraining]) => {
 
-          if (selectedGroupForTraining === ALL_WORDS_GROUP) {
+          if (selectedGroupForTraining._id === ALL_WORDS_GROUP._id) {
 
             return of(words);
 
-          } else if (selectedGroupForTraining === FAVORITES) {
+          } else if (selectedGroupForTraining._id === FAVORITES._id) {
 
-            return this.vocabularyFacade.filterWordsByFavorite(of(words));
+            return this.generalFacade.filterWordsByFavorite(of(words));
 
           } else {
 
-            return of(words.filter(word => word.assignedGroups.includes(selectedGroupForTraining)))
+            return of(words.filter(word => word.assignedGroups.includes(selectedGroupForTraining._id)))
           }
 
         })
       );
   }
 
+  showNextTrainingWord() {
+    this._currentTrainingWord$ = this.getWordByPriority(this.priority)
+      .pipe(tap(() => {
+        this.priority = this.priority + 1;
+        if (this.priority === 6) {
+          this.priority = 0;
+        }
+        console.log('INVOKE');
+      }));
+
+  }
+
+  getCurrentTrainingWord$() {
+    return this._currentTrainingWord$;
+  }
+  // setCurrentTrainingWord(word: Word) {
+  //   this._currentTrainingWord$.next(word);
+  // }
 
   getWordByPriority(priority: number) {
 
@@ -184,19 +205,100 @@ export class WordTrainingService {
 
 
   }
+
+
   updateWords() {
-    const allWords = this.generalState.getUserWords();
+    const selectedGroupForTraining = this.generalState.getSelectedGroupForTraining();
+    const words = this.generalState.getUserWords();
+    // .filter(word => word.assignedGroups.includes(selectedGroupForTraining._id));
 
     return this.generalFacade.getCurrentLearningLanguage$()
       .pipe(
-        switchMap(language => this.wordsApiService.updateWords(allWords, language))
-      )
-
+        switchMap(language => this.wordsApiService.updateWords(words, language))
+      );
   }
 
   sortWordsForTraining(words: Word[]) {
 
   }
 
+  onStartTraining() {
+    this._isStarted$.next(true);
+    this.router.navigate(['word-training/basic']);
+    this.startAnimation('bounceInDown');
+    this.showNextTrainingWord();
+  }
 
+  onFinishTraining() {
+    this._isStarted$.next(false);
+  }
+
+  isStart$() {
+    return this._isStarted$.asObservable();
+  }
+
+  isBlockStart() {
+    const isBlockStart$: Observable<boolean> = this.getSelectedGroupForTraining()
+      .pipe(
+        switchMap(selectedGroup => {
+          return this.getWordGroups()
+            .pipe(
+              map(groups => groups.find(group => group._id === selectedGroup._id)),
+              map(group => group.wordQuantity < 5)
+            )
+        }));
+
+    return isBlockStart$;
+  }
+
+
+  startAnimation(stateAnimate) {
+    console.log(stateAnimate);
+    // if (!this.animationState) {
+    //   this.animationState = stateAnimate;
+    // }
+    if (!this.animationState$.getValue()) {
+      this.animationState$.next(stateAnimate)
+    }
+  }
+
+  resetAnimationState() {
+    // this.animationState = '';
+    this.animationState$.next('')
+
+  }
+
+  getAnimationState() {
+    return this.animationState$.asObservable();
+  }
+
+  nextWord(word: Word, level: number) {
+    this.startAnimation('bounceInDown');
+    this.setWordKnowledgeLevel(word._id, level);
+    this._previousWord$ = this._currentTrainingWord$;
+    this.showNextTrainingWord();
+
+  }
+
+  prevWord() {
+    this.startAnimation('bounceInLeft');
+    this._currentTrainingWord$ = this._previousWord$;
+
+  }
+
+  clearCounterState() {
+    this.counterService.clearCounterState();
+  }
+  // onSetKnowledgeLevel(wordId: string, level: number) {
+  //   this.setKnowledgeLevel.emit({ wordId, level });
+  // }
+
+  // setWordKnowledgeLevel(wordId: string, level: number) {
+  //   this.wordTrainingService.setWordKnowledgeLevel(wordId, level);
+  // }
+
+  // nextWordAndSetWordLevel(payload: { wordId: string, level: number }) {
+  //   this.nextWord();
+  //   this.setWordKnowledgeLevel(payload.wordId, payload.level);
+  // }
 }

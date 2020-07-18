@@ -6,13 +6,16 @@
       <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
       <mat-menu #menu="matMenu" class="matmenu">
         <ng-container *ngFor="let item of menuItems">
-          <div [hidden]="((item.action === 'DELETE FROM GENERAL LIST') && isHideDeleteButton())
-             || (item.action === 'ADD TO MY WORDS') && userId === word['user'] "
+          <div [hidden]="((item.action === 'DELETE FROM GENERAL LIST') && isHideDeleteButton())"
+
             (click)="dispatchAction(item.action, word)" class="menuitem">
             <nb-icon [icon]="item.icon"></nb-icon>
             <span class="ml-2">{{item.title}}</span>
           </div>
         </ng-container>
+        <!-- || (item.action === 'ADD TO MY WORDS') && userId === word['user'] " -->
+
+
 
         <!-- trash-2-outline -->
         <!-- <div (click)="dispatchAction('SHARE FOR ALL', word)" class="menuitem">

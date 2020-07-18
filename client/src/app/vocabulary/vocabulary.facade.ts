@@ -1,20 +1,19 @@
+import { GeneralWord } from 'src/app/shared/interfaces';
 import { InstallHelperFunctionsService } from './../core/install-app/install-helper-functions.service';
 import { WordGroup } from './../shared/interfaces';
-import { GeneralWord } from './../../../../src/interfaces';
 import { NotificationsService } from './../shared/services/notifications.service';
 import { NbDialogService } from '@nebular/theme';
 import { Injectable } from '@angular/core';
 import { combineLatest, Observable, of, EMPTY } from 'rxjs';
 import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { GeneralFacade } from 'src/app/general.facade';
-import { GeneralState } from '../general.state';
+import { GeneralState, ALL_WORDS_GROUP, FAVORITES } from '../general.state';
 import { Word } from '../shared/interfaces';
 import { ApiWordsService } from './../shared/services/api/api-words.service';
 import { AskQuestionComponent } from '../shared/modals/ask-question/ask-question.component';
 import { InstallAppService } from '../core/install-app/install-app.service';
 
-export const ALL_WORDS_GROUP = '1';
-export const FAVORITES = '2';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -39,24 +38,24 @@ export class VocabularyFacade {
       );
   }
 
-  getUserWordsFiltredByGroup(selectedGroup$: Observable<string>, searchValue$: Observable<string>) {
-    return combineLatest([selectedGroup$.pipe(startWith(ALL_WORDS_GROUP )), searchValue$.pipe(startWith(''))])
+  getUserWordsFiltredByGroup(selectedGroup$: Observable<WordGroup>, searchValue$: Observable<string>) {
+    return combineLatest([selectedGroup$.pipe(startWith(ALL_WORDS_GROUP)), searchValue$.pipe(startWith(''))])
       .pipe(
-        switchMap(([groupId, searchValue]) => {
+        switchMap(([group, searchValue]) => {
 
-          if (groupId === ALL_WORDS_GROUP ) {
+          if (group._id === ALL_WORDS_GROUP._id) {
 
             return this.filterBySearcValue(searchValue, this.getAllUserWords$());
 
-          } else if (groupId === FAVORITES) {
+          } else if (group._id === FAVORITES._id) {
 
-            return this.filterBySearcValue(searchValue, this.filterWordsByFavorite(this.getAllUserWords$()));
+            return this.filterBySearcValue(searchValue, this.generalFacade.filterWordsByFavorite(this.getAllUserWords$()));
 
           } else {
 
             return this.filterBySearcValue(searchValue, this.getAllUserWords$()
               .pipe(
-                map(words => words.filter(word => word.assignedGroups.includes(groupId)))
+                map(words => words.filter(word => word.assignedGroups.includes(group._id)))
               ))
           }
 
@@ -90,14 +89,8 @@ export class VocabularyFacade {
 
   }
 
-  filterWordsByFavorite(allWords: Observable<Word[]>) {
-    return allWords.pipe(
-      map(words => words.filter(word => word.isFavorite))
-    );
-  }
-
   addNewWord(word: Word, selectedGroupId?: string) {
-    const updatedWord = { ...word, assignedGroups: [ALL_WORDS_GROUP , selectedGroupId] };
+    const updatedWord = { ...word, assignedGroups: [ALL_WORDS_GROUP._id, selectedGroupId] };
     return this.generalFacade.getCurrentLearningLanguage$()
       .pipe(
         switchMap(language =>
@@ -146,12 +139,13 @@ export class VocabularyFacade {
     of([])
   }
 
-  createWordGroup(name: string,) {
+  saveGroup(name: string, selectedGroup: WordGroup) {
     // const language = this.generalState.getCurrentLearningLanguage$();
+    const groupId = selectedGroup ? selectedGroup._id : '';
     return this.generalState.getCurrentLearningLanguage$()
       .pipe(
         switchMap(language =>
-          this.apiWords.createWordGroup(name, language)
+          this.apiWords.saveGroup(name, language, groupId)
         ));
   }
 

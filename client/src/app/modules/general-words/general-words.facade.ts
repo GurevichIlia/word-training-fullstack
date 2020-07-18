@@ -1,13 +1,13 @@
 import { switchMap, pluck, catchError } from 'rxjs/operators';
 import { VocabularyFacade } from './../../vocabulary/vocabulary.facade';
 import { NotificationsService } from './../../shared/services/notifications.service';
-import { Word } from 'src/app/shared/interfaces';
+import { Word, GeneralWord } from 'src/app/shared/interfaces';
 import { ApiWordsService } from './../../shared/services/api/api-words.service';
 import { GeneralState } from 'src/app/general.state';
 import { Injectable } from '@angular/core';
 import { tap } from 'rxjs/internal/operators/tap';
 import { GeneralFacade } from 'src/app/general.facade';
-import { GeneralWord } from '../../../../../src/interfaces';
+
 import { Observable } from 'rxjs';
 
 @Injectable({

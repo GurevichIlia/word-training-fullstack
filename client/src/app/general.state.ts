@@ -5,6 +5,23 @@ import { Language, Word } from '../app/shared/interfaces';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
+
+export const ALL_WORDS_GROUP: WordGroup =
+{
+  _id: '1',
+  name: 'All',
+  wordQuantity: 0,
+  shareForAll: false
+};
+export const FAVORITES: WordGroup =
+{
+  _id: '2',
+  name: 'Favorites',
+  wordQuantity: 0,
+  shareForAll: false
+};
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,7 +37,8 @@ export class GeneralState {
     name: 'Favorites',
     wordQuantity: 0,
     shareForAll: false
-  }];
+  }
+  ];
 
   private currentLearningLanguage$: Observable<Language>;
   private readonly quantityAllWords$ = new BehaviorSubject<number>(null);
@@ -31,7 +49,7 @@ export class GeneralState {
 
   private readonly userName$ = new BehaviorSubject<string>('');
 
-  private readonly selectedGroupForTraining$ = new BehaviorSubject<string>('1');
+  private readonly selectedGroupForTraining$ = new BehaviorSubject<WordGroup>(ALL_WORDS_GROUP);
 
   private currentLocation$ = new BehaviorSubject<{ name: string }>({ name: '' });
   constructor() {
@@ -82,17 +100,21 @@ export class GeneralState {
     return this.quantityAllWords$.asObservable();
   }
 
-  setSelectedGroupForTraining(groupId: string) {
-    this.selectedGroupForTraining$.next(groupId);
+  setSelectedGroupForTraining(group: WordGroup) {
+    this.selectedGroupForTraining$.next(group);
+  }
+
+  getSelectedGroupForTraining$() {
+    return this.selectedGroupForTraining$.asObservable()
   }
 
   getSelectedGroupForTraining() {
-    return this.selectedGroupForTraining$.asObservable();
+    return this.selectedGroupForTraining$.getValue();
   }
 
-  getDefaultGroups() {
-    return this.defaultGroups;
-  }
+  // getDefaultGroups() {
+  //   return this.defaultGroups;
+  // }
 
   setLocation(location: { name: string }) {
     this.currentLocation$.next(location);
@@ -108,7 +130,7 @@ export class GeneralState {
     this.setQuantityWords$(0);
     this.userName$.next('');
     this.setWordsGroups(null);
-    this.setSelectedGroupForTraining('');
+    this.setSelectedGroupForTraining(ALL_WORDS_GROUP);
     console.log('STATE REFRESHED');
   }
 }

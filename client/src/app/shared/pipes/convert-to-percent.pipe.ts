@@ -7,8 +7,11 @@ export class ConvertToPercentPipe implements PipeTransform {
 
   transform(value: any, ...args: any[]): any {
     switch (value) {
-      case 1:
+      case 0:
         value = 0;
+        break;
+      case 1:
+        value = 10;
         break;
       case 2:
         value = 25;

@@ -23,7 +23,7 @@ export class SettingsComponent implements OnInit {
   }
 
   onChangeLearningLanguage() {
-    this.router.navigate(['languages']);
+    this.router.navigate(['settings/languages']);
   }
 
   onLogOut() {

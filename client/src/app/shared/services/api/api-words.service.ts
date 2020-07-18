@@ -1,6 +1,6 @@
+import { GeneralWord } from 'src/app/shared/interfaces';
 import { User } from './../../interfaces';
 import { shareReplay } from 'rxjs/operators';
-import { GeneralWord } from './../../../../../../src/interfaces';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GeneralService } from '../general.service';
@@ -47,9 +47,9 @@ export class ApiWordsService {
     return this.http.delete<Word[]>(`${BASE_URL}/api/vocabulary/deleteWord/${wordId}`);
   }
 
-  createWordGroup(name: string, language: Language) {
+  saveGroup(name: string, language: Language, id: string = '') {
     const languageId = language._id;
-    return this.http.post<WordGroup>(`${BASE_URL}/api/word-group/create`, { name, languageId });
+    return this.http.post<WordGroup>(`${BASE_URL}/api/word-group/create`, { group: { name, languageId, id } });
   }
 
   deleteWordGroup(groupId: string) {

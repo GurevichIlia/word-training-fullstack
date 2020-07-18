@@ -23,7 +23,7 @@
 
     <ng-container *ngIf="(wordGroups$ | async) as groups">
       <app-groups [wordGroups]="wordGroups$ | async" [selectedGroup]="selectedGroup$ | async"
-        (selectGroup)="selectedGroup$.next($event)">
+        (selectGroup)="setSelectedGroup($event)">
 
         <nb-icon class="ml-1" [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
         <mat-menu #menu="matMenu" class="matmenu">
@@ -31,14 +31,16 @@
             <nb-icon icon="plus-outline"></nb-icon>
             <span class="ml-2">Create group</span>
           </div>
-          <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'"
-            (click)="showWordsForAssign()">
+          <div class="menuitem"  *ngIf="!isBaseGroup()" (click)="openGroupModal('Edit group')">
+            <nb-icon icon="edit"></nb-icon>
+            <span class="ml-2">Edit group</span>
+          </div>
+          <div class="menuitem" *ngIf="!isBaseGroup()" (click)="showWordsForAssign()">
             <nb-icon icon="plus-circle-outline"></nb-icon>
             <span class="ml-2">Add
               words</span>
           </div>
-          <div class="menuitem" *ngIf="selectedGroup$.getValue() !== '1' && selectedGroup$.getValue() !== '2'"
-            (click)="deleteWordGroup(selectedGroup$.getValue(), groups)">
+          <div class="menuitem" *ngIf="!isBaseGroup()" (click)="deleteWordGroup(getSelectedGroup()._id, groups)">
             <nb-icon icon="trash-2-outline"></nb-icon>
             <span class="ml-2">Delete
               group</span>
@@ -50,7 +52,7 @@
 
 
     <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
-      <button *ngIf="selectedGroup !== '2'" (click)="openWordModal('New word')" class="purpleButton mb-3 w-100"
+      <button *ngIf="selectedGroup._id !== '2'" (click)="openWordModal('New word')" class="purpleButton mb-3 w-100"
         type="submit" nbButton size="small">Add word</button>
 
       <!-- <button *ngIf="selectedGroup !== '1' && selectedGroup !== '2'" (click)="showWordsForAssign()"
@@ -74,7 +76,7 @@
 
     <ng-container *ngIf="(wordsFiltredByGroup$ | async) && !(wordsFiltredByGroup$ | async)?.length">
       <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
-        <div class="text-center" *ngIf="selectedGroup !== '2' && selectedGroup !== '1' && !filterControl.value">
+        <div class="text-center" *ngIf="selectedGroup._id !== '2' && selectedGroup._id !== '1' && !filterControl.value">
           <span class="first-word-title">Empty group
           </span>
           <br>
@@ -85,13 +87,13 @@
           </span>
 
         </div>
-        <div class="text-center mt-2" *ngIf="selectedGroup === '1' && !filterControl.value">
+        <div class="text-center mt-2" *ngIf="selectedGroup._id === '1' && !filterControl.value">
           <span class="first-word-title">Add your first word <br> or take from <a routerLink="/general-words">Shared
               words <i class="fas fa-users"></i></a></span>
         </div>
 
 
-        <div class="text-center mt-2" *ngIf="selectedGroup === '2' && !filterControl.value">
+        <div class="text-center mt-2" *ngIf="selectedGroup._id === '2' && !filterControl.value">
           <span class="first-word-title">Click <img class="mb-3" style="width: 25px; height: 25px"
               src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
               alt=""> in your word list <br>
@@ -155,8 +157,8 @@
     </nb-card-body>
     <nb-card-footer class="wordDialogFooter">
       <button nbButton status="danger" (click)="groupModal.close()">Cancel</button>
-      <button *ngIf="titleForModal === 'New group'" nbButton (click)="createNewGroup()">Submit</button>
-      <button *ngIf="titleForModal === 'Edit group'" nbButton s>Update</button>
+      <button *ngIf="titleForModal === 'New group'" nbButton (click)="saveGroup()">Submit</button>
+      <button *ngIf="titleForModal === 'Edit group'" nbButton (click)="saveGroup(getSelectedGroup())">Update</button>
     </nb-card-footer>
   </nb-card>
 </ng-template>

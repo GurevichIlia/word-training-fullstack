@@ -1,3 +1,4 @@
+import { WordCounterComponent } from './../word-training/word-counter/word-counter.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -41,6 +42,7 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
     HeaderComponent,
 
     WordComponent,
+    WordCounterComponent,
     WordListComponent,
     SearchComponent,
 
@@ -109,6 +111,7 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
     WordComponent,
     WordListComponent,
     SearchComponent,
+    WordCounterComponent,
 
     ConvertToPercentPipe,
     ReverseArrayPipe,

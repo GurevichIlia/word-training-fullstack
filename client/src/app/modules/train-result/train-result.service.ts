@@ -1,10 +1,10 @@
-import { GeneralFacade } from 'src/app/general.facade';
-import { ApiWordsService } from '../../shared/services/api/api-words.service';
-import { GeneralState } from '../../general.state';
+import { combineLatest } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { ALL_WORDS_GROUP, GeneralState } from '../../general.state';
 import { WordTrainingService } from '../../word-training/word-training.service';
-import { map, switchMap } from 'rxjs/operators';
-import { Word } from '../../shared/interfaces';
+import { WordCounterService } from './../../word-training/word-counter/word-counter.service';
+import { map } from 'rxjs/operators';
+import { WordGroup } from 'src/app/shared/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -12,38 +12,50 @@ import { Word } from '../../shared/interfaces';
 export class TrainResultService {
 
   constructor(
-    private generalFacade: GeneralFacade,
     private trainingService: WordTrainingService,
     private generalState: GeneralState,
-    private wordApiService: ApiWordsService) { }
+    private counterService: WordCounterService) { }
 
-  getFiltredWordsByGroup() {
-    return this.trainingService.getFiltredWordsByGroup()
-      .pipe(
-        map(words => words.filter(word => word.levelKnowledge !== 0))// Don't show words that were not be used in training
-      );
-  }
 
-  setDefaultValueForSelectedGroupForTraining() {
-    this.generalState.setSelectedGroupForTraining('1');
+
+  // setDefaultValueForSelectedGroupForTraining() {
+  //   this.generalState.setSelectedGroupForTraining(ALL_WORDS_GROUP);
+  // }
+  setSelectedGroupForTraining(group: WordGroup) {
+    this.generalState.setSelectedGroupForTraining(group);
   }
 
   updateWords() {
-    const allWords = this.generalState.getUserWords();
-    return this.generalFacade.getCurrentLearningLanguage$()
-    .pipe(
-      switchMap(language => {
-      return this.wordApiService.updateWords(allWords, language);
-    }));
+    return this.trainingService.updateWords();
+  }
+
+  getTrainingResult$() {
+    return this.counterService.getTrainResult$();
   }
 
   getTrainedGroup() {
-    return this.trainingService.getSelectedGroupForTraining()
-      .pipe(
-        switchMap(id => {
-          return this.trainingService.getWordGroups().pipe(map(groups => groups.find(group => group._id === id)));
-        }));
+    return this.trainingService.getSelectedGroupForTraining();
+  }
+
+  counterResult$() {
+    return combineLatest(
+      [
+        this.counterService.totalCardsLearned$(),
+        this.counterService.getQuantityLearnedWords$(),
+        this.counterService.getQuantityAllWords$()
+      ]
+    ).pipe(
+      map(
+        ([totalCardsLearned, quantityLearnedWords, quantityWordsInGroup]) =>
+          ({ totalCardsLearned, quantityLearnedWords, quantityWordsInGroup })));
   }
 
 
+  clearCounterState() {
+    this.counterService.clearCounterState();
+  }
+
+  startTraining() {
+    this.trainingService.onStartTraining();
+  }
 }

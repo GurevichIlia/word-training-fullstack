@@ -1,17 +1,15 @@
-import { AssignWordListComponent } from './assign-word-list/assign-word-list.component';
-import { Component, OnDestroy, OnInit, TemplateRef, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { NbDialogRef, NbDialogService, NbCardBackComponent, NbCardBodyComponent } from '@nebular/theme';
-import { BehaviorSubject, EMPTY, Observable, Subject, fromEvent } from 'rxjs';
-import { switchMap, takeUntil, filter, tap, take, delay, shareReplay } from 'rxjs/operators';
-import { Word, WordGroup, MenuItem } from './../shared/interfaces';
-import { AskQuestionComponent } from './../shared/modals/ask-question/ask-question.component';
-import { NotificationsService } from './../shared/services/notifications.service';
-import { ALL_WORDS_GROUP, VocabularyFacade } from './vocabulary.facade';
-import { InstallSuggestionComponent } from '../core/install-app/install-suggestion/install-suggestion.component';
 import { MatDialog } from '@angular/material/dialog';
-import { DeviceDetectorService } from 'ngx-device-detector';
+import { Router } from '@angular/router';
+import { NbDialogRef, NbDialogService } from '@nebular/theme';
+import { BehaviorSubject, fromEvent, Observable, Subject } from 'rxjs';
+import { delay, shareReplay, takeUntil } from 'rxjs/operators';
+import { MenuItem, Word, WordGroup } from './../shared/interfaces';
+import { NotificationsService } from './../shared/services/notifications.service';
+import { AssignWordListComponent } from './assign-word-list/assign-word-list.component';
+import { VocabularyFacade } from './vocabulary.facade';
+import { ALL_WORDS_GROUP } from '../general.state';
 
 
 
@@ -36,7 +34,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   allWords$: Observable<Word[]>;
   wordsFiltredByGroup$: Observable<Word[]>;
   wordGroups$: Observable<WordGroup[]>;
-  selectedGroup$ = new BehaviorSubject<string>(ALL_WORDS_GROUP);
+  selectedGroup$ = new BehaviorSubject<WordGroup>(ALL_WORDS_GROUP);
   groupName = new FormControl('', Validators.required);
   groupModal: NbDialogRef<any>;
 
@@ -126,7 +124,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
 
   addNewWord() {
     if (this.newWordForm.valid) {
-      this.vocabularyFacade.addNewWord(this.newWordForm.value, this.selectedGroup$.getValue())
+      this.vocabularyFacade.addNewWord(this.newWordForm.value, this.selectedGroup$.getValue()._id)
         .pipe(
           takeUntil(this.subscription$)
         )
@@ -250,20 +248,19 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  createNewGroup() {
+  saveGroup(selectedGroup?: WordGroup) {
     if (!this.groupName.valid) {
       return this.notification.warning('', 'Please fill in required fields');
 
     }
-
-    this.vocabularyFacade.createWordGroup(this.groupName.value)
+    this.vocabularyFacade.saveGroup(this.groupName.value, selectedGroup)
       .pipe(
         takeUntil(this.subscription$))
       .subscribe(group => {
         this.vocabularyFacade.updateWordsAndGroups();
         this.groupName.patchValue('');
         this.groupModal.close();
-        this.selectedGroup$.next(group._id);
+        this.selectedGroup$.next(group);
 
         // this.getGroups();
         console.log('RES AFTER SAVE GROUP', group);
@@ -276,23 +273,34 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeUntil(this.subscription$))
       .subscribe(res => {
         this.vocabularyFacade.updateWordsAndGroups();
-        this.selectedGroup$.next('1');
+        this.selectedGroup$.next(new WordGroup(ALL_WORDS_GROUP));
         // this.getGroups();
         console.log('RES AFTER DELETE GROUP', res);
       })
   }
 
-  assignGroup() {
-
+  setSelectedGroup(group: WordGroup) {
+    this.selectedGroup$.next(group);
   }
 
-  openGroupModal(title: string) {
+  getSelectedGroup() {
+    return this.selectedGroup$.getValue();
+  }
+
+  openGroupModal(title: 'New group' | 'Edit group') {
     this.titleForModal = title;
+
+    if (title === 'Edit group') {
+      this.groupName.patchValue(this.getSelectedGroup().name);
+    }
+
     this.groupModal = this.dialogService.open(this.groupModalRef);
+
+
   }
 
   showWordsForAssign() {
-    this.dialogService.open(AssignWordListComponent, { context: { words$: this.allWords$, group: this.selectedGroup$.getValue() } });
+    this.dialogService.open(AssignWordListComponent, { context: { words$: this.allWords$, group: this.selectedGroup$.getValue()._id } });
   }
 
   toggleWordAssignToGroup(wordId: string) {
@@ -343,6 +351,12 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
 
   detectDevice() {
     this.vocabularyFacade.detectDevice();
+  }
+
+  isBaseGroup() {
+    return (this.getSelectedGroup()._id !== '1' && this.getSelectedGroup()._id !== '2') ? false : true;
+
+
   }
 
   unsubscribe() {

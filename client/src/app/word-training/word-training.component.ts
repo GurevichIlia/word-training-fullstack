@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Word, WordGroup } from '../shared/interfaces';
 import { NotificationsService } from './../shared/services/notifications.service';
@@ -17,10 +17,9 @@ import { WordTrainingService } from './word-training.service';
 })
 export class WordTrainingComponent implements OnInit, OnDestroy {
   allWords$: Observable<Word[]> = this.wordTrainingService.getUserWords();
-  unsubscribe$ = new Subject();
   start = false;
   loadingSpinner = false;
-  animationState: string;
+
   trainingWordsQuantity: number;
   selectedTrainingGroupId$ = this.wordTrainingService.getSelectedGroupForTraining();
   currentOrderIndex$ = new BehaviorSubject<number>(0);
@@ -28,15 +27,6 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
   wordGroups$: Observable<WordGroup[]>;
   priority = 0;
   previousWord$: Observable<Word>;
-  isBlockStart$: Observable<boolean> = this.selectedTrainingGroupId$
-    .pipe(
-      switchMap(groupId => {
-        return this.wordGroups$
-          .pipe(
-            map(groups => groups.find(group => group._id === groupId)),
-            map(group => group.wordQuantity < 5)
-          )
-      }));
   constructor(
     private wordTrainingService: WordTrainingService,
     private router: Router,
@@ -72,43 +62,43 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
     // });
   }
 
-  startTrain() {
-    this.startAnimation('bounceInDown');
-    this.start = true;
-    this.getCurrentTrainingWord();
+  // startTrain() {
+  //   this.startAnimation('bounceInDown');
+  //   this.start = true;
+  //   this.getCurrentTrainingWord();
 
-  }
-
-
-  getCurrentTrainingWord() {
-    this.currentTrainingWord$ = this.wordTrainingService.getWordByPriority(this.priority)
-      .pipe(tap(() => {
-        this.priority = this.priority + 1;
-        if (this.priority === 6) {
-          this.priority = 0;
-        }
-        console.log('INVOKE');
-      }));
+  // }
 
 
-    // = combineLatest(
-    //   [
-    //     this.wordTrainingService.getFiltredWordsByGroup(),
-    //     this.currentOrderIndex$,
-    //   ]
-    // )
-    //   .pipe(
-    //     map(([trainingWords, currentOrderIndex]) => {
+  // getCurrentTrainingWord() {
+  //   this.currentTrainingWord$ = this.wordTrainingService.getWordByPriority(this.priority)
+  //     .pipe(tap(() => {
+  //       this.priority = this.priority + 1;
+  //       if (this.priority === 6) {
+  //         this.priority = 0;
+  //       }
+  //       console.log('INVOKE');
+  //     }));
 
-    //       this.trainingWordsQuantity = trainingWords.length - 1;
-    //       console.log('WORDS FOR TRAIN', trainingWords);
-    //       return trainingWords[currentOrderIndex];
-    //     }));
-  }
 
-  setGroupForTraining(groupId: string) {
+  //   // = combineLatest(
+  //   //   [
+  //   //     this.wordTrainingService.getFiltredWordsByGroup(),
+  //   //     this.currentOrderIndex$,
+  //   //   ]
+  //   // )
+  //   //   .pipe(
+  //   //     map(([trainingWords, currentOrderIndex]) => {
+
+  //   //       this.trainingWordsQuantity = trainingWords.length - 1;
+  //   //       console.log('WORDS FOR TRAIN', trainingWords);
+  //   //       return trainingWords[currentOrderIndex];
+  //   //     }));
+  // }
+
+  setGroupForTraining(group: WordGroup) {
     // this.groupForTraining.patchValue(groupId);
-    this.wordTrainingService.setSelectedGroupForTraining(groupId);
+    this.wordTrainingService.setSelectedGroupForTraining(group);
     this.currentOrderIndex$.next(0);
   }
 
@@ -116,43 +106,37 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
     this.wordTrainingService.setWordKnowledgeLevel(wordId, level);
   }
 
-  nextWordAndSetWordLevel(payload: { wordId: string, level: number }) {
-    this.nextWord();
-    this.setWordKnowledgeLevel(payload.wordId, payload.level);
-  }
+  // nextWordAndSetWordLevel(payload: { wordId: string, level: number }) {
+  //   this.nextWord();
+  //   this.setWordKnowledgeLevel(payload.wordId, payload.level);
+  // }
 
-  nextWord() {
-    this.startAnimation('bounceInDown');
+  // nextWord() {
+  //   this.startAnimation('bounceInDown');
 
-    // if (this.currentOrderIndex === this.trainingWordsQuantity) {
-    //   this.currentOrderIndex$.next(0);
-    // } else {
-    //   this.currentOrderIndex$.next(this.currentOrderIndex + 1);
-    // }
-    this.previousWord$ = this.currentTrainingWord$;
-    this.getCurrentTrainingWord();
+  //   // if (this.currentOrderIndex === this.trainingWordsQuantity) {
+  //   //   this.currentOrderIndex$.next(0);
+  //   // } else {
+  //   //   this.currentOrderIndex$.next(this.currentOrderIndex + 1);
+  //   // }
+  //   this.previousWord$ = this.currentTrainingWord$;
+  //   this.getCurrentTrainingWord();
 
-  }
+  // }
 
-  prevWord() {
-    this.startAnimation('bounceInLeft');
-    this.currentTrainingWord$ = this.previousWord$;
-    // console.log('works');
-    // if (this.currentOrderIndex === 0) {
-    //   this.currentOrderIndex$.next(this.trainingWordsQuantity);
-    // } else {
-    //   this.currentOrderIndex$.next(this.currentOrderIndex - 1);
-    // }
+  // prevWord() {
+  //   this.startAnimation('bounceInLeft');
+  //   this.currentTrainingWord$ = this.previousWord$;
+  //   // console.log('works');
+  //   // if (this.currentOrderIndex === 0) {
+  //   //   this.currentOrderIndex$.next(this.trainingWordsQuantity);
+  //   // } else {
+  //   //   this.currentOrderIndex$.next(this.currentOrderIndex - 1);
+  //   // }
 
-  }
+  // }
 
-  saveWordsTrainingProgress() {
-    this.wordTrainingService.updateWords()
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(res => console.log('WORDS AFTER UPDATE', res));
-  }
+
 
 
 
@@ -279,16 +263,7 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
   //   }
   // }
 
-  startAnimation(stateAnimate) {
-    console.log(stateAnimate);
-    if (!this.animationState) {
-      this.animationState = stateAnimate;
-    }
-  }
 
-  resetAnimationState() {
-    this.animationState = '';
-  }
 
   goToTrainResult() {
     // this.wordTrainingService.setTrainResult(this.wordsForResult);
@@ -314,11 +289,10 @@ export class WordTrainingComponent implements OnInit, OnDestroy {
     // Called once, before the instance is destroyed.
     // Add 'implements OnDestroy' to the class.
     // console.log(this.favoriteMode.value);
-    if (this.start) {
-      this.saveWordsTrainingProgress();
 
-    }
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+
+    this.wordTrainingService.clearCounterState();
+    // this.unsubscribe$.next();
+    // this.unsubscribe$.complete();
   }
 }

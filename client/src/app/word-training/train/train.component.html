@@ -1,111 +1,125 @@
-<div class="container">
-  <nb-flip-card #flipCard [showToggleButton]="'false'">
-    <nb-card-front #flipCard>
-      <nb-card class="word-card" [@wordCardAnimator]="animationState"
-        (@wordCardAnimator.done)="onResetAnimationState()">
-        <nb-card-header [ngClass]="{
-          'bad': word.levelKnowledge == 1,
-        'better': word.levelKnowledge == 2,
-        'medium': word.levelKnowledge == 3,
-        'good': word.levelKnowledge == 4,
-        'excellent': word.levelKnowledge == 5,
-        'basic': word.levelKnowledge == 0
- }">
-          <span class="card-title">Word</span>
-        </nb-card-header>
-        <nb-card-body>
+<ng-container *ngIf="currentWord$ | async as word">
+  <div class="container">
 
-          <div class="word">
-            <span [ngStyle]="{'font-size': word?.word.length > 11 ? '30px' : '35px'}">
-              {{word?.word}}</span>
-
-          </div>
+    <div class="counter">
+      <app-word-counter></app-word-counter>
+    </div>
 
 
+    <nb-flip-card #flipCard [showToggleButton]="'false'">
+      <nb-card-front #flipCard>
+        <nb-card class="word-card" [@wordCardAnimator]="animationState$ | async"
+          (@wordCardAnimator.done)="onResetAnimationState()">
+          <nb-card-header [ngClass]="{
+            'bad': word.levelKnowledge == 1,
+          'better': word.levelKnowledge == 2,
+          'medium': word.levelKnowledge == 3,
+          'good': word.levelKnowledge == 4,
+          'excellent': word.levelKnowledge == 5,
+          'basic': word.levelKnowledge == 0
+   }">
+            <span class="card-title">Word</span>
+          </nb-card-header>
+          <nb-card-body>
 
-          <div class="w-50">
-            <!-- (tap)="addToFavorites(word)" -->
-            <!-- (tap)="removeFromFavorites(word)" -->
-            <img *ngIf="!word?.isFavorite" style="width: 30px; height: 30px"
-              src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
-              alt="">
-            <img *ngIf="word?.isFavorite" style="width: 30px; height: 30px"
-              src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png"
-              alt="">
+            <div class="word m-auto">
+              <span [ngStyle]="{'font-size': word?.word.length > 11 ? '30px' : '35px'}">
+                {{word?.word}}</span>
 
-          </div>
-          <!-- <button (click)="addToFavorites(word)">fav</button> -->
+            </div>
 
-        </nb-card-body>
 
-      </nb-card>
-    </nb-card-front>
-    <nb-card-back #flipCard>
-      <nb-card status="danger" class="word-card" [@wordCardAnimator]="animationState"
-        (@wordCardAnimator.done)="onResetAnimationState()">
-        <nb-card-header [ngClass]="{
-          'bad': word.levelKnowledge == 1,
-        'better': word.levelKnowledge == 2,
-        'medium': word.levelKnowledge == 3,
-        'good': word.levelKnowledge == 4,
-        'excellent': word.levelKnowledge == 5,
-        'basic': word.levelKnowledge == 0
- }">
-          <span class="card-title">Translation</span>
-        </nb-card-header>
-        <nb-card-body style="height: 100%">
-          <div  class="word">
-            <span [ngStyle]="{'font-size': word?.translation.length > 11 ? '30px' : '35px'}" >
-              {{word?.translation}}
 
-            </span>
-          </div>
+            <div class="w-50">
+              <!-- (tap)="addToFavorites(word)" -->
+              <!-- (tap)="removeFromFavorites(word)" -->
+              <img *ngIf="!word?.isFavorite" style="width: 30px; height: 30px"
+                src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
+                alt="">
+              <img *ngIf="word?.isFavorite" style="width: 30px; height: 30px"
+                src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png"
+                alt="">
 
-          <div>
-            <img *ngIf="!word?.isFavorite" style="width: 30px; height: 30px"
-              src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
-              alt="">
-            <img *ngIf="word?.isFavorite" style="width: 30px; height: 30px"
-              src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png"
-              alt="">
-          </div>
+            </div>
+            <!-- <button (click)="addToFavorites(word)">fav</button> -->
 
-        </nb-card-body>
-      </nb-card>
-    </nb-card-back>
+          </nb-card-body>
 
-  </nb-flip-card>
-</div>
+        </nb-card>
+      </nb-card-front>
+      <nb-card-back #flipCard>
+        <nb-card status="danger" class="word-card" [@wordCardAnimator]="animationState$ | async"
+          (@wordCardAnimator.done)="onResetAnimationState()">
+          <nb-card-header [ngClass]="{
+            'bad': word.levelKnowledge == 1,
+          'better': word.levelKnowledge == 2,
+          'medium': word.levelKnowledge == 3,
+          'good': word.levelKnowledge == 4,
+          'excellent': word.levelKnowledge == 5,
+          'basic': word.levelKnowledge == 0
+   }">
+            <span class="card-title">Translation</span>
+          </nb-card-header>
+          <nb-card-body style="height: 100%">
+            <div class="word m-auto">
+              <span [ngStyle]="{'font-size': word?.translation.length > 11 ? '30px' : '35px'}">
+                {{word?.translation}}
 
-<nb-card class="knowledge-level-panel pr-3 pl-3 mt-4">
-  <div class="p-2 text-center question-title">
-    <span>How well do you know this word?</span>
+              </span>
+            </div>
+
+            <div>
+              <img *ngIf="!word?.isFavorite" style="width: 30px; height: 30px"
+                src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
+                alt="">
+              <img *ngIf="word?.isFavorite" style="width: 30px; height: 30px"
+                src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png"
+                alt="">
+            </div>
+
+          </nb-card-body>
+        </nb-card>
+      </nb-card-back>
+
+    </nb-flip-card>
   </div>
-  <div class="row level-row justify-content-around">
-    <button class="col-2 level bad" size="small" (click)="onSetKnowledgeLevel(word._id, 1)" nbButton>1</button>
-    <button class="col-2 level better" size="small" (click)="onSetKnowledgeLevel(word._id, 2)" nbButton>2</button>
-    <button class="col-2 level medium" size="small" (click)="onSetKnowledgeLevel(word._id, 3)" nbButton>3</button>
-    <button class="col-2 level good" size="small" (click)="onSetKnowledgeLevel(word._id, 4)" nbButton>4</button>
-    <button class="col-2 level excellent" size="small" (click)="onSetKnowledgeLevel(word._id, 5)" nbButton>5</button>
 
-    <!-- <div class="col-2 level bad" (click)="onSetKnowledgeLevel(word._id, 1)">1</div>
-            <div class="col-2 level better" (click)="onSetKnowledgeLevel(word._id, 2)">2</div>
-            <div class="col-2 level medium" (click)="onSetKnowledgeLevel(word._id, 3)">3</div>
-            <div class="col-2 level good" (click)="onSetKnowledgeLevel(word._id, 4)">4</div>
-            <div class="col-2 level excellent" (click)="onSetKnowledgeLevel(word._id, 5)">5</div> -->
-  </div>
-</nb-card>
+  <nb-card class="knowledge-level-panel pr-3 pl-3 mt-4">
+    <div class="p-2 text-center question-title">
+      <span>How well do you know this word?</span>
+    </div>
+    <div class="row level-row justify-content-around">
+      <button class="col-2 level bad" size="small" (click)="nextWord(word, 1)" nbButton>1</button>
+      <button class="col-2 level better" size="small" (click)="nextWord(word, 2)" nbButton>2</button>
+      <button class="col-2 level medium" size="small" (click)="nextWord(word, 3)" nbButton>3</button>
+      <button class="col-2 level good" size="small" (click)="nextWord(word, 4)" nbButton>4</button>
+      <button class="col-2 level excellent" size="small" (click)="nextWord(word, 5)" nbButton>5</button>
 
-<!--
-<nb-icon icon="arrow-back" *ngIf="start" (click)="prevWord()"></nb-icon> <span class="ml-1" *ngIf="start">previous
-      word</span> -->
-<div class="container">
-  <div class="row justify-content-center mt-2">
-    <!-- <button *ngIf="!start" type="buttom" (click)="onStart()" class="col-8 mb-2" nbButton
-                    style="background-color: darkorchid; border-color: darkorchid">Start</button> -->
-    <button type="buttom" class="col-8 mb-2" nbButton status="warning" (click)="goToTrainResult()">Stop
-      train</button>
-    <!-- <button *ngIf="start" type="buttom" (click)="onKnow()" class="col-4 ml-2 mb-2" nbButton
-                    status="success">Know</button> -->
+      <!-- <div class="col-2 level bad" (click)="nextWord(word, 1)">1</div>
+              <div class="col-2 level better" (click)="nextWord(word, 2)">2</div>
+              <div class="col-2 level medium" (click)="nextWord(word, 3)">3</div>
+              <div class="col-2 level good" (click)="nextWord(word, 4)">4</div>
+              <div class="col-2 level excellent" (click)="nextWord(word, 5)">5</div> -->
+    </div>
+  </nb-card>
+
+  <!--
+  <nb-icon icon="arrow-back" *ngIf="start" (click)="prevWord()"></nb-icon> <span class="ml-1" *ngIf="start">previous
+        word</span> -->
+  <div class="container">
+    <div class="row justify-content-center mt-2">
+      <!-- <button *ngIf="!start" type="buttom" (click)="onStart()" class="col-8 mb-2" nbButton
+                      style="background-color: darkorchid; border-color: darkorchid">Start</button> -->
+      <button type="buttom" class="col-8 mb-2" nbButton status="warning" (click)="stopTraining()">Stop
+        train</button>
+      <!-- <button *ngIf="start" type="buttom" (click)="onKnow()" class="col-4 ml-2 mb-2" nbButton
+                      status="success">Know</button> -->
+    </div>
   </div>
-</div>
+</ng-container>
+
+
+
+<!-- <app-train [animationState]="animationState" [word]="currentTrainingWord$ | async" (resetAnimationState)="resetAnimationState()"
+(setKnowledgeLevel)="nextWordAndSetWordLevel($event)" (toTrainResult)="goToTrainResult()" *ngIf="start">
+</app-train> -->

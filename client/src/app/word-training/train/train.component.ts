@@ -1,7 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { Word, WordGroup } from 'src/app/shared/interfaces';
-import { trigger, transition, animate, keyframes } from '@angular/animations';
+import { animate, keyframes, transition, trigger } from '@angular/animations';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import * as kf from '../../shared/keyframes';
+import { WordTrainingService } from './../word-training.service';
+import { Word } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-train',
@@ -18,28 +22,61 @@ import * as kf from '../../shared/keyframes';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TrainComponent {
-  @Input() start: boolean;
-  @Input() animationState: string;
-  @Input() word: Word;
+export class TrainComponent implements OnDestroy {
+  // @Input() start: boolean;
+  // @Input() animationState: string;
+  // @Input() word: Word;
 
 
-  @Output() toTrainResult = new EventEmitter();
-  @Output() resetAnimationState = new EventEmitter()
-  @Output() setKnowledgeLevel = new EventEmitter();
+  // @Output() toTrainResult = new EventEmitter();
+  // @Output() resetAnimationState = new EventEmitter()
+  // @Output() setKnowledgeLevel = new EventEmitter();
+
+  unsubscribe$ = new Subject();
+  currentWord$ = this.wordTrainingService.getCurrentTrainingWord$();
+  animationState$ = this.wordTrainingService.getAnimationState();
+  constructor(
+    private wordTrainingService: WordTrainingService,
+    private router: Router
+  ) { }
 
 
+  stopTraining() {
+    this.wordTrainingService.onFinishTraining();
+    this.showResult();
+  }
 
-
-  goToTrainResult() {
-    this.toTrainResult.emit();
+  showResult() {
+    this.router.navigate(['word-training/train-result']);
   }
 
   onResetAnimationState() {
-    this.resetAnimationState.emit();
+    // this.resetAnimationState.emit();
+    this.wordTrainingService.resetAnimationState();
   }
 
-  onSetKnowledgeLevel(wordId: string, level: number) {
-    this.setKnowledgeLevel.emit({ wordId, level });
+  nextWord(word: Word , knowledgeLevel: number) {
+    this.wordTrainingService.nextWord(word, knowledgeLevel);
+    // this.animationState = this.wordTrainingService.getAnimationState();
   }
+
+  previousWord() {
+
+  }
+
+  saveWordsTrainingProgress() {
+    this.wordTrainingService.updateWords()
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(res => console.log('WORDS AFTER UPDATE', res));
+  }
+
+  ngOnDestroy() {
+    this.saveWordsTrainingProgress();
+    this.wordTrainingService.onFinishTraining();
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
 }

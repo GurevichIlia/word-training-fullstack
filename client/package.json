@@ -46,6 +46,7 @@
     "@angular/cli": "^9.1.4",
     "@angular/compiler-cli": "^9.0.0",
     "@angular/language-service": "^9.0.0",
+    "@ngx-builders/analyze": "^2.0.0",
     "@schematics/angular": "^8.1.3",
     "@types/jasmine": "^3.3.16",
     "@types/jasminewd2": "^2.0.8",

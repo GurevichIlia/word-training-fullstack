@@ -49,12 +49,12 @@ export class MyHammerConfig extends HammerGestureConfig {
     AppRoutingModule,
     SharedModule,
     HttpClientModule,
-    NbToastrModule.forRoot(),
+
     NbMenuModule.forRoot(),
     NbThemeModule.forRoot({ name: 'default' }),
     NbSidebarModule.forRoot(), // NbSidebarModule.forRoot(), //if this is your app.module
     NbDialogModule.forRoot(),
-     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
 
 
 
@@ -64,7 +64,7 @@ export class MyHammerConfig extends HammerGestureConfig {
 
   ],
   providers: [
-    {provide: LocationStrategy, useClass: HashLocationStrategy},
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptorService, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ServerErrorInterceptor, multi: true },
 

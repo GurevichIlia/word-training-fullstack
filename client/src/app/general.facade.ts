@@ -42,8 +42,7 @@ export class GeneralFacade {
 
         // tap(words => this.generalService.setQuantityWords(words.length)),
         tap(words => words ? this.generalState.setUserWords(words) : []),
-        tap(words => {
-          this.setWordsQuantity();
+        tap(words => {this.setWordsQuantity();
           // this.setQuantityWordsInGroups(words);
         }
         ),
@@ -89,7 +88,7 @@ export class GeneralFacade {
           map(language => language ? language : null),
           filter(language => language !== null),
           switchMap(language => {
-            return this.apiWordsService.getAllWordsGroups(language);
+            return this.apiWordsService.getAllWordsGroups(language)
 
           }
           ),
@@ -102,12 +101,14 @@ export class GeneralFacade {
 
 
       this.generalState.setWordsGroups(groups$);
+
     }
 
     return this.generalState.getWordsGroups$().pipe(
       map(groups => {
-        return groups ? [...this.generalState.getDefaultGroups(), ...groups] : [];
-
+        // return groups ? [...this.generalState.getDefaultGroups(), ...groups] : [];
+        // this.generalState.setSelectedGroupForTraining(groups[0]);
+        return groups;
       }),
       switchMap((groups: WordGroup[]) => this.setQuantityWordsInGroups(groups)),
     );
@@ -125,17 +126,24 @@ export class GeneralFacade {
         if (!words) {
           return [] as WordGroup[];
         }
+
         const updatedGroups = groups.map(group => {
           if (group._id === '2') {
             const updatedGroup: WordGroup = { ...group, wordQuantity: words.filter(word => word.isFavorite === true).length };
             return updatedGroup;
           }
-          const newGroup: WordGroup = { ...group, wordQuantity: words.filter(word => word.assignedGroups.includes(group._id)).length };
+          // const newGroup: WordGroup = { ...group, wordQuantity: words.filter(word => word.assignedGroups.includes(group._id)).length };
 
-          return newGroup;
+          return group;
         });
         return updatedGroups;
       })
+    );
+  }
+
+  filterWordsByFavorite(allWords: Observable<Word[]>) {
+    return allWords.pipe(
+      map(words => words.filter(word => word.isFavorite))
     );
   }
 

@@ -4,7 +4,14 @@ import { Routes, RouterModule } from '@angular/router';
 
 
 const routes: Routes = [
-  { path: '', component: SettingsComponent }
+  {
+    path: '', component: SettingsComponent
+
+  },
+  {
+    path: 'languages', loadChildren: () => import('./../../languages/languages.module').then(m => m.LanguagesModule),
+    // canActivate: [AuthGuard]
+  },
 ];
 
 @NgModule({

@@ -28,12 +28,21 @@ export interface Language {
   flag?: string;
 }
 
-export interface WordGroup {
+export class WordGroup {
   _id: string;
   name: string;
   wordQuantity: number;
   shareForAll: boolean;
+  constructor({ _id, name, wordQuantity, shareForAll }) {
+    this._id = _id,
+      this.name = name,
+      this.wordQuantity = wordQuantity,
+      this.shareForAll = shareForAll;
+  }
+
 }
+
+
 
 export interface LanguageResponse {
   currentLanguage: Language;

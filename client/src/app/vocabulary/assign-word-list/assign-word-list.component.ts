@@ -1,6 +1,6 @@
 import { VocabularyFacade } from './../vocabulary.facade';
 import { GeneralFacade } from 'src/app/general.facade';
-import { takeUntil, switchMap, startWith, map, tap } from 'rxjs/operators';
+import { takeUntil, switchMap, startWith, map, tap, finalize } from 'rxjs/operators';
 import { AssignWordsService } from './../assign-words.service';
 import { Component, OnInit, Input, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { Word } from 'src/app/shared/interfaces';
@@ -20,6 +20,7 @@ export class AssignWordListComponent implements OnInit, OnDestroy {
   selectedWords = [];
   subscription$ = new Subject();
   filterControl = new FormControl('');
+  loading = false;
   constructor(
     protected dialogRef: NbDialogRef<AssignWordListComponent>,
     private generalFacade: GeneralFacade,
@@ -58,9 +59,10 @@ export class AssignWordListComponent implements OnInit, OnDestroy {
 
   assignWords(groupId: string, selectedWords: string[]) {
     const data = { groupId, selectedWords };
-
+    this.loading = true;
     this.assignService.assignWords(data)
       .pipe(
+        finalize(() => this.loading = false),
         takeUntil(this.subscription$)
       )
       .subscribe(res => {
