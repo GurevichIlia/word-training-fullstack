@@ -6,13 +6,12 @@ import User from "../Models/User";
 import errorHandler from "../utils/errorHandler";
 import { userInfo } from "os";
 import nodemailer from 'nodemailer'
+import BaseConfig from "../config/base";
 const sendgrid = require('nodemailer-sendgrid-transport')
 const keys = require('./../config/keys')
-import Emails from "../emails/emails";
-import { SENDGRID_API_KEY} from "../config/base";
 
 const transporter = nodemailer.createTransport(sendgrid({
-    auth: { api_key: SENDGRID_API_KEY }
+    auth: { api_key: BaseConfig.SENDGRID_API_KEY }
 }))
 // import keys from "../config/keys";
 export class AuthController {
