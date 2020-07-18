@@ -8,9 +8,9 @@ import nodemailer from 'nodemailer'
 const sendgrid = require('nodemailer-sendgrid-transport')
 const keys = require('./../config/keys')
 const baseConf = require('../config/base')
-const transporter = nodemailer.createTransport(sendgrid({
-    auth: { api_key: baseConf.SENDGRID_API_KEY }
-}))
+// const transporter = nodemailer.createTransport(sendgrid({
+//     auth: { api_key: baseConf.SENDGRID_API_KEY }
+// }))
 // import keys from "../config/keys";
 export class AuthController {
 
