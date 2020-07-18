@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../Models/User";
 import errorHandler from "../utils/errorHandler";
-import { userInfo } from "os";
 import nodemailer from 'nodemailer'
 const sendgrid = require('nodemailer-sendgrid-transport')
 const keys = require('./../config/keys')
