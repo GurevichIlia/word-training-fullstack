@@ -6,12 +6,11 @@ import User from "../Models/User";
 import errorHandler from "../utils/errorHandler";
 import { userInfo } from "os";
 import nodemailer from 'nodemailer'
-import BaseConfig from "../config/base";
 const sendgrid = require('nodemailer-sendgrid-transport')
 const keys = require('./../config/keys')
-
+const baseConf = require('../config/base')
 const transporter = nodemailer.createTransport(sendgrid({
-    auth: { api_key: BaseConfig.SENDGRID_API_KEY }
+    auth: { api_key: baseConf.SENDGRID_API_KEY }
 }))
 // import keys from "../config/keys";
 export class AuthController {
@@ -95,7 +94,7 @@ export class AuthController {
         }
     }
 
- 
+
 }
 
 
