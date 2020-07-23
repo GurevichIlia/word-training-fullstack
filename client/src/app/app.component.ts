@@ -2,6 +2,7 @@ import { AuthService } from './shared/services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { Observable, fromEvent, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators';
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,10 @@ export class AppComponent implements OnInit {
   title = 'word-training';
   isShowFooterMenu$: Observable<boolean>;
   subscription$ = new Subject();
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.isShowFooterMenu$ = this.authService.isAuthenticated$();
   }
 
@@ -29,6 +33,9 @@ export class AppComponent implements OnInit {
         // Update UI notify the user they can install the PWA
         console.log(e, 'BEFORE INSTALL');
       });
+
+
+
   }
 
 

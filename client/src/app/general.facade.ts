@@ -1,3 +1,4 @@
+import { NavigationService } from './core/services/navigation.service';
 import { WordGroup } from 'src/app/shared/interfaces';
 import { GeneralService } from './shared/services/general.service';
 import { NotificationsService } from './shared/services/notifications.service';
@@ -20,7 +21,8 @@ export class GeneralFacade {
     private generalState: GeneralState,
     private router: Router,
     private notifications: NotificationsService,
-    private generalService: GeneralService
+    private generalService: GeneralService,
+    private navigationService: NavigationService
   ) { }
 
   getUserWordsFromServer() {
@@ -42,7 +44,8 @@ export class GeneralFacade {
 
         // tap(words => this.generalService.setQuantityWords(words.length)),
         tap(words => words ? this.generalState.setUserWords(words) : []),
-        tap(words => {this.setWordsQuantity();
+        tap(words => {
+          this.setWordsQuantity();
           // this.setQuantityWordsInGroups(words);
         }
         ),
@@ -177,7 +180,8 @@ export class GeneralFacade {
   }
 
   getLocation$() {
-    return this.generalState.getLocation$();
+    // return this.generalState.getLocation$();
+    return this.navigationService.getCurrentLocation$();
   }
 
   setLocation(location: { name: string }) {

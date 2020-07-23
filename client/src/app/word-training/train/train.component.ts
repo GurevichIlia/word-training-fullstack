@@ -1,11 +1,12 @@
 import { animate, keyframes, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as kf from '../../shared/keyframes';
 import { WordTrainingService } from './../word-training.service';
 import { Word } from 'src/app/shared/interfaces';
+import { NbCardBackComponent } from '@nebular/theme';
 
 @Component({
   selector: 'app-train',
@@ -22,7 +23,10 @@ import { Word } from 'src/app/shared/interfaces';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TrainComponent implements OnDestroy {
+export class TrainComponent implements OnDestroy, AfterViewInit {
+  @ViewChild('wordCard') wordCard: ElementRef;
+  @ViewChild('translationCard') translationCard: NbCardBackComponent ;
+
   // @Input() start: boolean;
   // @Input() animationState: string;
   // @Input() word: Word;
@@ -40,6 +44,11 @@ export class TrainComponent implements OnDestroy {
     private router: Router
   ) { }
 
+  ngAfterViewInit() {
+    console.log(this.wordCard);
+    console.log(this.translationCard);
+
+  }
 
   stopTraining() {
     this.wordTrainingService.onFinishTraining();
@@ -55,8 +64,10 @@ export class TrainComponent implements OnDestroy {
     this.wordTrainingService.resetAnimationState();
   }
 
-  nextWord(word: Word , knowledgeLevel: number) {
+  nextWord(word: Word, knowledgeLevel: number) {
     this.wordTrainingService.nextWord(word, knowledgeLevel);
+    console.log(this.wordCard);
+    console.log(this.translationCard);
     // this.animationState = this.wordTrainingService.getAnimationState();
   }
 

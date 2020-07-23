@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { BehaviorSubject, fromEvent, Observable, Subject } from 'rxjs';
-import { delay, shareReplay, takeUntil } from 'rxjs/operators';
+import { delay, shareReplay, takeUntil, finalize } from 'rxjs/operators';
 import { MenuItem, Word, WordGroup } from './../shared/interfaces';
 import { NotificationsService } from './../shared/services/notifications.service';
 import { AssignWordListComponent } from './assign-word-list/assign-word-list.component';
@@ -47,7 +47,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     new MenuItem('Share for all', 'SHARE FOR ALL', 'share'),
     new MenuItem('Delete', 'DELETE WORD', 'trash-2-outline'),
   ];
-
+  isLoading = false;
   // deferredPrompt // For 'beforeinstallprompt' event
   constructor(
     private fb: FormBuilder,
@@ -124,8 +124,10 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
 
   addNewWord() {
     if (this.newWordForm.valid) {
+      this.isLoading = true;
       this.vocabularyFacade.addNewWord(this.newWordForm.value, this.selectedGroup$.getValue()._id)
         .pipe(
+          finalize(() => this.isLoading = false),
           takeUntil(this.subscription$)
         )
         .subscribe(word => {
@@ -146,9 +148,11 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   updateWord(oldValue: Word, editeWord: Word) {
     // this.vocabularyFacade.onEdit(editeWord);
     if (editeWord) {
+      this.isLoading = true;
       this.vocabularyFacade.updateWord(editeWord);
       this.vocabularyFacade.editWord(editeWord)
         .pipe(
+          finalize(() => this.isLoading = false),
           takeUntil(this.subscription$)
         )
         .subscribe(editedWord => {
@@ -253,8 +257,12 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
       return this.notification.warning('', 'Please fill in required fields');
 
     }
+
+    this.isLoading = true;
     this.vocabularyFacade.saveGroup(this.groupName.value, selectedGroup)
       .pipe(
+        finalize(() => this.isLoading = false),
+
         takeUntil(this.subscription$))
       .subscribe(group => {
         this.vocabularyFacade.updateWordsAndGroups();
@@ -264,7 +272,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
 
         // this.getGroups();
         console.log('RES AFTER SAVE GROUP', group);
-      })
+      });
   }
 
   deleteWordGroup(groupId: string, groups: WordGroup[]) {

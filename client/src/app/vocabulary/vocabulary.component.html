@@ -140,8 +140,8 @@
     </nb-card-body>
     <nb-card-footer class="wordDialogFooter">
       <button nbButton status="danger" (click)="closeWordModal()">Cancel</button>
-      <button class="purpleButton" *ngIf="titleForModal === 'New word'" nbButton (click)="addNewWord()">Submit</button>
-      <button class="purpleButton" *ngIf="titleForModal === 'Edit word'" nbButton
+      <button  *ngIf="titleForModal === 'New word'" [disabled]="isLoading" nbButton (click)="addNewWord()">Submit</button>
+      <button  *ngIf="titleForModal === 'Edit word'" [disabled]="isLoading" nbButton
         (click)="updateWord(editWordOldValue, newWordForm.value)">Update</button>
     </nb-card-footer>
   </nb-card>
@@ -157,8 +157,8 @@
     </nb-card-body>
     <nb-card-footer class="wordDialogFooter">
       <button nbButton status="danger" (click)="groupModal.close()">Cancel</button>
-      <button *ngIf="titleForModal === 'New group'" nbButton (click)="saveGroup()">Submit</button>
-      <button *ngIf="titleForModal === 'Edit group'" nbButton (click)="saveGroup(getSelectedGroup())">Update</button>
+      <button *ngIf="titleForModal === 'New group'" [disabled]="isLoading" nbButton (click)="saveGroup()">Submit</button>
+      <button *ngIf="titleForModal === 'Edit group'" [disabled]="isLoading" nbButton (click)="saveGroup(getSelectedGroup())">Update</button>
     </nb-card-footer>
   </nb-card>
 </ng-template>

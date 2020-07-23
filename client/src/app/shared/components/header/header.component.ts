@@ -25,7 +25,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     { title: 'Change language', link: 'languages' },
     { title: 'Log out', link: '/login', icon: 'log-out' }];
 
-  location$: Observable<{ name: string }>
+  location$: Observable<string> = this.generalFacade.getLocation$();
   constructor(
     private authService: AuthService,
     private menuService: NbMenuService,
