@@ -29,7 +29,7 @@ export class SelectLanguageGuardGuard implements CanActivate {
         if (lang) {
           canActive = true;
         } else {
-          this.router.navigate(['/languages']);
+          this.router.navigate(['settings/languages']);
           this.notification.success('Select learning language');
           canActive = false;
         }
