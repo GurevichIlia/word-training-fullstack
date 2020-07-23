@@ -5,6 +5,9 @@
 <div class="error-box" *ngIf="isShowLoginError">
   <span class="error-message ">Incorrect username or password</span>
 </div>
+<div class="success-box" *ngIf="isRegisterSuccess">
+  <span class="success-message ">Registration was success</span>
+</div>
 <form [formGroup]="loginForm" (ngSubmit)="login()" class="text-center">
   <div class="mb-2">
 

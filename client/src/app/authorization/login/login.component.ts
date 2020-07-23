@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   animationState: string;
   subscription$ = new Subject();
   isShowLoginError = false;
+  isRegisterSuccess = false;
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -44,6 +45,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
+
+    this.setUserLoginDataAfterRegistration();
   }
 
   login() {
@@ -66,10 +69,9 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.router.navigate(['vocabulary']);
           } else {
             this.router.navigate(['languages']);
-
           }
           this.notifications.success('', res.message);
-
+          this.authService.setCurrentUser(null);
         }
       }, err => {
         if (err.error.message === 'Email is not found' || err.error.message === 'Password is not correct') {
@@ -79,6 +81,18 @@ export class LoginComponent implements OnInit, OnDestroy {
       });
 
   }
+
+
+  setUserLoginDataAfterRegistration() {
+    const user = this.authService.getCurrentUser()
+    if (user) {
+      this.loginForm.patchValue({
+        email: user.email,
+      });
+      this.isRegisterSuccess = true;
+    }
+  }
+
 
   startAnimation(state) {
     console.log(state);

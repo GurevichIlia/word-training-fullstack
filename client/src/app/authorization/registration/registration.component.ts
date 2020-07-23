@@ -32,7 +32,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       confPassword: ['', Validators.required]
     });
 
-    this.checkPasswordsToMatching();
+    // this.checkPasswordsToMatching();
   }
 
   get email() {
@@ -52,23 +52,25 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.router.navigate(['/login']);
   }
 
-  checkPasswordsToMatching() {
-    this.registrationForm.valueChanges
-      .pipe(
-        debounceTime(1000),
-        tap(formValue => {
-          if (formValue.password && formValue.confPassword) {
-            this.isPasswordsDontMatch = !this.authService.isPasswordsMatch(formValue.password, formValue.confPassword)
-          }
-        }
-        ),
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe();
-  }
+  // checkPasswordsToMatching() {
+  //   this.registrationForm.valueChanges
+  //     .pipe(
+  //       debounceTime(1000),
+  //       tap(formValue => {
+  //         if (formValue.password && formValue.confPassword) {
+  //           this.isPasswordsDontMatch =
+  //         }
+  //       }
+  //       ),
+  //       takeUntil(this.unsubscribe$)
+  //     )
+  //     .subscribe();
+  // }
 
   createUser() {
-    if (this.registrationForm.invalid) {
+    this.isPasswordsDontMatch = !this.authService.isPasswordsMatch(this.password.value, this.confirmPassword.value)
+
+    if (this.registrationForm.invalid || this.isPasswordsDontMatch) {
       this.registrationForm.markAllAsTouched();
       return;
     }
