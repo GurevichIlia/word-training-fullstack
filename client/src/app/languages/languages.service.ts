@@ -58,16 +58,20 @@ export class LanguagesService {
   deleteUserLanguage(languageId: string) {
     if (confirm('Would you like to delete this langauge?')) {
 
-      return this.getCurrentLearningLanguage$()
-        .pipe(
-          switchMap(currentLanguage => {
-            if (currentLanguage && currentLanguage._id === languageId) {
-              this.setCurrentLanguageOnServer(undefined);
-              return this.http.post<Language>(`/api/languages/deleteUserLanguage`, { languageId });
+      if (!languageId) return;
+      return this.http.post<Language>(`/api/languages/deleteUserLanguage`, { languageId });
 
-            }
-          })
-        )
+
+      // return this.getCurrentLearningLanguage$()
+      //   .pipe(
+      //     switchMap(currentLanguage => {
+      //       if (currentLanguage && currentLanguage._id === languageId) {
+      //         // this.setCurrentLanguageOnServer(null);
+      //         return this.http.post<Language>(`/api/languages/deleteUserLanguage`, { languageId });
+
+      //       }
+      //     })
+      //   )
 
 
     }

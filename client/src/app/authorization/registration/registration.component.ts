@@ -4,7 +4,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Subject } from 'rxjs';
-import { takeUntil, debounce, debounceTime, tap } from 'rxjs/operators';
+import { takeUntil, debounce, debounceTime, tap, finalize } from 'rxjs/operators';
 
 import { AuthService } from '../../shared/services/auth.service';
 @Component({
@@ -17,6 +17,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   registrationError = false;
   isPasswordsDontMatch = false;
   unsubscribe$ = new Subject();
+  isLoading = false;
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -75,9 +76,12 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       return;
     }
 
-
+    this.isLoading = true;
     this.authService.registration(this.registrationForm.value)
-      .pipe(takeUntil(this.unsubscribe$))
+      .pipe(
+        finalize(() => this.isLoading = false),
+
+        takeUntil(this.unsubscribe$))
       .subscribe(user => {
         if (user) {
           this.authService.setCurrentUser(user);

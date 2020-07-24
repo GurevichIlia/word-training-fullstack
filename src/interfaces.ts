@@ -6,7 +6,7 @@ export interface UserModel extends Document {
       nickName?: string;
       email: string;
       password: string;
-      currentLanguage?: Language,
+      currentLanguage: Language | null,
       userLanguages: Language[],
       wordGroups: WordGroupModel[],
       words: WordModel[]

@@ -1,3 +1,4 @@
+import { TranslationService } from './../core/services/translation.service';
 import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,7 +10,7 @@ import { MenuItem, Word, WordGroup } from './../shared/interfaces';
 import { NotificationsService } from './../shared/services/notifications.service';
 import { AssignWordListComponent } from './assign-word-list/assign-word-list.component';
 import { VocabularyFacade } from './vocabulary.facade';
-import { ALL_WORDS_GROUP } from '../general.state';
+import { ALL_WORDS_GROUP, FAVORITES } from '../general.state';
 
 
 
@@ -61,7 +62,6 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     this.allWords$ = this.vocabularyFacade.getAllUserWords$();
     this.wordFormInitial();
-
     this.getWordsFilteredByGroup();
     // this.getUserGroups()
     this.getWordsGroups();
@@ -362,7 +362,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   isBaseGroup() {
-    return (this.getSelectedGroup()._id !== '1' && this.getSelectedGroup()._id !== '2') ? false : true;
+    return (this.getSelectedGroup()._id !== ALL_WORDS_GROUP._id && this.getSelectedGroup()._id !== FAVORITES._id) ? false : true;
 
 
   }

@@ -23,7 +23,7 @@
 
   </div>
   <div class="mb-4">
-    <input formControlName="password"  [ngClass]="{'error': isShowLoginError}" type="password" nbInput fullWidth
+    <input formControlName="password" [ngClass]="{'error': isShowLoginError}" type="password" nbInput fullWidth
       placeholder="Password">
     <span class="error-message"
       *ngIf="loginForm.get('password').touched && loginForm.get('password').hasError('required')">
@@ -32,7 +32,8 @@
 
   <div class="row justify-content-center mt-5">
 
-    <button type="submit" class="col-8 mb-2 confirm-btn" size="medium" nbButton>Login</button>
+    <button type="submit" class="col-8 mb-2" [ngClass]="{'confirm-btn': !isLoading}" [disabled]="isLoading"
+      size="medium" nbButton>Login</button>
 
     <div class="col-12 mt-2">
       <span>Don't have an account?<a (click)="goToRegistration()"> Sign Up</a></span>

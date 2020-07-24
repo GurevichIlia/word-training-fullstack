@@ -33,6 +33,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import {MatDialogModule} from '@angular/material/dialog';
 
 import { DeviceDetectorModule } from 'ngx-device-detector';
+import { LoaderComponent } from './components/loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,9 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
 
     ConvertToPercentPipe,
 
-    ReverseArrayPipe
+    ReverseArrayPipe,
+
+    LoaderComponent
   ],
   imports: [
     CommonModule,
@@ -112,6 +115,8 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
     WordListComponent,
     SearchComponent,
     WordCounterComponent,
+    LoaderComponent,
+
 
     ConvertToPercentPipe,
     ReverseArrayPipe,

@@ -7,8 +7,12 @@
 
 .language-name {
   font-size: 14px;
-  color: #e0d8d8;
 
+
+  a {
+    color: #e0d8d8;
+    text-decoration: none;
+  }
 }
 
 .words-quantity {
@@ -19,9 +23,9 @@
 .menu-title {
   text-align: center;
   font-weight: 700;
+  color: #000000b8;
 
   span {
-    font-size: 18px;
+    font-size: 16px;
   }
 }
-

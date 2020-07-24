@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, of } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, finalize } from 'rxjs/operators';
 import { GeneralFacade } from 'src/app/general.facade';
 import * as kf from '../../shared/keyframes';
 import { AuthService } from '../../shared/services/auth.service';
@@ -31,6 +31,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   subscription$ = new Subject();
   isShowLoginError = false;
   isRegisterSuccess = false;
+  isLoading = false;
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -55,9 +56,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.loginForm.markAllAsTouched();
       return;
     }
-
+    this.isLoading = true;
     this.authService.login(this.loginForm.value)
       .pipe(
+        finalize(() => this.isLoading = false),
         takeUntil(this.subscription$)
       )
       .subscribe(res => {

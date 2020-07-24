@@ -1,3 +1,4 @@
+import { GeneralFacade } from './../general.facade';
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -29,6 +30,7 @@ export class LanguagesComponent implements OnInit, OnDestroy {
     private notifications: NotificationsService,
     private languagesService: LanguagesService,
     private router: Router,
+    private generalFacade: GeneralFacade
   ) {
   }
 
@@ -146,6 +148,7 @@ export class LanguagesComponent implements OnInit, OnDestroy {
   deleteUserLanguage(languageId: string) {
     this.languagesService.deleteUserLanguage(languageId)
       .pipe(
+        tap(res => this.generalFacade.setCurrentLanguage(null)),
         takeUntil(this.subscription$)
       )
       .subscribe(res => {

@@ -160,16 +160,26 @@ export class LanguagesController {
         try {
             const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
 
-            user.userLanguages = user.userLanguages.filter(language => req.body.languageId != language._id)
-            console.log('USER', user, user.userLanguages.length)
+            const languageIdToDelete = req.body.languageId as string
+
+            user.userLanguages = user.userLanguages.filter(language => languageIdToDelete != language._id)
+            console.log('USER', user.currentLanguage)
+
+            console.log('USER LANG', user.currentLanguage?._id,)
+            console.log('DELETE LANG', languageIdToDelete)
+
+            if (user.currentLanguage?._id === languageIdToDelete) {
+                user.currentLanguage = null
+            }
+            console.log('AFTER DELETE', user.currentLanguage)
 
             if (user.userLanguages.length === 0) {
-                user.currentLanguage = undefined
+                user.currentLanguage = null
             }
 
             console.log('USER CURRENT LANG', user.currentLanguage)
 
-            const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }) as UserModel
+            const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true }) as UserModel
 
             console.log('USER CURRENT LANG AFTER UPDATE', updatedUser.currentLanguage)
 

@@ -1,5 +1,5 @@
-import { Component, AfterViewChecked, Inject, Input } from '@angular/core';
-import { NbDialogRef, NB_WINDOW_CONTEXT } from '@nebular/theme';
+import { Component, Input } from '@angular/core';
+import { NbDialogRef } from '@nebular/theme';
 
 @Component({
   selector: 'app-ask-question',

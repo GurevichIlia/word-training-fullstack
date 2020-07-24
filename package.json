@@ -14,7 +14,8 @@
     "build": "tsc",
     "client": "npm run build --prod --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run build && npm run client-install && npm run build --prod --prefix client"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run build && npm run client-install && npm run build --prod --prefix client",
+    "dev:debug": "nodemon --inspect src/index.ts"
   },
   "author": "Ilia Gurevich",
   "license": "ISC",
