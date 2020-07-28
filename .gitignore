@@ -1,7 +1,3 @@
-keys.dev.ts
-
-
-# dist
-# base.ts
-# node_modules
 node_modules
+base.ts
+keys.dev.ts
