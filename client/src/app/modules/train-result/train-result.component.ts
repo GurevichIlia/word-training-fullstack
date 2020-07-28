@@ -1,10 +1,11 @@
 import { WordGroup } from 'src/app/shared/interfaces';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, shareReplay } from 'rxjs/operators';
 import { TrainResultService } from './train-result.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { Word } from '../../shared/interfaces';
+import { GroupStatistics } from 'src/app/shared/components/group-statistics/group-statistics.component';
 
 @Component({
   selector: 'app-train-result',
@@ -15,8 +16,9 @@ export class TrainResultComponent implements OnInit, OnDestroy {
   subscription$ = new Subject();
 
   trainedGroup$ = this.trainResultService.getTrainedGroup();
-  trainingResult$ = this.trainResultService.getTrainingResult$();
+  trainingResult$ = this.trainResultService.getTrainingResult$().pipe(shareReplay());
   counterResult$ = this.trainResultService.counterResult$();
+  statistics$: Observable<GroupStatistics>;
   constructor(
     private trainResultService: TrainResultService,
     private router: Router
@@ -24,7 +26,7 @@ export class TrainResultComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.saveWordsTrainingProgress();
-
+    this.getGroupStatistics();
   }
 
   changeGroup() {
@@ -49,6 +51,10 @@ export class TrainResultComponent implements OnInit, OnDestroy {
         takeUntil(this.subscription$)
       )
       .subscribe(res => console.log('WORDS AFTER UPDATE', res));
+  }
+
+  getGroupStatistics() {
+    this.statistics$ = this.trainResultService.getGroupStatistics$(this.trainingResult$);
   }
 
   ngOnDestroy() {

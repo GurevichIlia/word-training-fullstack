@@ -12,8 +12,17 @@
   }
 }
 
-mat-expansion-panel{
+mat-expansion-panel {
   box-shadow: none !important;
   border: 1px solid whitesmoke;
 
+}
+
+mat-expansion-panel-header{
+  padding: 0 0 0 15px !important;
+
+  i {
+    font-size: 20px;
+    margin-left: auto;
+  }
 }

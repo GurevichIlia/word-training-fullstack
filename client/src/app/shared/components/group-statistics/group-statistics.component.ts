@@ -17,7 +17,10 @@ export interface GroupStatistics {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GroupStatisticsComponent implements OnInit {
+  @Input() title = 'Group statistics';
   @Input() statistics: GroupStatistics;
+  @Input() expanded = false;
+  @Input() isHideNotLearnedWords = false;
   constructor() { }
 
   ngOnInit() {

@@ -1,10 +1,11 @@
-import { combineLatest } from 'rxjs';
+import { VocabularyFacade } from './../../vocabulary/vocabulary.facade';
+import { combineLatest, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { ALL_WORDS_GROUP, GeneralState } from '../../general.state';
 import { WordTrainingService } from '../../word-training/word-training.service';
 import { WordCounterService } from './../../word-training/word-counter/word-counter.service';
 import { map } from 'rxjs/operators';
-import { WordGroup } from 'src/app/shared/interfaces';
+import { WordGroup, Word } from 'src/app/shared/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class TrainResultService {
   constructor(
     private trainingService: WordTrainingService,
     private generalState: GeneralState,
-    private counterService: WordCounterService) { }
+    private counterService: WordCounterService,
+    private vocabularyFacade: VocabularyFacade) { }
 
 
 
@@ -57,5 +59,9 @@ export class TrainResultService {
 
   startTraining() {
     this.trainingService.onStartTraining();
+  }
+
+  getGroupStatistics$(words$: Observable<Word[]>) {
+    return this.vocabularyFacade.getGroupStatistics(words$)
   }
 }
