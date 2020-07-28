@@ -30,10 +30,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatBadgeModule } from '@angular/material/badge';
-import {MatDialogModule} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { DeviceDetectorModule } from 'ngx-device-detector';
 import { LoaderComponent } from './components/loader/loader.component';
+import { GroupStatisticsComponent } from './components/group-statistics/group-statistics.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,9 @@ import { LoaderComponent } from './components/loader/loader.component';
 
     ReverseArrayPipe,
 
-    LoaderComponent
+    LoaderComponent,
+
+    GroupStatisticsComponent
   ],
   imports: [
     CommonModule,
@@ -82,7 +86,7 @@ import { LoaderComponent } from './components/loader/loader.component';
     MatTabsModule,
     MatBadgeModule,
     MatDialogModule,
-
+    MatExpansionModule,
     DeviceDetectorModule
   ],
   exports: [
@@ -116,7 +120,7 @@ import { LoaderComponent } from './components/loader/loader.component';
     SearchComponent,
     WordCounterComponent,
     LoaderComponent,
-
+    GroupStatisticsComponent,
 
     ConvertToPercentPipe,
     ReverseArrayPipe,
@@ -129,7 +133,7 @@ import { LoaderComponent } from './components/loader/loader.component';
     MatCardModule,
     MatMenuModule,
     MatSelectModule,
-
+    MatExpansionModule,
     DeviceDetectorModule
 
   ],

@@ -67,6 +67,9 @@
         </nb-card-body>
       </nb-card>
     </ng-container> -->
+    <div class="mb-4">
+      <app-group-statistics [statistics]="statistics$ | async"></app-group-statistics>
+    </div>
 
 
     <app-word-list (action)="getActionFromChildren($event)" [pageSize]="pageSize" [trackWords]="trackWords"

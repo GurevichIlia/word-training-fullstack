@@ -1,3 +1,4 @@
+import { GroupStatistics, KnowledgeLevel } from './../shared/components/group-statistics/group-statistics.component';
 import { GeneralWord } from 'src/app/shared/interfaces';
 import { InstallHelperFunctionsService } from './../core/install-app/install-helper-functions.service';
 import { WordGroup } from './../shared/interfaces';
@@ -13,6 +14,15 @@ import { ApiWordsService } from './../shared/services/api/api-words.service';
 import { AskQuestionComponent } from '../shared/modals/ask-question/ask-question.component';
 import { InstallAppService } from '../core/install-app/install-app.service';
 
+
+const LEVEL_LIST = [
+  { color: 'whitesmoke', level: 0 },
+  { color: '#6c7bec', level: 5 },
+  { color: '#81db64db', level: 4 },
+  { color: '#f4e25f', level: 3 },
+  { color: '#ff7f24bf', level: 2 },
+  { color: '#e81a1ac2', level: 1 },
+]
 
 @Injectable({
   providedIn: 'root'
@@ -225,6 +235,39 @@ export class VocabularyFacade {
 
   detectDevice() {
     return this.installAppHelper.detectDevice();
+  }
+
+  getGroupStatistics(words$: Observable<Word[]>): Observable<GroupStatistics> {
+    const statistics$: Observable<GroupStatistics> = words$
+      .pipe(
+        filter(words => words !== null && words !== undefined),
+        map(words => {
+          const knowledgeLevel: KnowledgeLevel[] = this.getKnowledgeLevel(words, LEVEL_LIST);
+
+          return { knowledgeLevel }
+        })
+      );
+
+    return statistics$;
+  }
+
+  private getQuntityWordsByLevel(words: Word[], level: number) {
+
+    return words.length > 0 ? (words.filter(word => word.levelKnowledge === level)).length : 0;
+  }
+
+  getKnowledgeLevel(words: Word[], levelList: { color: string, level: number }[]): KnowledgeLevel[] {
+
+    return levelList.map(item => {
+      const lnowledgeLevel: KnowledgeLevel = {
+        level: item.level,
+        color: item.color,
+        wordQuantity: this.getQuntityWordsByLevel(words, item.level)
+      };
+
+      return lnowledgeLevel;
+    })
+
   }
   // parseText(oldWords: string) {
   //   const language = this.generalState.getCurrentLearningLanguage();

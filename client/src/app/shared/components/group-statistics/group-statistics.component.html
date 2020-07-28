@@ -1,0 +1,16 @@
+<mat-expansion-panel hideToggle>
+  <mat-expansion-panel-header>
+    <mat-panel-description class="text-center">
+      These are group statistics
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <div class="d-flex mt-1 align-items-baseline" *ngFor="let knowledge of statistics?.knowledgeLevel">
+    <div class="stat-progress-bar" [style.backgroundColor]="knowledge.color"
+      [style.width]="knowledge.level ? (knowledge.level | convertToPercent) + '%': '100%'">
+      <!-- <span *ngIf="knowledge.level === 0">Not learned yet</span> -->
+    </div>
+    <small class="ml-2">{{knowledge.wordQuantity}}</small>
+  </div>
+</mat-expansion-panel>
+
+<!-- <span class="title">Statistics</span> -->

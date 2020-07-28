@@ -1,3 +1,4 @@
+import { GroupStatistics } from './../shared/components/group-statistics/group-statistics.component';
 import { TranslationService } from './../core/services/translation.service';
 import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -49,6 +50,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     new MenuItem('Delete', 'DELETE WORD', 'trash-2-outline'),
   ];
   isLoading = false;
+  statistics$: Observable<GroupStatistics>;
   // deferredPrompt // For 'beforeinstallprompt' event
   constructor(
     private fb: FormBuilder,
@@ -79,7 +81,9 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-
+  getGroupStatistics() {
+    this.statistics$ = this.vocabularyFacade.getGroupStatistics(this.wordsFiltredByGroup$);
+  }
   // getAllWords() {
   //   this.allWords$ = this.vocabularyFacade.getAllUserWords$()
   //     .pipe(
@@ -92,6 +96,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
       this.selectedGroup$.asObservable(),
       this.filterControl.valueChanges
     ) as Observable<Word[]>).pipe(shareReplay());
+    this.getGroupStatistics();
   }
 
   // getUserGroups() {

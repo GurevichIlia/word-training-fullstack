@@ -96,8 +96,7 @@
     <ng-content></ng-content>
   </div>
   <ng-container *ngIf="isShowDefaultOptions">
-    <nb-progress-bar class="custom-progress-bar mt-3" [value]="(word.levelKnowledge) | convertToPercent" size="tiny"
-      [displayValue]="true">
+    <nb-progress-bar class="custom-progress-bar mt-3" [value]="(word.levelKnowledge) | convertToPercent" size="tiny" [displayValue]="true">
     </nb-progress-bar>
 
 
