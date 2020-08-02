@@ -8,11 +8,12 @@ const routes: Routes = [
     path: '', component: HomeComponent, children: [
       { path: '', pathMatch: 'full', redirectTo: '/vocabulary' },
       {
-        path: 'word-training', loadChildren: () => import('./../../word-training/word-training.module').then(m => m.WordTrainingModule),
+        // tslint:disable-next-line: max-line-length
+        path: 'word-training', loadChildren: () => import('./../../modules/word-training/word-training.module').then(m => m.WordTrainingModule),
         // canActivate: [WordsTrainGuard]
       },
       {
-        path: 'vocabulary', loadChildren: () => import('./../../vocabulary/vocabulary.module').then(m => m.VocabularyModule),
+        path: 'vocabulary', loadChildren: () => import('./../../modules/vocabulary/vocabulary.module').then(m => m.VocabularyModule),
         // canActivate: [AuthGuard]
       },
       {

@@ -1,0 +1,76 @@
+<nb-flip-card #flipCard [showToggleButton]="'false'">
+  <nb-card-front #flipCard>
+    <nb-card #wordCard class="word-card" >
+      <nb-card-header [ngClass]="{
+        'bad': word.levelKnowledge == 1,
+      'better': word.levelKnowledge == 2,
+      'medium': word.levelKnowledge == 3,
+      'good': word.levelKnowledge == 4,
+      'excellent': word.levelKnowledge == 5,
+      'basic': word.levelKnowledge == 0
+}">
+        <span class="card-title">Word</span>
+      </nb-card-header>
+      <nb-card-body>
+
+        <div class="word m-auto">
+          <span [ngStyle]="{'font-size': word?.word.length > 11 ? '30px' : '35px'}">
+            {{word?.word}}</span>
+
+        </div>
+
+
+
+        <div class="w-50">
+          <!-- (tap)="addToFavorites(word)" -->
+          <!-- (tap)="removeFromFavorites(word)" -->
+          <img (click)="favorite(word)" *ngIf="!word?.isFavorite" style="width: 30px; height: 30px"
+            src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
+            alt="">
+          <img (click)="favorite(word)" *ngIf="word?.isFavorite" style="width: 30px; height: 30px"
+            src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png"
+            alt="">
+
+        </div>
+        <!-- <button (click)="addToFavorites(word)">fav</button> -->
+
+      </nb-card-body>
+
+    </nb-card>
+
+  </nb-card-front>
+  <nb-card-back #translationCard #flipCard>
+    <nb-card status="danger" class="word-card" >
+      <nb-card-header [ngClass]="{
+        'bad': word.levelKnowledge == 1,
+      'better': word.levelKnowledge == 2,
+      'medium': word.levelKnowledge == 3,
+      'good': word.levelKnowledge == 4,
+      'excellent': word.levelKnowledge == 5,
+      'basic': word.levelKnowledge == 0
+}">
+        <span class="card-title">Translation</span>
+      </nb-card-header>
+      <nb-card-body style="height: 100%">
+        <div class="word m-auto">
+          <span [ngStyle]="{'font-size': word?.translation.length > 11 ? '30px' : '35px'}">
+            {{word?.translation}}
+
+          </span>
+        </div>
+
+        <div>
+          <img *ngIf="!word?.isFavorite" style="width: 30px; height: 30px"
+            src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
+            alt="">
+          <img *ngIf="word?.isFavorite" style="width: 30px; height: 30px"
+            src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png"
+            alt="">
+        </div>
+
+      </nb-card-body>
+    </nb-card>
+
+  </nb-card-back>
+
+</nb-flip-card>

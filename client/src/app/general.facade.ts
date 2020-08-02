@@ -19,7 +19,6 @@ export class GeneralFacade {
     private apiLanguageService: ApiLanguagesService,
     private apiWordsService: ApiWordsService,
     private generalState: GeneralState,
-    private router: Router,
     private notifications: NotificationsService,
     private generalService: GeneralService,
     private navigationService: NavigationService

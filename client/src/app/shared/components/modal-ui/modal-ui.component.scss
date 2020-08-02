@@ -1,0 +1,26 @@
+@import '../../../../styles/variables.scss';
+
+.modal-header {
+  background-color: whitesmoke !important;
+  margin-bottom: 20px;
+
+  h4 {
+    color: $titleColor !important
+  }
+
+}
+
+
+.wordDialogBox {
+  width: 340px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-around;
+}
+
+.footer>button {
+  width: 140px;
+  margin: 5px;
+}

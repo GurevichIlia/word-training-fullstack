@@ -1,0 +1,17 @@
+<nb-card class="groups-modal">
+  <nb-card-header class="modal-header">
+    <h4>{{title}}</h4>
+
+  </nb-card-header>
+
+  <nb-card-body>
+    <ng-content select="loader"></ng-content>
+    <ng-content></ng-content>
+  </nb-card-body>
+
+  <nb-card-footer class="footer">
+    <button nbButton status="danger" (click)="actionHandler('cancel')">Cancel</button>
+    <button *ngIf="isNewMode()" [disabled]="isLoading" nbButton (click)="actionHandler('save')">Submit</button>
+    <button *ngIf="!isNewMode()" [disabled]="isLoading" nbButton (click)="actionHandler('update')">Update</button>
+  </nb-card-footer>
+</nb-card>

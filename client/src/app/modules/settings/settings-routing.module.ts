@@ -9,7 +9,7 @@ const routes: Routes = [
 
   },
   {
-    path: 'languages', loadChildren: () => import('./../../languages/languages.module').then(m => m.LanguagesModule),
+    path: 'languages', loadChildren: () => import('./../../modules/languages/languages.module').then(m => m.LanguagesModule),
     // canActivate: [AuthGuard]
   },
 ];

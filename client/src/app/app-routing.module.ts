@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   { path: '', redirectTo: 'vocabulary', pathMatch: 'full' },
   {
-    path: '', loadChildren: () => import('./authorization/authorization.module').then(m => m.AuthorizationModule),
+    path: '', loadChildren: () => import('./modules/authorization/authorization.module').then(m => m.AuthorizationModule),
   },
 
   {

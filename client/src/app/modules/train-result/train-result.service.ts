@@ -1,11 +1,11 @@
-import { VocabularyFacade } from './../../vocabulary/vocabulary.facade';
-import { combineLatest, Observable } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { ALL_WORDS_GROUP, GeneralState } from '../../general.state';
-import { WordTrainingService } from '../../word-training/word-training.service';
-import { WordCounterService } from './../../word-training/word-counter/word-counter.service';
 import { map } from 'rxjs/operators';
 import { WordGroup, Word } from 'src/app/shared/interfaces';
+import { Injectable } from '@angular/core';
+import { WordTrainingService } from '../word-training/word-training.service';
+import { GeneralState } from 'src/app/general.state';
+import { WordCounterService } from '../word-training/word-counter/word-counter.service';
+import { VocabularyFacade } from '../vocabulary/vocabulary.facade';
+import { Observable, combineLatest } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

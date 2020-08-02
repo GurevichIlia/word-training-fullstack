@@ -1,0 +1,17 @@
+  <app-select-language
+    [candidateToLearn]="languageIdCandidateToLearn"
+    [currentlanguageId]="(currentLearningLanguage$ | async)?._id"
+    [userLanguages]="userLanguages$ | async"
+    [allLanguages]="allLanguages$ | async"
+    [selectedTab]="selectedTab"
+
+    (addLanguage)="addLanguageToUserLanguages($event)"
+    (deleteUserLanguage)="deleteUserLanguage($event)"
+    (selectUserLanguageForLearning)="setCurrentLearningLanguage($event)"
+
+	>
+  </app-select-language>
+
+<!-- <ng-template #loader>
+      <app-loader [show]="true"></app-loader>
+</ng-template> -->

@@ -146,7 +146,6 @@ export class WordGroupController {
                   }
 
                   const quantity = words.filter(word => word.assignedGroups.includes(group._id.toString()));
-                  console.log(quantity.length)
                   group.wordQuantity = quantity.length
                   // console.log('COUNTED WORDS GROUPS', words.filter(word => console.log(word.assignedGroups[1], group._id)).length)
 

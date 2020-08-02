@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NbToastrService } from '@nebular/theme';
-import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 
 
@@ -22,7 +21,7 @@ export class NotificationsService {
     } else {
       text = title;
     }
-    this.snackBar.open(text, '', this.setConfig());
+    this.snackBar.open(text, '', this.defaultConfig());
   }
 
   warning(message: string, title?: string) {
@@ -33,7 +32,7 @@ export class NotificationsService {
     } else {
       text = title;
     }
-    this.snackBar.open(text, '', this.setConfig());
+    this.snackBar.open(text, '', this.defaultConfig());
   }
 
   error(message: string, title?: string) {
@@ -44,7 +43,7 @@ export class NotificationsService {
     } else {
       text = title;
     }
-    this.snackBar.open(text, '', this.setConfig());
+    this.snackBar.open(text, '', this.defaultConfig({panelClass: 'snackbar-error'}));
   }
 
   info(message: string, title?: string) {
@@ -55,14 +54,15 @@ export class NotificationsService {
     } else {
       text = title;
     }
-    this.snackBar.open(text, '', this.setConfig());
+    this.snackBar.open(text, '', this.defaultConfig());
   }
-
-  setConfig(duration = 1500, horizontalPosition = 'end', verticalPosition = 'top'): {} {
+  // duration = 1500, horizontalPosition = 'end', verticalPosition = 'top', panelClass: string = ''
+  defaultConfig(config?: MatSnackBarConfig): {} {
     return {
-      duration,
-      horizontalPosition,
-      verticalPosition,
+      duration: config?.duration || 1500,
+      horizontalPosition: config?.horizontalPosition || 'end',
+      verticalPosition: config?.verticalPosition || 'top',
+      panelClass: config?.panelClass || ''
     };
   }
 }

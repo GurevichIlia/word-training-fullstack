@@ -1,41 +1,44 @@
-import { WordCounterComponent } from './../word-training/word-counter/word-counter.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import {
   NbAccordionModule, NbActionsModule, NbButtonModule, NbCardModule,
   NbCheckboxModule, NbContextMenuModule, NbIconModule, NbInputModule,
-  NbLayoutModule, NbListModule, NbMenuModule, NbSelectModule, NbSpinnerModule,
-  NbThemeModule, NbUserModule, NbProgressBarModule
+  NbLayoutModule, NbListModule, NbMenuModule,
+  NbProgressBarModule, NbSelectModule, NbSpinnerModule,
+  NbThemeModule, NbUserModule
 } from '@nebular/theme';
+import { DeviceDetectorModule } from 'ngx-device-detector';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { NgxPrettyCheckboxModule } from 'ngx-pretty-checkbox';
-import { HeaderComponent } from './components/header/header.component';
-import { GroupsComponent } from './../vocabulary/groups/groups.component';
+
 import { FooterComponent } from './components/footer/footer.component';
+import { GroupStatisticsComponent } from './components/group-statistics/group-statistics.component';
+import { HeaderComponent } from './components/header/header.component';
+import { LoaderComponent } from './components/loader/loader.component';
 import { AskQuestionComponent } from './modals/ask-question/ask-question.component';
 import { EditWordComponent } from './modals/edit-word/edit-word.component';
 import { ConvertToPercentPipe } from './pipes/convert-to-percent.pipe';
 import { ReverseArrayPipe } from './pipes/reverse-array.pipe';
-import { WordComponent } from '../vocabulary/word/word.component';
-import { WordListComponent } from '../vocabulary/word-list/word-list.component';
-import { SearchComponent } from '../vocabulary/search/search.component';
+import { GroupsComponent } from '../modules/vocabulary/groups/groups.component';
+import { WordComponent } from '../modules/vocabulary/word/word.component';
+import { WordCounterComponent } from '../modules/word-training/word-counter/word-counter.component';
+import { WordListComponent } from '../modules/vocabulary/word-list/word-list.component';
+import { SearchComponent } from '../modules/vocabulary/search/search.component';
+import { ModalUiComponent } from './components/modal-ui/modal-ui.component';
 
 
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatExpansionModule } from '@angular/material/expansion';
 
-import { DeviceDetectorModule } from 'ngx-device-detector';
-import { LoaderComponent } from './components/loader/loader.component';
-import { GroupStatisticsComponent } from './components/group-statistics/group-statistics.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +58,9 @@ import { GroupStatisticsComponent } from './components/group-statistics/group-st
 
     LoaderComponent,
 
-    GroupStatisticsComponent
+    GroupStatisticsComponent,
+
+    ModalUiComponent
   ],
   imports: [
     CommonModule,
@@ -90,6 +95,7 @@ import { GroupStatisticsComponent } from './components/group-statistics/group-st
     DeviceDetectorModule
   ],
   exports: [
+    CommonModule,
     ReactiveFormsModule,
     FormsModule,
     NbThemeModule,
@@ -121,7 +127,7 @@ import { GroupStatisticsComponent } from './components/group-statistics/group-st
     WordCounterComponent,
     LoaderComponent,
     GroupStatisticsComponent,
-
+    ModalUiComponent,
     ConvertToPercentPipe,
     ReverseArrayPipe,
 

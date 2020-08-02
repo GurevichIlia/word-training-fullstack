@@ -1,0 +1,21 @@
+.word-card {
+  min-height: 200px;
+  max-height: 250px;
+}
+
+.card-title {
+  color: #230f0f
+}
+
+.word {
+  margin-top: 10px;
+  width: 300px;
+  text-align: center;
+
+  span {
+    font-family: 'Muli', "Helvetica Neue", sans-serif !important;
+    font-weight: 600;
+  }
+
+
+}
