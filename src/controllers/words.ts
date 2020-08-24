@@ -5,7 +5,7 @@ import Word from "../Models/Word";
 import { WordModel, UserModel } from "../interfaces";
 import User from "../Models/User";
 import GeneralWord from "../Models/GeneralWord";
-import { getWordsByLanguage } from '../helper-functions/helper-functions';
+import { getWordsByLanguage, createPDFfromHTML } from './../helper-functions/index';
 
 
 export class WordsController {
@@ -18,7 +18,7 @@ export class WordsController {
 
             const currentLanguage = req.query.languageId
             const user = await User.findOne({ _id: req.user }) as UserModel
-            
+
             const words = getWordsByLanguage(currentLanguage, user.words)
             // const newwords = words.map(word => {
             //     word.assignedGroups.push('1')
@@ -87,6 +87,7 @@ export class WordsController {
 
             const wordsToUpdate = req.body.words as WordModel[];
 
+
             const user = await User.findOne({ _id: req.user }) as UserModel
 
             const words = user.words.filter(word => word.language == req.query.languageId);
@@ -104,9 +105,9 @@ export class WordsController {
             })
 
 
-            user.words = updatedWords as WordModel[]
+            // user.words = updatedWords as WordModel[]
 
-            const updatedUser = await User.findOneAndUpdate({ _id: req.user }, { $set: user }, { new: true })
+            // const updatedUser = await User.findOneAndUpdate({ _id: req.user }, { $set: user }, { new: true })
 
 
             // const updatedWord = await Word.findOneAndUpdate({ _id: word._id }, { $set: word })
@@ -123,7 +124,7 @@ export class WordsController {
 
             // console.log()
 
-            res.status(201).json(updatedUser);
+            res.status(201).json(updatedWords);
         } catch (error) {
             errorHandler(res, error);
         }

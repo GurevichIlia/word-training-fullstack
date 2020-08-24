@@ -3,7 +3,7 @@ import { UserModel, WordGroupModel, WordModel } from "../interfaces";
 import User from "../Models/User";
 import WordGroup, { ALL_WORDS_GROUP, FAVORITES } from "../Models/WordGroup";
 import errorHandler from "../utils/errorHandler";
-import { getWordsByLanguage } from "../helper-functions/helper-functions";
+import { getWordsByLanguage } from './../helper-functions/index';
 
 export class WordGroupController {
 

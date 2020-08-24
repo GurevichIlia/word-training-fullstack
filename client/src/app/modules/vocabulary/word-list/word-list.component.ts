@@ -27,8 +27,9 @@ export class WordListComponent {
 
   onScroll() {
     this.showMoreWords();
+    
   }
-
+  
   sendAction({ action, payload }) {
     this.action.emit({ action, payload });
   }
