@@ -105,9 +105,9 @@ export class WordsController {
             })
 
 
-            // user.words = updatedWords as WordModel[]
+            user.words = updatedWords as WordModel[]
 
-            // const updatedUser = await User.findOneAndUpdate({ _id: req.user }, { $set: user }, { new: true })
+            const updatedUser = await User.findOneAndUpdate({ _id: req.user }, { $set: user }, { new: true })
 
 
             // const updatedWord = await Word.findOneAndUpdate({ _id: word._id }, { $set: word })
@@ -124,7 +124,7 @@ export class WordsController {
 
             // console.log()
 
-            res.status(201).json(updatedWords);
+            res.status(201).json(updatedUser?.words);
         } catch (error) {
             errorHandler(res, error);
         }
