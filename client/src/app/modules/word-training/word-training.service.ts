@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { map, startWith, switchMap, tap, take } from 'rxjs/operators';
 import { GeneralFacade } from 'src/app/general.facade';
 import { WordGroup, Word } from 'src/app/shared/interfaces';
 
@@ -22,6 +22,7 @@ export class WordTrainingService {
 
   priority = 0;
   animationState$ = new BehaviorSubject('');
+  previousWordsId = []
   constructor(
     private generalState: GeneralState,
     // private vocabularyFacade: VocabularyFacade,
@@ -110,7 +111,7 @@ export class WordTrainingService {
 
           } else {
 
-            return of(words.filter(word => word.assignedGroups.includes(selectedGroupForTraining._id)))
+            return of(words.filter(word => word.assignedGroups.includes(selectedGroupForTraining._id)));
           }
 
         })
@@ -118,13 +119,15 @@ export class WordTrainingService {
   }
 
   showNextTrainingWord() {
-    this._currentTrainingWord$ = this.getWordByPriority(this.priority)
-      .pipe(tap(() => {
-        this.priority = this.priority + 1;
-        if (this.priority === 6) {
-          this.priority = 0;
+    this._currentTrainingWord$ = this.getWordByPriority(this.previousWordsId)
+      .pipe(tap((word) => {
+        if (this.previousWordsId.length === 2) {
+          this.previousWordsId = [];
         }
-        console.log('INVOKE');
+
+        this.previousWordsId.push(word._id);
+        console.log('LEARNING WORD', word);
+        console.log('PREVIOUS WORDS ID', this.previousWordsId);
       }));
 
   }
@@ -136,73 +139,101 @@ export class WordTrainingService {
   //   this._currentTrainingWord$.next(word);
   // }
 
-  getWordByPriority(priority: number) {
-    if (priority === 0 || priority === 1 || priority === 4 || priority === 3 || priority === 6) {
+  getWordByPriority(previousWordsId: string[]): Observable<Word> {
+    return this.getFiltredWordsByGroup().pipe(
+      take(1),
+      map(words => {
+        let learningWord: Word;
+        const wordsWithBadKnowledge = words.filter(word => [0, 1, 2].includes(word.levelKnowledge) && !previousWordsId.includes(word._id));
+        const wordWithGoodKnowledge = words.filter(word => [3, 4, 5].includes(word.levelKnowledge) && !previousWordsId.includes(word._id));
 
-      // tslint:disable-next-line: max-line-length
-      return this.getFiltredWordsByGroup().pipe(
-        map(words => {
-          // tslint:disable-next-line: max-line-length
 
-          const randomLevelKnowledge = Math.floor(Math.random() * 4);
-          console.log('RANDOM', randomLevelKnowledge);
+        while (!learningWord) {
+          if (wordsWithBadKnowledge.length > 0) {
+            const index = Math.floor(Math.random() * wordsWithBadKnowledge.length);
 
-          const firstPriority = words.filter(word => word.levelKnowledge === randomLevelKnowledge);
-          // console.log('PRIORITY:', priority)
-          // console.log('LEVEL KNOwLEDGE:', randomLevelKnowledge)
-          // console.log('WORDS:', firstPriority)
-          if (firstPriority.length !== 0) {
-            const index = Math.floor(Math.random() * firstPriority.length);
-            return firstPriority[index];
+            return learningWord = wordsWithBadKnowledge[index] as Word;
 
-          } else {
-            const index = Math.floor(Math.random() * words.length);
+          } else if (wordWithGoodKnowledge.length > 0) {
+            const index = Math.floor(Math.random() * wordWithGoodKnowledge.length);
 
-            return words[index];
+            return learningWord = wordWithGoodKnowledge[index] as Word;
           }
 
-        }));
+        }
 
-
-
-
-    } else {
-      // tslint:disable-next-line: max-line-length
-
-      return this.getFiltredWordsByGroup().pipe(
-        map(words => {
-          // tslint:disable-next-line: max-line-length
-          const secondPriority = words.filter(word => word.levelKnowledge === 2 || word.levelKnowledge === 5);
-          // console.log('PRIORITY:', priority)
-          // console.log('LEVEL KNOwLEDGE:', 2, 5)
-          // console.log('WORDS:', secondPriority)
-          if (secondPriority.length !== 0) {
-            const index = Math.floor(Math.random() * secondPriority.length);
-            return secondPriority[index];
-
-          } else {
-            const index = Math.floor(Math.random() * words.length);
-
-            return words[index];
-          }
-        }));
-
-
-
-
-      // // tslint:disable-next-line: max-line-length
-      // if (words[index].levelKnowledge === 4 || words[index].levelKnowledge === 5) {
-      //   return words[index];
-      // } else {
-      //   const word = this.getWordByPriority(priority);
-      //   return word;
-      // }
-
-
-    }
-
+        return learningWord;
+      }));
 
   }
+
+  // getWordByPriority(priority: number) {
+  //   if (priority === 0 || priority === 1 || priority === 4 || priority === 3 || priority === 6) {
+
+  //     // tslint:disable-next-line: max-line-length
+  //     return this.getFiltredWordsByGroup().pipe(
+  //       map(words => {
+  //         // tslint:disable-next-line: max-line-length
+
+  //         const randomLevelKnowledge = Math.floor(Math.random() * 4);
+  //         console.log('RANDOM', randomLevelKnowledge);
+
+  //         const firstPriority = words.filter(word => word.levelKnowledge === randomLevelKnowledge);
+  //         // console.log('PRIORITY:', priority)
+  //         // console.log('LEVEL KNOwLEDGE:', randomLevelKnowledge)
+  //         // console.log('WORDS:', firstPriority)
+  //         if (firstPriority.length !== 0) {
+  //           const index = Math.floor(Math.random() * firstPriority.length);
+  //           return firstPriority[index];
+
+  //         } else {
+  //           const index = Math.floor(Math.random() * words.length);
+
+  //           return words[index];
+  //         }
+
+  //       }));
+
+
+
+
+  //   } else {
+  //     // tslint:disable-next-line: max-line-length
+
+  //     return this.getFiltredWordsByGroup().pipe(
+  //       map(words => {
+  //         // tslint:disable-next-line: max-line-length
+  //         const secondPriority = words.filter(word => word.levelKnowledge === 2 || word.levelKnowledge === 5);
+  //         // console.log('PRIORITY:', priority)
+  //         // console.log('LEVEL KNOwLEDGE:', 2, 5)
+  //         // console.log('WORDS:', secondPriority)
+  //         if (secondPriority.length !== 0) {
+  //           const index = Math.floor(Math.random() * secondPriority.length);
+  //           return secondPriority[index];
+
+  //         } else {
+  //           const index = Math.floor(Math.random() * words.length);
+
+  //           return words[index];
+  //         }
+  //       }));
+
+
+
+
+  //     // // tslint:disable-next-line: max-line-length
+  //     // if (words[index].levelKnowledge === 4 || words[index].levelKnowledge === 5) {
+  //     //   return words[index];
+  //     // } else {
+  //     //   const word = this.getWordByPriority(priority);
+  //     //   return word;
+  //     // }
+
+
+  //   }
+
+
+  // }
 
 
   updateWords() {

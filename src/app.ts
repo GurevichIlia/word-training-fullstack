@@ -27,7 +27,9 @@ mongoose
     })
     .then(() => console.log("MongoDb connected"))
     .catch(err => console.log(err));
-
+    
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(passport.initialize());
 passportCheck(passport);
 
@@ -35,8 +37,8 @@ passportCheck(passport);
 app.use(Morgan("dev"));
 app.use(cors());
 
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true }));
-app.use(bodyParser.json({limit: '50mb'}));
+
+
 
 app.use("/api/auth", new AuthRoutes().router);
 app.use("/api/vocabulary", new WordsRoutes().router);

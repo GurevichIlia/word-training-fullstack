@@ -1,13 +1,7 @@
-import { Router } from '@angular/router';
-import { ApiWordsService } from './../shared/services/api/api-words.service';
-import { ApiLanguagesService } from './../shared/services/api/api-languages.service';
-import { GeneralService } from './../shared/services/general.service';
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { Observable, BehaviorSubject, of, Subject } from 'rxjs';
-import { Word, Language, WordGroup } from '../shared/interfaces';
-import { switchMap, tap, shareReplay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +10,7 @@ export class VocabularyService {
   // words = new BehaviorSubject<Word[]>([]);
   // words$: Observable<Word[]>;
   constructor(
-    private http: HttpClient,
-    private generalService: GeneralService,
-    private apiLanguageService: ApiLanguagesService,
-    private apiWordsService: ApiWordsService,
-    private router: Router
+
   ) {
     ;
   }
@@ -67,15 +57,15 @@ export class VocabularyService {
   // }
 
 
-  setFavorite(word: Word) {
-    if (word) {
-      word.isFavorite = !word.isFavorite;
-    }
-  }
+  // setFavorite(word: Word) {
+  //   if (word) {
+  //     word.isFavorite = !word.isFavorite;
+  //   }
+  // }
 
-  findWordIndex(words: Word[], word: Word) {
-    return words.findIndex(existingWord => existingWord._id === word._id);
-  }
+  // findWordIndex(words: Word[], word: Word) {
+  //   return words.findIndex(existingWord => existingWord._id === word._id);
+  // }
 
 
   // deleteWord(word: Word) {

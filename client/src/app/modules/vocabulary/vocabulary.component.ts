@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { BehaviorSubject, fromEvent, Observable, Subject } from 'rxjs';
-import { delay, finalize, shareReplay, takeUntil } from 'rxjs/operators';
+import { delay, finalize, shareReplay, takeUntil, take } from 'rxjs/operators';
 
 import { AssignWordListComponent } from './assign-word-list/assign-word-list.component';
 import { VocabularyFacade } from './vocabulary.facade';
@@ -95,7 +95,11 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     this.wordsFiltredByGroup$ = (this.vocabularyFacade.getUserWordsFiltredByGroup(
       this.selectedGroup$.asObservable(),
       this.filterControl.valueChanges
-    ) as Observable<Word[]>).pipe(shareReplay());
+    ) as Observable<Word[]>).pipe(
+
+      shareReplay()
+      );
+
     this.getGroupStatistics();
   }
 

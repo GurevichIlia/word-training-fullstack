@@ -51,7 +51,6 @@ export class VocabularyFacade {
     return combineLatest([selectedGroup$.pipe(startWith(ALL_WORDS_GROUP)), searchValue$.pipe(startWith(''))])
       .pipe(
         switchMap(([group, searchValue]) => {
-
           if (group._id === ALL_WORDS_GROUP._id) {
 
             return this.filterBySearcValue(searchValue, this.getAllUserWords$());
