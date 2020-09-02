@@ -106,6 +106,7 @@ export class VocabularyFacade {
         ));
   }
 
+
   updateWordsAndGroups() {
     this.generalFacade.updateWordList();
   }
@@ -266,6 +267,24 @@ export class VocabularyFacade {
       return lnowledgeLevel;
     })
 
+  }
+
+  addNewWordsFromCSV(file: File) {
+    if (!file) return EMPTY;
+
+    if (!file.name.includes('csv')) {
+      this.notification.info('Please select CSV file');
+      return EMPTY;
+    }
+
+    const formData = new FormData();
+    formData.append('csvFile', file, 'csvFile');
+
+    return this.generalFacade.getCurrentLearningLanguage$()
+      .pipe(
+        switchMap(language => {
+          return this.apiWords.addWordsFromCSV(formData, language);
+        }));
   }
   // parseText(oldWords: string) {
   //   const language = this.generalState.getCurrentLearningLanguage();

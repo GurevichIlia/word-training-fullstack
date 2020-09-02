@@ -1,7 +1,7 @@
 import passport from "passport";
 import { WordsController } from "../controllers/words";
 import { Router } from "express";
-
+import multer from 'multer'
 export class WordsRoutes {
     router: Router;
     wordsController: WordsController = new WordsController();
@@ -27,6 +27,16 @@ export class WordsRoutes {
             "/addWords",
             passport.authenticate("jwt", { session: false }),
             this.wordsController.addNewWords
+        );
+
+        this.router.post(
+            "/addWordsFromCSV",
+            passport.authenticate("jwt", { session: false }),
+            multer({ dest: "./uploads/" }).single("csvFile"), function (req, res, next) {
+                req.file;
+                next()
+            },
+            this.wordsController.addWordsFromCSV
         );
 
         this.router.post(

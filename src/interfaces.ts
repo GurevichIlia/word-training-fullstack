@@ -43,3 +43,10 @@ export interface GeneralWord extends Document {
       language: string
 }
 
+
+export interface afterCSV {
+      insertedCount: number
+      insertedIds: object
+      ops: []
+      result: object
+}

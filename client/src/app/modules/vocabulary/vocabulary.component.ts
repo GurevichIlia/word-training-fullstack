@@ -51,6 +51,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   ];
   isLoading = false;
   statistics$: Observable<GroupStatistics>;
+  isShowUploader = false;
   // deferredPrompt // For 'beforeinstallprompt' event
   constructor(
     private fb: FormBuilder,
@@ -98,7 +99,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     ) as Observable<Word[]>).pipe(
 
       shareReplay()
-      );
+    );
 
     this.getGroupStatistics();
   }
@@ -374,6 +375,10 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     return (this.getSelectedGroup()._id !== ALL_WORDS_GROUP._id && this.getSelectedGroup()._id !== FAVORITES._id) ? false : true;
 
 
+  }
+
+  showUploader() {
+    this.isShowUploader = !this.isShowUploader;
   }
 
   unsubscribe() {

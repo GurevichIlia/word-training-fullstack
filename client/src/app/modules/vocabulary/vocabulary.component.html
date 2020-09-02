@@ -55,8 +55,17 @@
 
 
     <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
-      <button *ngIf="selectedGroup._id !== '2'" (click)="openWordModal('New word')" class="purpleButton mb-3 w-100"
-        type="submit" nbButton size="small">Add word</button>
+      <div class="d-flex">
+        <button *ngIf="selectedGroup._id !== '2'" (click)="openWordModal('New word')" class="purpleButton mb-3 w-100"
+          type="submit" nbButton size="small">Add word</button>
+
+        <i class="fas fa-file-csv" (click)="showUploader()"></i>
+
+      </div>
+
+
+
+
 
       <!-- <button *ngIf="selectedGroup !== '1' && selectedGroup !== '2'" (click)="showWordsForAssign()"
         class="purpleButton mb-3 w-100" type="submit" nbButton size="small">Add words</button> -->
@@ -73,6 +82,9 @@
       <app-group-statistics [statistics]="statistics$ | async"></app-group-statistics>
     </section>
 
+    <section class="csv-manager">
+      <app-csv-manager [expanded]="isShowUploader" (updateWordList)="updateWordsList(); showUploader()"></app-csv-manager>
+    </section>
 
     <app-word-list (action)="getActionFromChildren($event)" [pageSize]="pageSize" [trackWords]="trackWords"
       [filterValue]="filterControl.valueChanges" [menuItems]="wordMenuItems" [selectedGroup]="selectedGroup$ | async"
@@ -99,7 +111,7 @@
 
         <div class="text-center mt-2" *ngIf="selectedGroup._id === '2' && !filterControl.value">
           <span class="first-word-title">Click
-             <img class="mb-3" style="width: 25px; height: 25px"
+            <img class="mb-3" style="width: 25px; height: 25px"
               src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
               alt=""> in your word list <br>
             to add word to this group</span>
@@ -132,26 +144,21 @@
 </nb-card>
 
 <ng-template #wordModal let-data let-ref="dialogRef">
-    <app-modal-ui
-      [isLoading]="isLoading"
-      [title]="titleForModal"
-      (save)="addNewWord()"
-      (update)="updateWord(editWordOldValue, newWordForm.value)"
-      (cancel)="closeWordModal()"
-    >
-      <app-loader loader [show]="isLoading"></app-loader>
+  <app-modal-ui [isLoading]="isLoading" [title]="titleForModal" (save)="addNewWord()"
+    (update)="updateWord(editWordOldValue, newWordForm.value)" (cancel)="closeWordModal()">
+    <app-loader loader [show]="isLoading"></app-loader>
 
-      <form [formGroup]="newWordForm">
-        <input formControlName="word" class="mb-1 w-100" type="text" fieldSize="small" nbInput placeholder="Word">
-        <br>
-        <input formControlName="translation" class="mb-2 w-100" type="text" fieldSize="small" nbInput
-          placeholder="Translate">
-      </form>
+    <form [formGroup]="newWordForm">
+      <input formControlName="word" class="mb-1 w-100" type="text" fieldSize="small" nbInput placeholder="Word">
+      <br>
+      <input formControlName="translation" class="mb-2 w-100" type="text" fieldSize="small" nbInput
+        placeholder="Translate">
+    </form>
 
-    </app-modal-ui>
+  </app-modal-ui>
 </ng-template>
 
-  <!-- <nb-card class="wordDialogBox">
+<!-- <nb-card class="wordDialogBox">
     <nb-card-header class="modal-header">
       <h4>{{titleForModal}}</h4>
     </nb-card-header>
@@ -180,20 +187,15 @@
 
 <ng-template #groupModalRef let-data let-ref="dialogRef">
 
-  <app-modal-ui
-    [isLoading]="isLoading"
-    [title]="titleForModal"
-    (save)="saveGroup()"
-    (update)="saveGroup(getSelectedGroup())"
-    (cancel)="groupModal.close()"
-    >
+  <app-modal-ui [isLoading]="isLoading" [title]="titleForModal" (save)="saveGroup()"
+    (update)="saveGroup(getSelectedGroup())" (cancel)="groupModal.close()">
     <app-loader loader [show]="isLoading"></app-loader>
 
     <input [formControl]="groupName" class="mb-1 col-12" type="text" fieldSize="small" nbInput placeholder="Group name">
 
   </app-modal-ui>
 </ng-template>
-  <!-- <nb-card class="groups-modal">
+<!-- <nb-card class="groups-modal">
     <nb-card-header>
       <h4>{{titleForModal}}</h4>
 
@@ -211,4 +213,3 @@
         (click)="saveGroup(getSelectedGroup())">Update</button>
     </nb-card-footer>
   </nb-card> -->
-

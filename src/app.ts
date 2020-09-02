@@ -11,11 +11,10 @@ import passport from "passport";
 import passportCheck from "./middleware/passport";
 import { LanguagesRoutes } from "./routes/language";
 import { WordGroupRoutes } from "./routes/word-group";
-import { initAuth } from './utils/google-sheets'
+import { initAuth } from './utils/google-sheets';
 // const cors = require('cors');
 // const path = require('path')
 const keys = require('./config/keys')
-
 const app: express.Application = express();
 const initGoolgeSheetsAuth = initAuth
 initGoolgeSheetsAuth()
@@ -27,7 +26,7 @@ mongoose
     })
     .then(() => console.log("MongoDb connected"))
     .catch(err => console.log(err));
-    
+
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(passport.initialize());
@@ -36,8 +35,6 @@ passportCheck(passport);
 
 app.use(Morgan("dev"));
 app.use(cors());
-
-
 
 
 app.use("/api/auth", new AuthRoutes().router);

@@ -6,6 +6,7 @@ import { AssignWordListComponent } from './assign-word-list/assign-word-list.com
 import { VocabularyComponent } from './vocabulary.component';
 import { SelectLanguageGuardGuard } from 'src/app/shared/guards/select-language-guard.guard';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { CsvManagerComponent } from './csv-manager/csv-manager.component';
 
 
 const vocabularyRoutes: Routes = [
@@ -17,6 +18,7 @@ const vocabularyRoutes: Routes = [
   declarations: [
     VocabularyComponent,
     AssignWordListComponent,
+    CsvManagerComponent,
 
   ],
   imports: [

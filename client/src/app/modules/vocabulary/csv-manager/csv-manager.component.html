@@ -1,0 +1,18 @@
+<ng-container *ngIf="words$ | async"></ng-container>
+
+<mat-expansion-panel class="group-statistics mb-3" hideToggle [expanded]="expanded">
+  <section class="download"></section>
+
+
+  <section class="upload text-center">
+    <i class="fas fa-upload" (click)="fileInput.click()"></i>
+    <p class="mt-2" *ngIf="selectedFile">{{selectedFile.name}}</p>
+    <input #fileInput type="file" (change)="showFile(fileInput.files[0])" multi name="uploadFile" hidden>
+
+
+    <button [disabled]="isLoading" *ngIf="selectedFile" (click)="onUpload(fileInput.files[0])" class="purpleButton mb-3 w-50"
+      type="submit" nbButton size="small">Upload</button>
+    <app-loader [show]="isLoading"></app-loader>
+  </section>
+
+</mat-expansion-panel>

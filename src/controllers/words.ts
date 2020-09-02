@@ -1,4 +1,4 @@
-import { GeneralWord as GeneralWordModel } from './../interfaces';
+import { GeneralWord as GeneralWordModel, afterCSV } from './../interfaces';
 import { Request, Response } from "express";
 import errorHandler from "../utils/errorHandler";
 import Word from "../Models/Word";
@@ -6,6 +6,12 @@ import { WordModel, UserModel } from "../interfaces";
 import User from "../Models/User";
 import GeneralWord from "../Models/GeneralWord";
 import { getWordsByLanguage, createPDFfromHTML } from './../helper-functions/index';
+import { CSVtoJson } from './../utils/csv-to-json'
+import multer from 'multer'
+import path from "path"
+const fs = require("fs")
+
+const upload = multer();
 
 
 export class WordsController {
@@ -65,6 +71,49 @@ export class WordsController {
             errorHandler(res, error);
         }
     };
+
+    public addWordsFromCSV = async (req: Request, res: Response) => {
+        try {
+            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
+            // multer({ dest: "./uploads/" }).single("csvFile"), (file) => {
+            //     return file
+            // },
+            const csvFile = req.file;
+            const filePath = `${path.resolve()}/${csvFile.path}`
+            const wordsFromCSV = await CSVtoJson.createJsonArray(filePath)
+
+            await wordsFromCSV.forEach(async word => {
+
+                if (!word || !word.Translation || !word.Word) return
+
+                const newWord: WordModel = await new Word({
+                    word: word.Word,
+                    translation: word.Translation,
+                    language: req.query.languageId,
+                    assignedGroups: req.body.assignedGroups ? req.body.assignedGroups : []
+                });
+                user.words.unshift(newWord)
+            })
+
+            fs.unlink(filePath, function (err: Error) {
+                if (err) {
+                    throw err
+                } else {
+                    console.log("Successfully deleted the file.")
+                }
+            })
+
+            // const words = await new Word().collection.insertMany(wordsFromCSV);
+
+            // user.words = [...user.words, ...words.ops]
+
+            const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
+
+            res.status(201).json(updatedUser);
+        } catch (error) {
+            errorHandler(res, error);
+        }
+    }
 
     public addNewWords = async (req: Request, res: Response) => {
         try {

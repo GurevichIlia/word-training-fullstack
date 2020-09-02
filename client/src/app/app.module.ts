@@ -1,26 +1,25 @@
-import { ServerErrorInterceptor } from './shared/services/server-error-interceptor.service';
-import { BrowserModule, HammerModule } from '@angular/platform-browser';
-import { NgModule, Injectable } from '@angular/core';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { Injectable, NgModule } from '@angular/core';
+import { BrowserModule, HammerGestureConfig, HammerModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
-
-
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { NbDialogModule, NbMenuModule, NbSidebarModule, NbThemeModule } from '@nebular/theme';
+import * as Hammer from 'hammerjs';
+import { environment } from '../environments/environment';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { InstallSuggestionComponent } from './core/install-app/install-suggestion/install-suggestion.component';
+import { ServerErrorInterceptor } from './shared/services/server-error-interceptor.service';
 import { TokenInterceptorService } from './shared/services/token-interceptor.service';
 import { SharedModule } from './shared/shared.module';
-import { AppRoutingModule } from './app-routing.module';
 
 
-import { AppComponent } from './app.component';
 
 
-import * as Hammer from 'hammerjs';
-import { NbListModule, NbThemeModule, NbToastrModule, NbMenuModule, NbSidebarModule, NbDialogModule } from '@nebular/theme';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
 
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-import { InstallSuggestionComponent } from './core/install-app/install-suggestion/install-suggestion.component';
+
+
 
 @Injectable()
 export class MyHammerConfig extends HammerGestureConfig {

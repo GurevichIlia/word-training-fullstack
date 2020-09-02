@@ -1,8 +1,9 @@
+import { ApiService } from './../../../core/services/api.service';
 import { GeneralWord } from 'src/app/shared/interfaces';
 import { User } from './../../interfaces';
 import { shareReplay } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { GeneralService } from '../general.service';
 import { Observable } from 'rxjs';
 import { Word, WordGroup, Language } from '../../interfaces';
@@ -15,7 +16,7 @@ export class ApiWordsService {
 
   constructor(
     private http: HttpClient,
-    private generalService: GeneralService
+    private api: ApiService,
   ) { }
 
   getWordsFromServerForUser(langId: string): Observable<Word[]> {
@@ -62,7 +63,7 @@ export class ApiWordsService {
   }
 
   getAllWordsGroups(language: Language) {
-    return this.http.get<WordGroup[]>(`${BASE_URL}/api/word-group/getAllGroups?languageId=${language._id}`)
+    return this.http.get<WordGroup[]>(`${BASE_URL}/api/word-group/getAllGroups?languageId=${language._id}`);
   }
 
   updateWords(words: Word[], language: Language) {
@@ -71,14 +72,28 @@ export class ApiWordsService {
   }
 
   addWordsToGeneralList(words: Word[], language: Language) {
-    return this.http.post(`${BASE_URL}/api/vocabulary/addWordsToGeneralList?languageId=${language._id}`, { words })
+    return this.http.post(`${BASE_URL}/api/vocabulary/addWordsToGeneralList?languageId=${language._id}`, { words });
   }
 
   deleteWordFromGeneralList(wordId: string) {
-    return this.http.delete<{ word: GeneralWord, message: string }>(`${BASE_URL}/api/vocabulary/deleteWordFromGeneralList?wordId=${wordId}`)
+    // tslint:disable-next-line: max-line-length
+    return this.http.delete<{ word: GeneralWord, message: string }>(`${BASE_URL}/api/vocabulary/deleteWordFromGeneralList?wordId=${wordId}`);
   }
 
   getUserId() {
     return this.http.get<{ userId: string }>(`${BASE_URL}/api/auth/getUserId`);
+  }
+
+  addWordsFromCSV(csvFile: any, language: Language) {
+    const headers = new HttpHeaders();
+    const params = new HttpParams();
+    /** In Angular 5, including the header Content-Type can invalidate your request */
+    headers.append('enctype', 'text/csv');
+    const options = {
+      header: headers,
+      params,
+    };
+    return this.api.post<Word[]>(`${BASE_URL}/api/vocabulary/addWordsFromCSV?languageId=${language._id}`, csvFile , options);
+
   }
 }
