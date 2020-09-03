@@ -204,7 +204,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  getActionFromChildren(event: { action: string, payload?: Word, index: number }) {
+  getActionFromChildren(event: { action: string, payload?: Word, index?: number }) {
     switch (event.action) {
       case 'SHARE FOR ALL': this.shareWordsForAll([event.payload]);
         break
