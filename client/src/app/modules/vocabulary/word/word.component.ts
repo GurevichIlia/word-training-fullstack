@@ -39,8 +39,8 @@ export class WordComponent implements OnInit {
   }
 
 
-  dispatchAction(action: string, payload: any) {
-    this.action.emit({ action, payload });
+  dispatchAction(action: string, payload: any, index: number) {
+    this.action.emit({ action, payload, index });
   }
 
   isHideDeleteButton() {

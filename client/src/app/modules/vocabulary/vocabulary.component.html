@@ -13,7 +13,7 @@
     </div>
   </nb-card-header>
 
-  <nb-card-body>
+  <nb-card-body class="p-2">
     <!-- <ng-container *ngIf="wordGroups$ | async as groups"> -->
     <!-- <ng-container *ngIf="!(wordGroups$ | async) || !(wordsFiltredByGroup$ | async)">
       <nb-card [nbSpinner]="true" nbSpinnerStatus="basic">
@@ -59,7 +59,7 @@
         <button *ngIf="selectedGroup._id !== '2'" (click)="openWordModal('New word')" class="purpleButton mb-3 w-100"
           type="submit" nbButton size="small">Add word</button>
 
-        <i class="fas fa-file-csv" (click)="showUploader()"></i>
+        <i *ngIf="selectedGroup._id !== '2'" class="fas fa-file-csv" (click)="showUploader()"></i>
 
       </div>
 
@@ -83,7 +83,7 @@
     </section>
 
     <section class="csv-manager">
-      <app-csv-manager [expanded]="isShowUploader" (updateWordList)="updateWordsList(); showUploader()"></app-csv-manager>
+      <app-csv-manager [expanded]="isShowUploader" [selectedGroup]="selectedGroup$ | async" (updateWordList)="updateWordsList(); showUploader()"></app-csv-manager>
     </section>
 
     <app-word-list (action)="getActionFromChildren($event)" [pageSize]="pageSize" [trackWords]="trackWords"

@@ -124,7 +124,7 @@ export class VocabularyFacade {
 
   }
 
-  deleteWordFromServer(word: Word) {
+  deleteWordFromServer(word: Word, index: number) {
     const title = `Would you like to remove word ${word.word} ?`;
     const result$ = this.askQuestion(title);
 
@@ -132,7 +132,7 @@ export class VocabularyFacade {
       switchMap(res => {
         if (res) {
           // this.vocabularyFacade.deleteWord(word);
-          return this.apiWords.deleteWordFromServer(word._id);
+          return this.apiWords.deleteWordFromServer(index);
         } else {
           return EMPTY;
         }
@@ -269,7 +269,7 @@ export class VocabularyFacade {
 
   }
 
-  addNewWordsFromCSV(file: File) {
+  addNewWordsFromCSV(file: File, selectedGroupId?: string) {
     if (!file) return EMPTY;
 
     if (!file.name.includes('csv')) {
@@ -283,7 +283,9 @@ export class VocabularyFacade {
     return this.generalFacade.getCurrentLearningLanguage$()
       .pipe(
         switchMap(language => {
-          return this.apiWords.addWordsFromCSV(formData, language);
+          const assignedGroups = JSON.stringify([ALL_WORDS_GROUP._id, selectedGroupId]);
+          console.log('GROUPS', assignedGroups)
+          return this.apiWords.addWordsFromCSV(formData, language, assignedGroups);
         }));
   }
   // parseText(oldWords: string) {

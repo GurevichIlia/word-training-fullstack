@@ -5,14 +5,28 @@
 
 
   <section class="upload text-center">
-    <i class="fas fa-upload" (click)="fileInput.click()"></i>
+    <div class="d-flex">
+      <i class="fas fa-info" (click)="showInstruction()"></i>
+
+
+      <i class="fas fa-upload" (click)="fileInput.click()"></i>
+    </div>
+
     <p class="mt-2" *ngIf="selectedFile">{{selectedFile.name}}</p>
-    <input #fileInput type="file" (change)="showFile(fileInput.files[0])" multi name="uploadFile" hidden>
+    <input #fileInput  type="file" (change)="showFile(fileInput.files[0])" multi name="uploadFile" hidden>
 
 
-    <button [disabled]="isLoading" *ngIf="selectedFile" (click)="onUpload(fileInput.files[0])" class="purpleButton mb-3 w-50"
-      type="submit" nbButton size="small">Upload</button>
+    <button [disabled]="isLoading" *ngIf="selectedFile" (click)="onUpload(fileInput.files[0])"
+      class="purpleButton mb-3 w-50" type="submit" nbButton size="small">Upload</button>
     <app-loader [show]="isLoading"></app-loader>
   </section>
 
 </mat-expansion-panel>
+
+<ng-template #instruction>
+  <div class="instruction">
+    <span class="title">Words can be added even easier using CSV file. <br>
+      Below is an example table: <i>"your-filename.csv"</i>  </span>
+    <img width="100%" src="../../../../assets//Photos//csvExample.png" alt="">
+  </div>
+</ng-template>

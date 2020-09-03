@@ -204,13 +204,13 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  getActionFromChildren(event: { action: string, payload?: Word }) {
+  getActionFromChildren(event: { action: string, payload?: Word, index: number }) {
     switch (event.action) {
       case 'SHARE FOR ALL': this.shareWordsForAll([event.payload]);
         break
       case 'IS FAVORITE': this.setFavorite(event.payload);
         break
-      case 'DELETE WORD': this.deleteWord(event.payload);
+      case 'DELETE WORD': this.deleteWord(event.payload, event.index);
         break;
       case 'EDIT WORD': this.openEditModal(event.payload);
         break;
@@ -220,7 +220,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
-  deleteWord(word: Word) {
+  deleteWord(word: Word, index: number) {
     // // tslint:disable-next-line: max-line-length
     // const title = `Would you like to remove word ${word.word} ?`;
     // const result$ = this.vocabularyFacade.askQuestion(title);
@@ -236,7 +236,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     //   }),
     //   takeUntil(this.subscription$)
     // )
-    this.vocabularyFacade.deleteWordFromServer(word)
+    this.vocabularyFacade.deleteWordFromServer(word, index)
       .pipe(
         takeUntil(this.subscription$))
       .subscribe(res => {

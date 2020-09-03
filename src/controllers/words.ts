@@ -9,9 +9,10 @@ import { getWordsByLanguage, createPDFfromHTML } from './../helper-functions/ind
 import { CSVtoJson } from './../utils/csv-to-json'
 import multer from 'multer'
 import path from "path"
-const fs = require("fs")
+import { FileHandler } from '../utils/file-handler';
 
-const upload = multer();
+const fileHandler = new FileHandler()
+
 
 
 export class WordsController {
@@ -81,7 +82,8 @@ export class WordsController {
             const csvFile = req.file;
             const filePath = `${path.resolve()}/${csvFile.path}`
             const wordsFromCSV = await CSVtoJson.createJsonArray(filePath)
-
+            console.log('ASSIGN GROUPS', req.query.assignedGroups)
+            const assignedGroups = JSON.parse(req.query.assignedGroups)
             await wordsFromCSV.forEach(async word => {
 
                 if (!word || !word.Translation || !word.Word) return
@@ -90,18 +92,12 @@ export class WordsController {
                     word: word.Word,
                     translation: word.Translation,
                     language: req.query.languageId,
-                    assignedGroups: req.body.assignedGroups ? req.body.assignedGroups : []
+                    assignedGroups: assignedGroups ? assignedGroups : []
                 });
                 user.words.unshift(newWord)
             })
 
-            fs.unlink(filePath, function (err: Error) {
-                if (err) {
-                    throw err
-                } else {
-                    console.log("Successfully deleted the file.")
-                }
-            })
+            fileHandler.deleteFile(filePath)
 
             // const words = await new Word().collection.insertMany(wordsFromCSV);
 
@@ -207,11 +203,12 @@ export class WordsController {
     public deleteWordByIdForCurrentUser = async (req: Request, res: Response) => {
         try {
             const user = await User.findOne({ _id: req.user }) as UserModel;
-
-            const deletedWordIndex = user.words.findIndex(word => word._id.toString() == req.params.wordId)
-            const deletedWord = user.words.splice(deletedWordIndex, 1)
+            // user.words = user.words.filter(word => word._id.toString() !== req.params.wordId)
+            // const deletedWordIndex = user.words.findIndex(word => word._id.toString() == req.params.wordId)
+            const deletedWord = user.words.splice(+req.params.wordIndex, 1)
+            // console.log('DELETED WORD', deletedWord, new Date().getTime())
             const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
-
+            // console.log('USER UPDATED', new Date().getTime())
             res.status(200).json({
                 word: deletedWord,
                 message: 'Removed'

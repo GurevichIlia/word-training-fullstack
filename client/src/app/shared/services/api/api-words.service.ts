@@ -43,9 +43,9 @@ export class ApiWordsService {
     return this.http.patch<Word>(`${BASE_URL}/api/vocabulary/editWord?languageId=${language._id}`, word);
   }
 
-  deleteWordFromServer(wordId: string): Observable<Word[]> {
+  deleteWordFromServer(wordIndex: number): Observable<Word[]> {
 
-    return this.http.delete<Word[]>(`${BASE_URL}/api/vocabulary/deleteWord/${wordId}`);
+    return this.http.delete<Word[]>(`${BASE_URL}/api/vocabulary/deleteWord/${wordIndex}`);
   }
 
   saveGroup(name: string, language: Language, id: string = '') {
@@ -84,7 +84,7 @@ export class ApiWordsService {
     return this.http.get<{ userId: string }>(`${BASE_URL}/api/auth/getUserId`);
   }
 
-  addWordsFromCSV(csvFile: any, language: Language) {
+  addWordsFromCSV(csvFile: any, language: Language, assignedGroups?: string) {
     const headers = new HttpHeaders();
     const params = new HttpParams();
     /** In Angular 5, including the header Content-Type can invalidate your request */
@@ -93,7 +93,8 @@ export class ApiWordsService {
       header: headers,
       params,
     };
-    return this.api.post<Word[]>(`${BASE_URL}/api/vocabulary/addWordsFromCSV?languageId=${language._id}`, csvFile , options);
+    return this.api.post<Word[]>(`${BASE_URL}/api/vocabulary/addWordsFromCSV?languageId=${language._id}&assignedGroups=${assignedGroups}`,
+     csvFile , options);
 
   }
 }

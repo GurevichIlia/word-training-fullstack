@@ -5,10 +5,10 @@
     <ng-container *ngIf="isShowMenu && menuItems">
       <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
       <mat-menu #menu="matMenu" class="matmenu">
-        <ng-container *ngFor="let item of menuItems">
+        <ng-container *ngFor="let item of menuItems; let i = index">
           <div [hidden]="((item.action === 'DELETE FROM GENERAL LIST') && isHideDeleteButton())"
 
-            (click)="dispatchAction(item.action, word)" class="menuitem">
+            (click)="dispatchAction(item.action, word, i)" class="menuitem">
             <nb-icon [icon]="item.icon"></nb-icon>
             <span class="ml-2">{{item.title}}</span>
           </div>

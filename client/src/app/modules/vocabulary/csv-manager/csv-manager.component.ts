@@ -1,8 +1,9 @@
-import { finalize, tap } from 'rxjs/operators';
-import { VocabularyFacade } from './../vocabulary.facade';
-import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { NbDialogService } from '@nebular/theme';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, TemplateRef, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Word } from 'src/app/shared/interfaces';
+import { finalize, tap } from 'rxjs/operators';
+import { Word, WordGroup } from 'src/app/shared/interfaces';
+import { VocabularyFacade } from './../vocabulary.facade';
 
 @Component({
   selector: 'app-csv-manager',
@@ -10,20 +11,28 @@ import { Word } from 'src/app/shared/interfaces';
   styleUrls: ['./csv-manager.component.scss'],
 })
 export class CsvManagerComponent implements OnInit {
+  @ViewChild('instruction') insctructionModal: TemplateRef<any>;
+  @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
+
   @Input() expanded = false;
+  @Input() selectedGroup: WordGroup;
+
   file = new EventEmitter<File>();
   isLoading = false;
   words$: Observable<Word[]>;
-  selectedFile
+  selectedFile;
   @Output() updateWordList = new EventEmitter();
-  constructor(private vocabularyFacade: VocabularyFacade) { }
+  constructor(
+    private vocabularyFacade: VocabularyFacade,
+    private dialog: NbDialogService
+  ) { }
 
   ngOnInit() {
   }
 
   onUpload(file: File) {
     this.isLoading = true;
-    this.words$ = this.vocabularyFacade.addNewWordsFromCSV(file)
+    this.words$ = this.vocabularyFacade.addNewWordsFromCSV(file, this.selectedGroup._id)
       .pipe(
         finalize(() => this.isLoading = false),
         tap(res => console.log(res)),
@@ -37,8 +46,13 @@ export class CsvManagerComponent implements OnInit {
     this.selectedFile = file;
   }
 
+  showInstruction() {
+    this.dialog.open(this.insctructionModal)
+  }
+
   resetState() {
     this.selectedFile = null;
-    this.updateWordList.emit()
+    this.updateWordList.emit();
+    this.fileInput.nativeElement.value = '';
   }
 }

@@ -27,11 +27,11 @@ export class WordListComponent {
 
   onScroll() {
     this.showMoreWords();
-    
+
   }
-  
-  sendAction({ action, payload }) {
-    this.action.emit({ action, payload });
+
+  sendAction({ action, payload, index }) {
+    this.action.emit({ action, payload, index });
   }
 
   showMoreWords() {
