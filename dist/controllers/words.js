@@ -16,7 +16,11 @@ const errorHandler_1 = __importDefault(require("../utils/errorHandler"));
 const Word_1 = __importDefault(require("../Models/Word"));
 const User_1 = __importDefault(require("../Models/User"));
 const GeneralWord_1 = __importDefault(require("../Models/GeneralWord"));
-const helper_functions_1 = require("../helper-functions/helper-functions");
+const index_1 = require("./../helper-functions/index");
+const csv_to_json_1 = require("./../utils/csv-to-json");
+const path_1 = __importDefault(require("path"));
+const file_handler_1 = require("../utils/file-handler");
+const fileHandler = new file_handler_1.FileHandler();
 class WordsController {
     constructor() {
         this.getAllWordsForCurrentUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -27,7 +31,7 @@ class WordsController {
                 // });
                 const currentLanguage = req.query.languageId;
                 const user = yield User_1.default.findOne({ _id: req.user });
-                const words = helper_functions_1.getWordsByLanguage(currentLanguage, user.words);
+                const words = index_1.getWordsByLanguage(currentLanguage, user.words);
                 // const newwords = words.map(word => {
                 //     word.assignedGroups.push('1')
                 //     return word
@@ -67,6 +71,39 @@ class WordsController {
                 errorHandler_1.default(res, error);
             }
         });
+        this.addWordsFromCSV = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const user = yield User_1.default.findOne({ _id: req.user });
+                // multer({ dest: "./uploads/" }).single("csvFile"), (file) => {
+                //     return file
+                // },
+                const csvFile = req.file;
+                const filePath = `${csvFile.path}`;
+                console.log('FILE PATH', filePath);
+
+                const wordsFromCSV = yield csv_to_json_1.CSVtoJson.createJsonArray(filePath);
+                const assignedGroups = JSON.parse(req.query.assignedGroups);
+                yield wordsFromCSV.forEach((word) => __awaiter(this, void 0, void 0, function* () {
+                    if (!word || !word.Translation || !word.Word)
+                        return;
+                    const newWord = yield new Word_1.default({
+                        word: word.Word,
+                        translation: word.Translation,
+                        language: req.query.languageId,
+                        assignedGroups: assignedGroups ? assignedGroups : []
+                    });
+                    user.words.unshift(newWord);
+                }));
+                fileHandler.deleteFile(filePath);
+                // const words = await new Word().collection.insertMany(wordsFromCSV);
+                // user.words = [...user.words, ...words.ops]
+                const updatedUser = yield User_1.default.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true });
+                res.status(201).json(updatedUser);
+            }
+            catch (error) {
+                errorHandler_1.default(res, error);
+            }
+        });
         this.addNewWords = (req, res) => __awaiter(this, void 0, void 0, function* () {
             var _a;
             try {
@@ -82,6 +119,7 @@ class WordsController {
             }
         });
         this.updateUserWords = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            var _b;
             try {
                 const wordsToUpdate = req.body.words;
                 const user = yield User_1.default.findOne({ _id: req.user });
@@ -106,7 +144,7 @@ class WordsController {
                 //     user: user._id
                 // });
                 // console.log()
-                res.status(201).json(updatedUser);
+                res.status(201).json((_b = updatedUser) === null || _b === void 0 ? void 0 : _b.words);
             }
             catch (error) {
                 errorHandler_1.default(res, error);
@@ -134,9 +172,12 @@ class WordsController {
         this.deleteWordByIdForCurrentUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const user = yield User_1.default.findOne({ _id: req.user });
-                const deletedWordIndex = user.words.findIndex(word => word._id.toString() == req.params.wordId);
-                const deletedWord = user.words.splice(deletedWordIndex, 1);
+                // user.words = user.words.filter(word => word._id.toString() !== req.params.wordId)
+                // const deletedWordIndex = user.words.findIndex(word => word._id.toString() == req.params.wordId)
+                const deletedWord = user.words.splice(+req.params.wordIndex, 1);
+                // console.log('DELETED WORD', deletedWord, new Date().getTime())
                 const updatedUser = yield User_1.default.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true });
+                // console.log('USER UPDATED', new Date().getTime())
                 res.status(200).json({
                     word: deletedWord,
                     message: 'Removed'

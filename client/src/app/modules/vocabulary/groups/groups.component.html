@@ -1,11 +1,41 @@
-<div class="w-100 ">
-  <mat-form-field class="p-0 select custom-groups-select" [appearance]="'outline'">
+<div class="groups-container d-flex align-items-baseline" *ngIf="selectedGroup$ | async as selectedGroup">
+  <div class="groups">
+    <app-group-list
+    [groups]="groups$ | async"
+    [selectedGroup]="selectedGroup"
+    (selectGroup)="onSelectGroup($event)"
+    >
+    </app-group-list>
+  </div>
+  <div class="menu text-center">
+    <app-menu [menuItems]="menuItems$ | async" (action)="getAction({action:$event, payload: selectedGroup})"></app-menu>
+  </div>
+
+</div>
+
+
+<!-- ADD NEW GROUP MODAL -->
+<ng-template #groupModal let-data let-ref="dialogRef">
+
+  <app-modal-ui
+    [isLoading]="isLoading"
+    [title]="modalTitle"
+    (save)="saveGroup({isUpdate: false})"
+    (update)="saveGroup({isUpdate: true})"
+    (cancel)="groupModalRef.close()">
+    <!-- <app-loader loader [show]="isLoading"></app-loader> -->
+
+    <input [formControl]="groupName" class="mb-1 col-12" type="text" fieldSize="small" nbInput placeholder="Group name">
+
+  </app-modal-ui>
+</ng-template>
+
+  <!-- <mat-form-field class="p-0 select custom-groups-select" [appearance]="'outline'">
     <mat-label>Groups</mat-label>
     <mat-select  [formControl]="groupControl" [placeholder]="'Groups'">
       <mat-option (click)="onSelectGroup(group)" [value]="group._id" *ngFor="let group of _wordGroups">
         {{group.name}} - {{group.wordQuantity}}
       </mat-option>
     </mat-select>
-  </mat-form-field>
-  <ng-content></ng-content>
-</div>
+  </mat-form-field> -->
+  <!-- <ng-content></ng-content> -->

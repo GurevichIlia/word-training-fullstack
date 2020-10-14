@@ -5,13 +5,21 @@
   </nb-card-header>
 
   <nb-card-body>
-    <ng-content select="loader"></ng-content>
+    <!-- <ng-content select="loader"></ng-content> -->
     <ng-content></ng-content>
   </nb-card-body>
 
   <nb-card-footer class="footer">
-    <button nbButton status="danger" (click)="actionHandler('cancel')">Cancel</button>
-    <button *ngIf="isNewMode()" [disabled]="isLoading" nbButton (click)="actionHandler('save')">Submit</button>
-    <button *ngIf="!isNewMode()" [disabled]="isLoading" nbButton (click)="actionHandler('update')">Update</button>
+    <button type="button" class="btn btn-danger" [disabled]="isLoading" (click)="actionHandler('cancel')">Cancel</button>
+    <!-- <button nbButton status="danger" [disabled]="isLoading" (click)="actionHandler('cancel')">Cancel</button> -->
+    <button type="button" class="btn btn-primary" *ngIf="isNewMode() && !isLoading" (click)="actionHandler('save')">Submit</button>
+    <button type="button" class="btn btn-primary" *ngIf="!isNewMode() && !isLoading"  (click)="actionHandler('update')">Update</button>
+
+    <!-- <button *ngIf="isNewMode() && !isLoading" nbButton (click)="actionHandler('save')">Submit</button>
+    <button *ngIf="!isNewMode() && !isLoading"  nbButton (click)="actionHandler('update')">Update</button> -->
+    <button class="btn btn-primary" type="button" disabled *ngIf="isLoading">
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Loading...
+    </button>
   </nb-card-footer>
 </nb-card>

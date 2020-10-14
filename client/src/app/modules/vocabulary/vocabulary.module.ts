@@ -1,16 +1,19 @@
+import { MatExpansionModule } from '@angular/material/expansion';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
-import { AssignWordListComponent } from './assign-word-list/assign-word-list.component';
-import { VocabularyComponent } from './vocabulary.component';
+import { NbButtonModule, NbCardModule, NbInputModule } from '@nebular/theme';
 import { SelectLanguageGuardGuard } from 'src/app/shared/guards/select-language-guard.guard';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { ComponentsModule } from './../../shared/components/components.module';
+import { AssignWordListComponent } from './assign-word-list/assign-word-list.component';
 import { CsvManagerComponent } from './csv-manager/csv-manager.component';
+import { VocabularyComponent } from './vocabulary.component';
+
 
 
 const vocabularyRoutes: Routes = [
-  { path: '', component: VocabularyComponent  , canActivate: [SelectLanguageGuardGuard]}
+  { path: '', component: VocabularyComponent, canActivate: [SelectLanguageGuardGuard] }
 ];
 
 
@@ -22,8 +25,14 @@ const vocabularyRoutes: Routes = [
 
   ],
   imports: [
+    CommonModule,
+    ComponentsModule,
+    NbInputModule,
 
-    SharedModule,
+    NbCardModule,
+    NbButtonModule,
+    ReactiveFormsModule,
+    MatExpansionModule,
     RouterModule.forChild(vocabularyRoutes)
   ],
 })

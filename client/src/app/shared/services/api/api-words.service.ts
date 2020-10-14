@@ -43,27 +43,9 @@ export class ApiWordsService {
     return this.http.patch<Word>(`${BASE_URL}/api/vocabulary/editWord?languageId=${language._id}`, word);
   }
 
-  deleteWordFromServer(wordIndex: number): Observable<Word[]> {
+  deleteWordFromServer(wordId: string): Observable<Word[]> {
 
-    return this.http.delete<Word[]>(`${BASE_URL}/api/vocabulary/deleteWord/${wordIndex}`);
-  }
-
-  saveGroup(name: string, language: Language, id: string = '') {
-    const languageId = language._id;
-    return this.http.post<WordGroup>(`${BASE_URL}/api/word-group/create`, { group: { name, languageId, id } });
-  }
-
-  deleteWordGroup(groupId: string) {
-    return this.http.post<Word>(`${BASE_URL}/api/word-group/deleteGroup`, { groupId });
-
-  }
-
-  assignGroup(groupId: string, selectedWords: string[]) {
-    return this.http.post<Word>(`${BASE_URL}/api/word-group/assign-group`, { groupId, selectedWords });
-  }
-
-  getAllWordsGroups(language: Language) {
-    return this.http.get<WordGroup[]>(`${BASE_URL}/api/word-group/getAllGroups?languageId=${language._id}`);
+    return this.http.delete<Word[]>(`${BASE_URL}/api/vocabulary/deleteWord/${wordId}`);
   }
 
   updateWords(words: Word[], language: Language) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { map, startWith } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,34 +12,34 @@ export class NavigationService {
   }
 
 
-
+  // Use to show current page on the header
   getCurrentLocation$() {
     return this.router.events.pipe(
       startWith(new NavigationEnd(null, '/vocabulary', 'vocabulary')),
-      map(e => {
+      filter(e => e instanceof NavigationEnd),
+      map((e: NavigationEnd) => {
 
-        if (e instanceof NavigationEnd) {
-          if (this.isCurrentLocation(e, 'vocabulary')) {
-            return 'Vocabulary';
+        if (this.isCurrentLocation(e, 'vocabulary')) {
+          return 'Vocabulary';
+        }
+
+        if (this.isCurrentLocation(e, 'word-training')) {
+          return 'Word training';
+        }
+
+        if (this.isCurrentLocation(e, 'general-words')) {
+          return 'Shared';
+        }
+
+        if (this.isCurrentLocation(e, 'settings')) {
+
+          if (this.isCurrentLocation(e, 'languages')) {
+            return 'Languages';
           }
 
-          if (this.isCurrentLocation(e, 'word-training')) {
-            return 'Word training';
-          }
+          return 'Settings';
 
-          if (this.isCurrentLocation(e, 'general-words')) {
-            return 'Shared';
-          }
 
-          if (this.isCurrentLocation(e, 'settings')) {
-
-            if (this.isCurrentLocation(e, 'languages')) {
-              return 'Languages';
-            }
-
-            return 'Settings';
-
-          }
 
 
         }

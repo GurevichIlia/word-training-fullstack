@@ -1,7 +1,7 @@
-import { LocalstorageService } from './localstorage.service';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+import { LocalstorageService } from 'src/app/shared/services/localstorage.service';
 
 @Injectable({
   providedIn: 'root'

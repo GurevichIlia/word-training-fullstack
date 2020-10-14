@@ -29,10 +29,10 @@
       <nb-card-body>
         <section class="mb-4 statistics">
           <app-group-statistics
-            [isHideNotLearnedWords]="true"
             [title]="'Train statistics'"
             [expanded]="true"
-            [statistics]="statistics$ | async"></app-group-statistics>
+            [statistics]="statistics$ | async">
+          </app-group-statistics>
         </section>
         <nb-list>
           <nb-list-item *ngFor="let word of words" class="d-block">

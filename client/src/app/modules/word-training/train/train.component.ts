@@ -1,13 +1,12 @@
-import { NotificationsService } from './../../../shared/services/notifications.service';
-import { Component, ChangeDetectionStrategy, OnDestroy, AfterViewInit, ViewChild, ElementRef, ChangeDetectorRef, OnInit } from '@angular/core';
-import { trigger, transition, animate, keyframes } from '@angular/animations';
-import { NbCardBackComponent } from '@nebular/theme';
-import { Subject, of } from 'rxjs';
-import { WordTrainingService } from '../word-training.service';
+import { animate, keyframes, transition, trigger } from '@angular/animations';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { of, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { Word } from 'src/app/shared/interfaces';
-import { takeUntil, map } from 'rxjs/operators';
 import * as kf from '../../../shared/keyframes';
+import { WordTrainingService } from '../word-training.service';
+import { NotificationsService } from './../../../shared/services/notifications.service';
 
 @Component({
   selector: 'app-train',

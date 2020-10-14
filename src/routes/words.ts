@@ -32,7 +32,7 @@ export class WordsRoutes {
         this.router.post(
             "/addWordsFromCSV",
             passport.authenticate("jwt", { session: false }),
-            multer({ dest: "./uploads/" }).single("csvFile"), function (req, res, next) {
+            multer({ dest: "./tmp/" }).single("csvFile"), function (req, res, next) {
                 req.file;
                 next()
             },

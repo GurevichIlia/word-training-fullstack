@@ -1,7 +1,9 @@
+import { WordAction } from './../../../core/enums/word';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { fromEvent, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MenuItem, Word, GeneralWord } from 'src/app/shared/interfaces';
+import { Action, MenuItem } from 'src/app/core';
+import { Word, GeneralWord } from 'src/app/shared/interfaces';
 
 
 @Component({
@@ -18,7 +20,7 @@ export class WordListComponent {
   @Input() selectedGroup: string;
   @Input() isShowDefaultOptions = true;
   @Input() isShowMenu = true;
-  @Input() menuItems: MenuItem[];
+  @Input() menuItems: MenuItem<WordAction>[];
   @Input() userId: string;
   @Input() showenItems = 15;
   isShowGoToTopButton$: Observable<boolean> = fromEvent(window, 'scroll').pipe(map(event => window.scrollY >= 1400));
@@ -30,8 +32,9 @@ export class WordListComponent {
 
   }
 
-  sendAction({ action, payload, index }) {
-    this.action.emit({ action, payload, index });
+  sendAction(event: Action) {
+
+    this.action.emit(event);
   }
 
   showMoreWords() {

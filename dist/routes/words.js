@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const passport_1 = __importDefault(require("passport"));
 const words_1 = require("../controllers/words");
 const express_1 = require("express");
+const multer_1 = __importDefault(require("multer"));
 class WordsRoutes {
     constructor() {
         this.wordsController = new words_1.WordsController();
@@ -16,6 +17,10 @@ class WordsRoutes {
         this.router.get("/getAllWords", passport_1.default.authenticate("jwt", { session: false }), this.wordsController.getAllWordsForCurrentUser);
         this.router.post("/createWord", passport_1.default.authenticate("jwt", { session: false }), this.wordsController.createNewWordForUser);
         this.router.post("/addWords", passport_1.default.authenticate("jwt", { session: false }), this.wordsController.addNewWords);
+        this.router.post("/addWordsFromCSV", passport_1.default.authenticate("jwt", { session: false }), multer_1.default({ dest: "/tmp" }).single("csvFile"), function (req, res, next) {
+            req.file;
+            next();
+        }, this.wordsController.addWordsFromCSV);
         this.router.post("/updateWords", passport_1.default.authenticate("jwt", { session: false }), this.wordsController.updateUserWords);
         this.router.patch("/editWord", passport_1.default.authenticate("jwt", { session: false }), this.wordsController.editWordByIdForCurrentUser);
         this.router.delete("/deleteWord/:wordId", passport_1.default.authenticate("jwt", { session: false }), this.wordsController.deleteWordByIdForCurrentUser);

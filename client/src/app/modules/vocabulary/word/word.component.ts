@@ -1,19 +1,11 @@
+import { WordAction } from './../../../core/enums/word';
 import {
   ChangeDetectionStrategy, Component,
-
-
-
-
-
-
   EventEmitter, Input, OnInit,
-
-
-
-
   Output
 } from '@angular/core';
-import { GeneralWord, MenuItem, Word } from 'src/app/shared/interfaces';
+import { Action, MenuItem } from 'src/app/core';
+import { GeneralWord, Word } from 'src/app/shared/interfaces';
 
 
 @Component({
@@ -23,12 +15,13 @@ import { GeneralWord, MenuItem, Word } from 'src/app/shared/interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WordComponent implements OnInit {
+  wordAction = WordAction;
   @Input() word: Word | GeneralWord;
   @Input() isShowMenu = true;
   @Input() isShowDefaultOptions = true;
-  @Input() menuItems: MenuItem[];
+  @Input() menuItems: MenuItem<WordAction>[];
   @Input() userId: string;
-  @Output() action = new EventEmitter();
+  @Output() action = new EventEmitter<Action>();
 
   constructor(
   ) { }
@@ -39,8 +32,8 @@ export class WordComponent implements OnInit {
   }
 
 
-  dispatchAction(action: string, payload: any, index?: number) {
-    this.action.emit({ action, payload, index });
+  dispatchAction(action: string, payload?: any) {
+    this.action.emit({ action, payload });
   }
 
   isHideDeleteButton() {

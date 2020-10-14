@@ -3,7 +3,9 @@
   <div class="row">
 
     <ng-container *ngIf="isShowMenu && menuItems">
-      <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
+
+      <app-menu [menuItems]="menuItems" (action)="dispatchAction($event, word)"></app-menu>
+      <!-- <nb-icon [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
       <mat-menu #menu="matMenu" class="matmenu">
         <ng-container *ngFor="let item of menuItems; let i = index">
           <div [hidden]="((item.action === 'DELETE FROM GENERAL LIST') && isHideDeleteButton())"
@@ -12,13 +14,13 @@
             <nb-icon [icon]="item.icon"></nb-icon>
             <span class="ml-2">{{item.title}}</span>
           </div>
-        </ng-container>
-        <!-- || (item.action === 'ADD TO MY WORDS') && userId === word['user'] " -->
+        </ng-container> -->
+      <!-- || (item.action === 'ADD TO MY WORDS') && userId === word['user'] " -->
 
 
 
-        <!-- trash-2-outline -->
-        <!-- <div (click)="dispatchAction('SHARE FOR ALL', word)" class="menuitem">
+      <!-- trash-2-outline -->
+      <!-- <div (click)="dispatchAction('SHARE FOR ALL', word)" class="menuitem">
           <nb-icon icon="share"></nb-icon>
           <span class="ml-2">Share for all</span>
         </div>
@@ -27,7 +29,7 @@
           <span class="ml-2">Delete</span>
         </div> -->
 
-      </mat-menu>
+      <!-- </mat-menu> -->
     </ng-container>
 
 
@@ -44,7 +46,7 @@
 
       <ng-template #addToMyList>
         <button class="ml-auto purpleButton" nbButton size="tiny"
-          (click)="dispatchAction('ADD TO MY WORDS',word)">Add</button>
+          (click)="dispatchAction(wordAction.ADD_TO_MY_WORDS ,word)">Add</button>
       </ng-template>
 
     </div>
@@ -53,60 +55,34 @@
 
       <ng-container *ngIf="!isShowDefaultOptions && !isShowMenu">
         <nb-checkbox (checkedChange)="dispatchAction('assign', word._id)"></nb-checkbox>
-
       </ng-container>
 
       <ng-container *ngIf="isShowDefaultOptions">
-        <img class="mb-3" (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="!word.isFavorite"
+        <img class="mb-3" (tap)="dispatchAction(wordAction.TO_FAVORITE, word)" *ngIf="!word.isFavorite"
           style="width: 30px; height: 30px"
           src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png" alt="">
-        <img class="mb-3" (tap)="dispatchAction('IS FAVORITE', word)" *ngIf="word.isFavorite"
+        <img class="mb-3" (tap)="dispatchAction(wordAction.TO_FAVORITE, word)" *ngIf="word.isFavorite"
           style="width: 30px; height: 30px"
           src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels1.png" alt="">
       </ng-container>
 
-
-      <!-- <span class="ml-auto" [ngSwitch]="word.levelKnowledge">
-        <p *ngSwitchCase="1">
-          <button class="col-2 level bad " size="small" [disabled]="true" nbButton>1</button>
-        </p>
-        <p *ngSwitchCase="2">
-          <button class="col-2 level better" size="small" [disabled]="true" nbButton>2</button>
-
-        </p>
-        <p *ngSwitchCase="3">
-          <button class="col-2 level medium" size="small" [disabled]="true" nbButton>3</button>
-
-        </p>
-        <p *ngSwitchCase="4">
-          <button class="col-2 level good" size="small" [disabled]="true" nbButton>4</button>
-
-        </p>
-        <p *ngSwitchCase="5">
-          <button class="col-2 level excellent" size="small" [disabled]="true" nbButton>5</button>
-
-        </p>
-        <p *ngSwitchDefault>
-          <button class="col-2 level" size="small" status="basic" [disabled]="true" nbButton>0</button>
-
-        </p>
-      </span> -->
     </div>
 
     <ng-content></ng-content>
   </div>
+
+
   <ng-container *ngIf="isShowDefaultOptions">
-    <nb-progress-bar class="custom-progress-bar mt-3" [value]="(word.levelKnowledge) | convertToPercent" size="tiny" [displayValue]="true">
+    <nb-progress-bar class="custom-progress-bar mt-3" [value]="(word.levelKnowledge) | convertToPercent" size="tiny"
+      [displayValue]="true">
     </nb-progress-bar>
-
-
   </ng-container>
-  <div class="text-right" [style.color]="'#868383'">
-    <small>{{word.date ? 'Added '+(word.date | date : 'mediumDate') : ''}}</small>
 
+
+  <div class="adding-date text-right" [style.color]="'#868383'">
+    <small>{{word.date ? 'Added '+(word.date | date : 'mediumDate') : ''}}</small>
   </div>
 
 </div>
-
 
 <hr class="devider">

@@ -22,7 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const User_1 = __importDefault(require("../Models/User"));
 const WordGroup_1 = __importStar(require("../Models/WordGroup"));
 const errorHandler_1 = __importDefault(require("../utils/errorHandler"));
-const helper_functions_1 = require("../helper-functions/helper-functions");
+const index_1 = require("./../helper-functions/index");
 class WordGroupController {
     constructor() {
         this.getAllWordGroups = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -34,7 +34,7 @@ class WordGroupController {
                     user: user
                 });
                 let allGroups = [...this.getDefaultGroups(), ...userGroups];
-                const words = helper_functions_1.getWordsByLanguage(req.query.languageId, user.words);
+                const words = index_1.getWordsByLanguage(req.query.languageId, user.words);
                 const groups = this.setQuantityWordsInGroups(allGroups, words);
                 res.status(200).json(groups);
             }
@@ -124,7 +124,6 @@ class WordGroupController {
                     return newGroup;
                 }
                 const quantity = words.filter(word => word.assignedGroups.includes(group._id.toString()));
-                console.log(quantity.length);
                 group.wordQuantity = quantity.length;
                 // console.log('COUNTED WORDS GROUPS', words.filter(word => console.log(word.assignedGroups[1], group._id)).length)
                 return group;

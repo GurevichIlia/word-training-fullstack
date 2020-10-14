@@ -16,10 +16,13 @@ const passport_1 = __importDefault(require("passport"));
 const passport_2 = __importDefault(require("./middleware/passport"));
 const language_1 = require("./routes/language");
 const word_group_1 = require("./routes/word-group");
+const google_sheets_1 = require("./utils/google-sheets");
 // const cors = require('cors');
 // const path = require('path')
 const keys = require('./config/keys');
 const app = express_1.default();
+const initGoolgeSheetsAuth = google_sheets_1.initAuth;
+initGoolgeSheetsAuth();
 mongoose_1.default
     .connect(keys.mongoURI, {
     useNewUrlParser: true,
@@ -28,12 +31,12 @@ mongoose_1.default
 })
     .then(() => console.log("MongoDb connected"))
     .catch(err => console.log(err));
+app.use(body_parser_1.default.json({ limit: '50mb' }));
+app.use(body_parser_1.default.urlencoded({ limit: '50mb', extended: true }));
 app.use(passport_1.default.initialize());
 passport_2.default(passport_1.default);
 app.use(morgan_1.default("dev"));
 app.use(cors_1.default());
-app.use(body_parser_1.default.urlencoded({ extended: true }));
-app.use(body_parser_1.default.json());
 app.use("/api/auth", new auth_1.AuthRoutes().router);
 app.use("/api/vocabulary", new words_1.WordsRoutes().router);
 app.use("/api/languages", new language_1.LanguagesRoutes().router);

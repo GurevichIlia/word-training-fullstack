@@ -1,4 +1,11 @@
-.select{
-      width: 91%;
-      // font-size: 16px;
+
+.groups-container {
+  .menu {
+    flex-grow: 0;
+    margin-left: 20px;
+  }
+
+  .groups{
+    flex-grow: 2;
+  }
 }

@@ -21,7 +21,7 @@ export class CSVtoJson {
                   // })
 
             const jsonArray = await csvtojson().fromFile(csvFile);
-            // console.log('CSV ARRAY', jsonArray)
+            // console.log('JSON ARRA', jsonArray)
             return jsonArray 
           
       }

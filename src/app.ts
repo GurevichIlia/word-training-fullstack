@@ -42,7 +42,7 @@ app.use("/api/vocabulary", new WordsRoutes().router);
 app.use("/api/languages", new LanguagesRoutes().router);
 app.use("/api/word-group", new WordGroupRoutes().router);
 
-process.env.NODE_ENV = 'production'
+// process.env.NODE_ENV = 'production'
 console.log('SENDING HTML', path.resolve(
     __dirname, 'client', 'dist', 'word-training', 'index.html'
 ))

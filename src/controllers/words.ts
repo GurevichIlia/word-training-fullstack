@@ -80,7 +80,10 @@ export class WordsController {
             //     return file
             // },
             const csvFile = req.file;
-            const filePath = `${path.resolve()}/${csvFile.path}`
+            console.log('FILE PATH', csvFile.path)
+            const filePath = process.env.NODE_ENV === 'production' ? `${csvFile.path}` : `${path.resolve()}/${csvFile.path}`
+
+            console.log('FILE PATH', filePath)
             const wordsFromCSV = await CSVtoJson.createJsonArray(filePath)
             console.log('ASSIGN GROUPS', req.query.assignedGroups)
             const assignedGroups = JSON.parse(req.query.assignedGroups)
@@ -203,14 +206,10 @@ export class WordsController {
     public deleteWordByIdForCurrentUser = async (req: Request, res: Response) => {
         try {
             const user = await User.findOne({ _id: req.user }) as UserModel;
-            // user.words = user.words.filter(word => word._id.toString() !== req.params.wordId)
-            // const deletedWordIndex = user.words.findIndex(word => word._id.toString() == req.params.wordId)
-            const deletedWord = user.words.splice(+req.params.wordIndex, 1)
-            // console.log('DELETED WORD', deletedWord, new Date().getTime())
+            user.words = user.words.filter(word => word._id.toString() !== req.params.wordId)
             const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
             // console.log('USER UPDATED', new Date().getTime())
             res.status(200).json({
-                word: deletedWord,
                 message: 'Removed'
             })
         } catch (error) {

@@ -10,8 +10,8 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { InstallSuggestionComponent } from './core/install-app/install-suggestion/install-suggestion.component';
-import { ServerErrorInterceptor } from './shared/services/server-error-interceptor.service';
-import { TokenInterceptorService } from './shared/services/token-interceptor.service';
+import { ServerErrorInterceptor } from './core/interceptors/server-error.interceptor';
+import { TokenInterceptorService } from './core/interceptors/token.interceptor';
 import { SharedModule } from './shared/shared.module';
 
 

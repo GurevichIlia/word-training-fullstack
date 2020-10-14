@@ -22,7 +22,7 @@ export class WordTrainingService {
 
   priority = 0;
   animationState$ = new BehaviorSubject('');
-  previousWordsId = []
+  previousWordsId = [];
   constructor(
     private generalState: GeneralState,
     // private vocabularyFacade: VocabularyFacade,
@@ -32,6 +32,8 @@ export class WordTrainingService {
     private counterService: WordCounterService
   ) {
   }
+
+
   getUserWords() {
     return this.generalState.getUserWords$();
   }

@@ -1,15 +1,15 @@
-import { NavigationService } from './core/services/navigation.service';
+import { Injectable } from '@angular/core';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, filter, map, retry, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { WordGroup } from 'src/app/shared/interfaces';
+import { NavigationService } from './core/services/navigation.service';
+import { GeneralState } from './general.state';
+import { Language, Word } from './shared/interfaces';
+import { ApiLanguagesService } from './shared/services/api/api-languages.service';
+import { ApiWordsService } from './shared/services/api/api-words.service';
+import { GroupsApiService } from './shared/services/api/groups-api.service';
 import { GeneralService } from './shared/services/general.service';
 import { NotificationsService } from './shared/services/notifications.service';
-import { ApiWordsService } from './shared/services/api/api-words.service';
-import { ApiLanguagesService } from './shared/services/api/api-languages.service';
-import { Injectable } from '@angular/core';
-import { tap, switchMap, filter, map, catchError, retry, take, shareReplay } from 'rxjs/operators';
-import { GeneralState } from './general.state';
-import { of, throwError, Observable } from 'rxjs';
-import { Router } from '@angular/router';
-import { Language, Word } from './shared/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -18,39 +18,40 @@ export class GeneralFacade {
   constructor(
     private apiLanguageService: ApiLanguagesService,
     private apiWordsService: ApiWordsService,
+    private groupsApiService: GroupsApiService,
     private generalState: GeneralState,
     private notifications: NotificationsService,
     private generalService: GeneralService,
     private navigationService: NavigationService
   ) { }
 
-  getUserWordsFromServer() {
-    return this.getCurrentLearningLanguage$()
-      .pipe(
-        retry(1),
-        switchMap(currentLang => {
-          if (currentLang) {
-            return this.apiWordsService.getWordsFromServerForUser(currentLang._id);
-          } else {
-            // this.router.navigate(['/languages']);
-            return of([]);
-          }
-        }),
-        catchError(err => {
-          this.notifications.error(err.message, err.error);
-          return throwError(err);
-        }),
+  // getUserWordsFromServer() {
+  //   return this.getCurrentLearningLanguage$()
+  //     .pipe(
+  //       retry(1),
+  //       switchMap(currentLang => {
+  //         if (currentLang) {
+  //           return this.apiWordsService.getWordsFromServerForUser(currentLang._id);
+  //         } else {
+  //           // this.router.navigate(['/languages']);
+  //           return of([]);
+  //         }
+  //       }),
+  //       catchError(err => {
+  //         this.notifications.error(err.message, err.error);
+  //         return throwError(err);
+  //       }),
 
-        // tap(words => this.generalService.setQuantityWords(words.length)),
-        tap(words => words ? this.generalState.setUserWords(words) : []),
-        tap(words => {
-          this.setWordsQuantity();
-          // this.setQuantityWordsInGroups(words);
-        }
-        ),
-        tap(words => console.log('USER WORDS', words)),
-      );
-  }
+  //       // tap(words => this.generalService.setQuantityWords(words.length)),
+  //       tap(words => words ? this.generalState.setUserWords(words) : []),
+  //       tap(words => {
+  //         this.setWordsQuantity();
+  //         // this.setQuantityWordsInGroups(words);
+  //       }
+  //       ),
+  //       tap(words => console.log('USER WORDS', words)),
+  //     );
+  // }
 
 
   getCurrentLearningLanguage$() {
@@ -90,7 +91,7 @@ export class GeneralFacade {
           map(language => language ? language : null),
           filter(language => language !== null),
           switchMap(language => {
-            return this.apiWordsService.getAllWordsGroups(language)
+            return this.groupsApiService.getAllWordsGroups(language)
 
           }
           ),
@@ -170,9 +171,9 @@ export class GeneralFacade {
     return this.generalState.getQuantityWords$();
   }
 
-  setWordsQuantity() {
-    this.generalState.setQuantityWords$(this.generalState.getUserWords().length);
-  }
+  // setWordsQuantity() {
+  //   this.generalState.setQuantityWords$(this.generalState.getUserWords().length);
+  // }
 
   refreshGeneralState() {
     this.generalState.refreshGeneralState();

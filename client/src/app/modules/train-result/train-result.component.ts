@@ -1,11 +1,10 @@
-import { WordGroup } from 'src/app/shared/interfaces';
-import { takeUntil, shareReplay } from 'rxjs/operators';
-import { TrainResultService } from './train-result.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Word } from '../../shared/interfaces';
+import { Observable, Subject } from 'rxjs';
+import { shareReplay, takeUntil } from 'rxjs/operators';
 import { GroupStatistics } from 'src/app/shared/components/group-statistics/group-statistics.component';
+import { WordGroup } from 'src/app/shared/interfaces';
+import { TrainResultService } from './train-result.service';
 
 @Component({
   selector: 'app-train-result',

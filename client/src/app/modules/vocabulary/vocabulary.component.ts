@@ -4,14 +4,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { BehaviorSubject, fromEvent, Observable, Subject } from 'rxjs';
-import { delay, finalize, shareReplay, takeUntil, take } from 'rxjs/operators';
-
+import { delay, finalize, shareReplay, takeUntil } from 'rxjs/operators';
+import { Action } from 'src/app/core';
+import { wordMenuItems } from 'src/app/core/models/vocabulary.model';
+import { GroupStatistics } from 'src/app/shared/components/group-statistics/group-statistics.component';
+import { Word } from 'src/app/shared/interfaces';
+import { NotificationsService } from 'src/app/shared/services/notifications.service';
+import { WordAction } from './../../core/enums/word';
+import { WordGroup } from './../../shared/interfaces';
 import { AssignWordListComponent } from './assign-word-list/assign-word-list.component';
 import { VocabularyFacade } from './vocabulary.facade';
-import { Word, WordGroup, MenuItem } from 'src/app/shared/interfaces';
-import { GroupStatistics } from 'src/app/shared/components/group-statistics/group-statistics.component';
-import { NotificationsService } from 'src/app/shared/services/notifications.service';
-import { ALL_WORDS_GROUP, FAVORITES } from 'src/app/general.state';
+
 
 
 
@@ -22,8 +25,7 @@ import { ALL_WORDS_GROUP, FAVORITES } from 'src/app/general.state';
 })
 export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('wordModal') wordModalRef: TemplateRef<any>;
-  @ViewChild('groupModalRef') groupModalRef: TemplateRef<any>;
-
+  selectedGroup$: Observable<WordGroup> = this.vocabularyFacade.getSelectedGroup$().pipe(shareReplay());
   newWordForm: FormGroup;
   addWordByList: string;
   pageSize = 20;
@@ -32,27 +34,20 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   titleForModal: string;
   wordModal: NbDialogRef<any>;
   editWordOldValue: Word;
-
+  wordMenuItems = wordMenuItems;
   allWords$: Observable<Word[]>;
   wordsFiltredByGroup$: Observable<Word[]>;
-  wordGroups$: Observable<WordGroup[]>;
-  selectedGroup$ = new BehaviorSubject<WordGroup>(ALL_WORDS_GROUP);
-  groupName = new FormControl('', Validators.required);
-  groupModal: NbDialogRef<any>;
 
   selectedWordsForAssignGroups$ = new BehaviorSubject<string[]>([]);
   loader = false;
-  wordsList = this.fb.control('');
 
-  wordMenuItems = [
-    new MenuItem('Edit', 'EDIT WORD', 'edit-2-outline'),
-    new MenuItem('Share for all', 'SHARE FOR ALL', 'share'),
-    new MenuItem('Delete', 'DELETE WORD', 'trash-2-outline'),
-  ];
+  //
   isLoading = false;
   statistics$: Observable<GroupStatistics>;
   isShowUploader = false;
-  // deferredPrompt // For 'beforeinstallprompt' event
+
+  userWords$: Observable<Word[]>;
+  groups$: Observable<WordGroup[]>;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -64,14 +59,16 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.allWords$ = this.vocabularyFacade.getAllUserWords$();
+
+
     this.wordFormInitial();
     this.getWordsFilteredByGroup();
     // this.getUserGroups()
-    this.getWordsGroups();
+    // this.getWordsGroups();
 
-    this.vocabularyFacade.isUpdateGroups()
-      .pipe(takeUntil(this.subscription$))
-      .subscribe(() => this.getWordsGroups());
+    // this.vocabularyFacade.isUpdateGroups()
+    //   .pipe(takeUntil(this.subscription$))
+    //   .subscribe(() => this.getWordsGroups());
 
     this.showInstallAppSuggestion();
 
@@ -92,14 +89,11 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   //     );
   // }
 
-  getWordsFilteredByGroup() {
-    this.wordsFiltredByGroup$ = (this.vocabularyFacade.getUserWordsFiltredByGroup(
-      this.selectedGroup$.asObservable(),
-      this.filterControl.valueChanges
-    ) as Observable<Word[]>).pipe(
-
-      shareReplay()
-    );
+  getWordsFilteredByGroup(): void {
+    this.wordsFiltredByGroup$ = (this.vocabularyFacade.getUserWordsFiltredByGroup(this.filterControl.valueChanges) as Observable<Word[]>)
+      .pipe(
+        shareReplay()
+      );
 
     this.getGroupStatistics();
   }
@@ -113,11 +107,11 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   //     ).subscribe(() => console.log('USER GROUPS GOT'));
   // }
 
-  getWordsGroups() {
+  // getWordsGroups() {
 
-    this.wordGroups$ = this.vocabularyFacade.getWordsGroups();
+  //   this.wordGroups$ = this.vocabularyFacade.getWordsGroups();
 
-  }
+  // }
 
   wordFormInitial() {
     this.newWordForm = this.fb.group({
@@ -135,7 +129,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   addNewWord() {
     if (this.newWordForm.valid) {
       this.isLoading = true;
-      this.vocabularyFacade.addNewWord(this.newWordForm.value, this.selectedGroup$.getValue()._id)
+      this.vocabularyFacade.addNewWord(this.newWordForm.value, this.vocabularyFacade.getSelectedGroup()._id)
         .pipe(
           finalize(() => this.isLoading = false),
           takeUntil(this.subscription$)
@@ -145,7 +139,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
             this.notification.success('', 'Word added');
             this.closeWordModal();
             this.vocabularyFacade.updateWordsAndGroups();
-            this.getWordsGroups();
+            // this.getWordsGroups();
 
           }
         }, err => this.notification.error('', err.message.error));
@@ -204,15 +198,15 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  getActionFromChildren(event: { action: string, payload?: Word, index?: number }) {
+  getActionFromChildren(event: Action<Word>) {
     switch (event.action) {
-      case 'SHARE FOR ALL': this.shareWordsForAll([event.payload]);
+      case WordAction.SHARE_FOR_ALL: this.shareWordsForAll([event.payload]);
         break
-      case 'IS FAVORITE': this.setFavorite(event.payload);
+      case WordAction.TO_FAVORITE: this.setFavorite(event.payload);
         break
-      case 'DELETE WORD': this.deleteWord(event.payload, event.index);
+      case WordAction.DELETE_WORD: this.deleteWord(event.payload);
         break;
-      case 'EDIT WORD': this.openEditModal(event.payload);
+      case WordAction.EDIT_WORD: this.openEditModal(event.payload);
         break;
       default:
         break;
@@ -220,7 +214,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
-  deleteWord(word: Word, index: number) {
+  deleteWord(word: Word) {
     // // tslint:disable-next-line: max-line-length
     // const title = `Would you like to remove word ${word.word} ?`;
     // const result$ = this.vocabularyFacade.askQuestion(title);
@@ -236,7 +230,7 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     //   }),
     //   takeUntil(this.subscription$)
     // )
-    this.vocabularyFacade.deleteWordFromServer(word, index)
+    this.vocabularyFacade.deleteWordFromServer(word)
       .pipe(
         takeUntil(this.subscription$))
       .subscribe(res => {
@@ -262,63 +256,63 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  saveGroup(selectedGroup?: WordGroup) {
-    if (!this.groupName.valid) {
-      return this.notification.warning('', 'Please fill in required fields');
+  // saveGroup(selectedGroup?: WordGroup) {
+  //   if (!this.groupName.valid) {
+  //     return this.notification.warning('', 'Please fill in required fields');
 
-    }
+  //   }
 
-    this.isLoading = true;
-    this.vocabularyFacade.saveGroup(this.groupName.value, selectedGroup)
-      .pipe(
-        finalize(() => this.isLoading = false),
+  //   this.isLoading = true;
+  //   this.vocabularyFacade.saveGroup(this.groupName.value, selectedGroup)
+  //     .pipe(
+  //       finalize(() => this.isLoading = false),
 
-        takeUntil(this.subscription$))
-      .subscribe(group => {
-        this.vocabularyFacade.updateWordsAndGroups();
-        this.groupName.patchValue('');
-        this.groupModal.close();
-        this.selectedGroup$.next(group);
+  //       takeUntil(this.subscription$))
+  //     .subscribe(group => {
+  //       this.vocabularyFacade.updateWordsAndGroups();
+  //       this.groupName.patchValue('');
+  //       this.groupModal.close();
+  //       this.selectedGroup$.next(group);
 
-        // this.getGroups();
-        console.log('RES AFTER SAVE GROUP', group);
-      });
-  }
+  //       // this.getGroups();
+  //       console.log('RES AFTER SAVE GROUP', group);
+  //     });
+  // }
 
-  deleteWordGroup(groupId: string, groups: WordGroup[]) {
+  // deleteWordGroup(groupId: string, groups: WordGroup[]) {
 
-    this.vocabularyFacade.deleteWordGroup(groupId, groups)
-      .pipe(takeUntil(this.subscription$))
-      .subscribe(res => {
-        this.vocabularyFacade.updateWordsAndGroups();
-        this.selectedGroup$.next(new WordGroup(ALL_WORDS_GROUP));
-        // this.getGroups();
-        console.log('RES AFTER DELETE GROUP', res);
-      })
-  }
+  //   this.vocabularyFacade.deleteWordGroup(groupId, groups)
+  //     .pipe(takeUntil(this.subscription$))
+  //     .subscribe(res => {
+  //       this.vocabularyFacade.updateWordsAndGroups();
+  //       this.selectedGroup$.next(new WordGroup(ALL_WORDS_GROUP));
+  //       // this.getGroups();
+  //       console.log('RES AFTER DELETE GROUP', res);
+  //     })
+  // }
 
-  setSelectedGroup(group: WordGroup) {
-    this.selectedGroup$.next(group);
-  }
+  // setSelectedGroup(group: WordGroup) {
+  //   this.selectedGroup$.next(group);
+  // }
 
-  getSelectedGroup() {
-    return this.selectedGroup$.getValue();
-  }
+  // getSelectedGroup() {
+  //   return this.selectedGroup$.getValue();
+  // }
 
-  openGroupModal(title: 'New group' | 'Edit group') {
-    this.titleForModal = title;
+  // openGroupModal(title: 'New group' | 'Edit group') {
+  //   this.titleForModal = title;
 
-    if (title === 'Edit group') {
-      this.groupName.patchValue(this.getSelectedGroup().name);
-    }
+  //   if (title === 'Edit group') {
+  //     this.groupName.patchValue(this.getSelectedGroup().name);
+  //   }
 
-    this.groupModal = this.dialogService.open(this.groupModalRef);
+  //   this.groupModal = this.dialogService.open(this.groupModalRef);
 
-
-  }
+  // }
 
   showWordsForAssign() {
-    this.dialogService.open(AssignWordListComponent, { context: { words$: this.allWords$, group: this.selectedGroup$.getValue()._id } });
+    // tslint:disable-next-line: max-line-length
+    this.dialogService.open(AssignWordListComponent, { context: { words$: this.allWords$, group: this.vocabularyFacade.getSelectedGroup()._id } });
   }
 
   toggleWordAssignToGroup(wordId: string) {
@@ -371,11 +365,10 @@ export class VocabularyComponent implements OnInit, OnDestroy, AfterViewInit {
     this.vocabularyFacade.detectDevice();
   }
 
-  isBaseGroup() {
-    return (this.getSelectedGroup()._id !== ALL_WORDS_GROUP._id && this.getSelectedGroup()._id !== FAVORITES._id) ? false : true;
+  // isBaseGroup() {
+  //   return (this.getSelectedGroup()._id !== ALL_WORDS_GROUP._id && this.getSelectedGroup()._id !== FAVORITES._id) ? false : true;
 
-
-  }
+  // }
 
   showUploader() {
     this.isShowUploader = !this.isShowUploader;

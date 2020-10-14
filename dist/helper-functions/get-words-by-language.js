@@ -6,4 +6,4 @@ exports.getWordsByLanguage = (langaugeId, userWords) => {
     const words = userWords.filter(word => word.language == langaugeId);
     return words;
 };
-//# sourceMappingURL=helper-functions.js.map
+//# sourceMappingURL=get-words-by-language.js.map

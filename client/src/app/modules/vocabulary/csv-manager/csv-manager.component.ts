@@ -1,9 +1,9 @@
+import { CsvHandlerService } from './../../../core/services/csv-handler.service';
 import { NbDialogService } from '@nebular/theme';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, TemplateRef, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
 import { Word, WordGroup } from 'src/app/shared/interfaces';
-import { VocabularyFacade } from './../vocabulary.facade';
 
 @Component({
   selector: 'app-csv-manager',
@@ -23,8 +23,8 @@ export class CsvManagerComponent implements OnInit {
   selectedFile;
   @Output() updateWordList = new EventEmitter();
   constructor(
-    private vocabularyFacade: VocabularyFacade,
-    private dialog: NbDialogService
+    private dialog: NbDialogService,
+    private csvHandler: CsvHandlerService
   ) { }
 
   ngOnInit() {
@@ -32,7 +32,7 @@ export class CsvManagerComponent implements OnInit {
 
   onUpload(file: File) {
     this.isLoading = true;
-    this.words$ = this.vocabularyFacade.addNewWordsFromCSV(file, this.selectedGroup._id)
+    this.words$ = this.csvHandler.addNewWordsFromCSV(file, this.selectedGroup._id)
       .pipe(
         finalize(() => this.isLoading = false),
         tap(res => console.log(res)),

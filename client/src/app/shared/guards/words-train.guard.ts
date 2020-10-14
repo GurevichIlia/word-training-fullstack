@@ -1,11 +1,9 @@
-import { GeneralState } from './../../general.state';
-import { VocabularyService } from './../../vocabulary/vocabulary.service';
-import { NotificationsService } from './../services/notifications.service';
-import { WordTrainingService } from './../../word-training/word-training.service';
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-
 import { map, take } from 'rxjs/operators';
+import { GeneralState } from './../../general.state';
+import { NotificationsService } from './../services/notifications.service';
+
 
 @Injectable({
   providedIn: 'root'

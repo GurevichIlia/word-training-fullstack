@@ -1,7 +1,5 @@
 <nb-card class="main-content">
 
-
-
   <nb-card-header>
     <div class="d-flex">
       <span class="search"
@@ -13,22 +11,17 @@
     </div>
   </nb-card-header>
 
-  <nb-card-body class="p-2">
-    <!-- <ng-container *ngIf="wordGroups$ | async as groups"> -->
-    <!-- <ng-container *ngIf="!(wordGroups$ | async) || !(wordsFiltredByGroup$ | async)">
-      <nb-card [nbSpinner]="true" nbSpinnerStatus="basic">
-        <nb-card-body>
-          Loading...
-        </nb-card-body>
-      </nb-card>
-    </ng-container> -->
-    <app-loader [show]="!(wordGroups$ | async) || !(wordsFiltredByGroup$ | async)"></app-loader>
+  <nb-card-body class="p-3">
 
-    <ng-container *ngIf="(wordGroups$ | async) as groups">
-      <app-groups [wordGroups]="wordGroups$ | async" [selectedGroup]="selectedGroup$ | async"
-        (selectGroup)="setSelectedGroup($event)">
 
-        <nb-icon class="ml-1" [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
+    <!-- <ng-container *ngIf="(wordGroups$ | async) as groups"> -->
+      <!-- <app-groups
+        [wordGroups]="wordGroups$ | async"
+        [selectedGroup]="selectedGroup$ | async"
+        (selectGroup)="setSelectedGroup($event)"
+        >
+      </app-groups> -->
+        <!-- <nb-icon class="ml-1" [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
         <mat-menu #menu="matMenu" class="matmenu">
           <div class="menuitem" (click)="openGroupModal('New group')">
             <nb-icon icon="plus-outline"></nb-icon>
@@ -48,10 +41,10 @@
             <span class="ml-2">Delete
               group</span>
           </div>
-        </mat-menu>
+        </mat-menu> -->
 
-      </app-groups>
-    </ng-container>
+        <app-groups></app-groups>
+    <!-- </ng-container> -->
 
 
     <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
@@ -71,13 +64,7 @@
         class="purpleButton mb-3 w-100" type="submit" nbButton size="small">Add words</button> -->
     </ng-container>
 
-    <!-- <ng-container *ngIf="!(wordsFiltredByGroup$ | async)">
-      <nb-card [nbSpinner]="true" nbSpinnerStatus="basic">
-        <nb-card-body>
-          Loading...
-        </nb-card-body>
-      </nb-card>
-    </ng-container> -->
+
     <section class="mb-4 statistics">
       <app-group-statistics [statistics]="statistics$ | async"></app-group-statistics>
     </section>
@@ -86,8 +73,16 @@
       <app-csv-manager [expanded]="isShowUploader" [selectedGroup]="selectedGroup$ | async" (updateWordList)="updateWordsList(); showUploader()"></app-csv-manager>
     </section>
 
-    <app-word-list (action)="getActionFromChildren($event)" [pageSize]="pageSize" [trackWords]="trackWords"
-      [filterValue]="filterControl.valueChanges" [menuItems]="wordMenuItems" [selectedGroup]="selectedGroup$ | async"
+
+    <app-loader [show]="!(wordsFiltredByGroup$ | async)"></app-loader>
+
+    <app-word-list
+      (action)="getActionFromChildren($event)"
+      [pageSize]="pageSize"
+      [trackWords]="trackWords"
+      [filterValue]="filterControl.valueChanges"
+      [menuItems]="wordMenuItems"
+      [selectedGroup]="selectedGroup$ | async"
       [words]="(wordsFiltredByGroup$ | async)">
     </app-word-list>
 
@@ -121,95 +116,35 @@
 
     </ng-container>
 
-
-
-
-
-    <!-- </ng-container> -->
-
-
-
-
-    <!-- <ng-template #loader>
-      <nb-card [nbSpinner]="true" nbSpinnerStatus="basic">
-        <nb-card-body>
-          Loading...
-        </nb-card-body>
-      </nb-card>
-    </ng-template> -->
-
-
   </nb-card-body>
 
 </nb-card>
 
+
+<!-- ADD NEW WORD MODAL -->
 <ng-template #wordModal let-data let-ref="dialogRef">
   <app-modal-ui [isLoading]="isLoading" [title]="titleForModal" (save)="addNewWord()"
     (update)="updateWord(editWordOldValue, newWordForm.value)" (cancel)="closeWordModal()">
-    <app-loader loader [show]="isLoading"></app-loader>
+    <!-- <app-loader loader [show]="isLoading"></app-loader> -->
 
     <form [formGroup]="newWordForm">
       <input formControlName="word" class="mb-1 w-100" type="text" fieldSize="small" nbInput placeholder="Word">
       <br>
       <input formControlName="translation" class="mb-2 w-100" type="text" fieldSize="small" nbInput
-        placeholder="Translate">
+        placeholder="Translation">
     </form>
 
   </app-modal-ui>
 </ng-template>
 
-<!-- <nb-card class="wordDialogBox">
-    <nb-card-header class="modal-header">
-      <h4>{{titleForModal}}</h4>
-    </nb-card-header>
-
-    <nb-card-body>
-
-      <app-loader [show]="isLoading"></app-loader>
-
-      <form [formGroup]="newWordForm" class="row justify-content-center">
-        <input formControlName="word" class="mb-1 col-12" type="text" fieldSize="small" nbInput placeholder="Word">
-        <input formControlName="translation" class="mb-2 col-12" type="text" fieldSize="small" nbInput
-          placeholder="Translate">
-      </form>
-    </nb-card-body>
-
-    <nb-card-footer class="wordDialogFooter">
-      <button nbButton status="danger" (click)="closeWordModal()">Cancel</button>
-      <button *ngIf="titleForModal === 'New word'" [disabled]="isLoading" nbButton
-        (click)="addNewWord()">Submit</button>
-      <button *ngIf="titleForModal === 'Edit word'" [disabled]="isLoading" nbButton
-        (click)="updateWord(editWordOldValue, newWordForm.value)">Update</button>
-    </nb-card-footer>
-  </nb-card> -->
-
-
-
-<ng-template #groupModalRef let-data let-ref="dialogRef">
+<!-- ADD NEW GROUP MODAL -->
+<!-- <ng-template #groupModalRef let-data let-ref="dialogRef">
 
   <app-modal-ui [isLoading]="isLoading" [title]="titleForModal" (save)="saveGroup()"
     (update)="saveGroup(getSelectedGroup())" (cancel)="groupModal.close()">
-    <app-loader loader [show]="isLoading"></app-loader>
 
     <input [formControl]="groupName" class="mb-1 col-12" type="text" fieldSize="small" nbInput placeholder="Group name">
 
   </app-modal-ui>
-</ng-template>
-<!-- <nb-card class="groups-modal">
-    <nb-card-header>
-      <h4>{{titleForModal}}</h4>
+</ng-template> -->
 
-    </nb-card-header>
-
-    <nb-card-body>
-
-    </nb-card-body>
-
-    <nb-card-footer class="wordDialogFooter">
-      <button nbButton status="danger" (click)="groupModal.close()">Cancel</button>
-      <button *ngIf="titleForModal === 'New group'" [disabled]="isLoading" nbButton
-        (click)="saveGroup()">Submit</button>
-      <button *ngIf="titleForModal === 'Edit group'" [disabled]="isLoading" nbButton
-        (click)="saveGroup(getSelectedGroup())">Update</button>
-    </nb-card-footer>
-  </nb-card> -->

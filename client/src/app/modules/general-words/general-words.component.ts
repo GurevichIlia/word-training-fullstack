@@ -1,10 +1,12 @@
-import { takeUntil, map, tap, startWith } from 'rxjs/operators';
+import { WordAction } from './../../core/enums/word';
 import { Component, OnInit } from '@angular/core';
-import { GeneralWordsFacade } from './general-words.facade';
-import { MenuItem, Word, User, GeneralWord } from 'src/app/shared/interfaces';
-import { Subject } from 'rxjs/internal/Subject';
-import { Observable } from 'rxjs';
 import { FormControl } from '@angular/forms';
+import { Observable, Subject } from 'rxjs';
+import { map, startWith, takeUntil, tap } from 'rxjs/operators';
+import { Action } from 'src/app/core';
+import { sharedWordMenuItem } from 'src/app/core/models/shared-word.model';
+import { GeneralWord, Word } from 'src/app/shared/interfaces';
+import { GeneralWordsFacade } from './general-words.facade';
 
 @Component({
   selector: 'app-general-words',
@@ -13,10 +15,7 @@ import { FormControl } from '@angular/forms';
 })
 export class GeneralWordsComponent implements OnInit {
   generalWords$: Observable<GeneralWord[]>;
-  wordMenuItems = [
-    new MenuItem('Add to my words', 'ADD TO MY WORDS', 'plus-square-outline'),
-    new MenuItem('Delete from shared', 'DELETE FROM GENERAL LIST', 'trash-2-outline'),
-  ];
+  wordMenuItems = sharedWordMenuItem;
   subscription$ = new Subject();
   filterValue = new FormControl('');
   userId$: Observable<string>;
@@ -26,7 +25,7 @@ export class GeneralWordsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.userId$ = this.generalWordsFacade.getUserId().pipe(tap(res => console.log('USER', res)))
+    this.userId$ = this.generalWordsFacade.getUserId().pipe(tap(res => console.log('USER', res)));
     this.getGeneralWords();
 
   }
@@ -36,13 +35,13 @@ export class GeneralWordsComponent implements OnInit {
       this.filterValue.valueChanges.pipe(startWith('')),
       this.generalWordsFacade.getGeneralWords().pipe(map(words => words.reverse())));
   }
-  getActionFromChildren(event: { action: string, payload: Word }) {
 
+  getActionFromChildren(event: Action<Word>) {
 
     switch (event.action) {
-      case 'ADD TO MY WORDS': this.addWordToMyWords(event.payload);
+      case WordAction.ADD_TO_MY_WORDS: this.addWordToMyWords(event.payload);
         break;
-      case 'DELETE FROM GENERAL LIST': this.deleteWordFromGeneralList(event.payload._id);
+      case WordAction.DELETE_FROM_SHARE_LIST: this.deleteWordFromGeneralList(event.payload._id);
         break;
       default:
         break;

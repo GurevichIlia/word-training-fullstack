@@ -1,13 +1,13 @@
-import { VocabularyFacade } from './../vocabulary/vocabulary.facade';
-import { switchMap, pluck, catchError } from 'rxjs/operators';
-import { NotificationsService } from './../../shared/services/notifications.service';
-import { Word, GeneralWord } from 'src/app/shared/interfaces';
-import { ApiWordsService } from './../../shared/services/api/api-words.service';
 import { Injectable } from '@angular/core';
-import { tap } from 'rxjs/internal/operators/tap';
-import { GeneralFacade } from 'src/app/general.facade';
-
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { catchError, pluck, switchMap } from 'rxjs/operators';
+import { GeneralFacade } from 'src/app/general.facade';
+import { GeneralWord, Word } from 'src/app/shared/interfaces';
+import { WordsService } from './../../core/services/words.service';
+import { ApiWordsService } from './../../shared/services/api/api-words.service';
+import { NotificationsService } from './../../shared/services/notifications.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class GeneralWordsFacade {
     private apiWords: ApiWordsService,
     private generalFacade: GeneralFacade,
     private notification: NotificationsService,
-    private vocabularyFacade: VocabularyFacade
+    private wordsService: WordsService
   ) {
 
   }
@@ -60,7 +60,7 @@ export class GeneralWordsFacade {
   filterBySearchValue(searchValue: Observable<string>, words: Observable<GeneralWord[]>) {
 
     return searchValue.pipe(
-      switchMap(value => this.vocabularyFacade.filterBySearcValue(value, words) as Observable<GeneralWord[]>)
+      switchMap(value => this.wordsService.filterBySearcValue(value, words) as Observable<GeneralWord[]>)
     );
 
   }

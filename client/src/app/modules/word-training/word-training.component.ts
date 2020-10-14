@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
-import { map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
-
-import { WordTrainingService } from './word-training.service';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 import { Word, WordGroup } from 'src/app/shared/interfaces';
 import { NotificationsService } from 'src/app/shared/services/notifications.service';
+import { WordTrainingService } from './word-training.service';
+
 
 
 

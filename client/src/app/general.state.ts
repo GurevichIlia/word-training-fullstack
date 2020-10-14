@@ -3,7 +3,7 @@ import { WordGroup } from './shared/interfaces';
 import { Injectable } from '@angular/core';
 import { Language, Word } from '../app/shared/interfaces';
 
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 
 export const ALL_WORDS_GROUP: WordGroup =
@@ -13,6 +13,7 @@ export const ALL_WORDS_GROUP: WordGroup =
   wordQuantity: 0,
   shareForAll: false
 };
+
 export const FAVORITES: WordGroup =
 {
   _id: '2',

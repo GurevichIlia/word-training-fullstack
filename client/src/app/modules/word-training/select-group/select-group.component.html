@@ -10,10 +10,17 @@
         <span> Select group you want to train</span>
       </div>
 
-      <app-groups [wordGroups]="wordGroups$ | async" [selectedGroup]="selectedTrainingGroup$ | async"
+      <!-- <app-groups
+        [wordGroups]="wordGroups$ | async"
+        [selectedGroup]="selectedTrainingGroup$ | async"
         (selectGroup)="wordTrainingService.setSelectedGroupForTraining($event)">
+      </app-groups> -->
 
-      </app-groups>
+    <app-group-list
+      [groups]="wordGroups$ | async"
+      [selectedGroup]="selectedTrainingGroup$ | async"
+      (selectGroup)="wordTrainingService.setSelectedGroupForTraining($event)"
+    ></app-group-list>
 
 
     </div>

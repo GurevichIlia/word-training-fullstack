@@ -18,26 +18,29 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    // this.checkRoute();
-    this.generaFacade.isUpdateWordList$()
-      .pipe(
-        startWith(' '),
-        takeUntil(this.subscription$)
 
-      )
-      .subscribe(() => {
-        this.getUserWords();
-      });
+
+
+    // // this.checkRoute();
+    // this.generaFacade.isUpdateWordList$()
+    //   .pipe(
+    //     startWith(' '),
+    //     takeUntil(this.subscription$)
+
+    //   )
+    //   .subscribe(() => {
+    //     this.getUserWords();
+    //   });
   }
 
-  getUserWords() {
-    this.generaFacade.getUserWordsFromServer()
-      .pipe(
-        take(1),
-        takeUntil(this.subscription$)
+  // getUserWords() {
+  //   this.generaFacade.getUserWordsFromServer()
+  //     .pipe(
+  //       take(1),
+  //       takeUntil(this.subscription$)
 
-      ).subscribe(() => console.log('USER WORD'));
-  }
+  //     ).subscribe(() => console.log('USER WORD'));
+  // }
 
   // checkRoute() {
   //   this.router.events.subscribe(res => console.log('ROUTE', res));

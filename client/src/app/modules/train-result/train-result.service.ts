@@ -62,6 +62,6 @@ export class TrainResultService {
   }
 
   getGroupStatistics$(words$: Observable<Word[]>) {
-    return this.vocabularyFacade.getGroupStatistics(words$)
+    return this.vocabularyFacade.getGroupStatistics(words$);
   }
 }

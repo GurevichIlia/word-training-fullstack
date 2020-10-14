@@ -144,15 +144,23 @@ class LanguagesController {
             }
         });
         this.deleteUserLanguage = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
             try {
                 const user = yield User_1.default.findOne({ _id: req.user });
-                user.userLanguages = user.userLanguages.filter(language => req.body.languageId != language._id);
-                console.log('USER', user, user.userLanguages.length);
+                const languageIdToDelete = req.body.languageId;
+                user.userLanguages = user.userLanguages.filter(language => languageIdToDelete != language._id);
+                console.log('USER', user.currentLanguage);
+                console.log('USER LANG', (_a = user.currentLanguage) === null || _a === void 0 ? void 0 : _a._id);
+                console.log('DELETE LANG', languageIdToDelete);
+                if (((_b = user.currentLanguage) === null || _b === void 0 ? void 0 : _b._id) === languageIdToDelete) {
+                    user.currentLanguage = null;
+                }
+                console.log('AFTER DELETE', user.currentLanguage);
                 if (user.userLanguages.length === 0) {
-                    user.currentLanguage = undefined;
+                    user.currentLanguage = null;
                 }
                 console.log('USER CURRENT LANG', user.currentLanguage);
-                const updatedUser = yield User_1.default.findOneAndUpdate({ _id: user._id }, { $set: user });
+                const updatedUser = yield User_1.default.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true });
                 console.log('USER CURRENT LANG AFTER UPDATE', updatedUser.currentLanguage);
                 res.status(200).json({
                     userLanguages: updatedUser.userLanguages,

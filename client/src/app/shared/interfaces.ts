@@ -42,20 +42,9 @@ export class WordGroup {
 
 }
 
-
-
 export interface LanguageResponse {
   currentLanguage: Language;
   message: string;
 }
 
-export class MenuItem {
-  constructor(
-    public title: string,
-    public action: string,
-    public icon: string
-  ) {
 
-  }
-
-}
