@@ -2,16 +2,16 @@
 
 
 
-<div class="error-box" *ngIf="isShowLoginError">
+<div class="error-box" *ngIf="loginError$ | async">
   <span class="error-message ">Incorrect username or password</span>
 </div>
-<div class="success-box" *ngIf="isRegisterSuccess">
+<div class="success-box" *ngIf="isRegisterSuccess$ | async">
   <span class="success-message ">Registration was success</span>
 </div>
 <form [formGroup]="loginForm" (ngSubmit)="login()" class="text-center">
   <div class="mb-2">
 
-    <input [ngClass]="{'error': isShowLoginError}" autocomplete formControlName="email" type="email" nbInput fullWidth
+    <input [ngClass]="{'error': isShowLoginError}" autocomplete="email" formControlName="email" type="email" nbInput fullWidth
       placeholder="Email">
     <ng-container *ngIf="loginForm.get('email').touched && loginForm.get('email').hasError">
       <span class="error-message" *ngIf="loginForm.get('email').hasError('required') ">
@@ -23,7 +23,7 @@
 
   </div>
   <div class="mb-4">
-    <input formControlName="password" [ngClass]="{'error': isShowLoginError}" type="password" nbInput fullWidth
+    <input formControlName="password" autocomplete="off" [ngClass]="{'error': isShowLoginError}" type="password" nbInput fullWidth
       placeholder="Password">
     <span class="error-message"
       *ngIf="loginForm.get('password').touched && loginForm.get('password').hasError('required')">
@@ -32,11 +32,11 @@
 
   <div class="row justify-content-center mt-5">
 
-    <button type="submit" class="col-8 mb-2" [ngClass]="{'confirm-btn': !isLoading}" [disabled]="isLoading"
-      size="medium" nbButton>Login</button>
+    <button type="submit" class="col-8 mb-2" [ngClass]="{'confirm-btn': !(isSubmittings$ | async)}"
+      [disabled]="isSubmittings$ | async" size="medium" nbButton>Login</button>
 
     <div class="col-12 mt-2">
-      <span>Don't have an account?<a (click)="goToRegistration()"> Sign Up</a></span>
+      <span class="sign-up-btn">Don't have an account?<a [routerLink]="['/registration']"> Sign Up</a></span>
     </div>
   </div>
 </form>

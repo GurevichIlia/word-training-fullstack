@@ -1,8 +1,13 @@
-import { AuthService } from './shared/services/auth.service';
 import { Component, OnInit } from '@angular/core';
-import { Observable, fromEvent, Subject } from 'rxjs';
+import { Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+import { fromEvent, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators';
-import { Router, NavigationEnd } from '@angular/router';
+import { getCurrentUserAction } from './modules/authorization/store/actions/auth.actions';
+import { CurrentUserInterface } from './shared/interfaces';
+import { getLearningLanguageAction } from './store/actions/language.actions';
+import { AppStateInterface } from './store/reducers';
+import { globalLoaderSelector } from './store/selectors/general.selector';
 
 @Component({
   selector: 'app-root',
@@ -12,12 +17,19 @@ import { Router, NavigationEnd } from '@angular/router';
 export class AppComponent implements OnInit {
   title = 'word-training';
   isShowFooterMenu$: Observable<boolean>;
+  currentUser$: Observable<CurrentUserInterface>
   subscription$ = new Subject();
+
   constructor(
-    private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private store$: Store<AppStateInterface>
   ) {
-    this.isShowFooterMenu$ = this.authService.isAuthenticated$();
+    // this.currentUser$ = this.store$.pipe(select(currentUserSelector))
+    // this.isShowFooterMenu$ = this.authService.isAuthenticated$();
+    this.store$.dispatch(getCurrentUserAction())
+    this.store$.dispatch(getLearningLanguageAction())
+
+
   }
 
   ngOnInit() {
@@ -33,7 +45,6 @@ export class AppComponent implements OnInit {
         // Update UI notify the user they can install the PWA
         console.log(e, 'BEFORE INSTALL');
       });
-
 
 
   }

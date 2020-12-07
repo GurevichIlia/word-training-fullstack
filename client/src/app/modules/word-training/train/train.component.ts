@@ -1,12 +1,21 @@
+import { WordTrainingFacade } from './../word-training.facade';
 import { animate, keyframes, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { of, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { Word } from 'src/app/shared/interfaces';
 import * as kf from '../../../shared/keyframes';
 import { WordTrainingService } from '../word-training.service';
 import { NotificationsService } from './../../../shared/services/notifications.service';
+import { AppRoutes } from 'src/app/core/routes/routes';
+import { NavigationService } from 'src/app/core';
+
+export interface CounterState {
+  totalLearnedCards: number,
+  uniqueWordsLearned: number,
+  wordsInGroup: Word[],
+}
 
 @Component({
   selector: 'app-train',
@@ -25,83 +34,98 @@ import { NotificationsService } from './../../../shared/services/notifications.s
 })
 export class TrainComponent implements OnInit, OnDestroy {
   unsubscribe$ = new Subject();
-  currentWord$ = this.wordTrainingService.getCurrentTrainingWord$();
-  animationState$ = this.wordTrainingService.getAnimationState();
+  currentWord$: Observable<Word>
+  animationState$: Observable<string>
+  // totalLearnedCards$: Observable<number>
+  // uniqueWordsLearned$: Observable<number>
+  // wordsInGroup$: Observable<Word[]>
+  counterState$: Observable<CounterState>
   constructor(
-    private wordTrainingService: WordTrainingService,
-    private router: Router,
-    private changeDetector: ChangeDetectorRef,
-    private notification: NotificationsService
+    // private changeDetector: ChangeDetectorRef,
+    // private notification: NotificationsService
+    private wordTrainingFacade: WordTrainingFacade
   ) { }
 
   ngOnInit() {
-    this.getCurrentTrainingWord();
+    this.initializeValues();
+  }
+
+  initializeValues() {
+    this.currentWord$ = this.wordTrainingFacade.wordForLearning$
+    this.animationState$ = this.wordTrainingFacade.animationState$;
+    // this.totalLearnedCards$ = this.wordTrainingFacade.totalLearnedCards$
+    // this.uniqueWordsLearned$ = this.wordTrainingFacade.uniqueWordsLearned$
+    // this.wordsInGroup$ = this.wordTrainingFacade.wordsInGroup$
+
+    this.counterState$ = this.wordTrainingFacade.counterState$
   }
 
   stopTraining() {
-    this.wordTrainingService.onFinishTraining();
-    this.showResult();
+    this.wordTrainingFacade.stopTrain();
+
   }
 
-  showResult() {
-    this.router.navigate(['word-training/train-result']);
-  }
+  // showResult() {
+  //   this.router.navigate(['word-training/train-result']);
+  // }
 
   onResetAnimationState() {
     // this.resetAnimationState.emit();
-    this.wordTrainingService.resetAnimationState();
+    this.wordTrainingFacade.resetAnimationState();
+
   }
 
   nextWord(word: Word, knowledgeLevel: number) {
-    this.wordTrainingService.nextWord(word, knowledgeLevel);
-    this.getCurrentTrainingWord();
-
+    // this.wordTrainingService.nextWord(word, knowledgeLevel);
+    // this.getCurrentTrainingWord();
+    this.wordTrainingFacade.nextWord(word, knowledgeLevel)
     // this.animationState = this.wordTrainingService.getAnimationState();
   }
 
-  getCurrentTrainingWord(updatedWord?: Word) {
+  // getCurrentTrainingWord(updatedWord?: Word) {
 
-    if (updatedWord) {
-      return this.currentWord$ = this.wordTrainingService.getCurrentTrainingWord$()
-        .pipe(map(word => ({ ...word, ...updatedWord })));
+  //   if (updatedWord) {
+  //     return this.currentWord$ = this.wordTrainingService.getCurrentTrainingWord$()
+  //       .pipe(map(word => ({ ...word, ...updatedWord })));
 
-    }
+  //   }
 
-    this.currentWord$ = this.wordTrainingService.getCurrentTrainingWord$();
-  }
+  //   this.currentWord$ = this.wordTrainingService.getCurrentTrainingWord$();
+  // }
 
   previousWord() {
 
   }
 
   saveWordsTrainingProgress() {
-    this.wordTrainingService.updateWords()
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(res => console.log('WORDS AFTER UPDATE', res));
+    // this.wordTrainingService.updateWords()
+    //   .pipe(
+    //     takeUntil(this.unsubscribe$)
+    //   )
+    //   .subscribe(res => console.log('WORDS AFTER UPDATE', res));
   }
 
   favoriteToggle(word: Word) {
-    const updatedWord = { ...word, isFavorite: !word.isFavorite };
-    this.currentWord$ = this.getCurrentTrainingWord(updatedWord);
-    this.changeDetector.markForCheck();
-    this.wordTrainingService.favoriteToggle(word)
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      ).subscribe(res => {
+    //   const updatedWord = { ...word, isFavorite: !word.isFavorite };
+    //   this.currentWord$ = this.getCurrentTrainingWord(updatedWord);
+    //   this.changeDetector.markForCheck();
+    //   this.wordTrainingService.favoriteToggle(word)
+    //     .pipe(
+    //       takeUntil(this.unsubscribe$)
+    //     ).subscribe(res => {
 
-      }, err => {
-        this.currentWord$ = of(word);
-        this.changeDetector.markForCheck();
-        this.notification.error('Could not add to favorite, something went wrong');
-      });
+    //     }, err => {
+    //       this.currentWord$ = of(word);
+    //       this.changeDetector.markForCheck();
+    //       this.notification.error('Could not add to favorite, something went wrong');
+    //     });
 
   }
 
   ngOnDestroy() {
-    this.saveWordsTrainingProgress();
-    this.wordTrainingService.onFinishTraining();
+    // this.saveWordsTrainingProgress();
+    // this.wordTrainingService.onFinishTraining();
+    this.stopTraining()
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }

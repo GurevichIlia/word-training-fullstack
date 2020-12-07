@@ -1,5 +1,5 @@
-import { WordAction } from './../enums/word';
-import { FontAwesomeIcons } from '../enums/font-awesome';
+import { WordAction } from '../enums/word.enum';
+import { FontAwesomeIcons } from '../enums/font-awesome.enum';
 import { MenuItem } from './general.model';
 
 export const sharedWordMenuItem: MenuItem<WordAction>[] = [

@@ -1,2 +1,2 @@
-export * from './group';
-export * from './word';
+export * from './group.enum';
+export * from './word.enum';

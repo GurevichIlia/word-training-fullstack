@@ -1,24 +1,21 @@
-import { Observable } from 'rxjs';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { LocalstorageService } from 'src/app/shared/services/localstorage.service';
+import { Observable } from 'rxjs';
+import { PersistanceService } from './../../shared/services/persistance.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TokenInterceptorService implements HttpInterceptor {
 
   constructor(
-    private localStorage: LocalstorageService
+    private persistanceService: PersistanceService
   ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const newRequest = req.clone({
       setHeaders: {
-        Authorization: this.localStorage.getItem('words-token') ? this.localStorage.getItem('words-token') : '',
+        Authorization: this.persistanceService.get('words-token') ? this.persistanceService.get('words-token') : '',
       }
     });
-
     return next.handle(newRequest);
   }
 }

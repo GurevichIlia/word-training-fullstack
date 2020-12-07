@@ -1,4 +1,3 @@
-import { ComponentsModule } from './components/components.module';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -20,15 +19,9 @@ import {
   NbThemeModule, NbUserModule
 } from '@nebular/theme';
 import { DeviceDetectorModule } from 'ngx-device-detector';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { GroupsComponent } from '../modules/vocabulary/groups/groups.component';
-import { WordComponent } from '../modules/vocabulary/word/word.component';
-import { WordCounterComponent } from '../modules/word-training/word-counter/word-counter.component';
-import { FooterComponent } from './components/footer/footer.component';
-import { HeaderComponent } from './components/header/header.component';
 import { AskQuestionComponent } from './modals/ask-question/ask-question.component';
-import { EditWordComponent } from './modals/edit-word/edit-word.component';
-import { ReverseArrayPipe } from './pipes/reverse-array.pipe';
+
+
 
 
 
@@ -37,8 +30,6 @@ import { ReverseArrayPipe } from './pipes/reverse-array.pipe';
 @NgModule({
   declarations: [
     AskQuestionComponent,
-
-    ReverseArrayPipe,
   ],
   imports: [
     CommonModule,
@@ -63,7 +54,6 @@ import { ReverseArrayPipe } from './pipes/reverse-array.pipe';
     MatSelectModule,
     NbAccordionModule,
     NbProgressBarModule,
-    InfiniteScrollModule,
     MatSnackBarModule,
     MatTabsModule,
     MatBadgeModule,
@@ -71,7 +61,6 @@ import { ReverseArrayPipe } from './pipes/reverse-array.pipe';
     MatExpansionModule,
     DeviceDetectorModule,
 
-    ComponentsModule
   ],
   exports: [
     CommonModule,
@@ -96,7 +85,6 @@ import { ReverseArrayPipe } from './pipes/reverse-array.pipe';
 
     NbProgressBarModule,
 
-    ReverseArrayPipe,
 
     MatSnackBarModule,
     MatTabsModule,
@@ -108,9 +96,8 @@ import { ReverseArrayPipe } from './pipes/reverse-array.pipe';
     MatExpansionModule,
     DeviceDetectorModule,
 
-    ComponentsModule
 
   ],
-  entryComponents: [EditWordComponent, AskQuestionComponent]
+  entryComponents: [ AskQuestionComponent]
 })
 export class SharedModule { }

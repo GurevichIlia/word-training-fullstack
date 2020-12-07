@@ -1,3 +1,3 @@
 export * from './general.model';
 export * from './vocabulary.model';
-export * from './group.modal';
+export * from '../../modules/vocabulary/groups/models/group.model';

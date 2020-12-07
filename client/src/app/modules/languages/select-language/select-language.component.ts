@@ -1,6 +1,10 @@
+import { AppStateInterface } from 'src/app/store/reducers';
+import { ActiveLanguagesTab } from './../types/languages.enums';
+import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Language } from 'src/app/shared/interfaces';
+import { Store } from '@ngrx/store';
+import { AddLanguageToUserLanguagesAction, DeleteUserLanguageAction } from '../store/actions/languages.actions';
 
 @Component({
   selector: 'app-select-language',
@@ -10,43 +14,47 @@ import { Language } from 'src/app/shared/interfaces';
 })
 export class SelectLanguageComponent {
   selectedLanguage = new FormControl('');
+
   @Input() set candidateToLearn(candidateId: string) {
     this.selectedLanguage.patchValue(candidateId);
   }
-  @Input() allLanguages: Language[];
-  @Input() userLanguages: Language[];
-  @Input() selectedTab: 0 | 1;
+
+  @Input() allLanguages: LanguageInterface[];
+  @Input() userLanguages: LanguageInterface[];
+  @Input() activeLanguagesTab: ActiveLanguagesTab;
 
   @Input() set currentlanguageId(currentlanguageId: string) {
-
     this.selectedLanguage.patchValue(currentlanguageId);
-
-
   }
 
-  @Output() addLanguage = new EventEmitter();
+  // @Output() addLanguage = new EventEmitter();
   @Output() selectUserLanguageForLearning = new EventEmitter();
-  @Output() deleteUserLanguage = new EventEmitter();
-  constructor() {
+  // @Output() deleteUserLanguage = new EventEmitter();
+  constructor(
+    private store$: Store<AppStateInterface>
+  ) {
   }
-
 
   // onSelectLanguageFromAllLanguages(event: Event, language: Language, ) {
   //   event.preventDefault();
   //   this.selectLanguage.emit(language);
   // }
-  addLanguageToUserLanguages(language: Language) {
-    this.addLanguage.emit(language);
+  addLanguageToUserLanguages(language: LanguageInterface) {
+    this.store$.dispatch(AddLanguageToUserLanguagesAction({ languages: [language] }))
+
   }
   // onAddSelectedLanguagesToUserLanguages() {
   //   this.addLanguages.emit(this.allLanguages);
   // }
 
   onDeleteUserLanguage(languageId: string) {
-    this.deleteUserLanguage.emit(languageId);
+    this.store$.dispatch(DeleteUserLanguageAction({ languageId }))
+    // this.deleteUserLanguage.emit(languageId);
   }
 
-  onSelectUserLanguageForLearning(languageId: string, userLanguages: Language[]) {
+  onSelectUserLanguageForLearning(languageId: string, userLanguages: LanguageInterface[]) {
+    // this.store$.dispatch(setCurrentLearningLanguageAction({ languageId }))
+
     this.selectUserLanguageForLearning.emit({ languageId, userLanguages });
   }
 

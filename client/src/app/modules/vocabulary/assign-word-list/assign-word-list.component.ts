@@ -1,12 +1,21 @@
-import { VocabularyFacade } from './../vocabulary.facade';
-import { GeneralFacade } from 'src/app/general.facade';
-import { takeUntil, switchMap, startWith, map, tap, finalize } from 'rxjs/operators';
-import { AssignWordsService } from './../assign-words.service';
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { Word } from 'src/app/shared/interfaces';
-import { Observable, Subject, of } from 'rxjs';
-import { NbDialogRef } from '@nebular/theme';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { select, Store } from '@ngrx/store';
+import { Observable, Subject } from 'rxjs';
+import { filter, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { NavigationService } from 'src/app/core';
+import { AppRoutes } from 'src/app/core/routes/routes';
+import { GeneralFacade } from 'src/app/general.facade';
+import { Word } from 'src/app/shared/interfaces';
+import { assignWordsToGroupAction } from 'src/app/store/actions/groups.actions';
+import { closeAssigningBottomSheetAction } from 'src/app/store/actions/words.actions';
+import { AppStateInterface } from 'src/app/store/reducers';
+import { WordGroup } from './../../../shared/interfaces';
+import { allWordsSelector, isBottomSheetLoadingSelector, isCloseWordsToAssignSelector } from './../../../store/selectors/words.selectors';
+import { AssignWordsService } from './../assign-words.service';
+import { selectedGroupSelector } from './../groups/store/selectors/groups.selectors';
+import { VocabularyFacade } from './../vocabulary.facade';
 
 @Component({
   selector: 'app-assign-word-list',
@@ -16,31 +25,45 @@ import { FormControl } from '@angular/forms';
 })
 export class AssignWordListComponent implements OnInit, OnDestroy {
   words$: Observable<Word[]>;
-  @Input() group: string;
-  selectedWords = [];
+  selectedWords: string[] = [];
   subscription$ = new Subject();
   filterControl = new FormControl('');
-  loading = false;
+  loading$: Observable<boolean>;
+  isCloseBottomSheet$: Observable<boolean>
+  goBackAnimation = false
   constructor(
-    protected dialogRef: NbDialogRef<AssignWordListComponent>,
     private generalFacade: GeneralFacade,
     private assignService: AssignWordsService,
-    private vocabularyFacade: VocabularyFacade
+    private vocabularyFacade: VocabularyFacade,
+    private navigation: NavigationService,
+
+    private store$: Store<AppStateInterface>,
+    private _bottomSheetRef: MatBottomSheetRef<AssignWordListComponent>
   ) { }
 
   ngOnInit() {
+    this.loading$ = this.store$.pipe(select(isBottomSheetLoadingSelector))
+    this.isCloseBottomSheet$ = this.store$.pipe(
+      select(isCloseWordsToAssignSelector),
+      tap(_ => console.log('CLOSE SHEET', _)),
+      filter(isClose => isClose === true),
+      tap(_ => this._bottomSheetRef.dismiss()))
+
+
     this.getWords();
   }
 
   getWords() {
-    this.words$ = this.filterControl.valueChanges
-      .pipe(
-        startWith(''),
-        switchMap(value =>
-          this.vocabularyFacade.filterBySearcValue(
-            value,
-            this.vocabularyFacade.removeWordsAlreadyExistInThisGroup(this.vocabularyFacade.getAllUserWords$(), this.group)
-          ))) as Observable<Word[]>;
+    this.words$ =
+      this.store$.pipe(
+        select(selectedGroupSelector),
+        switchMap((selectedGroup: WordGroup) =>
+          this.vocabularyFacade.removeWordsAlreadyExistInThisGroup(
+            this.store$.pipe(select(allWordsSelector)), selectedGroup._id)),
+        // map(words => words.slice(0, 20))
+      )
+
+
   }
 
 
@@ -57,34 +80,44 @@ export class AssignWordListComponent implements OnInit, OnDestroy {
 
   }
 
-  assignWords(groupId: string, selectedWords: string[]) {
-    const data = { groupId, selectedWords };
-    this.loading = true;
-    this.assignService.assignWords(data)
-      .pipe(
-        finalize(() => this.loading = false),
-        takeUntil(this.subscription$)
-      )
-      .subscribe(res => {
-        console.log('RES AFTER ASSIGN', res);
-        this.generalFacade.updateWordList();
-        this.dialogRef.close();
-      });
+  assignWords(selectedWordsIds: string[]) {
+    this.store$.dispatch(assignWordsToGroupAction({ selectedWordsIds }))
+
+
+    // const data = { groupId, selectedWords };
+    // this.loading = true;
+    // this.assignService.assignWords(data)
+    //   .pipe(
+    //     finalize(() => this.loading = false),
+    //     takeUntil(this.subscription$)
+    //   )
+    //   .subscribe(res => {
+    //     console.log('RES AFTER ASSIGN', res);
+    //     this.generalFacade.updateWordList();
+    //   });
 
 
   }
 
-  filterBySearchValue() {
-    this.vocabularyFacade
-  }
+  // filterBySearchValue() {
+  //   this.vocabularyFacade
+  // }
 
-  closeDialog() {
-    this.dialogRef.close()
+  // closeDialog() {
+  //   this.dialogRef.close()
+  // }
+  onClose() {
+    this.store$.dispatch(closeAssigningBottomSheetAction())    // this.goBackAnimation = true
+    // setTimeout(() =>
+    //   this.navigation.navigateTo(AppRoutes.Vocabulary),
+    //   100
+    // )
   }
 
   onScroll() {
     console.log('Scrolled');
   }
+
   ngOnDestroy(): void {
 
     this.subscription$.next();

@@ -1,16 +1,12 @@
 import { Injectable } from '@angular/core';
-import { NbToastrService } from '@nebular/theme';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class NotificationsService {
 
-  constructor(private snackBar: MatSnackBar
-  ) { }
+  constructor(private snackBar: MatSnackBar) { }
 
   success(message: string = 'Successfully', title?: string) {
 

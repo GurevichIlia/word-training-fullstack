@@ -1,5 +1,5 @@
-import { FontAwesomeIcons } from '../enums/font-awesome';
-import { WordAction } from '../enums/word';
+import { FontAwesomeIcons } from '../enums/font-awesome.enum';
+import { WordAction } from '../enums/word.enum';
 import { MenuItem } from './general.model';
 
 export const LEVEL_LIST = [

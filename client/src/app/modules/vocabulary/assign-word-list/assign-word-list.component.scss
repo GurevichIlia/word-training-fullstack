@@ -2,9 +2,14 @@
 
 .main-box {
   background-color: white;
+  // height: 100%;
+  // overflow: auto;
+  width: 35vw;
+}
+
+.word-list {
   height: 100vh;
   overflow: auto;
-  width: 35vw;
 }
 
 .submit-btn-box {
@@ -36,12 +41,21 @@
 }
 
 .header {
-  padding: 10px 20px 0 20px;
   justify-content: space-around;
 }
 
 @media all and (max-width: 600px) {
   .main-box {
     width: 100vw
+  }
+}
+
+.back-btn {
+  font-size: 30px;
+  padding-right: 8px;
+
+  .back-btn-icon {
+    font-weight: 500;
+    font-size: 22px;
   }
 }

@@ -1,26 +1,31 @@
-<div class="main-box">
+<div class="main-box" >
 
-  <div class="d-flex header">
-    <h4>Select words</h4>
-
-  </div>
-
+  <!-- <div class="d-flex header">
+    <span (click)="goBack()" class="back-btn"><span class="back-btn-icon">{{'^'}}</span></span>
+  </div> -->
+<ng-container *ngIf="isCloseBottomSheet$ | async"></ng-container>
   <ng-container *ngIf="words$ | async as words">
 
 
-    <div class="d-flex search-box">
+    <div class="d-flex search-box" *ngIf="!(loading$ | async)">
+      <i (click)="onClose()" class="back-btn fas fa-arrow-circle-down"></i>
+    <!-- <span  class="back-btn"><span class="back-btn-icon">{{'^'}}</span></span> -->
+
       <span class="search">
         <app-search [filterValue]="filterControl"></app-search>
       </span>
-      <button [disabled]="loading" *ngIf="selectedWords.length > 0" [ngClass]="{'purpleButton': !loading}" class=" ml-2"
-        size="tiny" nbButton (click)="assignWords(group, selectedWords)">Add</button>
-      <button class="ml-2" size="tiny" nbButton status="warn" (click)="closeDialog()">Cancel</button>
+    <button
+        *ngIf="selectedWords.length > 0"
+        [ngClass]="{'purpleButton': true}"
+        size="tiny"
+        class="ml-2"
+        nbButton (click)="assignWords(selectedWords)">Add</button>
     </div>
 
-    <app-loader [show]="loading"></app-loader>
+    <app-loader [show]="loading$ | async"></app-loader>
 
-    <div class="mt-4">
-      <app-word-list [words]="words" [showenItems]="words.length" (action)="getAction($event)" [isShowMenu]="false"
+    <div class="word-list">
+      <app-word-list  [words]="words | wordsFilter: filterControl.value" (action)="getAction($event)" [isShowMenu]="false"
         [isShowDefaultOptions]="false">
       </app-word-list>
     </div>

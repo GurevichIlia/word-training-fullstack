@@ -1,4 +1,4 @@
-import { GeneralWord as GeneralWordModel, afterCSV } from './../interfaces';
+import { GeneralWord as GeneralWordModel, afterCSV, WordModelAsObject } from './../interfaces';
 import { Request, Response } from "express";
 import errorHandler from "../utils/errorHandler";
 import Word from "../Models/Word";
@@ -27,11 +27,113 @@ export class WordsController {
             const user = await User.findOne({ _id: req.user }) as UserModel
 
             const words = getWordsByLanguage(currentLanguage, user.words)
+
+
+            //TEST
+            const testWords = {
+                'wordid1': {
+                    _id: 1,
+                    word: 'test',
+                    translation: 'translation',
+                    isFavorite: false,
+                    levelKnowledge: 0,
+                    assignedGroups: ['123'],
+                    language: 'hebrew',
+                    date: ''
+                },
+                'wordid2': {
+                    _id: 2,
+                    word: 'test',
+                    translation: 'translation',
+                    isFavorite: false,
+                    levelKnowledge: 0,
+                    assignedGroups: ['123'],
+                    language: 'english',
+                    date: ''
+                },
+                'wordid3': {
+                    _id: 3,
+                    word: 'test',
+                    translation: 'translation',
+                    isFavorite: false,
+                    levelKnowledge: 0,
+                    assignedGroups: ['123'],
+                    language: 'hebrew',
+                    date: ''
+                },
+                'wordid4': {
+                    _id: 4,
+                    word: 'test',
+                    translation: 'translation',
+                    isFavorite: false,
+                    levelKnowledge: 0,
+                    assignedGroups: ['123'],
+                    language: 'english',
+                    date: ''
+                }
+            }
+            const userWords = {
+                langaugeId1: {
+                    name: 'english',
+                    words: {
+                        'wordid2': {
+                            _id: 2,
+                            word: 'test',
+                            translation: 'translation',
+                            isFavorite: false,
+                            levelKnowledge: 0,
+                            assignedGroups: ['123'],
+                            language: 'english',
+                            date: ''
+                        },
+                        'wordid4': {
+                            _id: 4,
+                            word: 'test',
+                            translation: 'translation',
+                            isFavorite: false,
+                            levelKnowledge: 0,
+                            assignedGroups: ['123'],
+                            language: 'english',
+                            date: ''
+                        }
+                    }
+
+                },
+                langaugeId2: {
+                    name: 'hebrew',
+                    words: {
+                        'wordid3': {
+                            _id: 3,
+                            word: 'test',
+                            translation: 'translation',
+                            isFavorite: false,
+                            levelKnowledge: 0,
+                            assignedGroups: ['123'],
+                            language: 'hebrew',
+                            date: ''
+                        },
+                        'wordid1': {
+                            _id: 1,
+                            word: 'test',
+                            translation: 'translation',
+                            isFavorite: false,
+                            levelKnowledge: 0,
+                            assignedGroups: ['123'],
+                            language: 'hebrew',
+                            date: ''
+                        },
+                    }
+
+                },
+
+
+            }
+            userWords.langaugeId1.words
             // const newwords = words.map(word => {
             //     word.assignedGroups.push('1')
             //     return word
             // })
-            res.status(200).json(words);
+            res.status(200).json({ words });
         } catch (error) {
             errorHandler(res, error);
         }
@@ -197,7 +299,7 @@ export class WordsController {
             //     { $set: req.body },
             //     { new: true }
             // )
-            res.status(200).json(editedWord)
+            res.status(200).json({ words: updatedUser?.words || [] })
         } catch (error) {
             errorHandler(res, error);
         }
@@ -210,6 +312,7 @@ export class WordsController {
             const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
             // console.log('USER UPDATED', new Date().getTime())
             res.status(200).json({
+                words: updatedUser?.words || [],
                 message: 'Removed'
             })
         } catch (error) {

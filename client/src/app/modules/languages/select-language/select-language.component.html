@@ -8,8 +8,8 @@
 
     <!-- <span class="sub-title">Select languages you want to learn</span> -->
 
-    <mat-tab-group [selectedIndex]="selectedTab">
-
+    <mat-tab-group [selectedIndex]="activeLanguagesTab">
+      <!-- USER LANGUAGES -->
       <mat-tab [disabled]="userLanguages?.length === 0">
         <ng-container *ngIf="userLanguages; else loader">
           <ng-template mat-tab-label>
@@ -48,6 +48,7 @@
 
       </mat-tab>
 
+    <!-- ALL LANGUAGES -->
       <mat-tab>
         <ng-container *ngIf="allLanguages; else loader1">
 
@@ -60,11 +61,11 @@
           <nb-list-item *ngFor="let language of allLanguages">
             <span class="language-name"><img [src]="language.flag"> {{language.name}}</span>
 
-            <nb-checkbox class="ml-auto" *ngIf="language.isSelected" [checked]="language.isSelected"
-              [disabled]="language.isSelected">
+            <nb-checkbox class="ml-auto" *ngIf="language.addedToUser" [checked]="language.addedToUser"
+              [disabled]="language.addedToUser">
             </nb-checkbox>
 
-            <button class="ml-auto" nbButton *ngIf="!language.isSelected" size="tiny" status="basic"
+            <button class="ml-auto" nbButton *ngIf="!language.addedToUser" size="tiny" status="basic"
               (click)="addLanguageToUserLanguages(language)">Add</button>
 
 

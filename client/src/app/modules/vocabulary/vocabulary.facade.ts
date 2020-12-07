@@ -8,56 +8,77 @@ import { LEVEL_LIST } from 'src/app/core/models/vocabulary.model';
 import { GeneralFacade } from 'src/app/general.facade';
 import { ALL_WORDS_GROUP, GeneralState } from 'src/app/general.state';
 import { GroupStatistics, KnowledgeLevel } from 'src/app/shared/components/group-statistics/group-statistics.component';
-import { GeneralWord, Word, WordGroup } from 'src/app/shared/interfaces';
+import { GroupStatisticsService } from 'src/app/shared/components/group-statistics/group-statistics.service';
+import { Word, WordGroup } from 'src/app/shared/interfaces';
 import { AskQuestionComponent } from 'src/app/shared/modals/ask-question/ask-question.component';
 import { ApiWordsService } from 'src/app/shared/services/api/api-words.service';
 import { NotificationsService } from 'src/app/shared/services/notifications.service';
+import { GeneralWord } from '../general-words/types/general-words.interfaces';
 import { WordsService } from './../../core/services/words.service';
 
 
 
 
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class VocabularyFacade {
-  private selectedGroup$ = new BehaviorSubject<WordGroup>(ALL_WORDS_GROUP);
+  // private selectedGroup$ = new BehaviorSubject<WordGroup>(ALL_WORDS_GROUP);
 
   constructor(
     private generalState: GeneralState,
     private apiWords: ApiWordsService,
     private generalFacade: GeneralFacade,
     private dialogService: NbDialogService,
-    private notification: NotificationsService,
     private installApp: InstallAppService,
     private installAppHelper: InstallHelperFunctionsService,
-    private wordsService: WordsService
+    private wordsService: WordsService,
+    private groupStatisticsService: GroupStatisticsService
   ) {
 
   }
 
+  getGroupStatistics(words$: Observable<Word[]>) {
+    return this.groupStatisticsService.getGroupStatistics(words$)
+  }
+  // getAllUserWords$(): Observable<Word[]> {
+  //   return this.wordsService.getAllUserWords$();
+  // }
 
   // getAllUserWords$(): Observable<Word[]> {
   //   return this.wordsService.getAllUserWords$();
   // }
 
-  getAllUserWords$(): Observable<Word[]> {
-    return this.wordsService.getAllUserWords$();
+  // getUserWordsFiltredByGroup(
+  //   searchValue$: Observable<string>,
+  //   words$: Observable<Word[]>,
+  //   selectedGroup$: Observable<WordGroup>
+  // ): Observable<Word[]> {
+  //   return searchValue$.pipe(
+  //     startWith(''),
+  //     switchMap(searchValue => {
+  //       return this.wordsService.filterBySearcValue(
+  //         searchValue,
+  //         this.wordsService.filterWordsByGroup(selectedGroup$, words$));
+  //     })
+  //   );
+
+  // }
+
+  // filterBySearcValue(searchValue: string, words$: Observable<(Word | GeneralWord)[]>): Observable<Word[]> {
+  //   return this.wordsService.filterBySearcValue(searchValue, words$);
+  // }
+
+  getUserWordsFiltredByGroup(
+    searchValue: string,
+    words: Word[],
+    selectedGroup: WordGroup
+  ): Word[] {
+    const wordsFilteredByGroup = this.wordsService.filterWordsByGroup(selectedGroup, words)
+    return this.wordsService.filterBySearcValue(searchValue, wordsFilteredByGroup)
   }
 
-  getUserWordsFiltredByGroup(searchValue$: Observable<string>): Observable<Word[]> {
-    return searchValue$.pipe(
-      startWith(''),
-      switchMap(searchValue => {
-        return this.wordsService.filterBySearcValue(searchValue, this.wordsService.filterWordsByGroup(this.selectedGroup$.asObservable()));
-      })
-    );
-
-  }
-
-  filterBySearcValue(searchValue: string, words$: Observable<(Word | GeneralWord)[]>): Observable<Word[]> {
-    return this.wordsService.filterBySearcValue(searchValue, words$);
+  filterBySearcValue(searchValue: string, words: (Word | GeneralWord)[]): Word[] {
+    return this.wordsService.filterBySearcValue(searchValue, words);
   }
 
   // getWordsGroups$() {
@@ -85,35 +106,34 @@ export class VocabularyFacade {
     return this.generalFacade.isUpdateWordList$();
   }
 
-  editWord(word: Word) {
-    return this.generalFacade.getCurrentLearningLanguage$()
-      .pipe(
-        switchMap(language =>
-          this.apiWords.editWord(word, language)
-        ));
+  // editWord(word: Word) {
+  //   return this.generalFacade.getCurrentLearningLanguage$()
+  //     .pipe(
+  //       switchMap(language =>
+  //         this.apiWords.editWord(word, language)
+  //       ));
 
-  }
+  // }
 
-  deleteWordFromServer(word: Word) {
-    const title = `
-                  Would you like to remove word:
-                   ${word.word} ?`;
-    const result$ = this.askQuestion(title);
+  // deleteWordFromServer(word: Word) {
+  //   const title = `Would you like to remove word:
+  //                  ${word.word} ?`;
+  //   const result$ = this.askQuestion(title);
 
-    return result$.onClose.pipe(
-      switchMap(res => {
-        if (res) {
-          // this.vocabularyFacade.deleteWord(word);
-          return this.apiWords.deleteWordFromServer(word._id);
-        } else {
-          return EMPTY;
-        }
-      }),
-    );
+  //   return result$.onClose.pipe(
+  //     switchMap(res => {
+  //       if (res) {
+  //         // this.vocabularyFacade.deleteWord(word);
+  //         return this.apiWords.deleteWordFromServer(word._id);
+  //       } else {
+  //         return EMPTY;
+  //       }
+  //     }),
+  //   );
 
-    // return this.apiWords.deleteWordFromServer(wordId);
+  //   // return this.apiWords.deleteWordFromServer(wordId);
 
-  }
+  // }
 
   assignGroup() {
     // return this.http.post<Word>(`/api/word-group/assign-group`, { groupId, selectedWords });
@@ -160,20 +180,20 @@ export class VocabularyFacade {
   }
 
 
-  addWordsToGeneralList(words: Word[]) {
-    return this.generalFacade.getCurrentLearningLanguage$()
-      .pipe(
-        switchMap(language =>
-          this.apiWords.addWordsToGeneralList(words, language)
-            .pipe(
-              tap(res => console.log('AFTER SHARE', res)),
-              tap(res => this.notification.success('Shared'))
-            )
-        ));
+  // addWordsToGeneralList(words: Word[]) {
+  //   return this.generalFacade.getCurrentLearningLanguage$()
+  //     .pipe(
+  //       switchMap(language =>
+  //         this.apiWords.addWordsToGeneralList(words, language)
+  //           .pipe(
+  //             tap(res => console.log('AFTER SHARE', res)),
+  //             tap(res => this.notification.success('Shared'))
+  //           )
+  //       ));
 
 
 
-  }
+  // }
 
   removeWordsAlreadyExistInThisGroup(words$: Observable<Word[]>, groupId: string) {
     if (words$ && groupId) {
@@ -208,38 +228,37 @@ export class VocabularyFacade {
     return this.installAppHelper.detectDevice();
   }
 
-  getGroupStatistics(words$: Observable<Word[]>): Observable<GroupStatistics> {
-    const statistics$: Observable<GroupStatistics> = words$
-      .pipe(
-        filter(words => words !== null && words !== undefined),
-        map(words => {
-          const knowledgeLevel: KnowledgeLevel[] = this.getKnowledgeLevel(words, LEVEL_LIST);
+  // getGroupStatistics(words$: Observable<Word[]>): Observable<GroupStatistics> {
+  //   const statistics$: Observable<GroupStatistics> = words$
+  //     .pipe(
+  //       filter(words => words !== null && words !== undefined),
+  //       map(words => {
+  //         const knowledgeLevel: KnowledgeLevel[] = this.getKnowledgeLevel(words, LEVEL_LIST);
+  //         return { knowledgeLevel, allWordsInGroup: words.length};
+  //       })
+  //     );
 
-          return { knowledgeLevel };
-        })
-      );
+  //   return statistics$;
+  // }
 
-    return statistics$;
-  }
+  // private getQuntityWordsByLevel(words: Word[], level: number) {
 
-  private getQuntityWordsByLevel(words: Word[], level: number) {
+  //   return words.length > 0 ? (words.filter(word => word.levelKnowledge === level)).length : 0;
+  // }
 
-    return words.length > 0 ? (words.filter(word => word.levelKnowledge === level)).length : 0;
-  }
+  // getKnowledgeLevel(words: Word[], levelList: { color: string, level: number }[]): KnowledgeLevel[] {
 
-  getKnowledgeLevel(words: Word[], levelList: { color: string, level: number }[]): KnowledgeLevel[] {
+  //   return levelList.map(item => {
+  //     const knowledgeLevel: KnowledgeLevel = {
+  //       level: item.level,
+  //       color: item.color,
+  //       wordQuantity: this.getQuntityWordsByLevel(words, item.level)
+  //     };
 
-    return levelList.map(item => {
-      const knowledgeLevel: KnowledgeLevel = {
-        level: item.level,
-        color: item.color,
-        wordQuantity: this.getQuntityWordsByLevel(words, item.level)
-      };
+  //     return knowledgeLevel;
+  //   })
 
-      return knowledgeLevel;
-    })
-
-  }
+  // }
 
   // addNewWordsFromCSV(file: File, selectedGroupId?: string) {
   //   if (!file) return EMPTY;
@@ -286,15 +305,15 @@ export class VocabularyFacade {
   //     .subscribe();
   // }
 
-  getSelectedGroup$(): Observable<WordGroup> {
-    return this.selectedGroup$.asObservable();
-  }
+  // getSelectedGroup$(): Observable<WordGroup> {
+  //   return this.selectedGroup$.asObservable();
+  // }
 
-  getSelectedGroup(): WordGroup {
-    return this.selectedGroup$.getValue();
-  }
+  // getSelectedGroup(): WordGroup {
+  //   return this.selectedGroup$.getValue();
+  // }
 
-  setSelectedGroup(group: WordGroup): void {
-    this.selectedGroup$.next(group);
-  }
+  // setSelectedGroup(group: WordGroup): void {
+  //   this.selectedGroup$.next(group);
+  // }
 }

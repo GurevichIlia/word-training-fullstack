@@ -5,13 +5,11 @@ import { map, startWith, switchMap, tap, take } from 'rxjs/operators';
 import { GeneralFacade } from 'src/app/general.facade';
 import { WordGroup, Word } from 'src/app/shared/interfaces';
 
-import { WordCounterService } from './word-counter/word-counter.service';
 import { GeneralState, ALL_WORDS_GROUP, FAVORITES } from 'src/app/general.state';
 import { ApiWordsService } from 'src/app/shared/services/api/api-words.service';
+import { WordCounterService } from 'src/app/shared/components/word-counter/word-counter.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class WordTrainingService {
   // trainWords = new BehaviorSubject<Word[]>([]);
   // currentTrainWords$ = this.trainWords.asObservable();
@@ -38,15 +36,15 @@ export class WordTrainingService {
     return this.generalState.getUserWords$();
   }
 
-  getRandomOrder(words?: Word[]) {
-    for (let i = words.length - 1; i >= 0; i--) {
-      const j = Math.floor(Math.random() * words.length);
-      const temp = words[i];
-      words[i] = words[j]
-      words[j] = temp;
-    }
-    return words;
-  }
+  // getRandomOrder(words?: Word[]) {
+  //   for (let i = words.length - 1; i >= 0; i--) {
+  //     const j = Math.floor(Math.random() * words.length);
+  //     const temp = words[i];
+  //     words[i] = words[j]
+  //     words[j] = temp;
+  //   }
+  //   return words;
+  // }
 
   addWordToResultWords(resultWords: Word[], word: Word) {
     resultWords.push(word);
@@ -245,7 +243,7 @@ export class WordTrainingService {
 
     return this.generalFacade.getCurrentLearningLanguage$()
       .pipe(
-        switchMap(language => this.wordsApiService.updateWords(words, language))
+        // switchMap(language => this.wordsApiService.updateWords(words, language))
       );
   }
 
@@ -269,17 +267,17 @@ export class WordTrainingService {
   }
 
   isBlockStart() {
-    const isBlockStart$: Observable<boolean> = this.getSelectedGroupForTraining()
-      .pipe(
-        switchMap(selectedGroup => {
-          return this.getWordGroups()
-            .pipe(
-              map(groups => groups.find(group => group._id === selectedGroup._id)),
-              map(group => group.wordQuantity < 5)
-            )
-        }));
+    // const isBlockStart$: Observable<boolean> = this.getSelectedGroupForTraining()
+    //   .pipe(
+    //     switchMap(selectedGroup => {
+    //       return this.getWordGroups()
+    //         .pipe(
+    //           map(groups => groups.find(group => group._id === selectedGroup._id)),
+    //           map(group => group.wordQuantity < 5)
+    //         )
+    //     }));
 
-    return isBlockStart$;
+    // return isBlockStart$;
   }
 
 

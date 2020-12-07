@@ -5,16 +5,14 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 
-import { User, Language } from '../interfaces';
+import { CurrentUserInterface } from '../interfaces';
 import { LocalstorageService } from './localstorage.service';
 import { BASE_URL } from './api/api-languages.service';
 
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthService {
-  currentUser: User;
+@Injectable()
+export class AuthServiceOld {
+  currentUser: CurrentUserInterface;
   isLoggedIn = new BehaviorSubject(false);
   constructor(
     private http: HttpClient,
@@ -22,24 +20,24 @@ export class AuthService {
     private router: Router,
   ) {
 
-    if (localStorage.getItem('words-token')) {
-      this.setIsAuthenticated(true);
-      this.router.navigate(['/vocabulary']);
-    } else {
-      this.setIsAuthenticated(false);
-      this.router.navigate(['/login']);
-    }
+    // if (localStorage.getItem('words-token')) {
+    //   this.setIsAuthenticated(true);
+    //   this.router.navigate(['/vocabulary']);
+    // } else {
+    //   this.setIsAuthenticated(false);
+    //   this.router.navigate(['/login']);
+    // }
   }
 
-  registration(newUser: User): Observable<User> {
-    newUser.email = newUser.email.toLowerCase();
-    return this.http.post<User>(`${BASE_URL}/api/auth/registration`, newUser);
-  }
+  // registration(newUser: User): Observable<User> {
+  //   newUser.email = newUser.email.toLowerCase();
+  //   return this.http.post<User>(`${BASE_URL}/api/auth/registration`, newUser);
+  // }
 
-  login(user: User): Observable<{ token: string, message: string, currentLanguage: Language }> {
-    user.email = user.email.toLowerCase();
-    return this.http.post<{ token: string, message: string, currentLanguage: Language }>(`${BASE_URL}/api/auth/login`, user);
-  }
+  // login(user: User): Observable<{ token: string, message: string, currentLanguage: Language }> {
+  //   user.email = user.email.toLowerCase();
+  //   return this.http.post<{ token: string, message: string, currentLanguage: Language }>(`${BASE_URL}/api/auth/login`, user);
+  // }
 
   logOut() {
     this.setIsAuthenticated(false);
@@ -52,14 +50,14 @@ export class AuthService {
   }
 
   isAuthenticated() {
-    return this.isLoggedIn.getValue();
+    // return this.isLoggedIn.getValue();
   }
 
   isAuthenticated$() {
     return this.isLoggedIn;
   }
 
-  setCurrentUser(user: User) {
+  setCurrentUser(user: CurrentUserInterface) {
     this.currentUser = user;
   }
 
@@ -67,9 +65,9 @@ export class AuthService {
     return this.currentUser;
   }
 
-  isPasswordsMatch(password: string, confirmPassword: string) {
-    return password === confirmPassword;
-  }
+  // isPasswordsMatch(password: string, confirmPassword: string) {
+  //   return password === confirmPassword;
+  // }
 }
 
 

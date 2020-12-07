@@ -1,6 +1,8 @@
+import { SelectLanguageGuard } from 'src/app/shared/guards/select-language-guard.guard';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
+import { WordsTrainGuard } from 'src/app/shared/guards/words-train.guard';
+import { HomeComponent } from './components/home/home.component';
 
 
 const routes: Routes = [
@@ -10,15 +12,15 @@ const routes: Routes = [
       {
         // tslint:disable-next-line: max-line-length
         path: 'word-training', loadChildren: () => import('./../../modules/word-training/word-training.module').then(m => m.WordTrainingModule),
-        // canActivate: [WordsTrainGuard]
+        canActivate: [SelectLanguageGuard]
       },
       {
         path: 'vocabulary', loadChildren: () => import('./../../modules/vocabulary/vocabulary.module').then(m => m.VocabularyModule),
-        // canActivate: [AuthGuard]
+        canActivate: [SelectLanguageGuard]
       },
       {
         path: 'general-words', loadChildren: () => import('../general-words/general-words.module').then(m => m.GeneralWordsModule),
-        // canActivate: [WordsTrainGuard]
+        canActivate: [SelectLanguageGuard]
       },
       {
         path: 'settings', loadChildren: () => import('../settings/settings.module').then(m => m.SettingsModule),
@@ -26,7 +28,9 @@ const routes: Routes = [
       },
       { path: '**', redirectTo: '/vocabulary' },
 
-    ]
+    ],
+
+
   },
 
 ];

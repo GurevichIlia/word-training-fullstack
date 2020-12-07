@@ -1,5 +1,6 @@
 <ng-container *ngIf="words$ | async"></ng-container>
-
+<ng-container *ngIf="isResetCsvHandlerState$ | async"></ng-container>
+<ng-container *ngIf="isCloseCsvHandler$ | async"></ng-container>
 <mat-expansion-panel class="group-statistics mb-3" hideToggle [expanded]="expanded">
   <section class="download"></section>
 
@@ -7,8 +8,6 @@
   <section class="upload text-center">
     <div class="d-flex">
       <i class="fas fa-info" (click)="showInstruction()"></i>
-
-
       <i class="fas fa-upload" (click)="fileInput.click()"></i>
     </div>
 
@@ -16,9 +15,9 @@
     <input #fileInput  type="file" (change)="showFile(fileInput.files[0])" multi name="uploadFile" hidden>
 
 
-    <button [disabled]="isLoading" *ngIf="selectedFile" (click)="onUpload(fileInput.files[0])"
+    <button [disabled]="isLoading$ | async" *ngIf="selectedFile" (click)="onUpload(fileInput.files[0])"
       class="purpleButton mb-3 w-50" type="submit" nbButton size="small">Upload</button>
-    <app-loader [show]="isLoading"></app-loader>
+    <app-loader [show]="isLoading$ | async"></app-loader>
   </section>
 
 </mat-expansion-panel>

@@ -7,7 +7,9 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
 
 
 @NgModule({
-  declarations: [SettingsComponent, ToolbarComponent],
+  declarations: [
+    SettingsComponent,
+    ToolbarComponent],
   imports: [
     CommonModule,
     SettingsRoutingModule

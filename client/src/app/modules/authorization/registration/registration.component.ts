@@ -1,11 +1,14 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-
-import { Subject } from 'rxjs';
-import { takeUntil, debounce, debounceTime, tap, finalize } from 'rxjs/operators';
-import { AuthService } from 'src/app/shared/services/auth.service';
+import { select, Store } from '@ngrx/store';
+import { Observable, Subject } from 'rxjs';
+import { AuthService } from 'src/app/modules/authorization/services/auth.service';
 import { NotificationsService } from 'src/app/shared/services/notifications.service';
+import { AppStateInterface } from './../../../store/reducers';
+import { backendErrorsSelector, isSubmittingSelector } from '../store/selectors/auth.selectors';
+import { registerAction } from '../store/actions/auth.actions';
+
 
 @Component({
   selector: 'app-registration',
@@ -16,16 +19,31 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   registrationForm: FormGroup;
   registrationError = false;
   isPasswordsDontMatch = false;
-  unsubscribe$ = new Subject();
-  isLoading = false;
+  // unsubscribe$ = new Subject();
+  // isLoading = false;
+
+  isSubmitting$: Observable<boolean>;
+  registrationError$: Observable<string>
   constructor(
     private authService: AuthService,
-    private router: Router,
+    // private router: Router,
     private fb: FormBuilder,
-    private notifications: NotificationsService
+    private notifications: NotificationsService,
+    private store$: Store<AppStateInterface>
   ) { }
 
   ngOnInit() {
+
+    this.initializeForm();
+    this.initializeValue();
+  }
+
+  initializeValue() {
+    this.isSubmitting$ = this.store$.pipe(select(isSubmittingSelector));
+    this.registrationError$ = this.store$.pipe(select(backendErrorsSelector))
+  }
+
+  initializeForm() {
     this.registrationForm = this.fb.group({
       nickName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -33,7 +51,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       confPassword: ['', Validators.required]
     });
 
-    // this.checkPasswordsToMatching();
   }
 
   get email() {
@@ -49,23 +66,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     return this.registrationForm.get('confPassword');
   }
 
-  goToLogin() {
-    this.router.navigate(['/login']);
-  }
-
-  // checkPasswordsToMatching() {
-  //   this.registrationForm.valueChanges
-  //     .pipe(
-  //       debounceTime(1000),
-  //       tap(formValue => {
-  //         if (formValue.password && formValue.confPassword) {
-  //           this.isPasswordsDontMatch =
-  //         }
-  //       }
-  //       ),
-  //       takeUntil(this.unsubscribe$)
-  //     )
-  //     .subscribe();
+  // goToLogin() {
+  //   this.router.navigate(['/login']);
   // }
 
   createUser() {
@@ -76,44 +78,30 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isLoading = true;
-    this.authService.registration(this.registrationForm.value)
-      .pipe(
-        finalize(() => this.isLoading = false),
+    this.store$.dispatch(registerAction({ requestData: this.registrationForm.value }));
+    // this.isLoading = true;
+    // this.authService.registration(this.registrationForm.value)
+    //   .pipe(
+    //     finalize(() => this.isLoading = false),
 
-        takeUntil(this.unsubscribe$))
-      .subscribe(user => {
-        if (user) {
-          this.authService.setCurrentUser(user);
-          this.goToLogin();
-        }
-      }, err => {
+    //     takeUntil(this.unsubscribe$))
+    //   .subscribe(user => {
+    //     if (user) {
+    //       // this.authService.setCurrentUser(user);
+    //       this.goToLogin();
+    //     }
+    //   }, err => {
 
-        if (err.error.message === 'This email is already exist') {
-          this.registrationError = true;
-        }
-      });
+    //     if (err.error.message === 'This email is already exist') {
+    //       this.registrationError = true;
+    //     }
+    //   });
   }
-
-  // this.authService.registration(this.registrForm.value).then(error => {
-  //   if (error) {
-  //     if (error.code === 'auth/email-already-in-use') {
-  //       this.emailInputColor = 'danger';
-  //       this.emailError = error.message;
-  //       this.changeDetector.detectChanges();
-  //     }
-  //   }
-
-  // });
-  // console.log('work!');
-
-
-
 
   ngOnDestroy(): void {
     // Called once, before the instance is destroyed.
     // Add 'implements OnDestroy' to the class.
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+    // this.unsubscribe$.next();
+    // this.unsubscribe$.complete();
   }
 }

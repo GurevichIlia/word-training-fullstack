@@ -1,3 +1,5 @@
+@import './../../../../styles/variables.scss';
+
 .wordDialogBox {
   width: 340px;
 }
@@ -7,11 +9,23 @@
   justify-content: space-around;
 }
 
-.wordDialogFooter > button {
+.wordDialogFooter>button {
   width: 140px;
   margin: 5px;
 }
-.text{
-  font-size: 18px;
+
+.title {
+  font-weight: bold;
+  font-size: 20px;
   padding: 20px;
+  display: block;
+  padding-top: 20px;
+  color: $titleColor;
+}
+
+.item {
+  padding-bottom: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  display: block;
 }

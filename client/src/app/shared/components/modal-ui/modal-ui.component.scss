@@ -17,10 +17,15 @@
 
 .footer {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
 }
 
 .footer>button {
   width: 140px;
   margin: 5px;
+}
+
+.mat-card {
+  box-shadow: none;
+  padding: 0;
 }

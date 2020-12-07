@@ -1,7 +1,8 @@
+import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
 import { WordGroup } from './shared/interfaces';
 
 import { Injectable } from '@angular/core';
-import { Language, Word } from '../app/shared/interfaces';
+import { Word } from '../app/shared/interfaces';
 
 import { BehaviorSubject, Observable, of } from 'rxjs';
 
@@ -41,7 +42,7 @@ export class GeneralState {
   }
   ];
 
-  private currentLearningLanguage$: Observable<Language>;
+  private currentLearningLanguage$: Observable<LanguageInterface>;
   private readonly quantityAllWords$ = new BehaviorSubject<number>(null);
   private readonly userWords$ = new BehaviorSubject<Word[]>(null);
   // private readonly userWordsGroups$ = new BehaviorSubject<WordGroup[]>(this.defaultGroups);
@@ -57,7 +58,7 @@ export class GeneralState {
 
   }
 
-  setCurrentLanguage(language: Observable<Language>) {
+  setCurrentLanguage(language: Observable<LanguageInterface>) {
     this.currentLearningLanguage$ = language;
   }
 

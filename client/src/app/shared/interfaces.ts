@@ -1,32 +1,35 @@
-export interface User {
+import { LanguageInterface } from '../modules/languages/types/languages.interfaces';
+
+export interface CurrentUserInterface {
   email: string;
   password: string;
   nickName?: string;
-  currentLanguage?: string;
+  currentLanguage?: LanguageInCurrentUser | null;
   readonly _id?: string;
+  userLanguages: LanguageInterface[]
+  wordGroups: WordGroup[]
+  words: Word[]
+}
+
+export interface LanguageInCurrentUser {
+  name: string;
+  _id?: string;
 }
 
 export interface Word {
   word: string;
   translation: string;
-  isFavorite?: boolean;
+  isFavorite?: boolean | null;
   readonly _id?: string;
   knowen?: boolean;
   levelKnowledge?: number;
   assignedGroups?: string[];
-  date: string;
+  date?: string;
 }
 
-export interface GeneralWord extends Word {
-  user: string;
-}
 
-export interface Language {
-  name: string;
-  _id?: string;
-  isSelected?: boolean;
-  flag?: string;
-}
+
+
 
 export class WordGroup {
   _id: string;
@@ -42,9 +45,6 @@ export class WordGroup {
 
 }
 
-export interface LanguageResponse {
-  currentLanguage: Language;
-  message: string;
-}
+
 
 

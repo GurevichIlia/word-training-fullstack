@@ -84,3 +84,12 @@
   color: #191a1aa6;
   cursor: pointer;
 }
+
+.assign-words-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-color: red;
+  height: 100px;
+  transition: all 0.4;
+}

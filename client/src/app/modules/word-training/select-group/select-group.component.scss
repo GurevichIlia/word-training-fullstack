@@ -1,5 +1,5 @@
 @import '../../../../styles/variables.scss';
-
+@import '../../../../styles/mixins.scss';
 .cardHeaderFront {
   background-color: #9c2e7b !important
 }
@@ -28,3 +28,4 @@
   font-size: 18px;
   color: $titleColor;
 }
+

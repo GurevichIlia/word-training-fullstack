@@ -1,10 +1,13 @@
+
+<mat-error *ngIf="errorMessage$ | async as errorMessage">{{errorMessage}}</mat-error>
+
+
 <nb-card class="main-content">
 
   <nb-card-header>
-    <div class="d-flex">
-      <span class="search"
-        [hidden]="!(wordsFiltredByGroup$ | async) && !(wordsFiltredByGroup$ | async)?.length && !filterControl.value">
-        <app-search [filterValue]="filterControl" (addWord)="getActionFromChildren($event)">
+    <div class="d-flex" *ngIf="userWordsFiltredByGroupAndSearchValue$ | async as words">
+      <span class="search" [hidden]="!words && !words?.length && !searchValueControl.value">
+        <app-search [filterValue]="searchValueControl" (addWord)="getActionFromChildren($event)">
 
         </app-search>
       </span>
@@ -14,137 +17,115 @@
   <nb-card-body class="p-3">
 
 
-    <!-- <ng-container *ngIf="(wordGroups$ | async) as groups"> -->
-      <!-- <app-groups
-        [wordGroups]="wordGroups$ | async"
-        [selectedGroup]="selectedGroup$ | async"
-        (selectGroup)="setSelectedGroup($event)"
-        >
-      </app-groups> -->
-        <!-- <nb-icon class="ml-1" [matMenuTriggerFor]="menu" icon="more-vertical-outline"></nb-icon>
-        <mat-menu #menu="matMenu" class="matmenu">
-          <div class="menuitem" (click)="openGroupModal('New group')">
-            <nb-icon icon="plus-outline"></nb-icon>
-            <span class="ml-2">Create group</span>
-          </div>
-          <div class="menuitem" *ngIf="!isBaseGroup()" (click)="openGroupModal('Edit group')">
-            <nb-icon icon="edit"></nb-icon>
-            <span class="ml-2">Edit group</span>
-          </div>
-          <div class="menuitem" *ngIf="!isBaseGroup()" (click)="showWordsForAssign()">
-            <nb-icon icon="plus-circle-outline"></nb-icon>
-            <span class="ml-2">Add
-              words</span>
-          </div>
-          <div class="menuitem" *ngIf="!isBaseGroup()" (click)="deleteWordGroup(getSelectedGroup()._id, groups)">
-            <nb-icon icon="trash-2-outline"></nb-icon>
-            <span class="ml-2">Delete
-              group</span>
-          </div>
-        </mat-menu> -->
 
-        <app-groups></app-groups>
-    <!-- </ng-container> -->
+    <app-groups></app-groups>
+
 
 
     <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
       <div class="d-flex">
-        <button *ngIf="selectedGroup._id !== '2'" (click)="openWordModal('New word')" class="purpleButton mb-3 w-100"
-          type="submit" nbButton size="small">Add word</button>
+        <a *ngIf="selectedGroup._id !== '2'" (click)="openModal('New word', modalUiWrapper)"
+          class="custom-button light mb-3 w-100" type="submit">Add word</a>
 
         <i *ngIf="selectedGroup._id !== '2'" class="fas fa-file-csv" (click)="showUploader()"></i>
 
       </div>
-
-
-
-
-
       <!-- <button *ngIf="selectedGroup !== '1' && selectedGroup !== '2'" (click)="showWordsForAssign()"
         class="purpleButton mb-3 w-100" type="submit" nbButton size="small">Add words</button> -->
     </ng-container>
 
 
     <section class="mb-4 statistics">
-      <app-group-statistics [statistics]="statistics$ | async"></app-group-statistics>
+      <app-group-statistics [statistics]="groupStatistics$ | async"></app-group-statistics>
     </section>
 
     <section class="csv-manager">
-      <app-csv-manager [expanded]="isShowUploader" [selectedGroup]="selectedGroup$ | async" (updateWordList)="updateWordsList(); showUploader()"></app-csv-manager>
+      <app-csv-manager [expanded]="isShowUploader" [selectedGroup]="selectedGroup$ | async"
+        (updateWordList)="updateWordsList(); showUploader()"></app-csv-manager>
     </section>
 
-
-    <app-loader [show]="!(wordsFiltredByGroup$ | async)"></app-loader>
-
-    <app-word-list
-      (action)="getActionFromChildren($event)"
-      [pageSize]="pageSize"
-      [trackWords]="trackWords"
-      [filterValue]="filterControl.valueChanges"
-      [menuItems]="wordMenuItems"
-      [selectedGroup]="selectedGroup$ | async"
-      [words]="(wordsFiltredByGroup$ | async)">
+    <app-word-list (action)="getActionFromChildren($event)"
+      [filterValue]="searchValueControl.valueChanges" [menuItems]="wordMenuItems"
+      [selectedGroup]="selectedGroup$ | async" [words]="userWordsFiltredByGroupAndSearchValue$ | async">
     </app-word-list>
 
-    <ng-container *ngIf="(wordsFiltredByGroup$ | async) && !(wordsFiltredByGroup$ | async)?.length">
-      <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
-        <div class="text-center" *ngIf="selectedGroup._id !== '2' && selectedGroup._id !== '1' && !filterControl.value">
-          <span class="first-word-title">Empty group
-          </span>
-          <br>
-        </div>
-        <div class="text-center" *ngIf="(wordsFiltredByGroup$ | async)?.length === 0 && filterControl.value">
-          <span class="first-word-title">Word not found
-          </span>
-
-        </div>
-        <div class="text-center mt-2" *ngIf="selectedGroup._id === '1' && !filterControl.value">
-          <span class="first-word-title">Add your first word <br> or take from <a routerLink="/general-words">Shared
-              words <i class="fas fa-users"></i></a></span>
-        </div>
 
 
-        <div class="text-center mt-2" *ngIf="selectedGroup._id === '2' && !filterControl.value">
-          <span class="first-word-title">Click
-            <img class="mb-3" style="width: 25px; height: 25px"
-              src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
-              alt=""> in your word list <br>
-            to add word to this group</span>
-        </div>
+    <ng-container *ngIf="userWordsFiltredByGroupAndSearchValue$ | async as words">
+      <ng-container *ngIf="words && !words?.length">
+        <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
+          <div class="text-center"
+            *ngIf="selectedGroup._id !== '2' && selectedGroup._id !== '1' && !searchValueControl.value">
+            <span class="first-word-title">Empty group
+            </span>
+            <br>
+          </div>
+          <div class="text-center" *ngIf="words?.length === 0 && searchValueControl.value">
+            <span class="first-word-title">Word not found
+            </span>
+
+          </div>
+          <div class="text-center mt-2" *ngIf="selectedGroup._id === '1' && !searchValueControl.value">
+            <span class="first-word-title">Add your first word <br> or take from <a routerLink="/general-words">Shared
+                words <i class="fas fa-users"></i></a></span>
+          </div>
+
+
+          <div class="text-center mt-2" *ngIf="selectedGroup._id === '2' && !searchValueControl.value">
+            <span class="first-word-title">Click
+              <img class="mb-3" style="width: 25px; height: 25px"
+                src="../../assets/Photos/aa21eb60437133bf4f4be189636a187a-star-favorite-outline-icon-by-vexels.png"
+                alt=""> in your word list <br>
+              to add word to this group</span>
+          </div>
+        </ng-container>
+
+
       </ng-container>
-
-
     </ng-container>
+
 
   </nb-card-body>
 
 </nb-card>
 
+<div class="assign-words-container">
 
-<!-- ADD NEW WORD MODAL -->
-<ng-template #wordModal let-data let-ref="dialogRef">
-  <app-modal-ui [isLoading]="isLoading" [title]="titleForModal" (save)="addNewWord()"
-    (update)="updateWord(editWordOldValue, newWordForm.value)" (cancel)="closeWordModal()">
-    <!-- <app-loader loader [show]="isLoading"></app-loader> -->
+</div>
 
-    <form [formGroup]="newWordForm">
-      <input formControlName="word" class="mb-1 w-100" type="text" fieldSize="small" nbInput placeholder="Word">
-      <br>
-      <input formControlName="translation" class="mb-2 w-100" type="text" fieldSize="small" nbInput
-        placeholder="Translation">
-    </form>
+<!-- WORD FORM TEMPLATE -->
+<ng-template #wordFormTemplate>
+  <form [formGroup]="wordForm">
+    <input formControlName="word" class="mb-1 w-100" type="text" fieldSize="small" nbInput placeholder="Word">
+    <br>
+    <input formControlName="translation" class="mb-2 w-100" type="text" fieldSize="small" nbInput
+      placeholder="Translation">
+  </form>
+  <mat-error *ngIf="errorMessage$ | async as errorMessage">{{errorMessage}}</mat-error>
+</ng-template>
 
+
+<!-- MODAL EDIT, ADD WORD  -->
+<ng-template #modalUiWrapper let-data let-ref="dialogRef">
+  <app-modal-ui
+    [isLoading]="modalLoader$ | async"
+    [title]="titleForModal"
+    [mode]="titleForModal === 'Edit word' ? 'update' : 'create'"
+    (save)="addNewWord()"
+    (update)="updateWord()"
+    (cancel)="closeWordModal()">
+    <ng-container *ngTemplateOutlet="wordFormTemplate"></ng-container>
   </app-modal-ui>
 </ng-template>
 
-<!-- ADD NEW GROUP MODAL -->
-<!-- <ng-template #groupModalRef let-data let-ref="dialogRef">
-
-  <app-modal-ui [isLoading]="isLoading" [title]="titleForModal" (save)="saveGroup()"
-    (update)="saveGroup(getSelectedGroup())" (cancel)="groupModal.close()">
-
-    <input [formControl]="groupName" class="mb-1 col-12" type="text" fieldSize="small" nbInput placeholder="Group name">
-
+<!-- MODAL DELETE WORD  -->
+<ng-template #deleteWordModal let-data let-ref="dialogRef">
+  <app-modal-ui
+    [isLoading]="modalLoader$ | async"
+    [title]="titleForModal"
+    [mode]="'delete'"
+    (save)="deleteWord()"
+    (cancel)="closeWordModal()">
+    <mat-error *ngIf="errorMessage$ | async as errorMessage">{{errorMessage}}</mat-error>
   </app-modal-ui>
-</ng-template> -->
-
+</ng-template>

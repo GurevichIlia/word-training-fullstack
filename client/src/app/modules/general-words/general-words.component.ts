@@ -1,12 +1,16 @@
-import { WordAction } from './../../core/enums/word';
+import { WordAction } from '../../core/enums/word.enum';
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { map, startWith, takeUntil, tap } from 'rxjs/operators';
 import { Action } from 'src/app/core';
 import { sharedWordMenuItem } from 'src/app/core/models/shared-word.model';
-import { GeneralWord, Word } from 'src/app/shared/interfaces';
 import { GeneralWordsFacade } from './general-words.facade';
+import { Store } from '@ngrx/store';
+import { AppStateInterface } from 'src/app/store/reducers';
+import { addWordToUserWordsAction } from 'src/app/store/actions/words.actions';
+import { Word } from 'src/app/shared/interfaces';
+import { GeneralWord } from './types/general-words.interfaces';
 
 @Component({
   selector: 'app-general-words',
@@ -20,23 +24,23 @@ export class GeneralWordsComponent implements OnInit {
   filterValue = new FormControl('');
   userId$: Observable<string>;
   constructor(
-    private generalWordsFacade: GeneralWordsFacade
+    private generalWordsFacade: GeneralWordsFacade,
+
 
   ) { }
 
   ngOnInit() {
-    this.userId$ = this.generalWordsFacade.getUserId().pipe(tap(res => console.log('USER', res)));
-    this.getGeneralWords();
+    this.generalWordsFacade.fetchGeneralWords()
+
+
+    this.userId$ = this.generalWordsFacade.userId$.pipe(tap(res => console.log('USER', res)));
+    this.generalWords$ = this.generalWordsFacade.generalWords$.pipe(map(words => words.reverse()))
 
   }
 
-  getGeneralWords() {
-    this.generalWords$ = this.generalWordsFacade.filterBySearchValue(
-      this.filterValue.valueChanges.pipe(startWith('')),
-      this.generalWordsFacade.getGeneralWords().pipe(map(words => words.reverse())));
-  }
 
-  getActionFromChildren(event: Action<Word>) {
+
+  getActionFromChildren(event: Action<GeneralWord>) {
 
     switch (event.action) {
       case WordAction.ADD_TO_MY_WORDS: this.addWordToMyWords(event.payload);
@@ -49,26 +53,16 @@ export class GeneralWordsComponent implements OnInit {
   }
 
 
-  addWordToMyWords(word: Word) {
+  addWordToMyWords(word: GeneralWord) {
     this.generalWordsFacade.addWordToMyWords(word)
-      .pipe(
-        takeUntil(this.subscription$)
-      )
-      .subscribe();
   }
 
   deleteWordFromGeneralList(wordId: string) {
     this.generalWordsFacade.deleteWordFromGeneralList(wordId)
       .pipe(
-        tap(res => this.getGeneralWords()),
         takeUntil(this.subscription$)
       )
       .subscribe(() => null);
-  }
-
-  updateWordsList() {
-    this.getGeneralWords();
-    console.log('SWIPED')
   }
 
   ngOnDestroy(): void {

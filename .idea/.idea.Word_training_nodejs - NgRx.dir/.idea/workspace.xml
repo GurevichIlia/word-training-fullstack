@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2a5328dc-daaf-40fe-8e27-e7b077471b71" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/app-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app-routing.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/app.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/core/enums/font-awesome.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/core/enums/group.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/core/enums/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/core/enums/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/core/enums/word.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/core/interceptors/server-error.interceptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/core/interceptors/server-error.interceptor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/core/interceptors/token.interceptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/core/interceptors/token.interceptor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/core/models/general.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/core/models/general.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/core/models/group.modal.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/core/models/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/core/models/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/core/models/shared-word.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/core/models/shared-word.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/core/models/vocabulary.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/core/models/vocabulary.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/core/services/navigation.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/core/services/navigation.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/core/services/words.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/core/services/words.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/authorization/authorization.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/authorization/authorization.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/authorization/login/login.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/authorization/login/login.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/authorization/login/login.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/authorization/login/login.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/authorization/login/login.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/authorization/login/login.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/authorization/registration/registration.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/authorization/registration/registration.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/authorization/registration/registration.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/authorization/registration/registration.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/authorization/registration/registration.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/authorization/registration/registration.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/general-words/general-words.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/general-words/general-words.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/home/home.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/home/home.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/home/home/home.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/home/home/home.component.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/home/home/home.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/train-result/train-result.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/train-result/train-result.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/vocabulary/csv-manager/csv-manager.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/vocabulary/csv-manager/csv-manager.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/vocabulary/csv-manager/csv-manager.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/vocabulary/csv-manager/csv-manager.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/vocabulary/groups/groups.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/vocabulary/groups/groups.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/vocabulary/vocabulary.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/vocabulary/vocabulary.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/vocabulary/vocabulary.facade.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/vocabulary/vocabulary.facade.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/vocabulary/vocabulary.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/vocabulary/vocabulary.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/vocabulary/word-list/word-list.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/vocabulary/word-list/word-list.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/modules/vocabulary/word/word.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/modules/vocabulary/word/word.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/shared/components/header/header.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/shared/components/header/header.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/shared/guards/select-language-guard.guard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/shared/guards/select-language-guard.guard.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/shared/interfaces.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/shared/interfaces.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/shared/services/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/shared/services/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/tslint.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/tslint.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controllers/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/auth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/middleware/passport.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/middleware/passport.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/auth.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1jK9ltuqQbNSJpD6SrgXyJwYd6w" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2a5328dc-daaf-40fe-8e27-e7b077471b71" name="Default Changelist" comment="" />
+      <created>1603542077798</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1603542077798</updated>
+      <workItem from="1603542087152" duration="232000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="616" y="240" key="run.anything.popup" timestamp="1603542226775">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1603542226775" />
+  </component>
+</project>

@@ -7,6 +7,7 @@ export interface KnowledgeLevel {
 }
 
 export interface GroupStatistics {
+  allWordsInGroup: number;
   knowledgeLevel: KnowledgeLevel[];
 }
 

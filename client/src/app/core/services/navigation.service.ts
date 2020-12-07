@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, map, startWith } from 'rxjs/operators';
+import { AppRoutes } from './../routes/routes';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NavigationService {
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router
+  ) {
 
   }
 
@@ -24,6 +27,11 @@ export class NavigationService {
         }
 
         if (this.isCurrentLocation(e, 'word-training')) {
+          debugger
+          if (this.isCurrentLocation(e, 'train-result')) {
+            return 'Train Result';
+          }
+
           return 'Word training';
         }
 
@@ -38,15 +46,15 @@ export class NavigationService {
           }
 
           return 'Settings';
-
-
-
-
         }
       }))
   }
 
   private isCurrentLocation(e: NavigationEnd, location: string) {
     return e.urlAfterRedirects.includes(location);
+  }
+
+  navigateTo(route: AppRoutes, queryParams: { [key: string]: string } = {}) {
+    return this.router.navigate([route], { queryParams })
   }
 }

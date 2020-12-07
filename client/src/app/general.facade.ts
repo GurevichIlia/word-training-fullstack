@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, filter, map, retry, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { WordGroup } from 'src/app/shared/interfaces';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { Word, WordGroup } from 'src/app/shared/interfaces';
+import { AppStateInterface } from 'src/app/store/reducers';
 import { NavigationService } from './core/services/navigation.service';
 import { GeneralState } from './general.state';
-import { Language, Word } from './shared/interfaces';
+import { LanguageInterface } from './modules/languages/types/languages.interfaces';
 import { ApiLanguagesService } from './shared/services/api/api-languages.service';
 import { ApiWordsService } from './shared/services/api/api-words.service';
-import { GroupsApiService } from './shared/services/api/groups-api.service';
 import { GeneralService } from './shared/services/general.service';
 import { NotificationsService } from './shared/services/notifications.service';
 
@@ -18,12 +19,13 @@ export class GeneralFacade {
   constructor(
     private apiLanguageService: ApiLanguagesService,
     private apiWordsService: ApiWordsService,
-    private groupsApiService: GroupsApiService,
     private generalState: GeneralState,
     private notifications: NotificationsService,
     private generalService: GeneralService,
-    private navigationService: NavigationService
-  ) { }
+    private navigationService: NavigationService,
+    private store$: Store<AppStateInterface>
+  ) {
+  }
 
   // getUserWordsFromServer() {
   //   return this.getCurrentLearningLanguage$()
@@ -60,7 +62,7 @@ export class GeneralFacade {
     }
 
     return this.generalState.getCurrentLearningLanguage$();
-
+    // return of({})
   }
 
   extractValueForMethodFromObservable<T>(obs$: Observable<any>, callback): Observable<T> {
@@ -84,37 +86,37 @@ export class GeneralFacade {
   }
 
   getWordsGroups() {
-    if (!this.generalState.getWordsGroups$()) {
+    // if (!this.generalState.getWordsGroups$()) {
 
-      const groups$ = this.generalState.getCurrentLearningLanguage$()
-        .pipe(
-          map(language => language ? language : null),
-          filter(language => language !== null),
-          switchMap(language => {
-            return this.groupsApiService.getAllWordsGroups(language)
+    //   const groups$ = this.generalState.getCurrentLearningLanguage$()
+    //     .pipe(
+    //       map(language => language ? language : null),
+    //       filter(language => language !== null),
+    //       switchMap(language => {
+    //         return this.groupsApiService.getAllWordsGroups(language)
 
-          }
-          ),
-          catchError(err => {
-            this.notifications.error(err, '');
-            return throwError(err);
-          }),
-          shareReplay(1)
-        );
+    //       }
+    //       ),
+    //       catchError(err => {
+    //         this.notifications.error(err, '');
+    //         return throwError(err);
+    //       }),
+    //       shareReplay(1)
+    //     );
 
 
-      this.generalState.setWordsGroups(groups$);
+    //   this.generalState.setWordsGroups(groups$);
 
-    }
+    // }
 
-    return this.generalState.getWordsGroups$().pipe(
-      map(groups => {
-        // return groups ? [...this.generalState.getDefaultGroups(), ...groups] : [];
-        // this.generalState.setSelectedGroupForTraining(groups[0]);
-        return groups;
-      }),
-      switchMap((groups: WordGroup[]) => this.setQuantityWordsInGroups(groups)),
-    );
+    // return this.generalState.getWordsGroups$().pipe(
+    //   map(groups => {
+    //     // return groups ? [...this.generalState.getDefaultGroups(), ...groups] : [];
+    //     // this.generalState.setSelectedGroupForTraining(groups[0]);
+    //     return groups;
+    //   }),
+    //   switchMap((groups: WordGroup[]) => this.setQuantityWordsInGroups(groups)),
+    // );
 
 
   }
@@ -161,7 +163,7 @@ export class GeneralFacade {
   }
 
 
-  setCurrentLanguage(language: Observable<Language>) {
+  setCurrentLanguage(language: Observable<LanguageInterface>) {
     this.setUserWords(null);
     this.generalState.setCurrentLanguage(language);
     this.updateWordList();

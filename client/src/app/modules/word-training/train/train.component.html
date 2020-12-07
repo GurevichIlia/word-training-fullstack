@@ -1,8 +1,12 @@
 <ng-container *ngIf="currentWord$ | async as word">
   <div class="container">
 
-    <div class="counter">
-      <app-word-counter></app-word-counter>
+    <div class="counter" *ngIf="counterState$ | async as counterState">
+      <app-word-counter
+      [totalCardsLearned]="counterState.totalLearnedCards"
+      [wordsInGroup]="counterState.wordsInGroup.length"
+      [learnedCardsFromGroup]="counterState.uniqueWordsLearned"
+      ></app-word-counter>
     </div>
 
     <div class="word-card"
@@ -41,8 +45,8 @@
     <div class="row justify-content-center mt-2">
       <!-- <button *ngIf="!start" type="buttom" (click)="onStart()" class="col-8 mb-2" nbButton
                       style="background-color: darkorchid; border-color: darkorchid">Start</button> -->
-      <button type="buttom" class="col-8 mb-2" nbButton status="warning" (click)="stopTraining()">Stop
-        train</button>
+      <a type="button" class="col-8 mb-2 custom-button light"  (click)="stopTraining()">Stop
+        train</a>
       <!-- <button *ngIf="start" type="buttom" (click)="onKnow()" class="col-4 ml-2 mb-2" nbButton
                       status="success">Know</button> -->
     </div>

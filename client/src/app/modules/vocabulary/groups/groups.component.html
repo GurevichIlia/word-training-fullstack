@@ -1,4 +1,4 @@
-<div class="groups-container d-flex align-items-baseline" *ngIf="selectedGroup$ | async as selectedGroup">
+<div class="groups-container d-flex align-items-baseline">
   <div class="groups">
     <app-group-list
     [groups]="groups$ | async"
@@ -18,15 +18,28 @@
 <ng-template #groupModal let-data let-ref="dialogRef">
 
   <app-modal-ui
-    [isLoading]="isLoading"
+    [isLoading]="modalLoader$ | async"
     [title]="modalTitle"
+    [mode]="modalTitle === 'New group' ? 'create' : 'update'"
     (save)="saveGroup({isUpdate: false})"
     (update)="saveGroup({isUpdate: true})"
-    (cancel)="groupModalRef.close()">
+    (cancel)="modalRef.close()">
     <!-- <app-loader loader [show]="isLoading"></app-loader> -->
 
     <input [formControl]="groupName" class="mb-1 col-12" type="text" fieldSize="small" nbInput placeholder="Group name">
 
+  </app-modal-ui>
+</ng-template>
+
+<!-- MODAL DELETE GROUP  -->
+<ng-template #deleteGroupModal let-data let-ref="dialogRef">
+  <app-modal-ui
+    [isLoading]="modalLoader$ | async"
+    [title]="modalTitle"
+    [mode]="'delete'"
+    (save)="deleteGroup()"
+    (cancel)="modalRef.close()">
+    <mat-error *ngIf="errorMessage$ | async as errorMessage">{{errorMessage}}</mat-error>
   </app-modal-ui>
 </ng-template>
 

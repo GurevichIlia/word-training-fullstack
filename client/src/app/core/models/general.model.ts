@@ -1,4 +1,4 @@
-import { FontAwesomeIcons } from '../enums/font-awesome';
+import { FontAwesomeIcons } from '../enums/font-awesome.enum';
 
 export interface Action<T = any> {
   action: string;
@@ -17,9 +17,10 @@ export class MenuItem<A = any> {
     public isShow: boolean = true,
     public disabled: boolean = false,
   ) {
-
   }
-
 }
 
+export interface BackendErrorInterface {
+  [key: string]: string;
+}
 

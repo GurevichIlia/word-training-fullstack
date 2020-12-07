@@ -8,6 +8,7 @@ import { NbDialogRef } from '@nebular/theme';
 })
 export class AskQuestionComponent {
   @Input() title: string;
+  @Input() item: string;
   constructor(
     protected dialogRef: NbDialogRef<AskQuestionComponent>) {
 

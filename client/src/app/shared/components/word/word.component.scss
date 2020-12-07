@@ -1,0 +1,73 @@
+@import '../../../../styles/variables.scss';
+
+.word {
+  font-size: 22px;
+  font-family: 'Roboto', "Helvetica Neue", sans-serif !important;
+  font-weight: 550;
+}
+
+.translation {
+  margin-left: 10px;
+  font-size: 18px;
+  font-style: italic;
+  font-family: 'Roboto', "Helvetica Neue", sans-serif !important;
+  color: $titleColor;
+
+}
+
+.menu {
+  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
+    0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+}
+
+.matmenu {
+  padding: 10px;
+}
+
+.menuitem {
+  min-width: 150px;
+  background-color: white;
+  padding: 20px;
+}
+
+.menuitem:hover {
+  background-color: whitesmoke;
+  cursor: pointer;
+}
+
+img {
+  transition: all 0.3s;
+  cursor: pointer;
+
+  &.scaleIn {
+    animation: scaleIn 0.4s ease-out;
+  }
+
+  &.scaleOut {
+    animation: scaleOut 0.4s ease-out;
+  }
+}
+
+.own-word {
+  text-align: center;
+  color: orange;
+  font-size: 12px;
+  display: flex;
+}
+
+.devider {
+  margin-top: 3px;
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(1.5)
+  }
+
+  100%{
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+

@@ -1,13 +1,25 @@
-import { Routes, RouterModule } from '@angular/router';
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { NewLanguageComponent } from './new-language/new-language.component';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatTabsModule } from '@angular/material/tabs';
+import { RouterModule, Routes } from '@angular/router';
+import {
+  NbButtonModule, NbCardModule, NbCheckboxModule,
+  NbIconModule, NbListModule, NbSelectModule, NbSpinnerModule
+} from '@nebular/theme';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { LanguagesComponent } from './languages.component';
-import { SelectLanguageComponent } from './select-language/select-language.component';
 import { LanguagesService } from './languages.service';
-import { EditLanguageComponent } from './edit-language/edit-language.component';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SelectLanguageComponent } from './select-language/select-language.component';
+import { AddLanguageToUserEffects } from './store/effects/add-language-to-user.effects';
+import { AllLanguagesEffects } from './store/effects/all-languages.effects';
+import { CurrentLanguageEffects } from './store/effects/current-language.effects';
+import { DeleteUserLanguageEffects } from './store/effects/delete-user-language.effects';
+import { UserLanguagesEffects } from './store/effects/user-languages.effects';
+import { languagesReducer, LANGUAGES_REDUCER_NODE } from './store/reducers/languages.reducers';
+
 const languageRoutes: Routes = [
   { path: '', component: LanguagesComponent }
 ];
@@ -15,14 +27,31 @@ const languageRoutes: Routes = [
 
 @NgModule({
   declarations: [
-    NewLanguageComponent,
     LanguagesComponent,
     SelectLanguageComponent,
-    EditLanguageComponent],
+  ],
   imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NbCardModule,
+    NbSelectModule,
+    NbSpinnerModule,
+    NbListModule,
+    NbIconModule,
+    NbCheckboxModule,
+    MatBadgeModule,
+    MatTabsModule,
+    NbButtonModule,
 
-    SharedModule,
-    RouterModule.forChild(languageRoutes)
+    RouterModule.forChild(languageRoutes),
+    StoreModule.forFeature(LANGUAGES_REDUCER_NODE, languagesReducer),
+    EffectsModule.forFeature([
+      AddLanguageToUserEffects,
+      AllLanguagesEffects,
+      UserLanguagesEffects,
+      DeleteUserLanguageEffects,
+      ])
   ],
   providers: [LanguagesService]
 })

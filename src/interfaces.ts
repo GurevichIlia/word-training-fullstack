@@ -23,6 +23,10 @@ export interface WordModel extends Document {
       date: string
 }
 
+export interface WordModelAsObject {
+      [key: string]: WordModel
+}
+
 export interface Language extends Document {
       readonly _id: string
       langName: string;

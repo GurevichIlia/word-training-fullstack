@@ -1,16 +1,28 @@
-import { GroupAction } from './../../../core/enums/group';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { openAssigningBottomSheetAction } from './../../../store/actions/words.actions';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, TemplateRef, Type, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { NbDialogRef, NbDialogService } from '@nebular/theme';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { select, Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
-import { finalize, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { ALL_WORDS_GROUP } from 'src/app/general.state';
+import { map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Action, BackendErrorInterface } from 'src/app/core';
+import { AppRoutes } from 'src/app/core/routes/routes';
 import { WordGroup } from 'src/app/shared/interfaces';
+import { fetchGroupsAction, saveEditedGroupAction } from 'src/app/store/actions/groups.actions';
+import { AppStateInterface } from 'src/app/store/reducers';
+import { isCloseModalSelector, modalLoaderSelector } from 'src/app/store/selectors/general.selector';
+import { groupsSelector } from 'src/app/store/selectors/groups.selectors';
+import { GroupAction } from '../../../core/enums/group.enum';
+import { AssignWordListComponent } from '../assign-word-list/assign-word-list.component';
 import { VocabularyFacade } from '../vocabulary.facade';
-import { GroupMenuItem, groupMenuItems } from './../../../core/models/group.modal';
-import { GroupsService } from './../../../core/services/groups.service';
+import { NavigationService } from './../../../core/services/navigation.service';
 import { NotificationsService } from './../../../shared/services/notifications.service';
-import { Action } from 'src/app/core';
+import { addGroupToUserGroupsAction, deleteUserGroupAction } from './../../../store/actions/groups.actions';
+import { GroupMenuItem, groupMenuItems } from './models/group.model';
+import { GroupsService } from './services/groups.service';
+import { setSelectedGroupAction } from './store/actions/groups.actions';
+import { selectedGroupSelector } from './store/selectors/groups.selectors';
 
 @Component({
   selector: 'app-groups',
@@ -20,31 +32,70 @@ import { Action } from 'src/app/core';
 })
 export class GroupsComponent implements OnInit, OnDestroy {
   @ViewChild('groupModal') groupModal: TemplateRef<any>;
+  @ViewChild('deleteGroupModal') deleteGroupModal: TemplateRef<any>;
   groups$: Observable<WordGroup[]>;
-  selectedGroup$: Observable<WordGroup>;
+  selectedGroup: WordGroup;
   groupName = new FormControl('', Validators.required);
-  isLoading = false;
+  modalLoader$: Observable<boolean>;
   subscription$ = new Subject();
-  groupModalRef: NbDialogRef<TemplateRef<any>>;
+  modalRef: MatDialogRef<TemplateRef<any>>;
   modalTitle = '';
-  menuItems$ = this.groupsService.createMenu(this.vocabularyService.getSelectedGroup$(), groupMenuItems as GroupMenuItem[]);
+  menuItems$: Observable<GroupMenuItem[]>
+  errorMessage$: Observable<string | BackendErrorInterface>
   constructor(
     private vocabularyService: VocabularyFacade,
     private notification: NotificationsService,
+    private navigation: NavigationService,
     private groupsService: GroupsService,
-    private dialogService: NbDialogService
+    private dialog: MatDialog,
+    private store$: Store<AppStateInterface>,
   ) {
 
   }
 
+  openBottomSheet(): void {
+    this.store$.dispatch(openAssigningBottomSheetAction())
+  }
+
+
   ngOnInit() {
+    this.initializeValues()
+    this.initializeListeners()
+  }
+
+  initializeValues() {
     this.groups$ = this.vocabularyService.isUpdateGroups().pipe(
       startWith(''),
-      switchMap(_ => this.groupsService.getWordsGroups$()),
-      tap(groups => console.log('GROUPS', groups))
+      tap(_ => {
+        this.store$.dispatch(fetchGroupsAction())
+      }),
+      switchMap(_ => this.store$.pipe(select(groupsSelector))),
     );
 
-    this.selectedGroup$ = this.vocabularyService.getSelectedGroup$();
+    this.menuItems$ = this.store$.pipe(
+      select(selectedGroupSelector),
+      tap(selectedGroup => this.selectedGroup = selectedGroup),
+      map(selectedGroup => this.groupsService.createMenu(selectedGroup, groupMenuItems as GroupMenuItem[])),
+      tap(groups => console.log('SELECTED GROUP', groups))
+
+    )
+
+    this.modalLoader$ = this.store$.pipe(select(modalLoaderSelector));
+  }
+
+  initializeListeners() {
+    this.store$.pipe(
+      select(isCloseModalSelector),
+      tap(isCloseModal => isCloseModal ? this.closeModal() : null),
+      takeUntil(this.subscription$))
+      .subscribe()
+  }
+
+  closeModal() {
+    if (this.modalRef) {
+      this.groupName.patchValue('');
+      this.modalRef.close()
+    }
   }
 
   saveGroup({ isUpdate }: { isUpdate?: boolean }) {
@@ -52,43 +103,50 @@ export class GroupsComponent implements OnInit, OnDestroy {
       return this.notification.warning('', 'Please fill in required fields');
     }
 
-    this.isLoading = true;
-    this.groupsService.saveGroup(this.groupName.value, isUpdate ? this.vocabularyService.getSelectedGroup() : null)
-      .pipe(
-        finalize(() => this.isLoading = false),
+    const groupName: string = this.groupName.value
 
-        takeUntil(this.subscription$))
-      .subscribe(group => {
-        this.vocabularyService.updateWordsAndGroups();
-        this.groupName.patchValue('');
-        this.groupModalRef.close();
-        this.vocabularyService.setSelectedGroup(group);
+    if (isUpdate) {
+      this.store$.dispatch(saveEditedGroupAction({ name: groupName }))
+    } else {
+      this.store$.dispatch(addGroupToUserGroupsAction({ name: groupName }))
 
-        // this.getGroups();
-        console.log('RES AFTER SAVE GROUP', group);
-      });
+    }
   }
 
-  deleteGroup(group: WordGroup) {
-    this.groupsService.deleteWordGroup(group)
-      .pipe(
-        takeUntil(this.subscription$))
-      .subscribe(res => {
-        this.vocabularyService.updateWordsAndGroups();
-        this.vocabularyService.setSelectedGroup(new WordGroup(ALL_WORDS_GROUP));
-        // this.getGroups();
-        console.log('RES AFTER DELETE GROUP', res);
-      })
+  deleteGroup() {
+    this.store$.dispatch(deleteUserGroupAction())
+    // this.groupsService.deleteWordGroup(group)
+    //   .pipe(
+    //     takeUntil(this.subscription$))
+    //   .subscribe(res => {
+    //     this.vocabularyService.updateWordsAndGroups();
+    //     this.store$.dispatch(setSelectedGroupAction({ group: new WordGroup(ALL_WORDS_GROUP) }))
+    //     // this.getGroups();
+    //     console.log('RES AFTER DELETE GROUP', res);
+    //   })
   }
 
   openGroupModal(title: 'New group' | 'Edit group') {
-    this.modalTitle = title;
 
     if (title === 'Edit group') {
-      this.groupName.patchValue(this.vocabularyService.getSelectedGroup().name);
+      this.groupName.patchValue(this.selectedGroup.name);
     }
 
-    this.groupModalRef = this.dialogService.open(this.groupModal);
+    this.openModal(title, this.groupModal)
+
+  }
+
+  openDeleteModal() {
+
+    this.openModal('Would you like to delete this group?', this.deleteGroupModal);
+
+
+    // this.openModal(`Would you like to remove this word?`, this.deleteWordTemplate)
+  }
+
+  openModal(title: string, template: TemplateRef<any> | Type<any>, item?: string) {
+    this.modalTitle = title;
+    this.modalRef = this.dialog.open(template, { disableClose: true });
 
   }
 
@@ -97,39 +155,29 @@ export class GroupsComponent implements OnInit, OnDestroy {
       case GroupAction.NEW_GROUP: this.openGroupModal('New group')
 
         break;
-      case GroupAction.DELETE_GROUP: this.deleteGroup(event.payload)
+      case GroupAction.DELETE_GROUP: this.openDeleteModal()
 
         break;
-      case GroupAction.NEW_GROUP: this.openGroupModal('New group')
+      case GroupAction.ADD_WORDS_TO_GROUP: this.showWordsForAssign()
 
         break;
-      case GroupAction.NEW_GROUP: this.openGroupModal('New group')
+      case GroupAction.EDIT_GROUP: this.openGroupModal('Edit group')
 
         break;
 
     }
   }
-  // _wordGroups = [];
-  // @Input() set wordGroups(wordGroups: WordGroup[]) {
-  //   if (wordGroups) {
-  //     this._wordGroups = [...wordGroups];
 
-  //   }
-
-  // };
-  // @Input() set selectedGroup(group: WordGroup) {
-  //   if (group) {
-  //     this.groupControl.patchValue(group._id);
-  //   }
-  // }
-  // @Output() selectGroup = new EventEmitter<WordGroup>();
-
-  // groupControl = new FormControl('');
-
-
+  showWordsForAssign() {
+    // tslint:disable-next-line: max-line-length
+    // this.dialog.open(AssignWordListComponent);
+    this.openBottomSheet()
+    // this.navigation.navigateTo(AppRoutes.AddWordsToGroup)
+  }
 
   onSelectGroup(group: WordGroup) {
-    this.vocabularyService.setSelectedGroup(group);
+    this.store$.dispatch(setSelectedGroupAction({ group }))
+    // this.vocabularyService.setSelectedGroup(group);
   }
 
 

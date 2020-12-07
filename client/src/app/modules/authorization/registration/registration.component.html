@@ -1,11 +1,14 @@
-<span class="reg-title text-center">Registration</span>
+<div class="reg-title text-center">Registration</div>
 
-<div class="error-box" *ngIf="registrationError">
-  <span class="error-message ">This email already exists</span>
-</div>
+
 
 <form [formGroup]="registrationForm" (ngSubmit)="createUser()" class="text-center">
-  <input formControlName="nickName" class="mb-2" type="text" nbInput fullWidth placeholder="Name" required>
+
+  <div class="error-box" *ngIf="registrationError$ | async as error">
+    <span class="error-message ">{{error}}</span>
+  </div>
+
+  <input formControlName="nickName" autocomplete="name" class="mb-2" type="text" nbInput fullWidth placeholder="Name" required>
   <ng-container *ngIf="registrationForm.get('nickName').touched && registrationForm.get('nickName').hasError">
     <span class="error-message" *ngIf="registrationForm.get('nickName').hasError('required') ">
       Name should not be empty</span>
@@ -13,7 +16,7 @@
 
 
   <div class="mb-2">
-    <input formControlName="email" type="text" nbInput fullWidth placeholder="Email">
+    <input formControlName="email" autocomplete="email" type="text" nbInput fullWidth placeholder="Email">
     <ng-container *ngIf="registrationForm.get('email').touched && registrationForm.get('email').hasError">
       <span class="error-message" *ngIf="registrationForm.get('email').hasError('required') ">
         Email should not be empty</span>
@@ -24,7 +27,7 @@
 
 
   <div class="mb-1">
-    <input formControlName="password" [ngClass]="{'error': isPasswordsDontMatch}" type="password" nbInput fullWidth
+    <input autocomplete="off" formControlName="password" [ngClass]="{'error': isPasswordsDontMatch}" type="password" nbInput fullWidth
       placeholder="Password">
     <span class="error-message"
       *ngIf="registrationForm.get('password').touched && registrationForm.get('password').hasError('required')">
@@ -33,7 +36,7 @@
       match.</span>
   </div>
   <div class="mb-4">
-    <input formControlName="confPassword" [ngClass]="{'error': isPasswordsDontMatch}" type="password" nbInput fullWidth
+    <input autocomplete="off" formControlName="confPassword" [ngClass]="{'error': isPasswordsDontMatch}" type="password" nbInput fullWidth
       placeholder="Confirm password">
     <span class="error-message" *ngIf="isPasswordsDontMatch">Passwords do not
       match.</span>
@@ -41,9 +44,10 @@
 
   <div class="row justify-content-center mt-5">
 
-    <button type="submit" class="col-8 mb-2 "[ngClass]="{'confirm-btn': !isLoading}" [disabled]="isLoading" nbButton>Sign Up</button>
+    <button type="submit" class="col-8 mb-2 " [ngClass]="{'confirm-btn': !(isSubmitting$ | async)}"
+      [disabled]="isSubmitting$ | async" nbButton>Sign Up</button>
     <div class="col-12 mt-2">
-      <span>Already have an account?<a style="cursor: pointer" (click)="goToLogin()"> Sign In</a></span>
+      <span>Already have an account?<a style="cursor: pointer" [routerLink]="['/login']">Sign In</a></span>
     </div>
   </div>
 </form>

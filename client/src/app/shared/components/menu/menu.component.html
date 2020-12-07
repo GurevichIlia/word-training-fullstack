@@ -1,7 +1,6 @@
 <i [style.font-size]="fontSize" class="ml-1" [matMenuTriggerFor]="menu" class="fas fa-ellipsis-v"></i>
 <mat-menu #menu="matMenu" class="matmenu">
 
-
   <div class="menuitem" (click)="onAction(item.action)" *ngFor="let item of menuItems">
     <i [class]="item.icon"></i>
 

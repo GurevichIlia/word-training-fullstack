@@ -1,0 +1,62 @@
+
+  <nb-card *ngIf="trainingResult$  | async as words">
+    <div class="container">
+
+      <nb-card-header class="row" *ngIf="trainedGroup$ | async as group">
+        <div class="col-4 ">
+          <div class="row ">
+            <a  (click)="goToVocabulary()"class="custom-button dark small col-12 mb-2 w-100 dark" type="submit">Vocabulary</a>
+            <a  (click)="trainAgain(group)"class="custom-button dark small col-12 mb-2 w-100 dark" type="submit">Train again</a>
+            <a  (click)="changeGroup()"class="custom-button dark col-12 small mb-2 w-100 light" type="submit">Change group</a>
+
+            <!-- <button class="col-12 mb-1 menu-button" size="small" (click)="goToVocabulary()" nbButton>Vocabulary</button>
+            <button class="col-12 mb-1 menu-button" size="small" (click)="trainAgain(group)" nbButton>Train
+              again</button>
+            <button class="col-12 change-group" size="small" (click)="changeGroup()" nbButton>Change group</button> -->
+          </div>
+
+        </div>
+        <div class="col-8 pr-0 text-center">
+          <div class="counter" *ngIf="counterState$ | async as counterState">
+            <app-word-counter
+            [totalCardsLearned]="counterState.totalLearnedCards"
+            [wordsInGroup]="counterState.wordsInGroup.length"
+            [learnedCardsFromGroup]="counterState.uniqueWordsLearned"
+            ></app-word-counter>
+          </div>
+
+          <div class="group-name-box">
+            <div class="group-title">Group name</div>
+            <div class="group-name">{{group.name}}</div>
+          </div>
+
+
+        </div>
+
+
+      </nb-card-header>
+      <nb-card-body>
+        <section class="mb-4 statistics">
+          <app-group-statistics
+            [title]="'Train statistics'"
+            [expanded]="true"
+            [statistics]="statistics$ | async">
+          </app-group-statistics>
+        </section>
+        <nb-list>
+          <nb-list-item *ngFor="let word of words" class="d-block">
+            <span class="word"> {{word.word}}</span>
+            <br>
+            <span class="translation">{{word.translation}}</span>
+            <nb-progress-bar class="custom-progress-bar mt-3"
+             [value]="word.levelKnowledge | convertToPercent"
+              size="tiny" [displayValue]="true"></nb-progress-bar>
+
+
+          </nb-list-item>
+        </nb-list>
+      </nb-card-body>
+    </div>
+
+  </nb-card>
+

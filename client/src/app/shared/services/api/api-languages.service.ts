@@ -1,8 +1,8 @@
+import { LanguageInterface, SetLearningLanguageResponseInterface } from 'src/app/modules/languages/types/languages.interfaces';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { Language } from '../../interfaces';
 
 export let BASE_URL;
 
@@ -18,42 +18,47 @@ export class ApiLanguagesService {
 
   constructor(private http: HttpClient) { }
 
-  getAllLanguages(): Observable<Language[]> {
-    return this.http.get<Language[]>(`${BASE_URL}/api/languages/getAllLanguages`);
+  getAllLanguages(): Observable<LanguageInterface[]> {
+    return this.http.get<LanguageInterface[]>(`${BASE_URL}/api/languages/getAllLanguages`);
   }
 
-  getCurrentLanguage$() {
+  getCurrentLanguage$(): Observable<LanguageInterface> {
     // tslint:disable-next-line: max-line-length
-    return this.http.get<{ currentLang: Language }>(`${BASE_URL}/api/languages/getCurrentLanguage`).pipe(map(({ currentLang }) => currentLang), shareReplay());
+    return this.http.get<{ currentLang: LanguageInterface }>(`${BASE_URL}/api/languages/getCurrentLanguage`)
+      .pipe(map(({ currentLang }) => currentLang), shareReplay());
   }
 
-  getUserLanguages(): Observable<Language[]> {
-    return this.http.get<Language[]>(`${BASE_URL}/api/languages/getUserLanguages`);
+  getUserLanguages(): Observable<LanguageInterface[]> {
+    return this.http.get<LanguageInterface[]>(`${BASE_URL}/api/languages/getUserLanguages`);
   }
 
-  addLanguage(language: Language): Observable<Language> {
-    return this.http.post<Language>(`${BASE_URL}/api/languages/createLanguage`, language);
+  addLanguage(language: LanguageInterface): Observable<LanguageInterface> {
+    return this.http.post<LanguageInterface>(`${BASE_URL}/api/languages/createLanguage`, language);
   }
 
-  addUserLanguages(languages: Language[]): Observable<Language[]> {
-    return this.http.post<Language[]>(`${BASE_URL}/api/languages/addUserLanguages`, { userLanguages: languages });
+  addUserLanguages(languages: LanguageInterface[]): Observable<LanguageInterface[]> {
+    return this.http.post<LanguageInterface[]>(`${BASE_URL}/api/languages/addUserLanguages`, { userLanguages: languages });
   }
 
-  editLanguage(language: Language): Observable<Language> {
-    return this.http.patch<Language>(`${BASE_URL}/api/languages/editLanguage`, language);
+  editLanguage(language: LanguageInterface): Observable<LanguageInterface> {
+    return this.http.patch<LanguageInterface>(`${BASE_URL}/api/languages/editLanguage`, language);
   }
 
-  deleteLanguage(languageId: string): Observable<Language[]> {
-    return this.http.delete<Language[]>(`${BASE_URL}/api/languages/deleteLanguage/${languageId}`);
+  deleteLanguage(languageId: string): Observable<LanguageInterface[]> {
+    return this.http.delete<LanguageInterface[]>(`${BASE_URL}/api/languages/deleteLanguage/${languageId}`);
   }
 
-  setCurrentLanguageOnServer(languageId: string) {
-    return this.http.post<Language>(`${BASE_URL}/api/languages/setCurrentLanguage`, { currentLanguage: languageId });
+  setCurrentLanguageOnServer(languageId: string): Observable<LanguageInterface> {
+    return this.http.post<SetLearningLanguageResponseInterface>(`${BASE_URL}/api/languages/setCurrentLanguage`,
+      { currentLanguage: languageId })
+      .pipe(
+        map(res => res.currentLanguage)
+      );
 
   }
 
   deleteUserLanguage(languageId: string) {
-    return this.http.post<Language>(`${BASE_URL}/api/languages/deleteUserLanguage`, { languageId });
+    return this.http.post<LanguageInterface>(`${BASE_URL}/api/languages/deleteUserLanguage`, { languageId });
 
   }
 }

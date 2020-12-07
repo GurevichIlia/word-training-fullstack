@@ -3,12 +3,8 @@
     [currentlanguageId]="(currentLearningLanguage$ | async)?._id"
     [userLanguages]="userLanguages$ | async"
     [allLanguages]="allLanguages$ | async"
-    [selectedTab]="selectedTab"
-
-    (addLanguage)="addLanguageToUserLanguages($event)"
-    (deleteUserLanguage)="deleteUserLanguage($event)"
+    [activeLanguagesTab]="activeTab$ | async"
     (selectUserLanguageForLearning)="setCurrentLearningLanguage($event)"
-
 	>
   </app-select-language>
 
