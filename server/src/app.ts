@@ -11,13 +11,13 @@ import passport from "passport";
 import passportCheck from "./middleware/passport";
 import { LanguagesRoutes } from "./routes/language";
 import { WordGroupRoutes } from "./routes/word-group";
-import { initAuth } from './utils/google-sheets';
+// import { initAuth } from './utils/google-sheets';
 // const cors = require('cors');
 // const path = require('path')
 const keys = require('./config/keys')
 const app: express.Application = express();
-const initGoolgeSheetsAuth = initAuth
-initGoolgeSheetsAuth()
+// const initGoolgeSheetsAuth = initAuth
+// initGoolgeSheetsAuth()
 mongoose
     .connect(keys.mongoURI, {
         useNewUrlParser: true,
@@ -44,10 +44,10 @@ app.use("/api/word-group", new WordGroupRoutes().router);
 
 // process.env.NODE_ENV = 'production'
 console.log('SENDING HTML', path.resolve(
-    __dirname, '../../', 'client', 'dist', 'word-training', 'index.html'
+    __dirname, 'client', 'dist', 'word-training', 'index.html'
 ))
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('../../client/dist/word-training'))
+    app.use(express.static('client/dist/word-training'))
 
     app.get('*', (req, res) => {
         res.sendFile(

@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import { UserModel, WordGroupModel, WordInObjectInterface, WordModel } from "../interfaces";
+import { IUserWordGroup, UserModel, WordGroupModel, WordModel } from "../interfaces";
 import User from "../Models/User";
 import WordGroup, { ALL_WORDS_GROUP, FAVORITES } from "../Models/WordGroup";
 import errorHandler from "../utils/errorHandler";
+import { getWordsByLanguage } from './../helper-functions/index';
 
 export class WordGroupController {
 
@@ -17,11 +18,12 @@ export class WordGroupController {
                         user: user
                   });
 
-                  let allGroups = [...this.getDefaultGroups(), ...userGroups]
+                  // let allGroups = [...this.getDefaultGroups(), ...userGroups]
                   // const words = getWordsByLanguage(req.query.languageId, user.words)
-                  const words: WordInObjectInterface = user.wordsAsObject[req.query.languageId].words
-                  console.log('WORDS', user.wordsAsObject)
-                  const groups = this.setQuantityWordsInGroups(allGroups, words);
+                  // this.setQuantityWordsInGroups(allGroups, words);
+                  if (!user.currentLanguage) throw new Error('Language is not exists')
+
+                  const groups = this.getAllUserGroups(userGroups, user.currentLanguage._id.toString(), user.words)
 
                   res.status(200).json(groups);
             } catch (error) {
@@ -33,6 +35,8 @@ export class WordGroupController {
 
       public saveGroup = async (req: Request, res: Response) => {
             try {
+                  const user = await User.findOne({ _id: req.user }) as UserModel;
+
                   const groupCondidate: { name: string, id: string, languageId: string } = req.body.group
 
                   if (!groupCondidate) return
@@ -44,15 +48,29 @@ export class WordGroupController {
                         group = await WordGroup.findOneAndUpdate({ _id: groupCondidate.id }, { name: groupCondidate.name }, { new: true }) as WordGroupModel
                   } else {
                         console.log('NO ID')
+                        console.log('LANGAUGE', groupCondidate.languageId, user.currentLanguage?._id)
                         group = await new WordGroup({
                               name: groupCondidate.name,
-                              language: groupCondidate.languageId,
+                              language: groupCondidate.languageId || user.currentLanguage?._id,
                               user: req.user
                         }).save();
                   }
 
+                  const userGroups = await WordGroup.find({
+                        language: groupCondidate.languageId || user.currentLanguage?._id,
+                        user: user
+                  });
 
-                  res.status(201).json(group);
+                  if (!user.currentLanguage) throw new Error('Language is not exists')
+
+                  const groups = this.getAllUserGroups(userGroups, user.currentLanguage?._id, user.words)
+
+                  console.log('NEW GROUP', group)
+
+                  res.status(201).json({
+                        groups,
+                        group: group
+                  });
             } catch (error) {
                   errorHandler(res, error);
             }
@@ -60,11 +78,20 @@ export class WordGroupController {
 
       public deleteWordGroup = async (req: Request, res: Response) => {
             try {
+                  const user = await User.findOne({ _id: req.user }) as UserModel;
+
                   const removedGroup = await WordGroup.findOneAndRemove({ _id: req.body.groupId })
 
-                  res.status(200).json({
-                        removedGroup
-                  })
+                  const userGroups = await WordGroup.find({
+                        language: user.currentLanguage?._id,
+                        user: user
+                  });
+
+                  if (!user.currentLanguage) throw new Error('Language is not exists')
+
+                  const groups = this.getAllUserGroups(userGroups, user.currentLanguage?._id, user.words)
+
+                  res.status(200).json({ groups })
             } catch (error) {
                   errorHandler(res, error);
 
@@ -77,7 +104,10 @@ export class WordGroupController {
                   const groupIdForAssign = req.body.groupId as string;
                   const selectedWords = req.body.selectedWords as string[];
                   const user = await User.findOne({ _id: req.user }) as UserModel;
+                
+                  const language = user.currentLanguage
 
+                  if (!language) throw new Error('Language does not exists')
 
                   selectedWords.forEach(wordId => {
 
@@ -107,13 +137,19 @@ export class WordGroupController {
 
 
                   })
-
+                  const userGroups = await WordGroup.find({
+                        language: language._id,
+                        user: user
+                  });
                   const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true });
 
+                  const words = getWordsByLanguage(language._id, updatedUser?.words || [])
+                  const groups = this.getAllUserGroups(userGroups, language._id.toString(), user.words)
 
 
                   res.status(200).json({
-                        wordsAfterAssign: updatedUser?.words,
+                        groups: groups,
+                        wordsAfterAssign: words,
                         message: 'Group assigned'
                   })
 
@@ -127,61 +163,39 @@ export class WordGroupController {
             return [ALL_WORDS_GROUP, FAVORITES] as WordGroupModel[]
       }
 
-      // private setQuantityWordsInGroups = (groups: WordGroupModel[], words: WordModel[]) => {
-      //       if (!words || words.length === 0) return groups
-
-      //       const updatedGroups = groups.map(group => {
-      //             if (group._id == '1') {
-      //                   const newGroup = { ...group, wordQuantity: words.length };
-
-      //                   return newGroup
-      //             }
-
-      //             if (group._id == '2') {
-      //                   const newGroup = {
-      //                         ...group, wordQuantity: words.filter(word => word.isFavorite === true).length
-      //                   };
-      //                   return newGroup
-      //             }
-
-      //             const quantity = words.filter(word => word.assignedGroups.includes(group._id.toString()));
-      //             group.wordQuantity = quantity.length
-      //             // console.log('COUNTED WORDS GROUPS', words.filter(word => console.log(word.assignedGroups[1], group._id)).length)
-
-      //             return group;
-      //       });
-      //       return updatedGroups;
-
-      // }
-      private setQuantityWordsInGroups = (groups: WordGroupModel[], words: WordInObjectInterface) => {
-            const wordsKeys = Object.keys(words);
-            const wordsLength = Object.keys(words).length
-
-
+      private setQuantityWordsInGroups = (groups: WordGroupModel[], words: WordModel[]): IUserWordGroup[] => {
             if (!words || words.length === 0) return groups
 
             const updatedGroups = groups.map(group => {
                   if (group._id == '1') {
-                        const newGroup = { ...group, wordQuantity: wordsLength };
+                        const newGroup = { ...group, wordQuantity: words.length };
 
                         return newGroup
                   }
 
                   if (group._id == '2') {
                         const newGroup = {
-                              ...group, wordQuantity: wordsKeys.filter(key => words[key].isFavorite === true).length
+                              ...group, wordQuantity: words.filter(word => word.isFavorite === true).length
                         };
                         return newGroup
                   }
 
-                  const quantity = wordsKeys.filter(key => words[key].assignedGroups?.includes(group._id.toString()));
+                  const quantity = words.filter(word => word.assignedGroups.includes(group._id.toString()));
                   group.wordQuantity = quantity.length
                   // console.log('COUNTED WORDS GROUPS', words.filter(word => console.log(word.assignedGroups[1], group._id)).length)
 
                   return group;
             });
+
             return updatedGroups;
 
+      }
+
+      getAllUserGroups(userGroups: WordGroupModel[], languageId: string, userWords: WordModel[]): IUserWordGroup[] {
+            let allGroups = [...this.getDefaultGroups(), ...userGroups]
+            const words = getWordsByLanguage(languageId, userWords)
+            const groups = this.setQuantityWordsInGroups(allGroups, words);
+            return groups
       }
       // public editWordGroupById = async (req: Request, res: Response) => {
       //       try {

@@ -9,7 +9,7 @@ const wordSchema = new Schema({
         required: true
     },
     translation: {
-        type: String,
+        type: Object,
         required: true
     },
     isFavorite: {

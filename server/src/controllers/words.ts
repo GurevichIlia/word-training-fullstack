@@ -6,9 +6,9 @@ import User from "../Models/User";
 import Word from "../Models/Word";
 import errorHandler from "../utils/errorHandler";
 import { FileHandler } from '../utils/file-handler';
+import { getWordsByLanguage } from './../helper-functions/index';
 import { GeneralWord as GeneralWordModel } from './../interfaces';
 import { CSVtoJson } from './../utils/csv-to-json';
-import { convertArrToObject } from '../utils/add-word-to-user'
 
 const fileHandler = new FileHandler()
 
@@ -22,17 +22,15 @@ export class WordsController {
             //     language: req.query.languageId,
             // });
 
-            const currentLanguage = req.query.languageId as string
             const user = await User.findOne({ _id: req.user }) as UserModel
+            const currentUserLanguage = user.currentLanguage;
 
-            const words = user.wordsAsObject[currentLanguage].words || {}
+            if (!currentUserLanguage) throw new Error('Language does not exists')
 
-            // const newwords = words.map(word => {
-            //     word.assignedGroups.push('1')
-            //     return word
-            // })
+            const words = getWordsByLanguage(currentUserLanguage._id, user.words)
 
-            res.status(200).json(words);
+
+            res.status(200).json({ words, user });
         } catch (error) {
             errorHandler(res, error);
         }
@@ -48,67 +46,37 @@ export class WordsController {
     public createNewWordForUser = async (req: Request, res: Response) => {
         try {
             const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
+            const currentUserLanguage = user.currentLanguage
 
-            const currentLanguageId = req.query.languageId
+            if (!currentUserLanguage) throw new Error('Language does not exists')
 
-            if (!currentLanguageId) {
-                throw new Error('Please select language')
+            // if (!updatedUser || !updatedUser.currentLanguage) throw new Error('User or language does not exists')
+
+            const isExistWord = user.words.find(word => word.word === req.body.word && word.translation === req.body.translation);
+
+            if (isExistWord) {
+                res.status(403).json({ newWord: isExistWord, message: 'Word already exists' });
+                return
             }
-
-            if (Object.keys(user.wordsAsObject).length > 0 && user.wordsAsObject[currentLanguageId]) {
-                const existWords = user.wordsAsObject[currentLanguageId].words
-
-                if (existWords) {
-                    const existingWordsIds = Object.keys(existWords)
-
-                    const isExistWord = existingWordsIds.find(wordId => existWords[wordId].word === req.body.word && existWords[wordId].translation === req.body.translation);
-
-                    if (isExistWord) {
-                        res.status(403).json({ success: false, message: 'Word already exists' });
-                        return
-                    }
-                } else {
-                    user.wordsAsObject[currentLanguageId].words = {}
-                }
-
-            }
-            const convertedWordFromArray = convertArrToObject(user.words);
-            user.wordsAsObject = { ...user.wordsAsObject, ...convertedWordFromArray }
-
 
             const newWord: WordModel = await new Word({
                 word: req.body.word,
                 translation: req.body.translation,
                 isFavorite: req.body.isFavorite,
-                language: req.query.languageId,
+                language: currentUserLanguage._id,
                 assignedGroups: req.body.assignedGroups ? req.body.assignedGroups : []
             });
 
+            user.words.unshift(newWord)
 
-
-            if (!user.wordsAsObject[currentLanguageId]) {
-                user.wordsAsObject[currentLanguageId] = {
-                    name: user.currentLanguage?.name || currentLanguageId,
-                    words: {}
-                }
-
-                user.wordsAsObject[currentLanguageId].words[newWord._id] = newWord
-
-
-            } else {
-                user.wordsAsObject[currentLanguageId].words[newWord._id] = newWord
-
-                if (user.wordsAsObject[currentLanguageId].name === 'test') {
-                    user.wordsAsObject[currentLanguageId].name = user.currentLanguage?.name || currentLanguageId
-                }
-            }
-
-         
-            // user.words.unshift(newWord)
 
             const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
-            const words = updatedUser?.wordsAsObject[currentLanguageId].words || []
-            res.status(201).json({ words, message: 'Successfully added' });
+
+            if (!updatedUser) throw new Error('User does not exists')
+
+            const words = getWordsByLanguage(currentUserLanguage._id, updatedUser.words)
+
+            res.status(201).json({ words, message: 'Successfully added', user: updatedUser, userOlder: user });
         } catch (error) {
             errorHandler(res, error);
         }
@@ -117,6 +85,9 @@ export class WordsController {
     public addWordsFromCSV = async (req: Request, res: Response) => {
         try {
             const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
+            const currentUserLanguage = user.currentLanguage
+            if (!currentUserLanguage) throw new Error('Language does not exists')
+
             // multer({ dest: "./uploads/" }).single("csvFile"), (file) => {
             //     return file
             // },
@@ -135,7 +106,7 @@ export class WordsController {
                 const newWord: WordModel = await new Word({
                     word: word.Word,
                     translation: word.Translation,
-                    language: req.query.languageId,
+                    language: currentUserLanguage._id,
                     assignedGroups: assignedGroups ? assignedGroups : []
                 });
                 user.words.unshift(newWord)
@@ -148,8 +119,8 @@ export class WordsController {
             // user.words = [...user.words, ...words.ops]
 
             const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
-
-            res.status(201).json(updatedUser);
+            const words = getWordsByLanguage(currentUserLanguage._id, updatedUser?.words || [])
+            res.status(201).json(words);
         } catch (error) {
             errorHandler(res, error);
         }
@@ -225,16 +196,12 @@ export class WordsController {
 
             const user = await User.findOne({ _id: req.user }) as UserModel;
 
-            const editedWord = req.body as WordModel
+            const editedWord = req.body
 
-            const languageId = user.currentLanguage?._id
 
-            if (languageId) {
-                user.wordsAsObject[languageId].words[editedWord._id] = editedWord
-            } else {
-                throw new Error('Language is not exist')
-            }
-
+            user.words = user.words.map(word => {
+                return word._id == editedWord._id ? { ...word, ...editedWord } : word
+            })
 
             const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
             // const editedWord = await Word.findOneAndUpdate(
@@ -242,8 +209,13 @@ export class WordsController {
             //     { $set: req.body },
             //     { new: true }
             // )
-            const words = updatedUser?.wordsAsObject[languageId].words || []
-            res.status(200).json({ words, message: 'Successfully updated' })
+
+            if (!updatedUser || !updatedUser.currentLanguage) throw new Error('User or language does not exists')
+
+            const words = getWordsByLanguage(updatedUser.currentLanguage._id, updatedUser?.words)
+
+
+            res.status(200).json({ words })
         } catch (error) {
             errorHandler(res, error);
         }
@@ -252,22 +224,19 @@ export class WordsController {
     public deleteWordByIdForCurrentUser = async (req: Request, res: Response) => {
         try {
             const user = await User.findOne({ _id: req.user }) as UserModel;
-            const wordId = req.params.wordId
-            const languageId = user.currentLanguage?._id
+            user.words = user.words.filter(word => word._id.toString() !== req.params.wordId)
 
-            if (languageId) {
-                delete user.wordsAsObject[languageId].words[wordId]
-            } else {
-                throw new Error('Language is not exist')
-            }
-
-            // user.words = user.words.filter(word => word._id.toString() !== req.params.wordId)
             const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
-            const words = updatedUser?.wordsAsObject[languageId].words || []
+            // console.log('USER UPDATED', new Date().getTime())
+
+
+            if (!updatedUser || !updatedUser.currentLanguage) throw new Error('User or language does not exists')
+
+            const words = getWordsByLanguage(updatedUser.currentLanguage._id, updatedUser?.words)
 
             res.status(200).json({
-                message: 'Removed',
-                words: words
+                words,
+                message: 'Removed'
             })
         } catch (error) {
             errorHandler(res, error);
@@ -290,7 +259,12 @@ export class WordsController {
 
     public getGeneralWords = async (req: Request, res: Response) => {
         try {
-            const words = await GeneralWord.find({ language: req.query.languageId });
+            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
+
+            const currentUserLanguage = user.currentLanguage
+            if (!currentUserLanguage) throw new Error('Language does not exists')
+
+            const words = await GeneralWord.find({ language: currentUserLanguage._id.toString() });
             res.status(200).json(words);
         } catch (error) {
             errorHandler(res, error)
@@ -329,14 +303,25 @@ export class WordsController {
         try {
             console.log('WORD ID', req.query.wordId)
             const deletedWord = await GeneralWord.findOneAndRemove({ _id: req.query.wordId })
+            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
+
+            const currentUserLanguage = user.currentLanguage
+            if (!currentUserLanguage) throw new Error('Language does not exists')
+
+            const words = await GeneralWord.find({ language: currentUserLanguage._id.toString() });
+
             if (deletedWord) {
                 res.status(200).json({
+                    words,
                     word: deletedWord,
                     message: 'Removed'
                 })
             } else {
                 throw new Error()
             }
+
+
+
 
         } catch (error) {
             errorHandler(res, error);

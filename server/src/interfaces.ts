@@ -1,5 +1,5 @@
-
 import { Document } from "mongoose";
+
 
 export interface UserModel extends Document {
       readonly _id: string
@@ -9,8 +9,7 @@ export interface UserModel extends Document {
       currentLanguage: Language | null,
       userLanguages: Language[],
       wordGroups: WordGroupModel[],
-      words: WordModel[],
-      wordsAsObject: WordModelAsObject
+      words: WordModel[]
 }
 
 export interface WordModel extends Document {
@@ -20,24 +19,17 @@ export interface WordModel extends Document {
       isFavorite?: boolean;
       levelKnowledge: number;
       assignedGroups: string[];
-      language: string,
+      language: Object,
       date: string
 }
 
 export interface WordModelAsObject {
-      [languageId: string]: {
-            name: string,
-            words: WordInObjectInterface
-      }
-}
-
-export interface WordInObjectInterface {
-      [wordId: string]: Partial<WordModel>
+      [key: string]: WordModel
 }
 
 export interface Language extends Document {
       readonly _id: string
-      name: string;
+      langName: string;
 }
 
 export interface WordGroupModel extends Document {
@@ -45,6 +37,7 @@ export interface WordGroupModel extends Document {
       name: string,
       wordQuantity: number,
       shareForAll: boolean;
+      language: string
 }
 
 export interface GeneralWord extends Document {
@@ -62,3 +55,7 @@ export interface afterCSV {
       ops: []
       result: object
 }
+
+export type IUserWord = Pick<WordModel, '_id' | 'translation' | 'word' | 'isFavorite' | 'levelKnowledge' | 'assignedGroups' | 'language' | 'date'>
+export type IUserWordGroup = Pick<WordGroupModel, '_id' | 'name' | 'wordQuantity' | 'shareForAll' | 'language'>
+
