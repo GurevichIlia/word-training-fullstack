@@ -1,12 +1,11 @@
+
 <nb-card>
   <nb-card-header class="justify-content-center">
-    <!-- <span class="title">Languages</span> -->
     <span class="sub-title">Select languages you want to learn</span>
 
   </nb-card-header>
   <nb-card-body class="text-center">
 
-    <!-- <span class="sub-title">Select languages you want to learn</span> -->
 
     <mat-tab-group [selectedIndex]="activeLanguagesTab">
       <!-- USER LANGUAGES -->
@@ -24,10 +23,13 @@
           </nb-select>
           <div class="container">
             <div class="row justify-content-center">
-              <div class="col-xl-5 submitBtnBox">
+              <div class="col-12 col-xl-5 submitBtnBox">
+                <a class="mb-2 custom-button dark"
+                  (click)="onSelectUserLanguageForLearning(selectedLanguage.value, userLanguages)">Submit</a>
+                <!--
                 <button type="button" class="w-100 purpleButton" size="medium" nbButton
                   (click)="onSelectUserLanguageForLearning(selectedLanguage.value, userLanguages)"
-                  status="success">Submit</button>
+                  status="success">Submit</button> -->
 
               </div>
             </div>
@@ -48,7 +50,7 @@
 
       </mat-tab>
 
-    <!-- ALL LANGUAGES -->
+      <!-- ALL LANGUAGES -->
       <mat-tab>
         <ng-container *ngIf="allLanguages; else loader1">
 
@@ -58,15 +60,20 @@
         </ng-template>
 
         <nb-list class="col-12 mt-3 mb-3 p-0">
-          <nb-list-item *ngFor="let language of allLanguages">
+          <nb-list-item class="list-item" *ngFor="let language of allLanguages">
             <span class="language-name"><img [src]="language.flag"> {{language.name}}</span>
 
             <nb-checkbox class="ml-auto" *ngIf="language.addedToUser" [checked]="language.addedToUser"
               [disabled]="language.addedToUser">
             </nb-checkbox>
+            <div class="add-btn-box ">
+              <a *ngIf="!language.addedToUser" class="ml-auto custom-button dark small"
+                (click)="addLanguageToUserLanguages(language)">Add</a>
+            </div>
 
-            <button class="ml-auto" nbButton *ngIf="!language.addedToUser" size="tiny" status="basic"
-              (click)="addLanguageToUserLanguages(language)">Add</button>
+
+            <!-- <button class="ml-auto" nbButton *ngIf="!language.addedToUser" size="tiny" status="basic"
+              (click)="addLanguageToUserLanguages(language)">Add</button> -->
 
 
           </nb-list-item>
@@ -88,33 +95,5 @@
 
 
     </mat-tab-group>
-
-
-
-
-
-    <!-- </nb-tab>
-    <nb-tab [active]="userLanguages?.length === 0" class="p-0" tabTitle="All languages"
-      [badgeText]="allLanguages?.length" badgeStatus="warning"> -->
-
-
-    <!-- <div class="row justify-content-center">
-          <div class="col-6 col-xl-5 ">
-            <button class="w-50" type="button" size="medium" nbButton (click)="onAddSelectedLanguagesToUserLanguages()"
-              status="success">Submit</button>
-
-          </div>
-          <div class="col-6 col-xl-5 ">
-            <button class="w-50" type="button" size="medium" nbButton (click)="onCloseAllLanguages()" status="danger">Cancel</button>
-
-          </div>
-        </div> -->
-
-
-
-    <!-- </nb-tab>
-
-    </nb-tabset> -->
-
   </nb-card-body>
 </nb-card>

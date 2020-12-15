@@ -12,7 +12,7 @@ import {
   fetchGeneralWordsSuccessAction,
   GeneralWordsActionsType
 } from '../actions/general-words.actions';
-import { fetchGroupsAction } from '../actions/groups.actions';
+import { fetchGroupsAction } from '../actions/vocabulary.actions';
 import { AppStateInterface } from '../reducers';
 
 @Injectable()

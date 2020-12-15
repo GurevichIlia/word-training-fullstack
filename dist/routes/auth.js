@@ -15,6 +15,7 @@ class AuthRoutes {
     routes() {
         this.router.post('/login', this.authController.login);
         this.router.post('/registration', this.authController.registration);
+        this.router.get('/getCurrentUser', passport_1.default.authenticate("jwt", { session: false }), this.authController.getCurrentUser);
         this.router.get('/getUserId', passport_1.default.authenticate("jwt", { session: false }), this.authController.getUserId);
     }
 }

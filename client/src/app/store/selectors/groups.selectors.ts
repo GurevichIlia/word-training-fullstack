@@ -4,8 +4,5 @@ import { GeneralStateInterface, GENERAL_REDUCER_NODE } from './../reducers/gener
 
 const featureSelector = createFeatureSelector<AppStateInterface, GeneralStateInterface>(GENERAL_REDUCER_NODE)
 
-export const groupsSelector = createSelector(
-  featureSelector,
-  state => state.userGroups
-)
+
 

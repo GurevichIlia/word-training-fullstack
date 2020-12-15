@@ -16,6 +16,7 @@ import { GeneralWord } from 'src/app/modules/general-words/types/general-words.i
 })
 export class WordListComponent {
   _showItems: number = 15
+  selector = '.scroll-container'
   @Input() words: Word[] | GeneralWord[];
   @Input() filterValue: Observable<string>;
   trackWords: (index: number, word: Word) => string

@@ -1,5 +1,5 @@
 import { WordTrainingService } from './word-training.service';
-import { nextWordAction, stopTrainingAction } from './../../store/actions/word-training.actions';
+import { nextWordAction, stopTrainingAction, saveTrainingProgressAction, resetWordTrainingStateAction, repeatTrainingAction } from './../../store/actions/word-training.actions';
 import { NavigationService } from 'src/app/core';
 import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
@@ -11,9 +11,9 @@ import { Word, WordGroup } from 'src/app/shared/interfaces';
 import { UtilsService } from 'src/app/shared/services/utils.service';
 import { selectGroupAction, startTrainAction } from 'src/app/store/actions/word-training.actions';
 import { AppStateInterface } from 'src/app/store/reducers';
-import { groupsSelector } from 'src/app/store/selectors/groups.selectors';
+import { groupsSelector } from 'src/app/store/selectors/vocabulary.selectors';
 import { configDataSelector, IConfigData, learningWordSelector } from 'src/app/store/selectors/word-training.selector';
-import { allWordsSelector } from 'src/app/store/selectors/words.selectors';
+import { allWordsSelector } from 'src/app/store/selectors/vocabulary.selectors';
 import { AppRoutes } from 'src/app/core/routes/routes';
 import { CounterState } from './train/train.component';
 
@@ -39,7 +39,7 @@ export class WordTrainingFacade {
   get isAllowedStart$(): Observable<boolean> {
     return this.store$.pipe(
       select(configDataSelector),
-      map((config: IConfigData) => !config.isStarted && config.selectedGroup?.wordQuantity > 0 ? true : false)
+      map((config: IConfigData) => !config.isStarted && config.selectedGroup?.wordQuantity > 4 ? true : false)
     )
 
   }
@@ -122,6 +122,11 @@ export class WordTrainingFacade {
     this.navigationService.navigateTo(AppRoutes.Training)
   }
 
+  repeatTraining() {
+    this.store$.dispatch(repeatTrainingAction())
+    this.navigationService.navigateTo(AppRoutes.Training)
+  }
+
   nextWord(word: Word, levelKnowledge: number): void {
     this.wordTrainingService.startAnimation('bounceInDown');
     this.store$.dispatch(nextWordAction({ word, levelKnowledge }))
@@ -137,15 +142,15 @@ export class WordTrainingFacade {
 
   }
 
-  stopTrain() {
+  stopTrain(): void {
     this.navigationService.navigateTo(AppRoutes.TrainResult).then(isNavigated => {
-      debugger
       this.store$.dispatch(stopTrainingAction())
 
     })
+  }
 
-
-
+  saveProgress(): void {
+    this.store$.dispatch(saveTrainingProgressAction())
   }
 
   resetAnimationState(): void {
@@ -159,5 +164,7 @@ export class WordTrainingFacade {
     this.store$.dispatch(selectGroupAction({ group }))
   }
 
-
+  resetWordTrainingState(): void {
+    this.store$.dispatch(resetWordTrainingStateAction())
+  }
 }

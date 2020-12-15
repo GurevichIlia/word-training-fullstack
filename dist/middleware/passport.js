@@ -25,10 +25,8 @@ const options = {
 const passportCheck = (passport) => {
     passport.use(new JwtStrategy(options, (payload, done) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            console.log("PAYLOAD", payload);
             const user = yield User_1.default.findById(payload.userId).select("email id");
             if (user) {
-                console.log("USER", user);
                 done(null, user);
             }
             else {

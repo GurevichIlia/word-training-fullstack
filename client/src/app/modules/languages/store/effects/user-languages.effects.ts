@@ -14,8 +14,6 @@ export class UserLanguagesEffects {
   constructor(
     private actions$: Actions,
     private languagesService: LanguagesService,
-    private navigation: NavigationService,
-    private persistanceService: PersistanceService
   ) { }
 
 
@@ -35,17 +33,4 @@ export class UserLanguagesEffects {
     ))
   )
 
-  // successAllLanguages$ = createEffect(() => this.actions$.pipe(
-  //   ofType(AuthActionsType.LOGIN_SUCCESS),
-  //   tap(({ successData }: { successData: AfterLoginDataInterface }) => {
-  //     if (successData.currentLanguage) {
-  //       // this.generalFacade.setCurrentLanguage(of(resData.currentLanguage));
-  //       this.navigation.navigateTo(Routes.Vocabulary)
-  //     } else {
-  //       this.navigation.navigateTo(Routes.Languages)
-  //     }
-  //   })
-  // ),
-  //   { dispatch: false }
-  // )
 }

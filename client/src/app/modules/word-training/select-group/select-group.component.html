@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row align-items-center justify-content-center">
 
-    <div class="col-12 text-center" >
+    <div class="col-12 text-center mb-5 " >
       <div class="instruction-title">
         <span> Select group you want to train</span>
       </div>
@@ -12,14 +12,18 @@
         (selectGroup)="selectGroup($event)"
       ></app-group-list>
 
-      <section class="mb-4 statistics">
-        <app-group-statistics [statistics]="groupStatistics$ | async"></app-group-statistics>
+      <section class="statistics" *ngIf="isAllowedStart$ | async as isAllowedStart">
+        <app-group-statistics
+         [expanded]="isAllowedStart"
+         [statistics]="groupStatistics$ | async"
+         [styleConfig]="{background:'#fff0', border: 'none'}"
+         ></app-group-statistics>
       </section>
     </div>
 
 
 
-    <div class="empty-word-list-warning mt-5" *ngIf="!(isAllowedStart$ | async)">
+    <div class="empty-word-list-warning mt-5 mb-5" *ngIf="!(isAllowedStart$ | async)">
       <span>Add at least 5 words to continue</span>
     </div>
 
@@ -27,12 +31,8 @@
 </div>
 
 <div class="text-center start-btn">
-  <!-- <button type="buttom" [disabled]="!(isAllowedStart$ | async)"
-    (click)="startTrain()" class="col-10 mb-2" nbButton>
-    Start
-  </button> -->
 
-  <a  (click)="startTrain()"class="custom-button dark col-10 mb-2 w-100" [ngClass]="{'disabled':!(isAllowedStart$ | async)}" type="submit">Start</a>
+  <a  (click)="startTrain()"class="custom-button dark col-10 mb-2 w-100" [ngClass]="{'disabled':!(isAllowedStart$ | async)}">Start</a>
 
 
 </div>

@@ -49,3 +49,14 @@ export const wordsByGroup = createSelector(
   featureSelector,
   state => state.words.length
 )
+
+export const uniqueLearnedWordsSelector = createSelector(
+  featureSelector,
+  state => [...state.uniqueLearnedWords.values()]
+)
+
+export const wordsToSaveSelector = createSelector(
+  featureSelector,
+  state => state.words
+)
+

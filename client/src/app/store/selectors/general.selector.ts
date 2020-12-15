@@ -9,17 +9,22 @@ export const globalLoaderSelector = createSelector(
   state => state.globalLoader
 )
 
-export const modalLoaderSelector = createSelector(
-  featureSelector,
-  state => state.modalLoader
-)
+// export const modalLoaderSelector = createSelector(
+//   featureSelector,
+//   state => state.modalLoader
+// )
 
-export const isCloseModalSelector = createSelector(
-  featureSelector,
-  state => state.isCloseModal
-)
+// export const isCloseModalSelector = createSelector(
+//   featureSelector,
+//   state => state.isCloseModal
+// )
 
 export const errorSelector = createSelector(
   featureSelector,
   state => state.error
+)
+
+export const isUpdateGroupsAndWordsSelector = createSelector(
+  featureSelector,
+  state => state.isUpdateGroupsAndWords
 )

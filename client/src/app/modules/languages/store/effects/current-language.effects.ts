@@ -27,33 +27,6 @@ export class CurrentLanguageEffects {
     private persistanceService: PersistanceService
   ) { }
 
-  // currentLanguage$ = createEffect(() => this.actions$.pipe(
-  //   tap(a => console.log('ACTION', a)),
-  //   ofType(LanguagesActionTypes.GET_CURRENT_LEARNING_LANGUAGE),
-  //   switchMap(_ => {
-  //     return this.languagesApi.getCurrentLanguage$()
-  //       .pipe(
-  //         map(language => getCurrentLearningLanguageSuccessAction({ currentLanguage: language })),
-  //         catchError(err => of(getCurrentLearningLanguageErrorAction({ error: err })))
-  //       )
-  //   })
-  // ))
-
-
-  // getCurrentLanguageSuccess$ = createEffect(() => this.actions$.pipe(
-  //   ofType(LanguagesActionTypes.GET_CURRENT_LEARNING_LANGUAGE_SUCCESS),
-  //   tap(({ currentLanguage }: { currentLanguage: LanguageInterface }) => {
-
-  //     if (currentLanguage) {
-  //       // this.generalFacade.setCurrentLanguage(of(resData.currentLanguage));
-  //       this.navigation.navigateTo(Routes.Vocabulary)
-  //     } else {
-  //       this.navigation.navigateTo(Routes.Languages)
-  //     }
-  //   })
-  // ),
-  //   { dispatch: false }
-  // )
 
   setCurrentLanguage$ = createEffect(() => this.actions$.pipe(
     ofType(LanguagesActionTypes.SET_CURRENT_LEARNING_LANGUAGE),

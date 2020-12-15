@@ -6,6 +6,7 @@ import { NgModule } from '@angular/core';
 
 import { WordComponent } from './word.component';
 import { PipesModule } from '../../pipes/pipes.module';
+import { DirectivesModule } from '../../directives/directives.module';
 
 @NgModule({
   imports: [
@@ -13,10 +14,13 @@ import { PipesModule } from '../../pipes/pipes.module';
     MenuModule,
     NbCheckboxModule,
     NbProgressBarModule,
-    PipesModule
+    PipesModule,
+    DirectivesModule
 
   ],
-  exports: [WordComponent],
+  exports: [
+    WordComponent
+  ],
   declarations: [
     WordComponent,
 

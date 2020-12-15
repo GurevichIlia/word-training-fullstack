@@ -1,9 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
-import { ALL_WORDS_GROUP, FAVORITES } from 'src/app/general.state';
 import { GeneralWord } from 'src/app/modules/general-words/types/general-words.interfaces';
-import { Word, WordGroup } from '../interfaces';
+import { Word } from '../interfaces';
 type SearchValue = string
 @Pipe({
   name: 'wordsFilter'
@@ -20,7 +17,6 @@ export class WordsFilterPipe implements PipeTransform {
 
 
     if (searchValue) {
-      debugger
 
       return words.filter(word => word.word.toLowerCase().includes(searchValue.toLowerCase()) ||
         word.translation.toLowerCase().includes(searchValue.toLowerCase()));

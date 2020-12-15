@@ -1,3 +1,5 @@
+<app-loader [show]="isLoading$ | async"></app-loader>
+
   <app-select-language
     [candidateToLearn]="languageIdCandidateToLearn"
     [currentlanguageId]="(currentLearningLanguage$ | async)?._id"

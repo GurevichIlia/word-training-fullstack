@@ -147,7 +147,7 @@ export class WordsService {
   // }
 
   filterWordsByGroup(selectedGroup: WordGroup, words: Word[]): Word[] {
-
+    if (!selectedGroup) return
     if (selectedGroup._id === ALL_WORDS_GROUP._id) {
 
       return words;

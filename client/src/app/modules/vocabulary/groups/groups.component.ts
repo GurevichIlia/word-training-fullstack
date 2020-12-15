@@ -1,28 +1,23 @@
-import { openAssigningBottomSheetAction } from './../../../store/actions/words.actions';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, TemplateRef, Type, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
-import { map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { map, takeUntil, tap } from 'rxjs/operators';
 import { Action, BackendErrorInterface } from 'src/app/core';
-import { AppRoutes } from 'src/app/core/routes/routes';
 import { WordGroup } from 'src/app/shared/interfaces';
-import { fetchGroupsAction, saveEditedGroupAction } from 'src/app/store/actions/groups.actions';
+import { saveEditedGroupAction } from 'src/app/store/actions/vocabulary.actions';
 import { AppStateInterface } from 'src/app/store/reducers';
-import { isCloseModalSelector, modalLoaderSelector } from 'src/app/store/selectors/general.selector';
-import { groupsSelector } from 'src/app/store/selectors/groups.selectors';
+import { modalLoaderSelector, isCloseModalSelector } from 'src/app/store/selectors/vocabulary.selectors';
 import { GroupAction } from '../../../core/enums/group.enum';
-import { AssignWordListComponent } from '../assign-word-list/assign-word-list.component';
 import { VocabularyFacade } from '../vocabulary.facade';
 import { NavigationService } from './../../../core/services/navigation.service';
 import { NotificationsService } from './../../../shared/services/notifications.service';
-import { addGroupToUserGroupsAction, deleteUserGroupAction } from './../../../store/actions/groups.actions';
+import { addGroupToUserGroupsAction, deleteUserGroupAction } from './../../../store/actions/vocabulary.actions';
+import { openAssigningBottomSheetAction } from './../../../store/actions/vocabulary.actions';
 import { GroupMenuItem, groupMenuItems } from './models/group.model';
 import { GroupsService } from './services/groups.service';
-import { setSelectedGroupAction } from './store/actions/groups.actions';
-import { selectedGroupSelector } from './store/selectors/groups.selectors';
+
 
 @Component({
   selector: 'app-groups',
@@ -49,6 +44,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
     private groupsService: GroupsService,
     private dialog: MatDialog,
     private store$: Store<AppStateInterface>,
+    private vocabularyFacade: VocabularyFacade
   ) {
 
   }
@@ -64,16 +60,17 @@ export class GroupsComponent implements OnInit, OnDestroy {
   }
 
   initializeValues() {
-    this.groups$ = this.vocabularyService.isUpdateGroups().pipe(
-      startWith(''),
-      tap(_ => {
-        this.store$.dispatch(fetchGroupsAction())
-      }),
-      switchMap(_ => this.store$.pipe(select(groupsSelector))),
-    );
+    this.groups$ = this.vocabularyFacade.groups$
 
-    this.menuItems$ = this.store$.pipe(
-      select(selectedGroupSelector),
+    // this.vocabularyService.isUpdateGroups().pipe(
+    //   startWith(''),
+    //   tap(_ => {
+    //     this.store$.dispatch(fetchGroupsAction())
+    //   }),
+    //   switchMap(_ => this.store$.pipe(select(groupsSelector))),
+    // );
+
+    this.menuItems$ = this.vocabularyFacade.selectedGroup$.pipe(
       tap(selectedGroup => this.selectedGroup = selectedGroup),
       map(selectedGroup => this.groupsService.createMenu(selectedGroup, groupMenuItems as GroupMenuItem[])),
       tap(groups => console.log('SELECTED GROUP', groups))
@@ -176,7 +173,8 @@ export class GroupsComponent implements OnInit, OnDestroy {
   }
 
   onSelectGroup(group: WordGroup) {
-    this.store$.dispatch(setSelectedGroupAction({ group }))
+    this.vocabularyFacade.selectGroup(group)
+    // this.store$.dispatch(setSelectedGroupAction({ group }))
     // this.vocabularyService.setSelectedGroup(group);
   }
 

@@ -45,17 +45,5 @@ export class AllLanguagesEffects {
     ))
   )
 
-  // successAllLanguages$ = createEffect(() => this.actions$.pipe(
-  //   ofType(AuthActionsType.LOGIN_SUCCESS),
-  //   tap(({ successData }: { successData: AfterLoginDataInterface }) => {
-  //     if (successData.currentLanguage) {
-  //       // this.generalFacade.setCurrentLanguage(of(resData.currentLanguage));
-  //       this.navigation.navigateTo(Routes.Vocabulary)
-  //     } else {
-  //       this.navigation.navigateTo(Routes.Languages)
-  //     }
-  //   })
-  // ),
-  //   { dispatch: false }
-  // )
+
 }

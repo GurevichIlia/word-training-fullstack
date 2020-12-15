@@ -11,6 +11,11 @@ export interface GroupStatistics {
   knowledgeLevel: KnowledgeLevel[];
 }
 
+export interface IStatisticsStyleConfig {
+  background: string,
+  border?: string
+}
+
 @Component({
   selector: 'app-group-statistics',
   templateUrl: './group-statistics.component.html',
@@ -22,6 +27,7 @@ export class GroupStatisticsComponent implements OnInit {
   @Input() statistics: GroupStatistics;
   @Input() expanded = false;
   @Input() isHideNotLearnedWords = false;
+  @Input() styleConfig: IStatisticsStyleConfig = { background: 'white' }
   constructor() { }
 
   ngOnInit() {

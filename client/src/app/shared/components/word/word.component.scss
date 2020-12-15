@@ -1,16 +1,18 @@
 @import '../../../../styles/variables.scss';
-
+.word-row{
+transition: all 0.3s;
+}
 .word {
-  font-size: 22px;
-  font-family: 'Roboto', "Helvetica Neue", sans-serif !important;
-  font-weight: 550;
+  font-size: 20px;
+  // font-family: 'Roboto', "Helvetica Neue", sans-serif !important;
+  font-weight: 500;
 }
 
 .translation {
   margin-left: 10px;
-  font-size: 18px;
+  font-size: 16px;
   font-style: italic;
-  font-family: 'Roboto', "Helvetica Neue", sans-serif !important;
+  // font-family: 'Roboto', "Helvetica Neue", sans-serif !important;
   color: $titleColor;
 
 }
@@ -71,3 +73,22 @@ img {
   }
 }
 
+.slideLeft {
+  transform: translateX(-40px);
+}
+
+.slideBack{
+  transform: translateX(0);
+}
+
+.slideRight {
+  transform: translateX(80px);
+
+}
+
+.action-btn{
+  width: 40px;
+  height: auto;
+  display: block;
+  background-color: red;;
+}

@@ -71,6 +71,7 @@ export class GroupsService {
   }
 
   isDefaultGroup(selectedGroup: WordGroup): boolean {
+    if(!selectedGroup) return
     return (selectedGroup._id === DefaultGroupId.ALL_WORDS || selectedGroup._id === DefaultGroupId.FAVORITES) ? true : false;
 
   }

@@ -73,8 +73,21 @@ export class LanguagesController {
     getCurrentLanguage = async (req: Request, res: Response) => {
         try {
             const user = await User.findOne({ _id: req.user }) as UserModel
-            const currentLang = user.currentLanguage;
-            res.status(200).json({ currentLang });
+
+            const currentLanguage = user.currentLanguage
+            const isLanguageInUserLanguages = user.userLanguages.find(userLanguage => userLanguage._id.toString() === currentLanguage?._id.toString())
+
+            if (isLanguageInUserLanguages) {
+                const currentLang = currentLanguage;
+                res.status(200).json({ currentLang });
+
+            } else if (isLanguageInUserLanguages) {
+                user.currentLanguage = null
+                const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true }) as UserModel
+                const currentLang = updatedUser.currentLanguage
+                res.status(200).json({ currentLang });
+            }
+
         } catch (error) {
             errorHandler(res, error)
         }
@@ -162,13 +175,13 @@ export class LanguagesController {
 
             const languageIdToDelete = req.body.languageId as string
 
-            user.userLanguages = user.userLanguages.filter(language => languageIdToDelete != language._id)
+            user.userLanguages = user.userLanguages.filter(language => languageIdToDelete.toString() != language._id.toString())
             console.log('USER', user.currentLanguage)
 
             console.log('USER LANG', user.currentLanguage?._id,)
             console.log('DELETE LANG', languageIdToDelete)
 
-            if (user.currentLanguage?._id === languageIdToDelete) {
+            if (user.currentLanguage?._id.toString() === languageIdToDelete.toString()) {
                 user.currentLanguage = null
             }
             console.log('AFTER DELETE', user.currentLanguage)
@@ -176,7 +189,7 @@ export class LanguagesController {
             if (user.userLanguages.length === 0) {
                 user.currentLanguage = null
             }
-            const foundLangauge = user.userLanguages.find(lang => user.currentLanguage?._id === lang._id)
+            const foundLangauge = user.userLanguages.find(lang => user.currentLanguage?._id.toString() === lang._id.toString())
             if (!foundLangauge) {
                 user.currentLanguage = null
             }

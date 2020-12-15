@@ -3,12 +3,15 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import { NavigationService } from 'src/app/core';
-import { PersistanceService } from 'src/app/shared/services/persistance.service';
 import { AppStateInterface } from 'src/app/store/reducers';
 import { LanguagesService } from './../../languages.service';
 import { LanguageInterface } from './../../types/languages.interfaces';
-import { AddLanguageToUserLanguagesErrorAction, AddLanguageToUserLanguagesSuccessAction, FetchAllLanguagesAction, LanguagesActionTypes } from './../actions/languages.actions';
+import {
+  AddLanguageToUserLanguagesErrorAction,
+  AddLanguageToUserLanguagesSuccessAction,
+  FetchAllLanguagesAction,
+  LanguagesActionTypes
+} from './../actions/languages.actions';
 
 @Injectable()
 export class AddLanguageToUserEffects {
@@ -16,8 +19,7 @@ export class AddLanguageToUserEffects {
   constructor(
     private actions$: Actions,
     private languagesService: LanguagesService,
-    private navigation: NavigationService,
-    private persistanceService: PersistanceService,
+
     private store$: Store<AppStateInterface>
   ) { }
 
@@ -31,7 +33,7 @@ export class AddLanguageToUserEffects {
             return AddLanguageToUserLanguagesSuccessAction({ userLanguages })
           }),
           catchError((err: { message: string }) => {
-            return of(AddLanguageToUserLanguagesErrorAction({ backendErrors:  { error: err.message } }))
+            return of(AddLanguageToUserLanguagesErrorAction({ backendErrors: { error: err.message } }))
           })
         )
     }

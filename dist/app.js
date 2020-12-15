@@ -16,19 +16,19 @@ const passport_1 = __importDefault(require("passport"));
 const passport_2 = __importDefault(require("./middleware/passport"));
 const language_1 = require("./routes/language");
 const word_group_1 = require("./routes/word-group");
-const google_sheets_1 = require("./utils/google-sheets");
+// import { initAuth } from './utils/google-sheets';
 // const cors = require('cors');
 // const path = require('path')
 const keys = require('./config/keys');
 const app = express_1.default();
-const initGoolgeSheetsAuth = google_sheets_1.initAuth;
-initGoolgeSheetsAuth();
+// const initGoolgeSheetsAuth = initAuth
+// initGoolgeSheetsAuth()
 mongoose_1.default
     .connect(keys.mongoURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
-})
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false
+    })
     .then(() => console.log("MongoDb connected"))
     .catch(err => console.log(err));
 app.use(body_parser_1.default.json({ limit: '50mb' }));
@@ -41,11 +41,11 @@ app.use("/api/auth", new auth_1.AuthRoutes().router);
 app.use("/api/vocabulary", new words_1.WordsRoutes().router);
 app.use("/api/languages", new language_1.LanguagesRoutes().router);
 app.use("/api/word-group", new word_group_1.WordGroupRoutes().router);
-process.env.NODE_ENV = 'production';
-console.log('SENDING HTML', path_1.default.resolve(__dirname, 'client', 'dist', 'word-training', 'index.html'));
+console.log('SENDING HTML', path_1.default.resolve('../', 'client', 'dist', 'word-training', 'index.html'));
 if (process.env.NODE_ENV === 'production') {
     app.use(express_1.default.static('client/dist/word-training'));
     app.get('*', (req, res) => {
+        console.log('SENDING PATH', path_1.default.resolve('client', 'dist', 'word-training', 'index.html'));
         res.sendFile(path_1.default.resolve(__dirname, 'client', 'dist', 'word-training', 'index.html'));
     });
 }

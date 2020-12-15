@@ -9,11 +9,12 @@ export interface UserModel extends Document {
       currentLanguage: Language | null,
       userLanguages: Language[],
       wordGroups: WordGroupModel[],
+      wordsForBackup: WordModel[]
       words: WordModel[]
 }
 
 export interface WordModel extends Document {
-      readonly _id: number;
+      readonly _id: string;
       word: string;
       translation: string;
       isFavorite?: boolean;

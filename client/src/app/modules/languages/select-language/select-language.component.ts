@@ -24,6 +24,7 @@ export class SelectLanguageComponent {
   @Input() activeLanguagesTab: ActiveLanguagesTab;
 
   @Input() set currentlanguageId(currentlanguageId: string) {
+    debugger
     this.selectedLanguage.patchValue(currentlanguageId);
   }
 

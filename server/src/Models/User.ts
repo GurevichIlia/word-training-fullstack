@@ -32,9 +32,14 @@ const userSchema = new Schema({
             type: Array,
             default: <WordModel[]>[]
       },
-      wordsAsObject:{
-          type: Object,
-          default:<WordModelAsObject>{}  
+      wordsForBackup:
+      {
+            type: Array,
+            default: <WordModel[]>[]
+      },
+      wordsAsObject: {
+            type: Object,
+            default: <WordModelAsObject>{}
       },
       userLanguages: {
             type: Array,

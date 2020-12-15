@@ -6,10 +6,7 @@ import { map, startWith, takeUntil, tap } from 'rxjs/operators';
 import { Action } from 'src/app/core';
 import { sharedWordMenuItem } from 'src/app/core/models/shared-word.model';
 import { GeneralWordsFacade } from './general-words.facade';
-import { Store } from '@ngrx/store';
-import { AppStateInterface } from 'src/app/store/reducers';
-import { addWordToUserWordsAction } from 'src/app/store/actions/words.actions';
-import { Word } from 'src/app/shared/interfaces';
+
 import { GeneralWord } from './types/general-words.interfaces';
 
 @Component({
@@ -20,9 +17,9 @@ import { GeneralWord } from './types/general-words.interfaces';
 export class GeneralWordsComponent implements OnInit {
   generalWords$: Observable<GeneralWord[]>;
   wordMenuItems = sharedWordMenuItem;
-  subscription$ = new Subject();
   filterValue = new FormControl('');
   userId$: Observable<string>;
+  isLoading$: Observable<boolean>
   constructor(
     private generalWordsFacade: GeneralWordsFacade,
 
@@ -35,7 +32,7 @@ export class GeneralWordsComponent implements OnInit {
 
     this.userId$ = this.generalWordsFacade.userId$.pipe(tap(res => console.log('USER', res)));
     this.generalWords$ = this.generalWordsFacade.generalWords$.pipe(map(words => words.reverse()))
-
+    this.isLoading$ = this.generalWordsFacade.isLoading$
   }
 
 
@@ -45,7 +42,7 @@ export class GeneralWordsComponent implements OnInit {
     switch (event.action) {
       case WordAction.ADD_TO_MY_WORDS: this.addWordToMyWords(event.payload);
         break;
-      case WordAction.DELETE_FROM_SHARE_LIST: this.deleteWordFromGeneralList(event.payload._id);
+      case WordAction.DELETE_FROM_SHARE_LIST: this.generalWordsFacade.deleteWordFromGeneralList(event.payload);
         break;
       default:
         break;
@@ -57,18 +54,4 @@ export class GeneralWordsComponent implements OnInit {
     this.generalWordsFacade.addWordToMyWords(word)
   }
 
-  deleteWordFromGeneralList(wordId: string) {
-    this.generalWordsFacade.deleteWordFromGeneralList(wordId)
-      .pipe(
-        takeUntil(this.subscription$)
-      )
-      .subscribe(() => null);
-  }
-
-  ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
-    this.subscription$.next();
-    this.subscription$.complete();
-  }
 }

@@ -1,4 +1,4 @@
-import { allWordsQuantitySelector, allWordsSelector } from './../../../store/selectors/words.selectors';
+import { allWordsQuantitySelector, allWordsSelector } from './../../../store/selectors/vocabulary.selectors';
 import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
 import { isLoggedInSelector } from '../../../modules/authorization/store/selectors/auth.selectors';
 import { Component, OnDestroy, OnInit } from '@angular/core';

@@ -1,8 +1,16 @@
+import { repeatTrainingAction } from './../actions/word-training.actions';
 import { Action, createReducer, on } from '@ngrx/store'
 import { ReducerNode } from 'src/app/core/enums/store.enum'
 import { IWordTrainingState } from 'src/app/core/models/word-training.interfaces'
 import { WordTraining } from 'src/app/modules/word-training/classes/WordTraining'
-import { nextWordAction, previousWordAction, selectGroupAction, startTrainAction, stopTrainingAction } from '../actions/word-training.actions'
+import {
+  nextWordAction,
+  previousWordAction,
+  resetWordTrainingStateAction,
+  selectGroupAction,
+  startTrainAction,
+  stopTrainingAction
+} from '../actions/word-training.actions'
 
 export const WORD_TRAINING_REDUCER_NODE: ReducerNode.WORD_TRAINING = ReducerNode.WORD_TRAINING
 
@@ -15,7 +23,7 @@ const initialState: IWordTrainingState = {
   previousWordsInCache: [],
   levelKnowledgeToShow: 0,
   allLearnedCardsQuantity: 0,
-  uniqueLearnedWords: new Map()
+  uniqueLearnedWords: new Map([])
 }
 
 export const reducer = createReducer(
@@ -31,11 +39,25 @@ export const reducer = createReducer(
     startTrainAction,
     (state, action): IWordTrainingState => {
       const filtredWords = WordTraining.filterWordsByGroup(action.words, state.selectedGroup)
+      const alreadyLearnedWords = new Map()
+      filtredWords.forEach(word => word.levelKnowledge > 0 ? alreadyLearnedWords.set(word._id, word) : null)
       return {
         ...state,
         words: filtredWords,
+        uniqueLearnedWords: alreadyLearnedWords,
         isStarted: true,
         nextWord: WordTraining.getWordForLearning(filtredWords, state.previousWordsInCache)
+      }
+    }
+  ),
+  on(
+    repeatTrainingAction,
+    (state, action): IWordTrainingState => {
+      return {
+        ...state,
+        isStarted: true,
+        allLearnedCardsQuantity: 0,
+        nextWord: WordTraining.getWordForLearning(state.words, state.previousWordsInCache)
       }
     }
   ),
@@ -46,20 +68,23 @@ export const reducer = createReducer(
       const lvlKnowledge = action.levelKnowledge
       const currentLearningWord = { ...action.word, levelKnowledge: lvlKnowledge }
       const wordsInCache = [...state.previousWordsInCache, currentLearningWord]
+      if (uniqueLearnedWords.has(currentLearningWord._id)) {
+
+        uniqueLearnedWords.delete(currentLearningWord._id)
+        uniqueLearnedWords.set(currentLearningWord._id, currentLearningWord)
+      } else {
+        uniqueLearnedWords.set(currentLearningWord._id, currentLearningWord)
+      }
       console.log('UNIQUE WORDS', uniqueLearnedWords.values())
       return {
         ...state,
         words: words.map(word => word._id === currentLearningWord._id ? currentLearningWord : word),
         nextWord: WordTraining.getWordForLearning(words, wordsInCache),
         previousWordsInCache: wordsInCache,
-        uniqueLearnedWords:
-          uniqueLearnedWords.has(currentLearningWord._id)
-            ? uniqueLearnedWords
-            : uniqueLearnedWords.set(currentLearningWord._id, currentLearningWord),
+        uniqueLearnedWords,
         allLearnedCardsQuantity: allLearnedCardsQuantity + 1
       }
     }
-
 
   ),
 
@@ -74,6 +99,14 @@ export const reducer = createReducer(
     (state): IWordTrainingState => ({
       ...state,
       isStarted: false,
+    })
+  ),
+  on(
+    resetWordTrainingStateAction,
+    (state): IWordTrainingState => ({
+      ...state,
+      ...initialState
+
     })
   )
 )

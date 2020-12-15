@@ -27,7 +27,6 @@ export class NavigationService {
         }
 
         if (this.isCurrentLocation(e, 'word-training')) {
-          debugger
           if (this.isCurrentLocation(e, 'train-result')) {
             return 'Train Result';
           }

@@ -17,15 +17,24 @@ const fileHandler = new FileHandler()
 export class WordsController {
     public getAllWordsForCurrentUser = async (req: Request, res: Response) => {
         try {
-            // const user = req.user as { _id: string, email: string }
+            // const user = await User.findOne({ _id: req.user }) as UserModel
+            // const currentUserLanguage = user.currentLanguage;
+            // if (!currentUserLanguage) throw new Error('Language does not exists')
+
             // const words = await Word.find({
-            //     language: req.query.languageId,
+            //     user: user._id,
+            //     language: currentUserLanguage._id,
+
             // });
 
             const user = await User.findOne({ _id: req.user }) as UserModel
             const currentUserLanguage = user.currentLanguage;
 
             if (!currentUserLanguage) throw new Error('Language does not exists')
+
+            if (user.wordsForBackup.length === 0) {
+                user.wordsForBackup = [...user.words]
+            }
 
             const words = getWordsByLanguage(currentUserLanguage._id, user.words)
 
@@ -64,9 +73,12 @@ export class WordsController {
                 translation: req.body.translation,
                 isFavorite: req.body.isFavorite,
                 language: currentUserLanguage._id,
+                user: user._id,
                 assignedGroups: req.body.assignedGroups ? req.body.assignedGroups : []
             });
+            console.log('NEW WORD', typeof newWord._id)
 
+            user.wordsForBackup.unshift(newWord)
             user.words.unshift(newWord)
 
 
@@ -150,41 +162,36 @@ export class WordsController {
 
             const user = await User.findOne({ _id: req.user }) as UserModel
 
-            const words = user.words.filter(word => word.language == req.query.languageId);
+            const currentUserLanguage = user.currentLanguage
+            if (!currentUserLanguage) throw new Error('Language does not exists')
 
-            const updatedWords = wordsToUpdate.map(word => {
+            // // let wordsByLanguage = user.words.filter(word => checkByLanguage(word.language, currentUserLanguage._id));
+            let words = [...user.words]
+            // console.log(' WORDS TO UPDATE', wordsToUpdate)
 
-                const findedWord = words.find(existWord => existWord.id === word.id);
+            user.words = words.map(word => {
+                const foundWord = wordsToUpdate.find(wordToUpdate => {
 
-                if (findedWord) {
-                    return { ...findedWord, ...word }
-                } else {
-                    return word;
+                    // console.log(wordToUpdate._id, word._id)
+                    // console.log(typeof wordToUpdate._id, typeof word._id)
+                    // console.log(wordToUpdate.word, word.word)
+                    return wordToUpdate._id.toString() === word._id.toString()
+                })
+
+                if (foundWord) {
+
+                    return { ...foundWord }
                 }
 
-            })
-
-
-            user.words = updatedWords as WordModel[]
+                return word
+            }) as WordModel[]
+     
 
             const updatedUser = await User.findOneAndUpdate({ _id: req.user }, { $set: user }, { new: true })
 
+            const wordsByLanguage = getWordsByLanguage(currentUserLanguage._id, updatedUser?.words || [])
 
-            // const updatedWord = await Word.findOneAndUpdate({ _id: word._id }, { $set: word })
-            // return updatedWord
-
-            // // const user = req.user as { _id: string, email: string }
-
-            // const test = await Promise.all(promises);
-
-            // const updatedWords = await Word.find({
-            //     language: req.query.languageId,
-            //     user: user._id
-            // });
-
-            // console.log()
-
-            res.status(201).json(updatedUser?.words);
+            res.status(201).json(wordsByLanguage);
         } catch (error) {
             errorHandler(res, error);
         }
@@ -264,7 +271,7 @@ export class WordsController {
             const currentUserLanguage = user.currentLanguage
             if (!currentUserLanguage) throw new Error('Language does not exists')
 
-            const words = await GeneralWord.find({ language: currentUserLanguage._id.toString() });
+            const words = await GeneralWord.find({ language: currentUserLanguage._id });
             res.status(200).json(words);
         } catch (error) {
             errorHandler(res, error)
@@ -275,6 +282,9 @@ export class WordsController {
         try {
             const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
 
+            const currentUserLanguage = user.currentLanguage
+            if (!currentUserLanguage) throw new Error('Language does not exists')
+
             const words = req.body.words as GeneralWordModel[]
 
             if (words && words.length > 0) {
@@ -282,17 +292,18 @@ export class WordsController {
                     const newWord = await new GeneralWord({
                         word: word.word,
                         translation: word.translation,
-                        language: req.query.languageId,
+                        language: currentUserLanguage._id,
                         assignedGroups: word.assignedGroups,
                         user: user._id
                     }).save();
                 })
             }
 
+            const generalWords = await GeneralWord.find({ language: currentUserLanguage._id })
 
 
 
-            res.status(201).json({ addedWord: '' });
+            res.status(201).json({ addedWord: '', generalWords });
         } catch (error) {
             errorHandler(res, error);
         }
@@ -329,6 +340,10 @@ export class WordsController {
     };
 }
 
+
+function checkByLanguage(language: string | object, language2: string | object): boolean {
+    return language.toString() === language2.toString()
+}
 // this.router.get("words/getAllWords", this.wordsController);
 // this.router.get("words/getWordById", this.wordsController);
 // this.router.post("words/addNewWord", this.wordsController);

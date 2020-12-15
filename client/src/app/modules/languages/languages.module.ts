@@ -1,3 +1,4 @@
+import { LoaderModule } from 'src/app/shared/components/loader/loader.module';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -44,6 +45,8 @@ const languageRoutes: Routes = [
     MatTabsModule,
     NbButtonModule,
 
+    LoaderModule,
+
     RouterModule.forChild(languageRoutes),
     StoreModule.forFeature(LANGUAGES_REDUCER_NODE, languagesReducer),
     EffectsModule.forFeature([
@@ -51,7 +54,7 @@ const languageRoutes: Routes = [
       AllLanguagesEffects,
       UserLanguagesEffects,
       DeleteUserLanguageEffects,
-      ])
+    ])
   ],
   providers: [LanguagesService]
 })

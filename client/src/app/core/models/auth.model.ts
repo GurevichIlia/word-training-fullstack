@@ -7,6 +7,8 @@ export interface AuthStateInterface {
   backendErrors: string | null;
   isLoggedIn: boolean | null;
   isLoading: boolean;
+  isRegistrationSuccess: boolean | null
+
 }
 
 export interface RegisterRequestInterface {

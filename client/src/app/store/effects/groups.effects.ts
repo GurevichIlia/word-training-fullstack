@@ -1,34 +1,38 @@
-import { closeAssigningBottomSheetAction } from './../actions/words.actions';
-import { AppRoutes } from 'src/app/core/routes/routes';
-import { NotificationsService } from 'src/app/shared/services/notifications.service';
-import { AssignWordsService } from './../../modules/vocabulary/assign-words.service';
-import { setSelectedGroupAction } from './../../modules/vocabulary/groups/store/actions/groups.actions';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, of } from 'rxjs';
+import { of } from 'rxjs';
 import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { GroupsService, NavigationService } from 'src/app/core';
 import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
-import { selectedGroupSelector } from 'src/app/modules/vocabulary/groups/store/selectors/groups.selectors';
+import { IAssignWordsResponse, ISaveGroupResponse } from 'src/app/modules/vocabulary/groups/types/groups-state.interface';
 import { WordGroup } from 'src/app/shared/interfaces';
+import { NotificationsService } from 'src/app/shared/services/notifications.service';
 import { AppStateInterface } from 'src/app/store/reducers';
 import { currentLanguageSelector } from '../selectors/language.selector';
+import { selectedGroupSelector } from '../selectors/vocabulary.selectors';
+import { AssignWordsService } from './../../modules/vocabulary/assign-words.service';
 import {
-  fetchGroupsErrorAction,
-  fetchGroupsSuccessAction,
-  GroupsActionsType,
-  addGroupToUserGroupsSuccessAction,
-  addGroupToUserGroupsErrorAction,
-  deleteUserGroupSuccessAction,
-  deleteUserGroupErrorAction,
-  saveEditedGroupSuccessAction,
-  saveEditedGroupErrorAction,
+  addGroupToUserGroupsErrorAction, addGroupToUserGroupsSuccessAction,
   assignWordsToGroupErrorAction,
-  assignWordsToGroupSuccessAction
-} from './../actions/groups.actions';
-import { IAssignWordsResponse, ISaveGroupResponse } from 'src/app/modules/vocabulary/groups/types/groups-state.interface';
-import { ROUTES } from '@angular/router';
+  assignWordsToGroupSuccessAction, deleteUserGroupErrorAction, deleteUserGroupSuccessAction, fetchGroupsErrorAction,
+  fetchGroupsSuccessAction,
+
+
+
+
+
+  saveEditedGroupErrorAction, saveEditedGroupSuccessAction,
+
+
+
+  selectVocabularyGroupAction,
+
+
+
+  VocabularyActionsType
+} from './../actions/vocabulary.actions';
+import { closeAssigningBottomSheetAction } from './../actions/vocabulary.actions';
 
 
 @Injectable()
@@ -52,7 +56,7 @@ export class GroupsEffects {
 
   loadGroups$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(GroupsActionsType.FetchGroups),
+      ofType(VocabularyActionsType.FetchGroups),
       switchMap(_ => {
         return this.store$.pipe(
           select(currentLanguageSelector),
@@ -73,7 +77,7 @@ export class GroupsEffects {
 
   addGroup$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(GroupsActionsType.AddGroupToUserGroups),
+      ofType(VocabularyActionsType.AddGroupToUserGroups),
       switchMap(({ name }: { name: string }) =>
         this.store$.pipe(
           select(currentLanguageSelector),
@@ -96,11 +100,11 @@ export class GroupsEffects {
   )
 
   addGroupSuccess$ = createEffect(() => this.actions$.pipe(
-    ofType(GroupsActionsType.AddGroupToUserGroupsSuccess),
+    ofType(VocabularyActionsType.AddGroupToUserGroupsSuccess),
     tap(({ group }: { group: WordGroup }) => {
       if (!group) return
       // Set new added group as default group after adding
-      this.store$.dispatch(setSelectedGroupAction({ group }))
+      this.store$.dispatch(selectVocabularyGroupAction({ group }))
     })
   ),
     { dispatch: false }
@@ -108,7 +112,7 @@ export class GroupsEffects {
 
   deleteGroup$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(GroupsActionsType.DeleteUserGroup),
+      ofType(VocabularyActionsType.DeleteUserGroup),
       switchMap(_ =>
         this.store$.pipe(
           select(selectedGroupSelector),
@@ -132,12 +136,12 @@ export class GroupsEffects {
   )
 
   deleteGroupSuccess$ = createEffect(() => this.actions$.pipe(
-    ofType(GroupsActionsType.DeleteUserGroupsuccess),
+    ofType(VocabularyActionsType.DeleteUserGroupsuccess),
     tap(({ groups }: { groups: WordGroup }) => {
       if (!groups) return
       const ALL_WORDS = 0;
       // Set "All words" as default group after deleting
-      this.store$.dispatch(setSelectedGroupAction({ group: groups[ALL_WORDS] }))
+      this.store$.dispatch(selectVocabularyGroupAction({ group: groups[ALL_WORDS] }))
     })
   ),
     { dispatch: false }
@@ -145,7 +149,7 @@ export class GroupsEffects {
 
   saveEditedGroup$ = createEffect(
     () => this.actions$.pipe(
-      ofType(GroupsActionsType.SaveEditedGroup),
+      ofType(VocabularyActionsType.SaveEditedGroup),
       switchMap(({ name }: { name: string }) =>
         this.store$.pipe(
           select(selectedGroupSelector),
@@ -164,18 +168,18 @@ export class GroupsEffects {
   )
 
   saveEditedGroupSuccess$ = createEffect(() => this.actions$.pipe(
-    ofType(GroupsActionsType.SaveEditedGroupsuccess),
+    ofType(VocabularyActionsType.SaveEditedGroupsuccess),
     tap(({ group }: { group: WordGroup }) => {
       if (!group) return
       // Set new added group as default group after adding
-      this.store$.dispatch(setSelectedGroupAction({ group }))
+      this.store$.dispatch(selectVocabularyGroupAction({ group }))
     })
   ),
     { dispatch: false }
   )
 
   assignWordsToGroups$ = createEffect(() => this.actions$.pipe(
-    ofType(GroupsActionsType.AssignWordsToGroup),
+    ofType(VocabularyActionsType.AssignWordsToGroup),
     switchMap(({ selectedWordsIds }: { selectedWordsIds: string[] }) =>
       this.store$.pipe(
         select(selectedGroupSelector),
@@ -195,7 +199,7 @@ export class GroupsEffects {
   )
 
   assignWordsToGroupSuccess$ = createEffect(() => this.actions$.pipe(
-    ofType(GroupsActionsType.AssignWordsToGroupSuccess),
+    ofType(VocabularyActionsType.AssignWordsToGroupSuccess),
     tap(({ message }: { message: string }) => {
       if (!message) return
       // this.navigationService.navigateTo(AppRoutes.Vocabulary)

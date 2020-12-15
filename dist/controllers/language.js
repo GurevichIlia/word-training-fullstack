@@ -159,10 +159,15 @@ class LanguagesController {
                 if (user.userLanguages.length === 0) {
                     user.currentLanguage = null;
                 }
+                const foundLangauge = user.userLanguages.find(lang => { var _a; return ((_a = user.currentLanguage) === null || _a === void 0 ? void 0 : _a._id) === lang._id; });
+                if (!foundLangauge) {
+                    user.currentLanguage = null;
+                }
                 console.log('USER CURRENT LANG', user.currentLanguage);
                 const updatedUser = yield User_1.default.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true });
                 console.log('USER CURRENT LANG AFTER UPDATE', updatedUser.currentLanguage);
                 res.status(200).json({
+                    currentLearningLanguage: updatedUser.currentLanguage,
                     userLanguages: updatedUser.userLanguages,
                     message: 'Language removed'
                 });

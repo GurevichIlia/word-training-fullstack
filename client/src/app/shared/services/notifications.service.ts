@@ -28,7 +28,7 @@ export class NotificationsService {
     } else {
       text = title;
     }
-    this.snackBar.open(text, '', this.defaultConfig());
+    this.snackBar.open(text, '', this.defaultConfig({panelClass: 'snack-bar-warn'}));
   }
 
   error(message: string, title?: string) {
@@ -39,7 +39,7 @@ export class NotificationsService {
     } else {
       text = title;
     }
-    this.snackBar.open(text, '', this.defaultConfig({panelClass: 'snackbar-error'}));
+    this.snackBar.open(text, '', this.defaultConfig({panelClass: 'snack-bar-error'}));
   }
 
   info(message: string, title?: string) {
@@ -55,7 +55,7 @@ export class NotificationsService {
   // duration = 1500, horizontalPosition = 'end', verticalPosition = 'top', panelClass: string = ''
   defaultConfig(config?: MatSnackBarConfig): {} {
     return {
-      duration: config?.duration || 1500,
+      duration: config?.duration || 2000,
       horizontalPosition: config?.horizontalPosition || 'end',
       verticalPosition: config?.verticalPosition || 'top',
       panelClass: config?.panelClass || ''

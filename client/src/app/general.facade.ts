@@ -152,22 +152,22 @@ export class GeneralFacade {
     );
   }
 
-  updateWordList() {
-    this.generalState.setWordsGroups(null);
+  // updateWordList() {
+  //   this.generalState.setWordsGroups(null);
 
-    this.generalService.updateWordList();
-  }
+  //   this.generalService.updateWordList();
+  // }
 
-  isUpdateWordList$() {
-    return this.generalService.updateWords$;
-  }
+  // isUpdateWordList$() {
+  //   return this.generalService.updateWords$;
+  // }
 
 
-  setCurrentLanguage(language: Observable<LanguageInterface>) {
-    this.setUserWords(null);
-    this.generalState.setCurrentLanguage(language);
-    this.updateWordList();
-  }
+  // setCurrentLanguage(language: Observable<LanguageInterface>) {
+  //   this.setUserWords(null);
+  //   this.generalState.setCurrentLanguage(language);
+  //   this.updateWordList();
+  // }
 
   getWordsQuantity$() {
     return this.generalState.getQuantityWords$();

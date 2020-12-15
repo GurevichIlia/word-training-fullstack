@@ -44,8 +44,8 @@
 
   <div class="row justify-content-center mt-5">
 
-    <button type="submit" class="col-8 mb-2 " [ngClass]="{'confirm-btn': !(isSubmitting$ | async)}"
-      [disabled]="isSubmitting$ | async" nbButton>Sign Up</button>
+    <a class="col-8 mb-2 custom-button dark" [ngClass]="{'confirm-btn': !(isSubmitting$ | async)}"
+      [disabled]="isSubmitting$ | async" nbButton>Sign Up</a>
     <div class="col-12 mt-2">
       <span>Already have an account?<a style="cursor: pointer" [routerLink]="['/login']">Sign In</a></span>
     </div>

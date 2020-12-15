@@ -20,24 +20,9 @@ export class AuthServiceOld {
     private router: Router,
   ) {
 
-    // if (localStorage.getItem('words-token')) {
-    //   this.setIsAuthenticated(true);
-    //   this.router.navigate(['/vocabulary']);
-    // } else {
-    //   this.setIsAuthenticated(false);
-    //   this.router.navigate(['/login']);
-    // }
   }
 
-  // registration(newUser: User): Observable<User> {
-  //   newUser.email = newUser.email.toLowerCase();
-  //   return this.http.post<User>(`${BASE_URL}/api/auth/registration`, newUser);
-  // }
 
-  // login(user: User): Observable<{ token: string, message: string, currentLanguage: Language }> {
-  //   user.email = user.email.toLowerCase();
-  //   return this.http.post<{ token: string, message: string, currentLanguage: Language }>(`${BASE_URL}/api/auth/login`, user);
-  // }
 
   logOut() {
     this.setIsAuthenticated(false);
@@ -65,9 +50,6 @@ export class AuthServiceOld {
     return this.currentUser;
   }
 
-  // isPasswordsMatch(password: string, confirmPassword: string) {
-  //   return password === confirmPassword;
-  // }
 }
 
 

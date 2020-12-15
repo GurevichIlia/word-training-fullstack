@@ -28,9 +28,6 @@ export interface Word {
 }
 
 
-
-
-
 export class WordGroup {
   _id: string;
   name: string;

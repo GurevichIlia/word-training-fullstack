@@ -14,12 +14,13 @@
       <span class="search">
         <app-search [filterValue]="filterControl"></app-search>
       </span>
-    <button
-        *ngIf="selectedWords.length > 0"
-        [ngClass]="{'purpleButton': true}"
+      <div class="add-btn-block" *ngIf="selectedWords.length > 0">
+        <a
         size="tiny"
-        class="ml-2"
-        nbButton (click)="assignWords(selectedWords)">Add</button>
+        class="custom-button dark small ml-2"
+         (click)="assignWords(selectedWords)">Add</a>
+      </div>
+
     </div>
 
     <app-loader [show]="loading$ | async"></app-loader>

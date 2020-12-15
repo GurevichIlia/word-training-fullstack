@@ -1,6 +1,6 @@
 import { NotificationsService } from 'src/app/shared/services/notifications.service';
 import { CsvHandlerService } from './../../core/services/csv-handler.service';
-import { fetchGroupsAction } from './../actions/groups.actions';
+import { fetchGroupsAction, VocabularyActionsType } from './../actions/vocabulary.actions';
 
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -9,11 +9,10 @@ import { of, combineLatest } from 'rxjs';
 import { switchMap, tap, map, catchError, take } from 'rxjs/operators';
 import { WordsService } from 'src/app/core/services';
 import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
-import { selectedGroupSelector } from 'src/app/modules/vocabulary/groups/store/selectors/groups.selectors';
 import { Word, WordGroup } from 'src/app/shared/interfaces';
 import { AppStateInterface } from 'src/app/store/reducers';
 import {
-  WordsActionsType,
+
   fetchWordsSuccessAction,
   fetchWordsErrorAction,
   addWordToUserWordsErrorAction,
@@ -28,8 +27,10 @@ import {
   addWordsFromCsvErrorAction,
   shareWordToGeneralWordsSuccessAction,
   shareWordToGeneralWordsErrorAction
-} from '../actions/words.actions';
+} from '../actions/vocabulary.actions';
 import { currentLanguageSelector } from '../selectors/language.selector';
+import { HttpErrorResponse } from '@angular/common/http';
+import { selectedGroupSelector } from '../selectors/vocabulary.selectors';
 
 @Injectable()
 export class WordsEffects {
@@ -43,7 +44,7 @@ export class WordsEffects {
   ) { }
 
   loadWords$ = createEffect(() => this.actions$.pipe(
-    ofType(WordsActionsType.FetchWords),
+    ofType(VocabularyActionsType.FetchWords),
     switchMap(_ => {
       return this.store$.pipe(
         select(currentLanguageSelector),
@@ -62,7 +63,7 @@ export class WordsEffects {
 
   addWord$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(WordsActionsType.AddWordToUserWords),
+      ofType(VocabularyActionsType.AddWordToUserWords),
       switchMap(({ word }: { word: Partial<Word> }) => {
         return combineLatest([
           this.store$.pipe(select(currentLanguageSelector), take(1)),
@@ -76,7 +77,7 @@ export class WordsEffects {
             map((words: Word[]) => {
               return addWordToUserWordsSuccessAction({ words });
             }),
-            catchError((err) => {
+            catchError((err: HttpErrorResponse) => {
               return of(addWordToUserWordsErrorAction({ error: err.error.message }))
             })
           ))
@@ -85,13 +86,21 @@ export class WordsEffects {
 
   addWordSuccess$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(WordsActionsType.AddWordToUserWordsSuccess),
+      ofType(VocabularyActionsType.AddWordToUserWordsSuccess),
       tap(_ => this.store$.dispatch(fetchGroupsAction()))
+    ), { dispatch: false })
+
+  addWordError$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(VocabularyActionsType.AddWordToUserWordsError),
+      tap((res: { error: string }) => {
+        this.notificationService.warning(res.error)
+      })
     ), { dispatch: false })
 
   deleteWord$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(WordsActionsType.DeleteUserWord),
+      ofType(VocabularyActionsType.DeleteUserWord),
       switchMap(({ word }: { word: Word }) =>
         this.wordsService.deleteWord(word)
           .pipe(
@@ -107,14 +116,14 @@ export class WordsEffects {
 
   deleteWordSuccess$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(WordsActionsType.DeleteUserWordsuccess),
+      ofType(VocabularyActionsType.DeleteUserWordsuccess),
       tap(_ => this.store$.dispatch(fetchGroupsAction()))
     ), { dispatch: false })
 
 
   saveEditedWord$ = createEffect(
     () => this.actions$.pipe(
-      ofType(WordsActionsType.SaveEditedWord),
+      ofType(VocabularyActionsType.SaveEditedWord),
       switchMap(({ word }: { word: Word }) =>
         this.wordsService.editWord(word)
           .pipe(
@@ -130,7 +139,7 @@ export class WordsEffects {
 
   addWordsFromCsv$ = createEffect(
     () => this.actions$.pipe(
-      ofType(WordsActionsType.AddWordsFromCsv),
+      ofType(VocabularyActionsType.AddWordsFromCsv),
       switchMap(({ file, selectedGroupId }: { file: File, selectedGroupId?: string }) => {
         if (!file) {
           return of(addWordsFromCsvErrorAction({ error: 'Please select CSV file' }))
@@ -154,10 +163,19 @@ export class WordsEffects {
       }))
   )
 
+  addWordsFromCsvSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(VocabularyActionsType.AddWordsFromCsvSuccess),
+      tap(_ => {
+        this.store$.dispatch(fetchGroupsAction())
+        this.notificationService.success('Words added')
+      })
+    ), { dispatch: false })
+
 
   markAsFavorite$ = createEffect(
     () => this.actions$.pipe(
-      ofType(WordsActionsType.SetWordAsFavorite),
+      ofType(VocabularyActionsType.SetWordAsFavorite),
       switchMap(({ word }: { word: Word }) =>
 
         this.wordsService.editWord({ ...word, isFavorite: !word.isFavorite })
@@ -173,7 +191,7 @@ export class WordsEffects {
 
   shareWordToGeneralWords$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(WordsActionsType.ShareWordToGeneralWords),
+      ofType(VocabularyActionsType.ShareWordToGeneralWords),
       switchMap(({ words }: { words: Word[] }) =>
         this.wordsService.shareWordsToGeneralList(words)
           .pipe(
@@ -189,7 +207,7 @@ export class WordsEffects {
 
   shareWordToGeneralWordsSuccess$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(WordsActionsType.ShareWordToGeneralWordsSuccess),
+      ofType(VocabularyActionsType.ShareWordToGeneralWordsSuccess),
       tap(_ => {
         this.notificationService.success('Shared')
       })

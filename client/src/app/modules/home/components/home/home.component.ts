@@ -10,8 +10,7 @@ import { globalLoaderSelector } from 'src/app/store/selectors/general.selector';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, OnDestroy {
-  subscription$ = new Subject();
+export class HomeComponent implements OnInit {
   globalLoader$: Observable<boolean>
 
   // currentLearningLanguage
@@ -26,51 +25,5 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.globalLoader$ = this.store$.pipe(select(globalLoaderSelector))
 
-    // this.store$.dispatch(getLearningLanguageAction())
-
-
-    // this.store$.pipe(
-    //   select(currentUserSelector),
-    //   tap(res => console.log('USER', res)),
-    //   filter(currentUser => currentUser !== null),
-    //   takeUntil(this.subscription$)
-    // ).subscribe(({ currentLanguage }) => {
-    //   if (currentLanguage) {
-    //     this.store$.dispatch(setLearninLanguageAction({ currentLanguage }))
-    //   }
-
-
-    // })
-
-
-
-    // // this.checkRoute();
-    // this.generaFacade.isUpdateWordList$()
-    //   .pipe(
-    //     startWith(' '),
-    //     takeUntil(this.subscription$)
-
-    //   )
-    //   .subscribe(() => {
-    //     this.getUserWords();
-    //   });
-  }
-
-  // getUserWords() {
-  //   this.generaFacade.getUserWordsFromServer()
-  //     .pipe(
-  //       take(1),
-  //       takeUntil(this.subscription$)
-
-  //     ).subscribe(() => console.log('USER WORD'));
-  // }
-
-  // checkRoute() {
-  //   this.router.events.subscribe(res => console.log('ROUTE', res));
-  // }
-
-  ngOnDestroy() {
-    this.subscription$.next();
-    this.subscription$.complete();
   }
 }

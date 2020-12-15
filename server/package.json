@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node ./dist/index.js",
-    "server": "nodemon src/index.ts",
+    "server": "nodemon ./src/index.ts",
     "client-install": "npm install --prefix client",
     "build": "tsc",
     "client": "npm run build --prod --prefix client",

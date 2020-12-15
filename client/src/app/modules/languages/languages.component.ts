@@ -1,4 +1,3 @@
-import { defaultGroups } from './../vocabulary/groups/store/reducers/groups.reducers';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
@@ -14,8 +13,9 @@ import {
 } from '../../store/selectors/language.selector';
 import { ActiveLanguagesTab } from './types/languages.enums';
 import { LanguageInterface } from './types/languages.interfaces';
-import { activeTabSelector, allLanguagesSelector, userlanguagesSelector } from './store/selectors/languages.selectors';
-import { setSelectedGroupAction } from '../vocabulary/groups/store/actions/groups.actions';
+import { activeTabSelector, allLanguagesSelector, userlanguagesSelector, isLoadingSelector } from './store/selectors/languages.selectors';
+import { selectVocabularyGroupAction } from 'src/app/store/actions/vocabulary.actions';
+import { defaultGroups } from 'src/app/core/models/groups.model';
 
 
 @Component({
@@ -30,7 +30,7 @@ export class LanguagesComponent implements OnInit, OnDestroy {
   activeTab$: Observable<ActiveLanguagesTab>;
   currentLearningLanguage$: Observable<LanguageInterface>;
   subscription$ = new Subject();
-
+  isLoading$: Observable<boolean>
 
   languageIdCandidateToLearn: string;
 
@@ -60,6 +60,7 @@ export class LanguagesComponent implements OnInit, OnDestroy {
       )
     // switchMap(allLanguages => this.languagesService.markAsAddedToUserLanguages(allLanguages, this.userLanguages$)))
     this.activeTab$ = this.store$.pipe(select(activeTabSelector))
+    this.isLoading$ = this.store$.pipe(select(isLoadingSelector))
   }
 
   fetchData() {
@@ -127,7 +128,7 @@ export class LanguagesComponent implements OnInit, OnDestroy {
 
     this.store$.dispatch(setCurrentLearningLanguageAction({ languageId }))
     const ALL_WORDS = 0
-    this.store$.dispatch(setSelectedGroupAction({ group: defaultGroups[ALL_WORDS] }))
+    this.store$.dispatch(selectVocabularyGroupAction({ group: defaultGroups[ALL_WORDS] }))
 
     // this.languagesService.setCurrentLanguageOnServer(languageId).
     // pipe(

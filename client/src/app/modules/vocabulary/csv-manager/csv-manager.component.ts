@@ -1,18 +1,18 @@
-import { AppStateInterface } from './../../../store/reducers';
-import { select, Store } from '@ngrx/store';
-import { CsvHandlerService } from './../../../core/services/csv-handler.service';
+import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { NbDialogService } from '@nebular/theme';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, TemplateRef, ElementRef } from '@angular/core';
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { filter, finalize, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { Word, WordGroup } from 'src/app/shared/interfaces';
-import { addWordsFromCsvAction, addWordsFromCsvErrorAction } from 'src/app/store/actions/words.actions';
-import { csvLoaderSelector, isCloseCsvHandlerSelector, isResetCsvHandlerSelector } from 'src/app/store/selectors/words.selectors';
+import { addWordsFromCsvAction } from 'src/app/store/actions/vocabulary.actions';
+import { csvLoaderSelector, isCloseCsvHandlerSelector, isResetCsvHandlerSelector } from 'src/app/store/selectors/vocabulary.selectors';
+import { AppStateInterface } from './../../../store/reducers';
 
 @Component({
   selector: 'app-csv-manager',
   templateUrl: './csv-manager.component.html',
   styleUrls: ['./csv-manager.component.scss'],
+  // changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class CsvManagerComponent implements OnInit {
   @ViewChild('instruction') insctructionModal: TemplateRef<any>;
@@ -46,14 +46,6 @@ export class CsvManagerComponent implements OnInit {
   }
 
   onUpload(file: File) {
-
-    // this.words$ = this.csvHandler.addNewWordsFromCSV(file, this.selectedGroup._id)
-    //   .pipe(
-    //     finalize(() => this.isLoading = false),
-    //     tap(res => console.log(res)),
-    //     tap(res => this.resetState())
-    //   );
-
     this.store$.dispatch(addWordsFromCsvAction({ file, selectedGroupId: this.selectedGroup._id }))
   }
 
@@ -69,6 +61,9 @@ export class CsvManagerComponent implements OnInit {
   resetState() {
     this.selectedFile = null;
     this.updateWordList.emit();
-    this.fileInput.nativeElement.value = '';
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+
+    }
   }
 }

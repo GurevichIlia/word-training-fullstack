@@ -1,3 +1,4 @@
+import { LoaderModule } from 'src/app/shared/components/loader/loader.module';
 import { WordListModule } from './../../shared/components/word-list/word-list.module';
 import { SharedModule } from './../../shared/shared.module';
 import { NgModule } from '@angular/core';
@@ -15,6 +16,7 @@ import { SearchModule } from 'src/app/shared/components/search/search.module';
     SharedModule,
     GeneralWordsRoutingModule,
     WordListModule,
+    LoaderModule,
     SearchModule
   ]
 })

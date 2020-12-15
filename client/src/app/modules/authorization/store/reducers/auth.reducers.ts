@@ -15,6 +15,7 @@ const authInitialState: AuthStateInterface = {
   currentUser: null,
   isLoggedIn: null,
   backendErrors: null,
+  isRegistrationSuccess: null
 }
 
 // export const authReducer = (state: AuthStateInterface = authInitialState, action: AuthActions) => {x

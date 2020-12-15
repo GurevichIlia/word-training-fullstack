@@ -1,3 +1,4 @@
+<app-loader [show]="isLoading$ |async"></app-loader>
 <nb-card>
   <!-- <nb-card-header class="title">
     <span>Shared words</span>
@@ -19,9 +20,13 @@
 
 
   <nb-card>
-    <nb-card-body >
-      <app-word-list [userId]="userId$ | async" [isShowDefaultOptions]="false" (action)="getActionFromChildren($event)"
-        [menuItems]="wordMenuItems" [words]="words">
+    <nb-card-body>
+      <app-word-list
+        [userId]="userId$ | async"
+        [isShowDefaultOptions]="false"
+        (action)="getActionFromChildren($event)"
+        [menuItems]="wordMenuItems"
+        [words]="words">
       </app-word-list>
       <div class="sub-title" *ngIf="words?.length === 0 && !filterValue.value">
         <span>Unfortunately no one has added words yet. <br> Be the first <br> Add words from <a

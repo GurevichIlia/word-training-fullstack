@@ -1,15 +1,9 @@
-import { WordTrainingFacade } from './../word-training.facade';
 import { animate, keyframes, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable, of, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
 import { Word } from 'src/app/shared/interfaces';
 import * as kf from '../../../shared/keyframes';
-import { WordTrainingService } from '../word-training.service';
-import { NotificationsService } from './../../../shared/services/notifications.service';
-import { AppRoutes } from 'src/app/core/routes/routes';
-import { NavigationService } from 'src/app/core';
+import { WordTrainingFacade } from './../word-training.facade';
 
 export interface CounterState {
   totalLearnedCards: number,
@@ -98,6 +92,7 @@ export class TrainComponent implements OnInit, OnDestroy {
   }
 
   saveWordsTrainingProgress() {
+    this.wordTrainingFacade.saveProgress();
     // this.wordTrainingService.updateWords()
     //   .pipe(
     //     takeUntil(this.unsubscribe$)
@@ -123,7 +118,7 @@ export class TrainComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // this.saveWordsTrainingProgress();
+    this.saveWordsTrainingProgress();
     // this.wordTrainingService.onFinishTraining();
     this.stopTraining()
     this.unsubscribe$.next();

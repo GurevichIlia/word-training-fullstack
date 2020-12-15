@@ -1,6 +1,6 @@
 
-<mat-error *ngIf="errorMessage$ | async as errorMessage">{{errorMessage}}</mat-error>
-
+<!-- <mat-error *ngIf="errorMessage$ | async as errorMessage">{{errorMessage}}</mat-error> -->
+<app-loader [show]="vocabularyLoader$ | async"></app-loader>
 
 <nb-card class="main-content">
 
@@ -21,11 +21,10 @@
     <app-groups></app-groups>
 
 
-
     <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
       <div class="d-flex">
         <a *ngIf="selectedGroup._id !== '2'" (click)="openModal('New word', modalUiWrapper)"
-          class="custom-button light mb-3 w-100" type="submit">Add word</a>
+          class="custom-button light mb-3 w-100">Add word</a>
 
         <i *ngIf="selectedGroup._id !== '2'" class="fas fa-file-csv" (click)="showUploader()"></i>
 
@@ -41,7 +40,7 @@
 
     <section class="csv-manager">
       <app-csv-manager [expanded]="isShowUploader" [selectedGroup]="selectedGroup$ | async"
-        (updateWordList)="updateWordsList(); showUploader()"></app-csv-manager>
+        (updateWordList)="showUploader()"></app-csv-manager>
     </section>
 
     <app-word-list (action)="getActionFromChildren($event)"
@@ -52,7 +51,7 @@
 
 
     <ng-container *ngIf="userWordsFiltredByGroupAndSearchValue$ | async as words">
-      <ng-container *ngIf="words && !words?.length">
+      <ng-container *ngIf="words && !words?.length && !(vocabularyLoader$ | async)">
         <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
           <div class="text-center"
             *ngIf="selectedGroup._id !== '2' && selectedGroup._id !== '1' && !searchValueControl.value">

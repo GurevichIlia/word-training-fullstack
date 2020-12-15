@@ -20,6 +20,7 @@ import {
 } from '@nebular/theme';
 import { DeviceDetectorModule } from 'ngx-device-detector';
 import { AskQuestionComponent } from './modals/ask-question/ask-question.component';
+import { SlideWordDirective } from './directives/slide-word.directive';
 
 
 

@@ -12,31 +12,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const errorHandler_1 = __importDefault(require("../utils/errorHandler"));
-const Word_1 = __importDefault(require("../Models/Word"));
-const User_1 = __importDefault(require("../Models/User"));
+const path_1 = __importDefault(require("path"));
 const GeneralWord_1 = __importDefault(require("../Models/GeneralWord"));
+const User_1 = __importDefault(require("../Models/User"));
+const Word_1 = __importDefault(require("../Models/Word"));
+const errorHandler_1 = __importDefault(require("../utils/errorHandler"));
+const file_handler_1 = require("../utils/file-handler");
 const index_1 = require("./../helper-functions/index");
 const csv_to_json_1 = require("./../utils/csv-to-json");
-const path_1 = __importDefault(require("path"));
-const file_handler_1 = require("../utils/file-handler");
 const fileHandler = new file_handler_1.FileHandler();
 class WordsController {
     constructor() {
         this.getAllWordsForCurrentUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                // const user = req.user as { _id: string, email: string }
+                // const user = await User.findOne({ _id: req.user }) as UserModel
+                // const currentUserLanguage = user.currentLanguage;
+                // if (!currentUserLanguage) throw new Error('Language does not exists')
                 // const words = await Word.find({
-                //     language: req.query.languageId,
+                //     user: user._id,
+                //     language: currentUserLanguage._id,
                 // });
-                const currentLanguage = req.query.languageId;
                 const user = yield User_1.default.findOne({ _id: req.user });
-                const words = index_1.getWordsByLanguage(currentLanguage, user.words);
-                // const newwords = words.map(word => {
-                //     word.assignedGroups.push('1')
-                //     return word
-                // })
-                res.status(200).json(words);
+                const currentUserLanguage = user.currentLanguage;
+                if (!currentUserLanguage)
+                    throw new Error('Language does not exists');
+                if (user.wordsForBackup.length === 0) {
+                    user.wordsForBackup = [...user.words];
+                }
+                const words = index_1.getWordsByLanguage(currentUserLanguage._id, user.words);
+                res.status(200).json({ words, user });
             }
             catch (error) {
                 errorHandler_1.default(res, error);
@@ -51,37 +55,52 @@ class WordsController {
         this.createNewWordForUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const user = yield User_1.default.findOne({ _id: req.user });
+                const currentUserLanguage = user.currentLanguage;
+                if (!currentUserLanguage)
+                    throw new Error('Language does not exists');
+                // if (!updatedUser || !updatedUser.currentLanguage) throw new Error('User or language does not exists')
                 const isExistWord = user.words.find(word => word.word === req.body.word && word.translation === req.body.translation);
                 if (isExistWord) {
-                    res.status(200).json({ newWord: isExistWord, message: 'Word already added' });
+                    res.status(403).json({ newWord: isExistWord, message: 'Word already exists' });
                     return;
                 }
                 const newWord = yield new Word_1.default({
                     word: req.body.word,
                     translation: req.body.translation,
                     isFavorite: req.body.isFavorite,
-                    language: req.query.languageId,
+                    language: currentUserLanguage._id,
+                    user: user._id,
                     assignedGroups: req.body.assignedGroups ? req.body.assignedGroups : []
                 });
+                console.log('NEW WORD', typeof newWord._id);
+                user.wordsForBackup.unshift(newWord);
                 user.words.unshift(newWord);
                 const updatedUser = yield User_1.default.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true });
-                res.status(201).json({ newWord, message: 'Successfully added' });
+                if (!updatedUser)
+                    throw new Error('User does not exists');
+                const words = index_1.getWordsByLanguage(currentUserLanguage._id, updatedUser.words);
+                res.status(201).json({ words, message: 'Successfully added', user: updatedUser, userOlder: user });
             }
             catch (error) {
                 errorHandler_1.default(res, error);
             }
         });
         this.addWordsFromCSV = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
             try {
                 const user = yield User_1.default.findOne({ _id: req.user });
+                const currentUserLanguage = user.currentLanguage;
+                if (!currentUserLanguage)
+                    throw new Error('Language does not exists');
                 // multer({ dest: "./uploads/" }).single("csvFile"), (file) => {
                 //     return file
                 // },
                 const csvFile = req.file;
-                const filePath = `${csvFile.path}`;
+                console.log('FILE PATH', csvFile.path);
+                const filePath = process.env.NODE_ENV === 'production' ? `${csvFile.path}` : `${path_1.default.resolve()}/${csvFile.path}`;
                 console.log('FILE PATH', filePath);
-
                 const wordsFromCSV = yield csv_to_json_1.CSVtoJson.createJsonArray(filePath);
+                console.log('ASSIGN GROUPS', req.query.assignedGroups);
                 const assignedGroups = JSON.parse(req.query.assignedGroups);
                 yield wordsFromCSV.forEach((word) => __awaiter(this, void 0, void 0, function* () {
                     if (!word || !word.Translation || !word.Word)
@@ -89,7 +108,7 @@ class WordsController {
                     const newWord = yield new Word_1.default({
                         word: word.Word,
                         translation: word.Translation,
-                        language: req.query.languageId,
+                        language: currentUserLanguage._id,
                         assignedGroups: assignedGroups ? assignedGroups : []
                     });
                     user.words.unshift(newWord);
@@ -98,59 +117,60 @@ class WordsController {
                 // const words = await new Word().collection.insertMany(wordsFromCSV);
                 // user.words = [...user.words, ...words.ops]
                 const updatedUser = yield User_1.default.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true });
-                res.status(201).json(updatedUser);
+                const words = index_1.getWordsByLanguage(currentUserLanguage._id, ((_a = updatedUser) === null || _a === void 0 ? void 0 : _a.words) || []);
+                res.status(201).json(words);
             }
             catch (error) {
                 errorHandler_1.default(res, error);
             }
         });
         this.addNewWords = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
+            var _b;
             try {
                 const user = yield User_1.default.findOne({ _id: req.user });
                 const newWords = req.body.words;
                 const words = yield new Word_1.default().collection.insertMany(newWords);
                 user.words = [...user.words, ...words.ops];
                 const updatedUser = yield User_1.default.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true });
-                res.status(201).json((_a = updatedUser) === null || _a === void 0 ? void 0 : _a.words);
-            }
-            catch (error) {
-                errorHandler_1.default(res, error);
-            }
-        });
-        this.updateUserWords = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _b;
-            try {
-                const wordsToUpdate = req.body.words;
-                const user = yield User_1.default.findOne({ _id: req.user });
-                const words = user.words.filter(word => word.language == req.query.languageId);
-                const updatedWords = wordsToUpdate.map(word => {
-                    const findedWord = words.find(existWord => existWord.id === word.id);
-                    if (findedWord) {
-                        return Object.assign(Object.assign({}, findedWord), word);
-                    }
-                    else {
-                        return word;
-                    }
-                });
-                user.words = updatedWords;
-                const updatedUser = yield User_1.default.findOneAndUpdate({ _id: req.user }, { $set: user }, { new: true });
-                // const updatedWord = await Word.findOneAndUpdate({ _id: word._id }, { $set: word })
-                // return updatedWord
-                // // const user = req.user as { _id: string, email: string }
-                // const test = await Promise.all(promises);
-                // const updatedWords = await Word.find({
-                //     language: req.query.languageId,
-                //     user: user._id
-                // });
-                // console.log()
                 res.status(201).json((_b = updatedUser) === null || _b === void 0 ? void 0 : _b.words);
             }
             catch (error) {
                 errorHandler_1.default(res, error);
             }
         });
+        this.updateUserWords = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            var _c;
+            try {
+                const wordsToUpdate = req.body.words;
+                const user = yield User_1.default.findOne({ _id: req.user });
+                const currentUserLanguage = user.currentLanguage;
+                if (!currentUserLanguage)
+                    throw new Error('Language does not exists');
+                // // let wordsByLanguage = user.words.filter(word => checkByLanguage(word.language, currentUserLanguage._id));
+                let words = [...user.words];
+                // console.log(' WORDS TO UPDATE', wordsToUpdate)
+                user.words = words.map(word => {
+                    const foundWord = wordsToUpdate.find(wordToUpdate => {
+                        // console.log(wordToUpdate._id, word._id)
+                        // console.log(typeof wordToUpdate._id, typeof word._id)
+                        // console.log(wordToUpdate.word, word.word)
+                        return wordToUpdate._id.toString() === word._id.toString();
+                    });
+                    if (foundWord) {
+                        return Object.assign({}, foundWord);
+                    }
+                    return word;
+                });
+                const updatedUser = yield User_1.default.findOneAndUpdate({ _id: req.user }, { $set: user }, { new: true });
+                const wordsByLanguage = index_1.getWordsByLanguage(currentUserLanguage._id, ((_c = updatedUser) === null || _c === void 0 ? void 0 : _c.words) || []);
+                res.status(201).json(wordsByLanguage);
+            }
+            catch (error) {
+                errorHandler_1.default(res, error);
+            }
+        });
         this.editWordByIdForCurrentUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            var _d;
             try {
                 const user = yield User_1.default.findOne({ _id: req.user });
                 const editedWord = req.body;
@@ -163,23 +183,27 @@ class WordsController {
                 //     { $set: req.body },
                 //     { new: true }
                 // )
-                res.status(200).json(editedWord);
+                if (!updatedUser || !updatedUser.currentLanguage)
+                    throw new Error('User or language does not exists');
+                const words = index_1.getWordsByLanguage(updatedUser.currentLanguage._id, (_d = updatedUser) === null || _d === void 0 ? void 0 : _d.words);
+                res.status(200).json({ words });
             }
             catch (error) {
                 errorHandler_1.default(res, error);
             }
         });
         this.deleteWordByIdForCurrentUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            var _e;
             try {
                 const user = yield User_1.default.findOne({ _id: req.user });
-                // user.words = user.words.filter(word => word._id.toString() !== req.params.wordId)
-                // const deletedWordIndex = user.words.findIndex(word => word._id.toString() == req.params.wordId)
-                const deletedWord = user.words.splice(+req.params.wordIndex, 1);
-                // console.log('DELETED WORD', deletedWord, new Date().getTime())
+                user.words = user.words.filter(word => word._id.toString() !== req.params.wordId);
                 const updatedUser = yield User_1.default.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true });
                 // console.log('USER UPDATED', new Date().getTime())
+                if (!updatedUser || !updatedUser.currentLanguage)
+                    throw new Error('User or language does not exists');
+                const words = index_1.getWordsByLanguage(updatedUser.currentLanguage._id, (_e = updatedUser) === null || _e === void 0 ? void 0 : _e.words);
                 res.status(200).json({
-                    word: deletedWord,
+                    words,
                     message: 'Removed'
                 });
             }
@@ -198,7 +222,11 @@ class WordsController {
         // }
         this.getGeneralWords = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const words = yield GeneralWord_1.default.find({ language: req.query.languageId });
+                const user = yield User_1.default.findOne({ _id: req.user });
+                const currentUserLanguage = user.currentLanguage;
+                if (!currentUserLanguage)
+                    throw new Error('Language does not exists');
+                const words = yield GeneralWord_1.default.find({ language: currentUserLanguage._id });
                 res.status(200).json(words);
             }
             catch (error) {
@@ -208,19 +236,23 @@ class WordsController {
         this.addWordsToGeneralList = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const user = yield User_1.default.findOne({ _id: req.user });
+                const currentUserLanguage = user.currentLanguage;
+                if (!currentUserLanguage)
+                    throw new Error('Language does not exists');
                 const words = req.body.words;
                 if (words && words.length > 0) {
                     words.forEach((word) => __awaiter(this, void 0, void 0, function* () {
                         const newWord = yield new GeneralWord_1.default({
                             word: word.word,
                             translation: word.translation,
-                            language: req.query.languageId,
+                            language: currentUserLanguage._id,
                             assignedGroups: word.assignedGroups,
                             user: user._id
                         }).save();
                     }));
                 }
-                res.status(201).json({ addedWord: '' });
+                const generalWords = yield GeneralWord_1.default.find({ language: currentUserLanguage._id });
+                res.status(201).json({ addedWord: '', generalWords });
             }
             catch (error) {
                 errorHandler_1.default(res, error);
@@ -230,8 +262,14 @@ class WordsController {
             try {
                 console.log('WORD ID', req.query.wordId);
                 const deletedWord = yield GeneralWord_1.default.findOneAndRemove({ _id: req.query.wordId });
+                const user = yield User_1.default.findOne({ _id: req.user });
+                const currentUserLanguage = user.currentLanguage;
+                if (!currentUserLanguage)
+                    throw new Error('Language does not exists');
+                const words = yield GeneralWord_1.default.find({ language: currentUserLanguage._id.toString() });
                 if (deletedWord) {
                     res.status(200).json({
+                        words,
                         word: deletedWord,
                         message: 'Removed'
                     });
@@ -247,6 +285,9 @@ class WordsController {
     }
 }
 exports.WordsController = WordsController;
+function checkByLanguage(language, language2) {
+    return language.toString() === language2.toString();
+}
 // this.router.get("words/getAllWords", this.wordsController);
 // this.router.get("words/getWordById", this.wordsController);
 // this.router.post("words/addNewWord", this.wordsController);

@@ -47,7 +47,8 @@ export class TrainResultComponent implements OnInit, OnDestroy {
     // this.trainResultService.clearCounterState();
     // this.trainResultService.setSelectedGroupForTraining(group);
     // this.trainResultService.startTraining();
-    this.router.navigate(['word-training/basic']);
+    this.wordTrainingFacade.repeatTraining();
+
   }
 
   goToVocabulary() {
@@ -67,6 +68,7 @@ export class TrainResultComponent implements OnInit, OnDestroy {
   // }
 
   ngOnDestroy() {
+    this.wordTrainingFacade.resetWordTrainingState()
     this.subscription$.next();
     this.subscription$.complete();
   }

@@ -26,6 +26,11 @@ export const isLoggedInSelector = createSelector(
   state => state.isLoggedIn
 );
 
+export const isRegistrationSuccessSelector = createSelector(
+  authFeatureSelector,
+  state => state.isRegistrationSuccess ? { isSuccess: true, user: state.currentUser } : { isSuccess: false, error: state.backendErrors }
+);
+
 // export const currentLanguageSelector = createSelector(
 //   authFeatureSelector,
 //   state => !state.currentUser ? null : state.currentUser.currentLanguage || false

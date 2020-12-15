@@ -1,20 +1,22 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
-import { filter, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, switchMap, tap } from 'rxjs/operators';
 import { NavigationService } from 'src/app/core';
-import { AppRoutes } from 'src/app/core/routes/routes';
 import { GeneralFacade } from 'src/app/general.facade';
 import { Word } from 'src/app/shared/interfaces';
-import { assignWordsToGroupAction } from 'src/app/store/actions/groups.actions';
-import { closeAssigningBottomSheetAction } from 'src/app/store/actions/words.actions';
+import { assignWordsToGroupAction, closeAssigningBottomSheetAction } from 'src/app/store/actions/vocabulary.actions';
 import { AppStateInterface } from 'src/app/store/reducers';
 import { WordGroup } from './../../../shared/interfaces';
-import { allWordsSelector, isBottomSheetLoadingSelector, isCloseWordsToAssignSelector } from './../../../store/selectors/words.selectors';
+import {
+  allWordsSelector,
+  isBottomSheetLoadingSelector,
+  isCloseWordsToAssignSelector,
+  selectedGroupSelector
+} from './../../../store/selectors/vocabulary.selectors';
 import { AssignWordsService } from './../assign-words.service';
-import { selectedGroupSelector } from './../groups/store/selectors/groups.selectors';
 import { VocabularyFacade } from './../vocabulary.facade';
 
 @Component({
@@ -32,11 +34,8 @@ export class AssignWordListComponent implements OnInit, OnDestroy {
   isCloseBottomSheet$: Observable<boolean>
   goBackAnimation = false
   constructor(
-    private generalFacade: GeneralFacade,
     private assignService: AssignWordsService,
     private vocabularyFacade: VocabularyFacade,
-    private navigation: NavigationService,
-
     private store$: Store<AppStateInterface>,
     private _bottomSheetRef: MatBottomSheetRef<AssignWordListComponent>
   ) { }
@@ -60,7 +59,6 @@ export class AssignWordListComponent implements OnInit, OnDestroy {
         switchMap((selectedGroup: WordGroup) =>
           this.vocabularyFacade.removeWordsAlreadyExistInThisGroup(
             this.store$.pipe(select(allWordsSelector)), selectedGroup._id)),
-        // map(words => words.slice(0, 20))
       )
 
 
@@ -84,34 +82,12 @@ export class AssignWordListComponent implements OnInit, OnDestroy {
     this.store$.dispatch(assignWordsToGroupAction({ selectedWordsIds }))
 
 
-    // const data = { groupId, selectedWords };
-    // this.loading = true;
-    // this.assignService.assignWords(data)
-    //   .pipe(
-    //     finalize(() => this.loading = false),
-    //     takeUntil(this.subscription$)
-    //   )
-    //   .subscribe(res => {
-    //     console.log('RES AFTER ASSIGN', res);
-    //     this.generalFacade.updateWordList();
-    //   });
-
 
   }
 
-  // filterBySearchValue() {
-  //   this.vocabularyFacade
-  // }
 
-  // closeDialog() {
-  //   this.dialogRef.close()
-  // }
   onClose() {
     this.store$.dispatch(closeAssigningBottomSheetAction())    // this.goBackAnimation = true
-    // setTimeout(() =>
-    //   this.navigation.navigateTo(AppRoutes.Vocabulary),
-    //   100
-    // )
   }
 
   onScroll() {

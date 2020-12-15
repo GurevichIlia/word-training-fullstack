@@ -1,10 +1,15 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store'
 import { AppStateInterface } from '../reducers'
-import { GeneralStateInterface, GENERAL_REDUCER_NODE } from '../reducers/general.reducer'
+import { GENERAL_WORDS_REDUCER_NODE, IGeneralWordsState } from '../reducers/general-words.reducer'
 
-const featureSelector = createFeatureSelector<AppStateInterface, GeneralStateInterface>(GENERAL_REDUCER_NODE)
+const featureSelector = createFeatureSelector<AppStateInterface, IGeneralWordsState>(GENERAL_WORDS_REDUCER_NODE)
 
 export const generalWordsSelector = createSelector(
   featureSelector,
   state => state.generalWords
+)
+
+export const isLoadingSelector = createSelector(
+  featureSelector,
+  state => state.isLoading
 )

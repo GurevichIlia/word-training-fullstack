@@ -37,7 +37,7 @@ class AuthController {
                     res.status(200).json({
                         token: `Bearer ${token}`,
                         message: "Successfully",
-                        userId: candidate._id,
+                        currentUser: candidate,
                         currentLanguage: candidate.currentLanguage
                     });
                     // await transporter.sendMail(Emails.forgotPassword('solfire@yandex.ru'))
@@ -57,6 +57,7 @@ class AuthController {
         this.registration = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const body = req.body;
             const candidate = yield User_1.default.findOne({ email: body.email });
+            // console.log('CANDIDATE', candidate)
             if (candidate) {
                 res.status(409).json({
                     message: "This email is already exist"
@@ -84,6 +85,19 @@ class AuthController {
                 const user = yield User_1.default.findOne({ _id: req.user });
                 if (user) {
                     res.status(200).json({ userId: user._id });
+                }
+            }
+            catch (error) {
+                errorHandler_1.default(res, error);
+            }
+        });
+        this.getCurrentUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const user = yield User_1.default.findOne({ _id: req.user });
+                console.log('USER test', req.user);
+                if (user) {
+                    // const userClone = { ...user, password: '' }
+                    res.status(200).json(user);
                 }
             }
             catch (error) {

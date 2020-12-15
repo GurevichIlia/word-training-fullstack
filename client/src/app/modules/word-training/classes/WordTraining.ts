@@ -71,7 +71,7 @@ export class WordTraining {
 
   private static removeThreeLastLearnedWords = (words: Word[], previousWordsInCache: Word[]): Word[] => {
     const length = previousWordsInCache.length;
-    debugger
+
     if (length > 0) {
       let threeLastWords: Word[] = []
       let threeLastWordsIds: string[] = []

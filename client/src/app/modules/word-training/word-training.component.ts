@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { WordTrainingFacade } from './word-training.facade';
+import { Component, OnDestroy } from '@angular/core';
 
 
 
@@ -11,13 +12,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./word-training.component.scss'],
 
 })
-export class WordTrainingComponent {
+export class WordTrainingComponent implements OnDestroy {
 
   constructor(
-
+    private wordTrainingFacade: WordTrainingFacade
   ) {
 
   }
 
-
+  ngOnDestroy() {
+    this.wordTrainingFacade.resetWordTrainingState();
+  }
 }

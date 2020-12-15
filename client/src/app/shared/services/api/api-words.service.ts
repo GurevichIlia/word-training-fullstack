@@ -48,8 +48,8 @@ export class ApiWordsService {
     return this.http.delete<DeleteUserWordResponseInterface>(`${BASE_URL}/api/vocabulary/deleteWord/${wordId}`);
   }
 
-  updateWords(words: Word[], language: LanguageInterface) {
-    return this.http.post<Word[]>(`${BASE_URL}/api/vocabulary/updateWords?languageId=${language._id}`, { words });
+  updateWords(words: Word[]) {
+    return this.http.post<Word[]>(`${BASE_URL}/api/vocabulary/updateWords`, { words });
 
   }
 

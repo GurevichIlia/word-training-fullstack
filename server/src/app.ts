@@ -44,16 +44,18 @@ app.use("/api/word-group", new WordGroupRoutes().router);
 
 // process.env.NODE_ENV = 'production'
 console.log('SENDING HTML', path.resolve(
-    __dirname, 'client', 'dist', 'word-training', 'index.html'
+    '', 'client', 'dist', 'word-training', 'index.html'
 ))
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/dist/word-training'))
 
     app.get('*', (req, res) => {
-        res.sendFile(
+        console.log('SENDING PATH', path.resolve(
+            'client', 'dist', 'word-training', 'index.html'))
 
+        res.sendFile(
             path.resolve(
-                __dirname, 'client', 'dist', 'word-training', 'index.html'
+               __dirname, 'client', 'dist', 'word-training', 'index.html'
             )
         )
 

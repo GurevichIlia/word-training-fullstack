@@ -102,7 +102,8 @@ const reducers = createReducer(
     DeleteUserLanguageAction,
     (state): LanguagesStateInterface => ({
       ...state,
-      isLoading: true
+      isLoading: true,
+
     })
   ),
   on(
@@ -112,7 +113,7 @@ const reducers = createReducer(
       isLoading: false,
       userLanguages: action.userLanguages.map(lang => ({ ...lang })),
       activeLanguagesTab: action.userLanguages.length > 0 ? ActiveLanguagesTab.UserLanguages : ActiveLanguagesTab.AllLanguages,
-      // currentLearningLanguage: action.userLanguages.length === 0 ? null : state.currentLearningLanguage
+      currentLearningLanguage: null
     })
   ),
   on(

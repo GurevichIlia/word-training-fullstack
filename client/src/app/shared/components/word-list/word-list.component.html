@@ -1,35 +1,37 @@
 <i class="fas fa-angle-double-up to-top-button"  *ngIf="isShowGoToTopButton$ | async" (click)="goToTop()"></i>
+<div class="scroll-container">
+    <div class="word-list" *ngIf="words"
+      #wordsList
+      infiniteScroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="10"
+      (scrolled)="onScroll()">
 
-<div class="word-list" *ngIf="words"
-  #wordsList
-  infiniteScroll
-  [infiniteScrollDistance]="2"
-  [infiniteScrollThrottle]="10"
-  (scrolled)="onScroll()">
+
+      <ng-container *ngIf="words.length !== 0">
+
+        <div  class="search-results" >
+
+          <ng-container *ngFor="let word of words | slice : 0 : showItems ; trackBy: trackWords; let i = index">
+
+            <app-word
+              (action)="sendAction($event)"
+              [userId]="userId" [word]="word"
+              [isShowMenu]="isShowMenu"
+              [menuItems]="menuItems"
+              [isShowDefaultOptions]="isShowDefaultOptions">
+            </app-word>
 
 
-  <ng-container *ngIf="words.length !== 0">
+          </ng-container>
 
-    <div  class="search-results" >
-
-      <ng-container *ngFor="let word of words | slice : 0 : showItems ; trackBy: trackWords; let i = index">
-
-        <app-word
-          (action)="sendAction($event)"
-          [userId]="userId" [word]="word"
-          [isShowMenu]="isShowMenu"
-          [menuItems]="menuItems"
-          [isShowDefaultOptions]="isShowDefaultOptions">
-        </app-word>
+        </div>
 
 
       </ng-container>
 
     </div>
-
-
-  </ng-container>
-
 </div>
+
 
 

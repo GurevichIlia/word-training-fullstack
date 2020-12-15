@@ -18,7 +18,7 @@ import { WordListModule } from './../../shared/components/word-list/word-list.mo
 import { AssignWordListComponent } from './assign-word-list/assign-word-list.component';
 import { CsvManagerComponent } from './csv-manager/csv-manager.component';
 import { GroupsModule } from './groups/groups.module';
-import { vocabularyReducer, VOCABULARY_REDUCER_NODE } from './store/reducers/vocabulary.reducers';
+import { vocabularyReducer, VOCABULARY_REDUCER_NODE } from '../../store/reducers/vocabulary.reducers';
 import { VocabularyComponent } from './vocabulary.component';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 

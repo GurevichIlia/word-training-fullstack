@@ -1,11 +1,14 @@
 <i [style.font-size]="fontSize" class="ml-1" [matMenuTriggerFor]="menu" class="fas fa-ellipsis-v"></i>
 <mat-menu #menu="matMenu" class="matmenu">
 
-  <div class="menuitem" (click)="onAction(item.action)" *ngFor="let item of menuItems">
-    <i [class]="item.icon"></i>
+  <ng-container *ngFor="let item of menuItems">
+    <div class="menuitem" (click)="onAction(item.action)" *ngIf="item.isShow !== false" >
+      <i [class]="item.icon"></i>
 
-    <span class="ml-2">{{item.title}}</span>
-  </div>
+      <span class="ml-2">{{item.title}}</span>
+    </div>
+  </ng-container>
+
 
 
 

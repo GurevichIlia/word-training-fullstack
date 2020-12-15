@@ -8,12 +8,8 @@ import { GeneralState } from './../../general.state';
   providedIn: 'root'
 })
 export class GeneralService {
-  // currentLearningLanguage = new BehaviorSubject<Language>(null);
-  // currentLearningLanguage$ = this.currentLearningLanguage.asObservable();
 
-  // quantityWords = new BehaviorSubject<number>(null);
-  // quantityWords$ = this.quantityWords.asObservable();
-  updateWords$ = new Subject<void>();
+  // updateWords$ = new Subject<void>();
 
   constructor(
     private generalState: GeneralState
@@ -22,26 +18,8 @@ export class GeneralService {
 
   }
 
-  updateWordList() {
-    this.updateWords$.next();
-  }
-
-  // setCurrentLanguage(language: Language) {
-  //   this.generalState.setCurrentLanguage(language);
-  // }
-  // setCurrentLanguage(language: Language) {
-  //   this.currentLearningLanguage.next(language);
-
-  //   // = of(language);
-  // }
-
-
-  // setQuantityWords(value: number) {
-  //   this.quantityWords.next(value);
-  // }
-
-  // getQuantityWords$() {
-  //   return this.quantityWords$;
+  // updateWordList() {
+  //   this.updateWords$.next();
   // }
 
   compareFn(c1: any, c2: any): boolean {
