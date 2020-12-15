@@ -3,3 +3,5 @@ node_modules
 # keys.dev.ts
 output.pdf
 token.json
+credentials.json
+app.yaml
