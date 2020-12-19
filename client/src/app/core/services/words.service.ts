@@ -1,14 +1,17 @@
-import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
+import { EditUserWordResponseInterface, DeleteUserWordResponseInterface, AddUserWordResponseInterface } from './../models/words.interface';
+import { IModalData } from './../../shared/modals/ask-question/ask-question.component';
+import { AskQuestionComponent } from 'src/app/shared/modals/ask-question/ask-question.component';
+import { MatDialog } from '@angular/material/dialog';
 import { Injectable } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { EMPTY, Observable, of, Subject, throwError } from 'rxjs';
-import { catchError, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { EMPTY, Observable, Subject, throwError } from 'rxjs';
+import { catchError, map, tap, switchMap, finalize } from 'rxjs/operators';
+import { GeneralWord } from 'src/app/modules/general-words/types/general-words.interfaces';
+import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
 import { Word, WordGroup } from 'src/app/shared/interfaces';
 import { ApiWordsService } from 'src/app/shared/services/api/api-words.service';
-import { GeneralFacade } from './../../general.facade';
-import { ALL_WORDS_GROUP, FAVORITES, GeneralState } from './../../general.state';
 import { NotificationsService } from './../../shared/services/notifications.service';
-import { GeneralWord } from 'src/app/modules/general-words/types/general-words.interfaces';
+import { DefaultGroupId } from './../enums/group.enum';
+import { ModalService } from 'src/app/shared/services/modal.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,30 +19,14 @@ import { GeneralWord } from 'src/app/modules/general-words/types/general-words.i
 export class WordsService {
   private updateUsersWordList$ = new Subject<void>();
   constructor(
-    private generalState: GeneralState,
     private apiWords: ApiWordsService,
     private notification: NotificationsService,
-    private generalFacade: GeneralFacade,
-    private store$: Store
+    private modalService: ModalService
 
   ) { }
 
-  // getAllUserWords$() {
-  //   return this.generalState.getUserWords$()
-  //     .pipe(
-  //       filter(words => words !== null)
-  //     );
-  // }
 
   getAllUserWords$(language: LanguageInterface): Observable<Word[]> {
-    // return this.generalFacade.getCurrentLearningLanguage$()
-    //   .pipe(
-    //     switchMap((lang: Language): Observable<Word[]> => {
-    //       return this.apiWords.getWordsFromServerForUser(lang._id);
-    //     })
-    //   );
-
-
     return this.apiWords.getWordsFromServerForUser(language._id)
       .pipe(
         // map(words => this.convertToArray(words)),
@@ -47,36 +34,15 @@ export class WordsService {
         tap(words => console.log('WORDS FROM SERVER', words))
       );
 
-
-
-    // if (!this.generalState.getUserWords()) {
-    //   return this.generalFacade.getCurrentLearningLanguage$()
-    //     .pipe(
-    //       switchMap(lang => this.updateUsersWordList$.pipe(
-    //         startWith(''),
-    //         switchMap(_ => {
-    //           return this.apiWords.getWordsFromServerForUser(lang._id)
-    //         })
-    //       ).pipe(
-    //         switchMap(words => {
-    //           this.generalState.setUserWords(words);
-    //           this.setWordsQuantity();
-    //           return this.generalState.getUserWords$();
-    //         })
-    //       ))
-    //     )
-    // }
-
-    // return this.generalState.getUserWords$();
   }
 
-  addNewWord(word: Partial<Word>, language: LanguageInterface, selectedGroupId?: string): Observable<Word[]> {
-    const updatedWord = { ...word, assignedGroups: [ALL_WORDS_GROUP._id, selectedGroupId] };
+  addNewWord(word: Partial<Word>, language: LanguageInterface, selectedGroupId?: string): Observable<AddUserWordResponseInterface> {
+    const updatedWord = { ...word, assignedGroups: [DefaultGroupId.ALL_WORDS, selectedGroupId] };
 
     return this.apiWords.addWord(updatedWord, language)
       .pipe(
         // map(res => this.convertToArray(res.words)),
-        map(res => res.words),
+        map(res => res),
         // map(words => words.reverse()),
         catchError(err => {
           return throwError(err)
@@ -84,15 +50,35 @@ export class WordsService {
       )
   }
 
-  deleteWord(word: Word): Observable<Word[]> {
-    return this.apiWords.deleteWordFromServer(word._id)
-      .pipe(
-        // map(res => this.convertToArray(res.words)),
-        map(res => res.words),
+  deleteWord(word: Word): Observable<DeleteUserWordResponseInterface> {
+    const data: IModalData = {
+      title: `Would you like to delete ${word.word}?`
+    }
+    const modalRef = this.modalService.openModal(AskQuestionComponent, { data })
 
-        catchError(err => {
-          return throwError(err)
-        }),
+    return this.modalService.dataFromModal$
+      .pipe(
+        switchMap(answer => {
+          if (answer.action === 'success') {
+            this.modalService.isLoading = true
+            return this.apiWords.deleteWordFromServer(word._id)
+              .pipe(
+                // map(res =>
+                //   // this.convertToArray(res.words)
+                // ),
+                finalize(() => this.modalService.closeModal()),
+                map(res => res),
+
+                catchError(err => {
+                  this.modalService.errorMessage = err.message
+                  return throwError(err)
+                }),
+              )
+          } else {
+            this.modalService.closeModal()
+            return EMPTY
+          }
+        })
       )
   }
 
@@ -110,6 +96,46 @@ export class WordsService {
       )
   }
 
+  deleteWordFromGroup(word: Word, groupId: string): Observable<EditUserWordResponseInterface> {
+
+    const filtredWord = {
+      ...word,
+      assignedGroups: word.assignedGroups.filter(existiongGroupId => existiongGroupId.toString() !== groupId.toString())
+    }
+
+    const data: IModalData = {
+      title: `Would you like to delete ${word.word}?`
+    }
+    const modalRef = this.modalService.openModal(AskQuestionComponent, { data })
+
+    return this.modalService.dataFromModal$
+      .pipe(
+        switchMap(answer => {
+          if (answer.action === 'success') {
+            this.modalService.isLoading = true
+            return this.apiWords.editWord(filtredWord)
+              .pipe(
+                // map(res =>
+                //   // this.convertToArray(res.words)
+                // ),
+                finalize(() => this.modalService.closeModal()),
+                map(res => res),
+
+                catchError(err => {
+                  this.modalService.errorMessage = err.message
+                  return throwError(err)
+                }),
+              )
+          } else {
+            this.modalService.closeModal()
+            return EMPTY
+          }
+        })
+      )
+
+
+  }
+
   private convertToArray<T, K extends keyof T>(obj: T): T[K][] {
     const keys = Object.keys(obj)
 
@@ -123,36 +149,13 @@ export class WordsService {
     return arr
   }
 
-  // filterWordsByGroup(selectedGroup$: Observable<WordGroup>, words$: Observable<Word[]>): Observable<Word[]> {
-  //   return selectedGroup$.pipe(startWith(ALL_WORDS_GROUP))
-  //     .pipe(
-  //       switchMap((group: WordGroup) => {
-  //         if (group._id === ALL_WORDS_GROUP._id) {
-
-  //           return words$;
-
-  //         } else if (group._id === FAVORITES._id) {
-
-  //           return this.filterWordsByFavorite(words$);
-
-  //         } else {
-  //           return words$
-  //             .pipe(map(words => {
-  //               return words.filter(word => word.assignedGroups.includes(group._id))
-  //             }))
-  //         }
-
-  //       }),
-  //     );
-  // }
-
   filterWordsByGroup(selectedGroup: WordGroup, words: Word[]): Word[] {
     if (!selectedGroup) return
-    if (selectedGroup._id === ALL_WORDS_GROUP._id) {
+    if (selectedGroup._id === DefaultGroupId.ALL_WORDS) {
 
       return words;
 
-    } else if (selectedGroup._id === FAVORITES._id) {
+    } else if (selectedGroup._id === DefaultGroupId.FAVORITES) {
 
       return this.filterWordsByFavorite(words);
 
@@ -164,6 +167,7 @@ export class WordsService {
 
 
   }
+
   filterBySearcValue(searchValue: string, words: (Word | GeneralWord)[]) {
     if (searchValue) {
 
@@ -181,29 +185,6 @@ export class WordsService {
   private filterWordsByFavorite(allWords: Word[]) {
     return allWords.filter(word => word.isFavorite)
   }
-  // filterBySearcValue(searchValue: string, words: Observable<(Word | GeneralWord)[]>) {
-  //   return words
-  //     .pipe(
-  //       map(wordsForFilter => {
-
-  //         if (searchValue) {
-
-  //           return wordsForFilter.filter(word => word.word.toLowerCase().includes(searchValue.toLowerCase()) ||
-  //             word.translation.toLowerCase().includes(searchValue.toLowerCase()));
-
-  //         } else {
-
-  //           return wordsForFilter;
-
-  //         }
-  //       }));
-  // }
-
-  // private filterWordsByFavorite(allWords: Observable<Word[]>) {
-  //   return allWords.pipe(
-  //     map(words => words.filter(word => word.isFavorite))
-  //   );
-  // }
 
   addNewWordsFromCSV({ file, selectedGroupId }: { file: File, selectedGroupId?: string }) {
     const formData = new FormData();
@@ -212,7 +193,7 @@ export class WordsService {
     // return this.generalState.getCurrentLearningLanguage$()
     //   .pipe(
     //     switchMap(language => {
-    const assignedGroups = JSON.stringify([ALL_WORDS_GROUP._id, selectedGroupId]);
+    const assignedGroups = JSON.stringify([DefaultGroupId.ALL_WORDS, selectedGroupId]);
     console.log('GROUPS', assignedGroups);
     return this.apiWords.addWordsFromCSV(formData, assignedGroups).pipe(
       catchError(err => {
@@ -233,11 +214,6 @@ export class WordsService {
           return throwError(err)
         }),
       )
-  }
-
-
-  setWordsQuantity() {
-    this.generalState.setQuantityWords$(this.generalState.getUserWords().length);
   }
 
   updateUsersWordList(): void {

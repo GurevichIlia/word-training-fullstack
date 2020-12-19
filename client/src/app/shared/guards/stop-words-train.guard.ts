@@ -19,7 +19,6 @@ export class StopWordsTrainGuard implements CanDeactivate<TrainComponent> {
 
   canDeactivate(component: TrainComponent, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot, nextState?: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
     return this.store$.pipe(select(isTrainStartedSelector), map(isStarted => {
-      debugger
       if (isStarted) {
         if (confirm('Do you want to stop training?')) {
 

@@ -1,4 +1,4 @@
-<span class="text-center login-title">Welcome</span>
+<span class="text-center login-title">Login</span>
 
 
 
@@ -11,7 +11,7 @@
 <form [formGroup]="loginForm" class="text-center">
   <div class="mb-2">
 
-    <input [ngClass]="{'error': isShowLoginError}" autocomplete="email" formControlName="email" type="email" nbInput
+    <input [ngClass]="{'error': isShowLoginError}" autocomplete="email" formControlName="email" name="email" type="email" nbInput
       fullWidth placeholder="Email">
     <ng-container *ngIf="loginForm.get('email').touched && loginForm.get('email').hasError">
       <span class="error-message" *ngIf="loginForm.get('email').hasError('required') ">
@@ -32,9 +32,7 @@
 
   <div class="row justify-content-center mt-5">
 
-    <a (click)="login()" type="submit" class="col-8 mb-2 custom-button dark"
-      [ngClass]="{'confirm-btn': !(isSubmittings$ | async), 'disabled':isSubmittings$ | async}"
-    >Login</a>
+    <a (click)="login()"  class="col-8 mb-2 custom-button dark" [ngClass]="{'disabled':isSubmittings$ | async}">Login</a>
 
     <div class="col-12 mt-2">
       <span class="sign-up-btn">Don't have an account?<a [routerLink]="['/registration']"> Sign Up</a></span>

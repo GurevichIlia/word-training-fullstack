@@ -1,4 +1,3 @@
-import { ApiWordsService } from './../../shared/services/api/api-words.service';
 import { Injectable } from '@angular/core';
 import { GroupsApiService } from 'src/app/modules/vocabulary/groups/services/groups-api.service';
 

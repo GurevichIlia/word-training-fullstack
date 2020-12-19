@@ -21,6 +21,10 @@ export enum VocabularyActionsType {
   DeleteUserWordsuccess = '[Vocabulary] Delete user word success',
   DeleteUserWordError = '[Vocabulary] Delete user word error',
 
+  DeleteUserWordFromGroup = '[Vocabulary] Delete user word from group',
+  DeleteUserWordFromGroupsuccess = '[Vocabulary] Delete user word from group success',
+  DeleteUserWordFromGroupError = '[Vocabulary] Delete user word from group error',
+
   SetWordAsFavorite = '[Vocabulary] Set word as favorite',
   SetWordAsFavoriteSuccess = '[Vocabulary] Set word as favorite success',
   SetWordAsFavoriteError = '[Vocabulary] Set word as favorite error',
@@ -44,27 +48,27 @@ export enum VocabularyActionsType {
 
 
   // GROUPS ACTIONS
-  FetchGroups = '[Groups] fetch Groups',
-  FetchGroupsSuccess = '[Groups] fetch Groups success',
-  FetchGroupsError = '[Groups] fetch Groups error',
+  FetchGroups = '[Vocabulary] fetch Groups',
+  FetchGroupsSuccess = '[Vocabulary] fetch Groups success',
+  FetchGroupsError = '[Vocabulary] fetch Groups error',
 
-  AddGroupToUserGroups = '[Groups] Add Group to user Groups',
-  AddGroupToUserGroupsSuccess = '[Groups] Add Group to user Groups success',
-  AddGroupToUserGroupsError = '[Groups] Add Group to user Groups error',
+  AddGroupToUserGroups = '[Vocabulary] Add Group to user Groups',
+  AddGroupToUserGroupsSuccess = '[Vocabulary] Add Group to user Groups success',
+  AddGroupToUserGroupsError = '[Vocabulary] Add Group to user Groups error',
 
-  SaveEditedGroup = '[Groups] Save edited Group',
-  SaveEditedGroupsuccess = '[Groups] Save edited Group success',
-  SaveEditedGroupError = '[Groups] Save edited Group error',
+  SaveEditedGroup = '[Vocabulary] Save edited Group',
+  SaveEditedGroupsuccess = '[Vocabulary] Save edited Group success',
+  SaveEditedGroupError = '[Vocabulary] Save edited Group error',
 
-  DeleteUserGroup = '[Groups] Delete user Group',
-  DeleteUserGroupsuccess = '[Groups] Delete user Group success',
-  DeleteUserGroupError = '[Groups] Delete user Group error',
+  DeleteUserGroup = '[Vocabulary] Delete user Group',
+  DeleteUserGroupsuccess = '[Vocabulary] Delete user Group success',
+  DeleteUserGroupError = '[Vocabulary] Delete user Group error',
 
-  AssignWordsToGroup = '[Groups] Assign words to group',
-  AssignWordsToGroupSuccess = '[Groups] Assign words to group success',
-  AssignWordsToGroupError = '[Groups] Assign words to group error',
+  AssignWordsToGroup = '[Vocabulary] Assign words to group',
+  AssignWordsToGroupSuccess = '[Vocabulary] Assign words to group success',
+  AssignWordsToGroupError = '[Vocabulary] Assign words to group error',
 
-  UpdateGroupsQuantityInGroup = '[Groups] update Groups quantity in group'
+  UpdateGroupsQuantityInGroup = '[Vocabulary] update Groups quantity in group'
 
 }
 // WORDS ACTIONS
@@ -73,7 +77,8 @@ export const fetchWordsSuccessAction = createAction(VocabularyActionsType.FetchW
 export const fetchWordsErrorAction = createAction(VocabularyActionsType.FetchWordsError, props<{ error: string }>());
 
 export const addWordToUserWordsAction = createAction(VocabularyActionsType.AddWordToUserWords, props<{ word: Word }>());
-export const addWordToUserWordsSuccessAction = createAction(VocabularyActionsType.AddWordToUserWordsSuccess, props<{ words: Word[] }>());
+export const addWordToUserWordsSuccessAction = createAction(VocabularyActionsType.AddWordToUserWordsSuccess,
+  props<{ words: Word[], groups: WordGroup[] }>());
 export const addWordToUserWordsErrorAction = createAction(VocabularyActionsType.AddWordToUserWordsError, props<{ error: string }>());
 
 export const saveEditedWordAction = createAction(VocabularyActionsType.SaveEditedWord, props<{ word: Word }>());
@@ -81,8 +86,15 @@ export const saveEditedWordSuccessAction = createAction(VocabularyActionsType.Sa
 export const saveEditedWordErrorAction = createAction(VocabularyActionsType.SaveEditedWordError, props<{ error: string }>());
 
 export const deleteUserWordAction = createAction(VocabularyActionsType.DeleteUserWord, props<{ word: Word }>());
-export const deleteUserWordSuccessAction = createAction(VocabularyActionsType.DeleteUserWordsuccess, props<{ words: Word[] }>());
+export const deleteUserWordSuccessAction = createAction(VocabularyActionsType.DeleteUserWordsuccess,
+  props<{ words: Word[], groups: WordGroup[] }>());
 export const deleteUserWordErrorAction = createAction(VocabularyActionsType.DeleteUserWordError, props<{ error: string }>());
+
+export const deleteUserWordFromGroupAction = createAction(VocabularyActionsType.DeleteUserWordFromGroup, props<{ word: Word, }>());
+export const deleteUserWordFromGroupSuccessAction = createAction(VocabularyActionsType.DeleteUserWordFromGroupsuccess,
+  props<{ words: Word[], groups: WordGroup[] }>());
+export const deleteUserWordFromGroupErrorAction = createAction(VocabularyActionsType.DeleteUserWordFromGroupError,
+  props<{ error: string }>());
 
 export const setWordAsFavoriteAction = createAction(VocabularyActionsType.SetWordAsFavorite, props<{ word: Word }>());
 export const setWordAsFavoriteSuccessAction = createAction(VocabularyActionsType.SetWordAsFavoriteSuccess);

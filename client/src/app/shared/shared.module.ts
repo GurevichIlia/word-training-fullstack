@@ -1,3 +1,5 @@
+import { ModalUiModule } from 'src/app/shared/components/modal-ui/modal-ui.module';
+import { ModalUiComponent } from './components/modal-ui/modal-ui.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -20,7 +22,6 @@ import {
 } from '@nebular/theme';
 import { DeviceDetectorModule } from 'ngx-device-detector';
 import { AskQuestionComponent } from './modals/ask-question/ask-question.component';
-import { SlideWordDirective } from './directives/slide-word.directive';
 
 
 
@@ -61,7 +62,7 @@ import { SlideWordDirective } from './directives/slide-word.directive';
     MatDialogModule,
     MatExpansionModule,
     DeviceDetectorModule,
-
+    ModalUiModule
   ],
   exports: [
     CommonModule,
@@ -99,6 +100,6 @@ import { SlideWordDirective } from './directives/slide-word.directive';
 
 
   ],
-  entryComponents: [ AskQuestionComponent]
+  entryComponents: [AskQuestionComponent]
 })
 export class SharedModule { }

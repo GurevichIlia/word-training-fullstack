@@ -2,7 +2,7 @@
 
 
 
-<form [formGroup]="registrationForm" (ngSubmit)="createUser()" class="text-center">
+<form [formGroup]="registrationForm" class="text-center">
 
   <div class="error-box" *ngIf="registrationError$ | async as error">
     <span class="error-message ">{{error}}</span>
@@ -16,7 +16,7 @@
 
 
   <div class="mb-2">
-    <input formControlName="email" autocomplete="email" type="text" nbInput fullWidth placeholder="Email">
+    <input formControlName="email" autocomplete="email" name="email" type="text" nbInput fullWidth placeholder="Email">
     <ng-container *ngIf="registrationForm.get('email').touched && registrationForm.get('email').hasError">
       <span class="error-message" *ngIf="registrationForm.get('email').hasError('required') ">
         Email should not be empty</span>
@@ -27,7 +27,7 @@
 
 
   <div class="mb-1">
-    <input autocomplete="off" formControlName="password" [ngClass]="{'error': isPasswordsDontMatch}" type="password" nbInput fullWidth
+    <input autocomplete="off" formControlName="password" name="password" [ngClass]="{'error': isPasswordsDontMatch}" type="password" nbInput fullWidth
       placeholder="Password">
     <span class="error-message"
       *ngIf="registrationForm.get('password').touched && registrationForm.get('password').hasError('required')">
@@ -36,7 +36,7 @@
       match.</span>
   </div>
   <div class="mb-4">
-    <input autocomplete="off" formControlName="confPassword" [ngClass]="{'error': isPasswordsDontMatch}" type="password" nbInput fullWidth
+    <input autocomplete="off" formControlName="confPassword" name="password" [ngClass]="{'error': isPasswordsDontMatch}" type="password" nbInput fullWidth
       placeholder="Confirm password">
     <span class="error-message" *ngIf="isPasswordsDontMatch">Passwords do not
       match.</span>
@@ -44,8 +44,7 @@
 
   <div class="row justify-content-center mt-5">
 
-    <a class="col-8 mb-2 custom-button dark" [ngClass]="{'confirm-btn': !(isSubmitting$ | async)}"
-      [disabled]="isSubmitting$ | async" nbButton>Sign Up</a>
+    <a class="col-8 mb-2 custom-button dark" [ngClass]="{'disabled': (isSubmitting$ | async)}" (click)="createUser()" >Sign Up</a>
     <div class="col-12 mt-2">
       <span>Already have an account?<a style="cursor: pointer" [routerLink]="['/login']">Sign In</a></span>
     </div>

@@ -55,6 +55,7 @@ const reducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       currentUser: action.currentUser,
+      isRegistrationSuccess: true,
       isSubmitting: false,
     })),
   on(
@@ -62,6 +63,7 @@ const reducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       backendErrors: action.backendErrors,
+      isRegistrationSuccess: false,
       isSubmitting: false
     })),
   on(

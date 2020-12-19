@@ -1,12 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { shareReplay, takeUntil } from 'rxjs/operators';
 import { GroupStatistics } from 'src/app/shared/components/group-statistics/group-statistics.component';
 import { Word, WordGroup } from 'src/app/shared/interfaces';
 import { CounterState } from '../train/train.component';
 import { WordTrainingFacade } from '../word-training.facade';
-import { TrainResultService } from './train-result.service';
 
 @Component({
   selector: 'app-train-result',
@@ -22,7 +20,6 @@ export class TrainResultComponent implements OnInit, OnDestroy {
   statistics$: Observable<GroupStatistics>;
   constructor(
     private wordTrainingFacade: WordTrainingFacade,
-
     private router: Router
   ) { }
 
@@ -38,15 +35,11 @@ export class TrainResultComponent implements OnInit, OnDestroy {
     this.statistics$ = this.wordTrainingFacade.trainResultStatistics$;
   }
 
-  changeGroup() {
-    this.router.navigate(['word-training']);
+  changeGroupForTraining() {
+    this.wordTrainingFacade.changeGroupForTraining();
   }
 
-  trainAgain(group: WordGroup) {
-
-    // this.trainResultService.clearCounterState();
-    // this.trainResultService.setSelectedGroupForTraining(group);
-    // this.trainResultService.startTraining();
+  trainAgain() {
     this.wordTrainingFacade.repeatTraining();
 
   }
@@ -55,20 +48,8 @@ export class TrainResultComponent implements OnInit, OnDestroy {
     this.router.navigate(['vocabulary']);
   }
 
-  // saveWordsTrainingProgress() {
-  //   this.trainResultService.updateWords()
-  //     .pipe(
-  //       takeUntil(this.subscription$)
-  //     )
-  //     .subscribe(res => console.log('WORDS AFTER UPDATE', res));
-  // }
-
-  // getGroupStatistics() {
-  //   this.statistics$ = this.trainResultService.getGroupStatistics$(this.trainingResult$);
-  // }
-
   ngOnDestroy() {
-    this.wordTrainingFacade.resetWordTrainingState()
+    // this.wordTrainingFacade.resetWordTrainingState()
     this.subscription$.next();
     this.subscription$.complete();
   }

@@ -30,13 +30,10 @@ export class TrainComponent implements OnInit, OnDestroy {
   unsubscribe$ = new Subject();
   currentWord$: Observable<Word>
   animationState$: Observable<string>
-  // totalLearnedCards$: Observable<number>
-  // uniqueWordsLearned$: Observable<number>
-  // wordsInGroup$: Observable<Word[]>
   counterState$: Observable<CounterState>
+  isShowPrevioudWordButton$: Observable<boolean>
   constructor(
-    // private changeDetector: ChangeDetectorRef,
-    // private notification: NotificationsService
+
     private wordTrainingFacade: WordTrainingFacade
   ) { }
 
@@ -47,10 +44,7 @@ export class TrainComponent implements OnInit, OnDestroy {
   initializeValues() {
     this.currentWord$ = this.wordTrainingFacade.wordForLearning$
     this.animationState$ = this.wordTrainingFacade.animationState$;
-    // this.totalLearnedCards$ = this.wordTrainingFacade.totalLearnedCards$
-    // this.uniqueWordsLearned$ = this.wordTrainingFacade.uniqueWordsLearned$
-    // this.wordsInGroup$ = this.wordTrainingFacade.wordsInGroup$
-
+    this.isShowPrevioudWordButton$ = this.wordTrainingFacade.isShowPreviousWordButton$
     this.counterState$ = this.wordTrainingFacade.counterState$
   }
 
@@ -59,67 +53,23 @@ export class TrainComponent implements OnInit, OnDestroy {
 
   }
 
-  // showResult() {
-  //   this.router.navigate(['word-training/train-result']);
-  // }
-
   onResetAnimationState() {
-    // this.resetAnimationState.emit();
     this.wordTrainingFacade.resetAnimationState();
-
   }
 
   nextWord(word: Word, knowledgeLevel: number) {
-    // this.wordTrainingService.nextWord(word, knowledgeLevel);
-    // this.getCurrentTrainingWord();
     this.wordTrainingFacade.nextWord(word, knowledgeLevel)
-    // this.animationState = this.wordTrainingService.getAnimationState();
   }
-
-  // getCurrentTrainingWord(updatedWord?: Word) {
-
-  //   if (updatedWord) {
-  //     return this.currentWord$ = this.wordTrainingService.getCurrentTrainingWord$()
-  //       .pipe(map(word => ({ ...word, ...updatedWord })));
-
-  //   }
-
-  //   this.currentWord$ = this.wordTrainingService.getCurrentTrainingWord$();
-  // }
 
   previousWord() {
-
-  }
-
-  saveWordsTrainingProgress() {
-    this.wordTrainingFacade.saveProgress();
-    // this.wordTrainingService.updateWords()
-    //   .pipe(
-    //     takeUntil(this.unsubscribe$)
-    //   )
-    //   .subscribe(res => console.log('WORDS AFTER UPDATE', res));
+    this.wordTrainingFacade.previousWord()
   }
 
   favoriteToggle(word: Word) {
-    //   const updatedWord = { ...word, isFavorite: !word.isFavorite };
-    //   this.currentWord$ = this.getCurrentTrainingWord(updatedWord);
-    //   this.changeDetector.markForCheck();
-    //   this.wordTrainingService.favoriteToggle(word)
-    //     .pipe(
-    //       takeUntil(this.unsubscribe$)
-    //     ).subscribe(res => {
-
-    //     }, err => {
-    //       this.currentWord$ = of(word);
-    //       this.changeDetector.markForCheck();
-    //       this.notification.error('Could not add to favorite, something went wrong');
-    //     });
-
+    this.wordTrainingFacade.addWordToFavorite(word)
   }
 
   ngOnDestroy() {
-    this.saveWordsTrainingProgress();
-    // this.wordTrainingService.onFinishTraining();
     this.stopTraining()
     this.unsubscribe$.next();
     this.unsubscribe$.complete();

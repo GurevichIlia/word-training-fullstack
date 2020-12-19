@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const file_handler_1 = require("./../utils/file-handler");
 const passport_1 = __importDefault(require("passport"));
 const words_1 = require("../controllers/words");
 const express_1 = require("express");
@@ -10,6 +11,7 @@ const multer_1 = __importDefault(require("multer"));
 class WordsRoutes {
     constructor() {
         this.wordsController = new words_1.WordsController();
+        this.fileHandler = new file_handler_1.FileHandler();
         this.router = express_1.Router();
         this.routes();
     }
@@ -17,7 +19,8 @@ class WordsRoutes {
         this.router.get("/getAllWords", passport_1.default.authenticate("jwt", { session: false }), this.wordsController.getAllWordsForCurrentUser);
         this.router.post("/createWord", passport_1.default.authenticate("jwt", { session: false }), this.wordsController.createNewWordForUser);
         this.router.post("/addWords", passport_1.default.authenticate("jwt", { session: false }), this.wordsController.addNewWords);
-        this.router.post("/addWordsFromCSV", passport_1.default.authenticate("jwt", { session: false }), multer_1.default({ dest: "/tmp" }).single("csvFile"), function (req, res, next) {
+        this.router.get("/addMyWords", passport_1.default.authenticate("jwt", { session: false }), this.wordsController.addMyWords);
+        this.router.post("/addWordsFromCSV", passport_1.default.authenticate("jwt", { session: false }), multer_1.default({ dest: this.fileHandler.pathToSave() }).single("csvFile"), function (req, res, next) {
             req.file;
             next();
         }, this.wordsController.addWordsFromCSV);

@@ -60,3 +60,8 @@ export const wordsToSaveSelector = createSelector(
   state => state.words
 )
 
+export const isShowPreviousWordButtonSelector = createSelector(
+  featureSelector,
+  state => state.previousWordsInCache.length > 0 ? true : false
+)
+

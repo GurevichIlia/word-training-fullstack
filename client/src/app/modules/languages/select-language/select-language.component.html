@@ -1,4 +1,3 @@
-
 <nb-card>
   <nb-card-header class="justify-content-center">
     <span class="sub-title">Select languages you want to learn</span>
@@ -26,11 +25,6 @@
               <div class="col-12 col-xl-5 submitBtnBox">
                 <a class="mb-2 custom-button dark"
                   (click)="onSelectUserLanguageForLearning(selectedLanguage.value, userLanguages)">Submit</a>
-                <!--
-                <button type="button" class="w-100 purpleButton" size="medium" nbButton
-                  (click)="onSelectUserLanguageForLearning(selectedLanguage.value, userLanguages)"
-                  status="success">Submit</button> -->
-
               </div>
             </div>
           </div>
@@ -70,11 +64,6 @@
               <a *ngIf="!language.addedToUser" class="ml-auto custom-button dark small"
                 (click)="addLanguageToUserLanguages(language)">Add</a>
             </div>
-
-
-            <!-- <button class="ml-auto" nbButton *ngIf="!language.addedToUser" size="tiny" status="basic"
-              (click)="addLanguageToUserLanguages(language)">Add</button> -->
-
 
           </nb-list-item>
         </nb-list>

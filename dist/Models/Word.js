@@ -8,10 +8,12 @@ const Schema = mongoose_1.default.Schema;
 const wordSchema = new Schema({
     word: {
         type: String,
+        unique: true,
         required: true
     },
     translation: {
         type: Object,
+        unique: true,
         required: true
     },
     isFavorite: {

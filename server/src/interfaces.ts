@@ -1,5 +1,7 @@
 import { Document } from "mongoose";
 
+export type IRequstUserInfo = Pick<UserModel, '_id' | 'currentLanguage' | 'email'>
+
 
 export interface UserModel extends Document {
       readonly _id: string

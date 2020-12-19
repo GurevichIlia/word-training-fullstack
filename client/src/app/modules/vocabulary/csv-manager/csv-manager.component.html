@@ -1,7 +1,7 @@
 <ng-container *ngIf="words$ | async"></ng-container>
 <ng-container *ngIf="isResetCsvHandlerState$ | async"></ng-container>
 <ng-container *ngIf="isCloseCsvHandler$ | async"></ng-container>
-<mat-expansion-panel class="group-statistics mb-3" hideToggle [expanded]="expanded">
+<mat-expansion-panel class="group-statistics mb-3" hideToggle [expanded]="_expanded">
   <section class="download"></section>
 
 
@@ -12,11 +12,11 @@
     </div>
 
     <p class="mt-2" *ngIf="selectedFile">{{selectedFile.name}}</p>
-    <input #fileInput  type="file" (change)="showFile(fileInput.files[0])" multi name="uploadFile" hidden>
+    <input #fileInput type="file" (change)="showFile(fileInput.files[0])" multi name="uploadFile" hidden>
 
 
-    <button [disabled]="isLoading$ | async" *ngIf="selectedFile" (click)="onUpload(fileInput.files[0])"
-      class="purpleButton mb-3 w-50" type="submit" nbButton size="small">Upload</button>
+    <a [ngClass]="{'disabled': isLoading$ | async}" *ngIf=" selectedFile" (click)="onUpload(fileInput.files[0])"
+      class="custom-button dark mb-3 w-50" type="submit">Upload</a>
     <app-loader [show]="isLoading$ | async"></app-loader>
   </section>
 
@@ -25,7 +25,7 @@
 <ng-template #instruction>
   <div class="instruction">
     <span class="title">Words can be added even easier using CSV file. <br>
-      Below is an example table: <i>"your-filename.csv"</i>  </span>
+      Below is an example table: <i>"your-filename.csv"</i> </span>
     <img width="100%" src="../../../../assets//Photos//csvExample.png" alt="">
   </div>
 </ng-template>

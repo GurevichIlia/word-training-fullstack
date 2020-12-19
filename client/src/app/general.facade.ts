@@ -5,7 +5,6 @@ import { map, switchMap } from 'rxjs/operators';
 import { Word, WordGroup } from 'src/app/shared/interfaces';
 import { AppStateInterface } from 'src/app/store/reducers';
 import { NavigationService } from './core/services/navigation.service';
-import { GeneralState } from './general.state';
 import { LanguageInterface } from './modules/languages/types/languages.interfaces';
 import { ApiLanguagesService } from './shared/services/api/api-languages.service';
 import { ApiWordsService } from './shared/services/api/api-words.service';
@@ -19,7 +18,6 @@ export class GeneralFacade {
   constructor(
     private apiLanguageService: ApiLanguagesService,
     private apiWordsService: ApiWordsService,
-    private generalState: GeneralState,
     private notifications: NotificationsService,
     private generalService: GeneralService,
     private navigationService: NavigationService,
@@ -56,34 +54,34 @@ export class GeneralFacade {
   // }
 
 
-  getCurrentLearningLanguage$() {
-    if (!this.generalState.getCurrentLearningLanguage$()) {
-      this.generalState.setCurrentLanguage(this.apiLanguageService.getCurrentLanguage$());
-    }
+  // getCurrentLearningLanguage$() {
+  //   if (!this.generalState.getCurrentLearningLanguage$()) {
+  //     this.generalState.setCurrentLanguage(this.apiLanguageService.getCurrentLanguage$());
+  //   }
 
-    return this.generalState.getCurrentLearningLanguage$();
-    // return of({})
-  }
-
-  extractValueForMethodFromObservable<T>(obs$: Observable<any>, callback): Observable<T> {
-    return obs$
-      .pipe(
-        switchMap(value => callback(value) as Observable<T>)
-      );
-  }
-  // getCurrentLearningLanguage() {
-  //   return this.generalState.getCurrentLearningLanguage();
+  //   return this.generalState.getCurrentLearningLanguage$();
+  //   // return of({})
   // }
 
+  // extractValueForMethodFromObservable<T>(obs$: Observable<any>, callback): Observable<T> {
+  //   return obs$
+  //     .pipe(
+  //       switchMap(value => callback(value) as Observable<T>)
+  //     );
+  // }
+  // // getCurrentLearningLanguage() {
+  // //   return this.generalState.getCurrentLearningLanguage();
+  // // }
 
 
-  setUserWords(words: Word[]) {
-    this.generalState.setUserWords(words);
-  }
 
-  getUserWords() {
-    return this.generalState.getUserWords();
-  }
+  // setUserWords(words: Word[]) {
+  //   this.generalState.setUserWords(words);
+  // }
+
+  // getUserWords() {
+  //   return this.generalState.getUserWords();
+  // }
 
   getWordsGroups() {
     // if (!this.generalState.getWordsGroups$()) {
@@ -121,30 +119,30 @@ export class GeneralFacade {
 
   }
 
-  setQuantityWordsInGroups(groups: WordGroup[]) {
+  // setQuantityWordsInGroups(groups: WordGroup[]) {
 
-    const words$ = this.generalState.getUserWords$();
+  //   const words$ = this.generalState.getUserWords$();
 
-    return words$.pipe(
-      map(words => {
+  //   return words$.pipe(
+  //     map(words => {
 
-        if (!words) {
-          return [] as WordGroup[];
-        }
+  //       if (!words) {
+  //         return [] as WordGroup[];
+  //       }
 
-        const updatedGroups = groups.map(group => {
-          if (group._id === '2') {
-            const updatedGroup: WordGroup = { ...group, wordQuantity: words.filter(word => word.isFavorite === true).length };
-            return updatedGroup;
-          }
-          // const newGroup: WordGroup = { ...group, wordQuantity: words.filter(word => word.assignedGroups.includes(group._id)).length };
+  //       const updatedGroups = groups.map(group => {
+  //         if (group._id === '2') {
+  //           const updatedGroup: WordGroup = { ...group, wordQuantity: words.filter(word => word.isFavorite === true).length };
+  //           return updatedGroup;
+  //         }
+  //         // const newGroup: WordGroup = { ...group, wordQuantity: words.filter(word => word.assignedGroups.includes(group._id)).length };
 
-          return group;
-        });
-        return updatedGroups;
-      })
-    );
-  }
+  //         return group;
+  //       });
+  //       return updatedGroups;
+  //     })
+  //   );
+  // }
 
   filterWordsByFavorite(allWords: Observable<Word[]>) {
     return allWords.pipe(
@@ -169,26 +167,26 @@ export class GeneralFacade {
   //   this.updateWordList();
   // }
 
-  getWordsQuantity$() {
-    return this.generalState.getQuantityWords$();
-  }
+  // getWordsQuantity$() {
+  //   return this.generalState.getQuantityWords$();
+  // }
 
   // setWordsQuantity() {
   //   this.generalState.setQuantityWords$(this.generalState.getUserWords().length);
   // }
 
-  refreshGeneralState() {
-    this.generalState.refreshGeneralState();
-  }
+  // refreshGeneralState() {
+  //   this.generalState.refreshGeneralState();
+  // }
 
   getLocation$() {
     // return this.generalState.getLocation$();
     return this.navigationService.getCurrentLocation$();
   }
 
-  setLocation(location: { name: string }) {
-    this.generalState.setLocation(location);
-  }
+  // setLocation(location: { name: string }) {
+  //   this.generalState.setLocation(location);
+  // }
 
 
 }

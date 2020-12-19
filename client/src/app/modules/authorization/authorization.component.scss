@@ -1,11 +1,15 @@
 .full-block {
+  height: 100vh !important;
   // background: rgb(249, 141, 58) !important;
   // background: linear-gradient(266deg, rgba(249, 141, 58, 1) 0%, rgba(133, 22, 138, 1) 90%) !important;
 }
 
 .card {
+  nb-card-body {
+    padding: 40px 20px !important;
 
-  // margin-top: 23%;
+  }
+
   min-height: 300px;
 }
 

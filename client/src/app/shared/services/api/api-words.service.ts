@@ -2,7 +2,12 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
-import { AddUserWordResponseInterface, DeleteUserWordResponseInterface, EditUserWordResponseInterface, GetAllUserWordsResponseInterface } from 'src/app/core/models/words.interface';
+import {
+  AddUserWordResponseInterface,
+  DeleteUserWordResponseInterface,
+  EditUserWordResponseInterface,
+  GetAllUserWordsResponseInterface
+} from 'src/app/core/models/words.interface';
 import { GeneralWord, IDeleteGeneralWordResponse } from 'src/app/modules/general-words/types/general-words.interfaces';
 import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
 import { Word } from '../../interfaces';
@@ -33,10 +38,10 @@ export class ApiWordsService {
     return this.http.post<AddUserWordResponseInterface>(`${BASE_URL}/api/vocabulary/createWord?languageId=${language._id}`, word);
   }
 
-  addWords(words: Word[]): Observable<Word> {
+  // addWords(words: Word[]): Observable<Word> {
 
-    return this.http.post<Word>(`${BASE_URL}/api/vocabulary/addWords`, { words });
-  }
+  //   return this.http.post<Word>(`${BASE_URL}/api/vocabulary/addWords`, { words });
+  // }
 
   editWord(word: Word, language?: LanguageInterface): Observable<EditUserWordResponseInterface> {
 

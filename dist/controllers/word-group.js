@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = __importDefault(require("../Models/User"));
+const Word_1 = __importDefault(require("../Models/Word"));
 const WordGroup_1 = __importStar(require("../Models/WordGroup"));
 const errorHandler_1 = __importDefault(require("../utils/errorHandler"));
 const index_1 = require("./../helper-functions/index");
@@ -28,17 +28,18 @@ class WordGroupController {
         this.getAllWordGroups = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 // const user = req.user as { _id: string, email: string }
-                const user = yield User_1.default.findOne({ _id: req.user });
+                const user = req.user;
+                if (!user.currentLanguage)
+                    throw new Error('Language is not exists');
+                const words = yield Word_1.default.find({ user: user, language: user.currentLanguage._id });
                 const userGroups = yield WordGroup_1.default.find({
-                    language: req.query.languageId,
+                    language: user.currentLanguage._id,
                     user: user
                 });
                 // let allGroups = [...this.getDefaultGroups(), ...userGroups]
                 // const words = getWordsByLanguage(req.query.languageId, user.words)
                 // this.setQuantityWordsInGroups(allGroups, words);
-                if (!user.currentLanguage)
-                    throw new Error('Language is not exists');
-                const groups = this.getAllUserGroups(userGroups, user.currentLanguage._id.toString(), user.words);
+                const groups = this.getAllUserGroups(userGroups, user.currentLanguage._id.toString(), words);
                 res.status(200).json(groups);
             }
             catch (error) {
@@ -46,9 +47,9 @@ class WordGroupController {
             }
         });
         this.saveGroup = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c, _d;
+            var _a, _b, _c;
             try {
-                const user = yield User_1.default.findOne({ _id: req.user });
+                const user = req.user;
                 const groupCondidate = req.body.group;
                 if (!groupCondidate)
                     return;
@@ -57,22 +58,20 @@ class WordGroupController {
                     group = (yield WordGroup_1.default.findOneAndUpdate({ _id: groupCondidate.id }, { name: groupCondidate.name }, { new: true }));
                 }
                 else {
-                    console.log('NO ID');
-                    console.log('LANGAUGE', groupCondidate.languageId, (_a = user.currentLanguage) === null || _a === void 0 ? void 0 : _a._id);
                     group = yield new WordGroup_1.default({
                         name: groupCondidate.name,
-                        language: groupCondidate.languageId || ((_b = user.currentLanguage) === null || _b === void 0 ? void 0 : _b._id),
+                        language: groupCondidate.languageId || ((_a = user.currentLanguage) === null || _a === void 0 ? void 0 : _a._id),
                         user: req.user
                     }).save();
                 }
                 const userGroups = yield WordGroup_1.default.find({
-                    language: groupCondidate.languageId || ((_c = user.currentLanguage) === null || _c === void 0 ? void 0 : _c._id),
+                    language: groupCondidate.languageId || ((_b = user.currentLanguage) === null || _b === void 0 ? void 0 : _b._id),
                     user: user
                 });
                 if (!user.currentLanguage)
                     throw new Error('Language is not exists');
-                const groups = this.getAllUserGroups(userGroups, (_d = user.currentLanguage) === null || _d === void 0 ? void 0 : _d._id, user.words);
-                console.log('NEW GROUP', group);
+                const words = yield Word_1.default.find({ user: user, language: user.currentLanguage._id });
+                const groups = this.getAllUserGroups(userGroups, (_c = user.currentLanguage) === null || _c === void 0 ? void 0 : _c._id, words);
                 res.status(201).json({
                     groups,
                     group: group
@@ -83,17 +82,18 @@ class WordGroupController {
             }
         });
         this.deleteWordGroup = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _e, _f;
+            var _d;
             try {
-                const user = yield User_1.default.findOne({ _id: req.user });
-                const removedGroup = yield WordGroup_1.default.findOneAndRemove({ _id: req.body.groupId });
-                const userGroups = yield WordGroup_1.default.find({
-                    language: (_e = user.currentLanguage) === null || _e === void 0 ? void 0 : _e._id,
-                    user: user
-                });
+                const user = req.user;
                 if (!user.currentLanguage)
                     throw new Error('Language is not exists');
-                const groups = this.getAllUserGroups(userGroups, (_f = user.currentLanguage) === null || _f === void 0 ? void 0 : _f._id, user.words);
+                const removedGroup = yield WordGroup_1.default.findOneAndRemove({ _id: req.body.groupId });
+                const words = yield Word_1.default.find({ user: user, language: user.currentLanguage._id });
+                const userGroups = yield WordGroup_1.default.find({
+                    language: user.currentLanguage._id,
+                    user: user
+                });
+                const groups = this.getAllUserGroups(userGroups, (_d = user.currentLanguage) === null || _d === void 0 ? void 0 : _d._id, words);
                 res.status(200).json({ groups });
             }
             catch (error) {
@@ -101,44 +101,27 @@ class WordGroupController {
             }
         });
         this.assignGroup = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _g;
             try {
                 const groupIdForAssign = req.body.groupId;
                 const selectedWords = req.body.selectedWords;
-                const user = yield User_1.default.findOne({ _id: req.user });
+                const user = req.user;
                 const language = user.currentLanguage;
                 if (!language)
                     throw new Error('Language does not exists');
-                selectedWords.forEach(wordId => {
-                    const existingWords = [...user.words];
-                    user.words = existingWords.map(word => {
-                        if (word._id.toString() == wordId) {
-                            if (!word.assignedGroups.includes(groupIdForAssign)) {
-                                const groups = [...word.assignedGroups];
-                                groups.push(groupIdForAssign);
-                                const newWord = Object.assign(Object.assign({}, word), { assignedGroups: groups });
-                                return newWord;
-                            }
-                            else {
-                                return word;
-                            }
-                        }
-                        else {
-                            return word;
-                        }
-                    });
-                });
+                selectedWords.forEach((wordId) => __awaiter(this, void 0, void 0, function* () {
+                    yield Word_1.default.findOneAndUpdate({ _id: wordId }, { $push: { assignedGroups: groupIdForAssign } });
+                }));
                 const userGroups = yield WordGroup_1.default.find({
                     language: language._id,
                     user: user
                 });
-                const updatedUser = yield User_1.default.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true });
-                const words = index_1.getWordsByLanguage(language._id, ((_g = updatedUser) === null || _g === void 0 ? void 0 : _g.words) || []);
-                const groups = this.getAllUserGroups(userGroups, language._id.toString(), user.words);
+                // const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true });
+                const words = yield Word_1.default.find({ user: user, language: language._id });
+                const groups = this.getAllUserGroups(userGroups, language._id.toString(), words);
                 res.status(200).json({
                     groups: groups,
                     wordsAfterAssign: words,
-                    message: 'Group assigned'
+                    message: 'Words added'
                 });
             }
             catch (error) {

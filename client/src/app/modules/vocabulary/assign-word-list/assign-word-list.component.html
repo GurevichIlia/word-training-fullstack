@@ -1,4 +1,4 @@
-<div class="main-box" >
+<div class="main-box">
 
   <!-- <div class="d-flex header">
     <span (click)="goBack()" class="back-btn"><span class="back-btn-icon">{{'^'}}</span></span>
@@ -25,8 +25,11 @@
 
     <app-loader [show]="loading$ | async"></app-loader>
 
-    <div class="word-list">
-      <app-word-list  [words]="words | wordsFilter: filterControl.value" (action)="getAction($event)" [isShowMenu]="false"
+    <div #wordList class="word-list">
+      <app-word-list
+        [showMoreItems]="showMoreElements$ | async"
+        [words]="words | wordsFilter: filterControl.value"
+        (action)="getAction($event)" [isShowMenu]="false"
         [isShowDefaultOptions]="false">
       </app-word-list>
     </div>

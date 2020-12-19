@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { select, Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
-import { filter, switchMap, tap } from 'rxjs/operators';
+import { fromEvent, Observable, Subject } from 'rxjs';
+import { filter, map, switchMap, tap, startWith } from 'rxjs/operators';
 import { NavigationService } from 'src/app/core';
 import { GeneralFacade } from 'src/app/general.facade';
 import { Word } from 'src/app/shared/interfaces';
@@ -25,7 +25,8 @@ import { VocabularyFacade } from './../vocabulary.facade';
   styleUrls: ['./assign-word-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AssignWordListComponent implements OnInit, OnDestroy {
+export class AssignWordListComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('wordList') wordList: ElementRef<HTMLDivElement>
   words$: Observable<Word[]>;
   selectedWords: string[] = [];
   subscription$ = new Subject();
@@ -33,6 +34,7 @@ export class AssignWordListComponent implements OnInit, OnDestroy {
   loading$: Observable<boolean>;
   isCloseBottomSheet$: Observable<boolean>
   goBackAnimation = false
+  showMoreElements$ = new Subject()
   constructor(
     private assignService: AssignWordsService,
     private vocabularyFacade: VocabularyFacade,
@@ -44,12 +46,38 @@ export class AssignWordListComponent implements OnInit, OnDestroy {
     this.loading$ = this.store$.pipe(select(isBottomSheetLoadingSelector))
     this.isCloseBottomSheet$ = this.store$.pipe(
       select(isCloseWordsToAssignSelector),
-      tap(_ => console.log('CLOSE SHEET', _)),
       filter(isClose => isClose === true),
       tap(_ => this._bottomSheetRef.dismiss()))
 
 
     this.getWords();
+
+
+  }
+
+  ngAfterViewInit(): void {
+    fromEvent(this.wordList.nativeElement, 'scroll')
+      .pipe(
+        filter(e => {
+          console.log(e.target['scrollHeight'] - e.target['scrollTop'], e.target['clientHeight'])
+          console.log(e)
+          return (e.target['scrollHeight'] - e.target['scrollTop']) <= e.target['clientHeight']
+        }),
+        tap((e => {
+          this.showMoreElements$.next(e)
+          console.log('SHOW MORE ELEMENTS')
+
+
+          // if ((e.target['scrollHeight'] - e.target['scrollTop']) >= e.target['clientHeight']) {
+          //   console.log('SHOW MORE ELEMENTS')
+          // }
+        }))).subscribe()
+
+
+
+
+
+
   }
 
   getWords() {
@@ -60,11 +88,7 @@ export class AssignWordListComponent implements OnInit, OnDestroy {
           this.vocabularyFacade.removeWordsAlreadyExistInThisGroup(
             this.store$.pipe(select(allWordsSelector)), selectedGroup._id)),
       )
-
-
   }
-
-
 
   getAction({ action, payload }) {
     if (action === 'assign') {

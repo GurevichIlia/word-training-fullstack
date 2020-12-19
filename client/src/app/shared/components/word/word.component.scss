@@ -41,13 +41,6 @@ img {
   transition: all 0.3s;
   cursor: pointer;
 
-  &.scaleIn {
-    animation: scaleIn 0.4s ease-out;
-  }
-
-  &.scaleOut {
-    animation: scaleOut 0.4s ease-out;
-  }
 }
 
 .own-word {
@@ -61,17 +54,7 @@ img {
   margin-top: 3px;
 }
 
-@keyframes scaleIn {
-  0% {
-    opacity: 0;
-    transform: scale(1.5)
-  }
 
-  100%{
-    opacity: 1;
-    transform: scale(1);
-  }
-}
 
 .slideLeft {
   transform: translateX(-40px);

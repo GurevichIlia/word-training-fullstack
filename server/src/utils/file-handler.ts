@@ -11,4 +11,8 @@ export class FileHandler {
                   }
             })
       }
+
+      pathToSave(): string {
+            return process.env.NODE_ENV === 'production' ? '/tmp' : './tmp/'
+      }
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, Type, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, Type, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -6,20 +6,18 @@ import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { BehaviorSubject, combineLatest, fromEvent, Observable, Subject } from 'rxjs';
 import { debounceTime, delay, distinctUntilChanged, map, startWith, takeUntil, tap } from 'rxjs/operators';
-import { Action } from 'src/app/core';
+import { Action, MenuItem } from 'src/app/core';
 import { wordMenuItems } from 'src/app/core/models/vocabulary.model';
 import { GroupStatistics } from 'src/app/shared/components/group-statistics/group-statistics.component';
 import { Word } from 'src/app/shared/interfaces';
-import { NotificationsService } from 'src/app/shared/services/notifications.service';
 import {
-  addWordToUserWordsAction,
   deleteUserWordAction,
 
-  saveEditedWordAction,
+
   setWordAsFavoriteAction
 } from 'src/app/store/actions/vocabulary.actions';
 import { errorSelector } from 'src/app/store/selectors/general.selector';
-import { isCloseModalSelector, modalLoaderSelector } from 'src/app/store/selectors/vocabulary.selectors';
+import { isCloseModalSelector, modalLoaderSelector, isCloseCsvHandlerSelector } from 'src/app/store/selectors/vocabulary.selectors';
 import { WordAction } from '../../core/enums/word.enum';
 import { BackendErrorInterface } from './../../core/models/general.model';
 import { WordGroup } from './../../shared/interfaces';
@@ -40,7 +38,7 @@ import { VocabularyFacade } from './vocabulary.facade';
 export class VocabularyComponent implements OnInit, OnDestroy {
   @ViewChild('modalUiWrapper') wordModalRef: TemplateRef<any>;
   @ViewChild('wordFormTemplate') wordModalTemplate: TemplateRef<any>;
-  @ViewChild('deleteWordModal') deleteWordModal: TemplateRef<any>;
+  // @ViewChild('deleteWordModal') deleteWordModal: TemplateRef<any>;
   selectedGroup$: Observable<WordGroup>
   wordForm: FormGroup;
   addWordByList: string;
@@ -48,7 +46,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   subscription$ = new Subject();
   titleForModal: string;
   modalRef: MatDialogRef<any>;
-  wordMenuItems = wordMenuItems;
+
 
 
   selectedWordsForAssignGroups$ = new BehaviorSubject<string[]>([]);
@@ -60,7 +58,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   userWordsFiltredByGroupAndSearchValue$: Observable<Word[]>;
 
   groups$: Observable<WordGroup[]>;
-
+  wordMenuItems$: Observable<MenuItem<WordAction>[]>;
   vocabularyLoader$: Observable<boolean>
   errorMessage$: Observable<string | BackendErrorInterface>
   modalLoader$: Observable<boolean>
@@ -97,7 +95,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     this.modalLoader$ = this.store$.pipe(select(modalLoaderSelector))
     this.selectedGroup$ = this.vocabularyFacade.selectedGroup$;
     this.errorMessage$ = this.store$.pipe(select(errorSelector))
-
+    this.wordMenuItems$ = this.vocabularyFacade.wordMenuItems$;
 
     this.userWordsFiltredByGroupAndSearchValue$ =
       combineLatest([
@@ -125,6 +123,12 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     this.store$.pipe(
       select(isOpenWordsToAssignSelector),
       tap(isOpen => isOpen ? this.openAssignWordsList() : null),
+      takeUntil(this.subscription$))
+      .subscribe()
+
+    this.store$.pipe(
+      select(isCloseCsvHandlerSelector),
+      tap(isClose => isClose ? this.isShowUploader = false : null),
       takeUntil(this.subscription$))
       .subscribe()
   }
@@ -197,7 +201,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
       isFavorite: word.isFavorite
     });
 
-    this.openModal(`Would you like to delete ${word.word}?`, this.deleteWordModal);
+    // this.openModal(`Would you like to delete ${word.word}?`, this.deleteWordModal);
 
 
     // this.openModal(`Would you like to remove this word?`, this.deleteWordTemplate)
@@ -225,7 +229,9 @@ export class VocabularyComponent implements OnInit, OnDestroy {
         break
       case WordAction.TO_FAVORITE: this.setAsFavorite(event.payload);
         break
-      case WordAction.DELETE_WORD: this.openDeleteModal(event.payload);
+      case WordAction.DELETE_WORD: this.vocabularyFacade.deleteWord(event.payload);
+        break;
+      case WordAction.DELETE_FROM_GROUP: this.vocabularyFacade.deleteWordFromGroup(event.payload);
         break;
       case WordAction.EDIT_WORD: this.openEditModal(event.payload);
         break;

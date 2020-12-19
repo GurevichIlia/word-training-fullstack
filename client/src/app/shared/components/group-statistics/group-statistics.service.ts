@@ -36,6 +36,5 @@ export class GroupStatisticsService {
 
       return knowledgeLevel;
     })
-
   }
 }

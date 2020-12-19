@@ -1,7 +1,6 @@
 import { SelectLanguageGuard } from 'src/app/shared/guards/select-language-guard.guard';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { WordsTrainGuard } from 'src/app/shared/guards/words-train.guard';
 import { HomeComponent } from './components/home/home.component';
 
 
@@ -24,7 +23,6 @@ const routes: Routes = [
       },
       {
         path: 'settings', loadChildren: () => import('../settings/settings.module').then(m => m.SettingsModule),
-        // canActivate: [WordsTrainGuard]
       },
       { path: '**', redirectTo: '/vocabulary' },
 

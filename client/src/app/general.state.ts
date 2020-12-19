@@ -1,138 +1,138 @@
-import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
-import { WordGroup } from './shared/interfaces';
+// import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
+// import { WordGroup } from './shared/interfaces';
 
-import { Injectable } from '@angular/core';
-import { Word } from '../app/shared/interfaces';
+// import { Injectable } from '@angular/core';
+// import { Word } from '../app/shared/interfaces';
 
-import { BehaviorSubject, Observable, of } from 'rxjs';
-
-
-export const ALL_WORDS_GROUP: WordGroup =
-{
-  _id: '1',
-  name: 'All',
-  wordQuantity: 0,
-  shareForAll: false
-};
-
-export const FAVORITES: WordGroup =
-{
-  _id: '2',
-  name: 'Favorites',
-  wordQuantity: 0,
-  shareForAll: false
-};
+// import { BehaviorSubject, Observable, of } from 'rxjs';
 
 
-@Injectable({
-  providedIn: 'root'
-})
-export class GeneralState {
-  defaultGroups: WordGroup[] = [{
-    _id: '1',
-    name: 'All',
-    wordQuantity: 0,
-    shareForAll: false
-  },
-  {
-    _id: '2',
-    name: 'Favorites',
-    wordQuantity: 0,
-    shareForAll: false
-  }
-  ];
+// export const ALL_WORDS_GROUP: WordGroup =
+// {
+//   _id: '1',
+//   name: 'All',
+//   wordQuantity: 0,
+//   shareForAll: false
+// };
 
-  private currentLearningLanguage$: Observable<LanguageInterface>;
-  private readonly quantityAllWords$ = new BehaviorSubject<number>(null);
-  private readonly userWords$ = new BehaviorSubject<Word[]>(null);
-  // private readonly userWordsGroups$ = new BehaviorSubject<WordGroup[]>(this.defaultGroups);
+// export const FAVORITES: WordGroup =
+// {
+//   _id: '2',
+//   name: 'Favorites',
+//   wordQuantity: 0,
+//   shareForAll: false
+// };
 
-  private userWordsGroups$: Observable<WordGroup[]>;
 
-  private readonly userName$ = new BehaviorSubject<string>('');
+// @Injectable({
+//   providedIn: 'root'
+// })
+// export class GeneralState {
+//   defaultGroups: WordGroup[] = [{
+//     _id: '1',
+//     name: 'All',
+//     wordQuantity: 0,
+//     shareForAll: false
+//   },
+//   {
+//     _id: '2',
+//     name: 'Favorites',
+//     wordQuantity: 0,
+//     shareForAll: false
+//   }
+//   ];
 
-  private readonly selectedGroupForTraining$ = new BehaviorSubject<WordGroup>(ALL_WORDS_GROUP);
+//   private currentLearningLanguage$: Observable<LanguageInterface>;
+//   private readonly quantityAllWords$ = new BehaviorSubject<number>(null);
+//   private readonly userWords$ = new BehaviorSubject<Word[]>(null);
+//   // private readonly userWordsGroups$ = new BehaviorSubject<WordGroup[]>(this.defaultGroups);
 
-  private currentLocation$ = new BehaviorSubject<{ name: string }>({ name: '' });
-  constructor() {
+//   private userWordsGroups$: Observable<WordGroup[]>;
 
-  }
+//   private readonly userName$ = new BehaviorSubject<string>('');
 
-  setCurrentLanguage(language: Observable<LanguageInterface>) {
-    this.currentLearningLanguage$ = language;
-  }
+//   private readonly selectedGroupForTraining$ = new BehaviorSubject<WordGroup>(ALL_WORDS_GROUP);
 
-  getCurrentLearningLanguage$() {
-    return this.currentLearningLanguage$;
-  }
+//   private currentLocation$ = new BehaviorSubject<{ name: string }>({ name: '' });
+//   constructor() {
 
-  // getCurrentLearningLanguage() {
-  //   return this.currentLearningLanguage$.getValue();
-  // }
+//   }
 
-  setUserWords(words: Word[]) {
-    return this.userWords$.next(words);
-  }
+//   setCurrentLanguage(language: Observable<LanguageInterface>) {
+//     this.currentLearningLanguage$ = language;
+//   }
 
-  getUserWords$() {
-    return this.userWords$.asObservable();
-  }
+//   getCurrentLearningLanguage$() {
+//     return this.currentLearningLanguage$;
+//   }
 
-  getUserWords() {
-    return this.userWords$.getValue();
-  }
+//   // getCurrentLearningLanguage() {
+//   //   return this.currentLearningLanguage$.getValue();
+//   // }
 
-  setWordsGroups(wordsGroups: Observable<WordGroup[]>) {
-    this.userWordsGroups$ = wordsGroups;
-  }
+//   setUserWords(words: Word[]) {
+//     return this.userWords$.next(words);
+//   }
 
-  getWordsGroups$() {
-    return this.userWordsGroups$;
-  }
+//   getUserWords$() {
+//     return this.userWords$.asObservable();
+//   }
 
-  // getWordsGroups() {
-  //   return this.userWordsGroups$.getValue();
-  // }
+//   getUserWords() {
+//     return this.userWords$.getValue();
+//   }
 
-  setQuantityWords$(value: number) {
-    this.quantityAllWords$.next(value);
-  }
+//   setWordsGroups(wordsGroups: Observable<WordGroup[]>) {
+//     this.userWordsGroups$ = wordsGroups;
+//   }
 
-  getQuantityWords$() {
-    return this.quantityAllWords$.asObservable();
-  }
+//   getWordsGroups$() {
+//     return this.userWordsGroups$;
+//   }
 
-  setSelectedGroupForTraining(group: WordGroup) {
-    this.selectedGroupForTraining$.next(group);
-  }
+//   // getWordsGroups() {
+//   //   return this.userWordsGroups$.getValue();
+//   // }
 
-  getSelectedGroupForTraining$() {
-    return this.selectedGroupForTraining$.asObservable()
-  }
+//   setQuantityWords$(value: number) {
+//     this.quantityAllWords$.next(value);
+//   }
 
-  getSelectedGroupForTraining() {
-    return this.selectedGroupForTraining$.getValue();
-  }
+//   getQuantityWords$() {
+//     return this.quantityAllWords$.asObservable();
+//   }
 
-  // getDefaultGroups() {
-  //   return this.defaultGroups;
-  // }
+//   setSelectedGroupForTraining(group: WordGroup) {
+//     this.selectedGroupForTraining$.next(group);
+//   }
 
-  setLocation(location: { name: string }) {
-    this.currentLocation$.next(location);
-  }
+//   getSelectedGroupForTraining$() {
+//     return this.selectedGroupForTraining$.asObservable()
+//   }
 
-  getLocation$() {
-    return this.currentLocation$.asObservable();
-  }
+//   getSelectedGroupForTraining() {
+//     return this.selectedGroupForTraining$.getValue();
+//   }
 
-  refreshGeneralState() {
-    this.setCurrentLanguage(null);
-    this.setUserWords(null);
-    this.setQuantityWords$(0);
-    this.userName$.next('');
-    this.setWordsGroups(null);
-    this.setSelectedGroupForTraining(ALL_WORDS_GROUP);
-    console.log('STATE REFRESHED');
-  }
-}
+//   // getDefaultGroups() {
+//   //   return this.defaultGroups;
+//   // }
+
+//   setLocation(location: { name: string }) {
+//     this.currentLocation$.next(location);
+//   }
+
+//   getLocation$() {
+//     return this.currentLocation$.asObservable();
+//   }
+
+//   refreshGeneralState() {
+//     this.setCurrentLanguage(null);
+//     this.setUserWords(null);
+//     this.setQuantityWords$(0);
+//     this.userName$.next('');
+//     this.setWordsGroups(null);
+//     this.setSelectedGroupForTraining(ALL_WORDS_GROUP);
+//     console.log('STATE REFRESHED');
+//   }
+// }

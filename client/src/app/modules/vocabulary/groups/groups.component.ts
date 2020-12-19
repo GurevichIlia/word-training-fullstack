@@ -1,3 +1,4 @@
+import { GroupsApiService } from 'src/app/modules/vocabulary/groups/services/groups-api.service';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, TemplateRef, Type, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -44,7 +45,8 @@ export class GroupsComponent implements OnInit, OnDestroy {
     private groupsService: GroupsService,
     private dialog: MatDialog,
     private store$: Store<AppStateInterface>,
-    private vocabularyFacade: VocabularyFacade
+    private vocabularyFacade: VocabularyFacade,
+    private groupApi: GroupsApiService
   ) {
 
   }
@@ -162,6 +164,10 @@ export class GroupsComponent implements OnInit, OnDestroy {
 
         break;
 
+      case GroupAction.ADD_MY_WORDS: this.addMyWords()
+
+        break;
+
     }
   }
 
@@ -178,6 +184,10 @@ export class GroupsComponent implements OnInit, OnDestroy {
     // this.vocabularyService.setSelectedGroup(group);
   }
 
+  addMyWords() {
+    this.groupApi.addMyWords()
+      .subscribe(res => console.log('MY WORDS', res))
+  }
 
   ngOnDestroy() {
 

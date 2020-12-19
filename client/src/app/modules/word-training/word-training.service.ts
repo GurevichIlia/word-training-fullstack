@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { GeneralState } from 'src/app/general.state';
 import { Word } from 'src/app/shared/interfaces';
 import { ApiWordsService } from 'src/app/shared/services/api/api-words.service';
 
@@ -10,7 +9,6 @@ import { ApiWordsService } from 'src/app/shared/services/api/api-words.service';
 export class WordTrainingService {
   animationState$ = new BehaviorSubject('');
   constructor(
-    private generalState: GeneralState,
     private wordsApiService: ApiWordsService,
   ) {
   }
@@ -37,9 +35,9 @@ export class WordTrainingService {
 
 
 
-  favoriteToggle(word: Word) {
-    const newWord = { ...word, isFavorite: !word.isFavorite };
-    return this.generalState.getCurrentLearningLanguage$().pipe(switchMap(language => this.wordsApiService.editWord(newWord, language)));
-  }
+  // favoriteToggle(word: Word) {
+  //   const newWord = { ...word, isFavorite: !word.isFavorite };
+  //   return this.generalState.getCurrentLearningLanguage$().pipe(switchMap(language => this.wordsApiService.editWord(newWord, language)));
+  // }
 
 }

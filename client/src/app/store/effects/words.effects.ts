@@ -1,6 +1,6 @@
 import { NotificationsService } from 'src/app/shared/services/notifications.service';
 import { CsvHandlerService } from './../../core/services/csv-handler.service';
-import { fetchGroupsAction, VocabularyActionsType } from './../actions/vocabulary.actions';
+import { deleteUserWordFromGroupErrorAction, deleteUserWordFromGroupSuccessAction, fetchGroupsAction, VocabularyActionsType } from './../actions/vocabulary.actions';
 
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -74,8 +74,8 @@ export class WordsEffects {
       switchMap(([language, selectedGroup, wordToAdd]: [LanguageInterface, WordGroup, Partial<Word>]) =>
         this.wordsService.addNewWord(wordToAdd, language, selectedGroup._id)
           .pipe(
-            map((words: Word[]) => {
-              return addWordToUserWordsSuccessAction({ words });
+            map(({ words, groups }: { words: Word[], groups: WordGroup[] }) => {
+              return addWordToUserWordsSuccessAction({ words, groups });
             }),
             catchError((err: HttpErrorResponse) => {
               return of(addWordToUserWordsErrorAction({ error: err.error.message }))
@@ -84,11 +84,11 @@ export class WordsEffects {
     )
   )
 
-  addWordSuccess$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(VocabularyActionsType.AddWordToUserWordsSuccess),
-      tap(_ => this.store$.dispatch(fetchGroupsAction()))
-    ), { dispatch: false })
+  // addWordSuccess$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(VocabularyActionsType.AddWordToUserWordsSuccess),
+  //     tap(_ => this.store$.dispatch(fetchGroupsAction()))
+  //   ), { dispatch: false })
 
   addWordError$ = createEffect(() =>
     this.actions$.pipe(
@@ -104,8 +104,8 @@ export class WordsEffects {
       switchMap(({ word }: { word: Word }) =>
         this.wordsService.deleteWord(word)
           .pipe(
-            map((words: Word[]) => {
-              return deleteUserWordSuccessAction({ words });
+            map(({ words, groups }: { words: Word[], groups: WordGroup[] }) => {
+              return deleteUserWordSuccessAction({ words, groups });
             }),
             catchError((err) => {
               return of(deleteUserWordErrorAction({ error: err.error.message }))
@@ -114,12 +114,33 @@ export class WordsEffects {
     )
   )
 
-  deleteWordSuccess$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(VocabularyActionsType.DeleteUserWordsuccess),
-      tap(_ => this.store$.dispatch(fetchGroupsAction()))
-    ), { dispatch: false })
+  // deleteWordSuccess$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(VocabularyActionsType.DeleteUserWordsuccess),
+  //     tap(_ => this.store$.dispatch(fetchGroupsAction()))
+  //   ), { dispatch: false })
 
+  deleteWordFromGroup$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(VocabularyActionsType.DeleteUserWordFromGroup),
+      switchMap(({ word }: { word: Word }) =>
+        this.store$.pipe(
+          select(selectedGroupSelector),
+          take(1),
+          switchMap(selectedGroup => this.wordsService.deleteWordFromGroup(word, selectedGroup._id)
+            .pipe(
+              map(({ words, groups }: { words: Word[], groups: WordGroup[] }) => {
+                return deleteUserWordFromGroupSuccessAction({ words, groups });
+              }),
+              catchError((err) => {
+                return of(deleteUserWordFromGroupErrorAction({ error: err.error.message }))
+              })
+            ))
+        ))
+    ),
+
+
+  )
 
   saveEditedWord$ = createEffect(
     () => this.actions$.pipe(

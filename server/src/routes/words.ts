@@ -1,3 +1,4 @@
+import { FileHandler } from './../utils/file-handler';
 import passport from "passport";
 import { WordsController } from "../controllers/words";
 import { Router } from "express";
@@ -5,6 +6,7 @@ import multer from 'multer'
 export class WordsRoutes {
     router: Router;
     wordsController: WordsController = new WordsController();
+    fileHandler = new FileHandler()
     constructor() {
         this.router = Router();
         this.routes();
@@ -29,10 +31,16 @@ export class WordsRoutes {
             this.wordsController.addNewWords
         );
 
+        this.router.get(
+            "/addMyWords",
+            passport.authenticate("jwt", { session: false }),
+            this.wordsController.addMyWords
+        );
+
         this.router.post(
             "/addWordsFromCSV",
             passport.authenticate("jwt", { session: false }),
-            multer({ dest: "./tmp/" }).single("csvFile"), function (req, res, next) {
+            multer({ dest: this.fileHandler.pathToSave() }).single("csvFile"), function (req, res, next) {
                 req.file;
                 next()
             },

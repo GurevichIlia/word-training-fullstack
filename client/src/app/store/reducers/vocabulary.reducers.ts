@@ -1,7 +1,7 @@
 import { filter } from 'rxjs/operators';
 import { DefaultGroupId } from './../../core/enums/group.enum';
 import { defaultGroups } from 'src/app/core/models/groups.model';
-import { selectVocabularyGroupAction } from 'src/app/store/actions/vocabulary.actions';
+import { addWordsFromCsvErrorAction, deleteUserWordFromGroupAction, deleteUserWordFromGroupErrorAction, deleteUserWordFromGroupSuccessAction, selectVocabularyGroupAction } from 'src/app/store/actions/vocabulary.actions';
 import { BackendErrorInterface } from './../../core/models/general.model';
 import { Action, createReducer, on } from '@ngrx/store';
 import { ReducerNode } from '../../core/enums/store.enum';
@@ -111,7 +111,8 @@ const reducers = createReducer(
       ...state,
       vocabularyModalLoader: false,
       isCloseModal: true,
-      userWords: action.words
+      userWords: action.words,
+      userGroups: action.groups
     })
   ),
   on(
@@ -126,6 +127,7 @@ const reducers = createReducer(
     addWordsFromCsvAction,
     (state): VocabularyStateInterface => ({
       ...state,
+      isCloseCsvHandler: false,
       csvLoader: true,
       error: null
     })
@@ -140,6 +142,14 @@ const reducers = createReducer(
       userWords: [
         ...action.words
       ]
+    })
+  ),
+  on(
+    addWordsFromCsvErrorAction,
+    (state, action): VocabularyStateInterface => ({
+      ...state,
+      csvLoader: false,
+      error: action.error
     })
   ),
   on(
@@ -189,7 +199,6 @@ const reducers = createReducer(
     (state): VocabularyStateInterface => ({
       ...state,
       isCloseModal: false,
-      vocabularyModalLoader: true,
       error: null
     })
   ),
@@ -197,9 +206,9 @@ const reducers = createReducer(
     deleteUserWordSuccessAction,
     (state, action): VocabularyStateInterface => ({
       ...state,
-      vocabularyModalLoader: false,
       isCloseModal: true,
       userWords: action.words,
+      userGroups: action.groups
     })
   ),
   on(
@@ -207,6 +216,30 @@ const reducers = createReducer(
     (state, action): VocabularyStateInterface => ({
       ...state,
       vocabularyModalLoader: false,
+      error: action.error
+    })
+  ),
+  on(
+    deleteUserWordFromGroupAction,
+    (state): VocabularyStateInterface => ({
+      ...state,
+      isCloseModal: false,
+      error: null
+    })
+  ),
+  on(
+    deleteUserWordFromGroupSuccessAction,
+    (state, action): VocabularyStateInterface => ({
+      ...state,
+      isCloseModal: true,
+      userWords: action.words,
+      userGroups: action.groups
+    })
+  ),
+  on(
+    deleteUserWordFromGroupErrorAction,
+    (state, action): VocabularyStateInterface => ({
+      ...state,
       error: action.error
     })
   ),

@@ -29,4 +29,8 @@ export class GroupsApiService {
   getAllWordsGroups(language: LanguageInterface) {
     return this.http.get<WordGroup[]>(`${BASE_URL}/api/word-group/getAllGroups?languageId=${language._id}`);
   }
+
+  addMyWords() {
+    return this.http.get<WordGroup[]>(`${BASE_URL}/api/vocabulary/addMyWords`);
+  }
 }

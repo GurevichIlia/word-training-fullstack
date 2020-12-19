@@ -25,10 +25,10 @@ const app = express_1.default();
 // initGoolgeSheetsAuth()
 mongoose_1.default
     .connect(keys.mongoURI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false
-    })
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
+})
     .then(() => console.log("MongoDb connected"))
     .catch(err => console.log(err));
 app.use(body_parser_1.default.json({ limit: '50mb' }));
@@ -41,7 +41,8 @@ app.use("/api/auth", new auth_1.AuthRoutes().router);
 app.use("/api/vocabulary", new words_1.WordsRoutes().router);
 app.use("/api/languages", new language_1.LanguagesRoutes().router);
 app.use("/api/word-group", new word_group_1.WordGroupRoutes().router);
-console.log('SENDING HTML', path_1.default.resolve('../', 'client', 'dist', 'word-training', 'index.html'));
+// process.env.NODE_ENV = 'production'
+console.log('SENDING HTML', path_1.default.resolve('', 'client', 'dist', 'word-training', 'index.html'));
 if (process.env.NODE_ENV === 'production') {
     app.use(express_1.default.static('client/dist/word-training'));
     app.get('*', (req, res) => {

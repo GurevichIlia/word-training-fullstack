@@ -19,6 +19,10 @@ mat-expansion-panel-header {
 .upload {
   min-height: 100px;
 
+  div {
+    position: relative;
+  }
+
   i.fa-upload {
     color: #191a1a4d;
     font-size: 80px;
@@ -32,6 +36,8 @@ mat-expansion-panel-header {
     margin-top: 10px;
     color: #696a6a;
     padding-right: 30px;
+    position: absolute;
+    z-index: 10;
   }
 
 

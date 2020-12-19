@@ -1,6 +1,5 @@
-import { WordCounterService } from './word-counter.service';
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+
 
 @Component({
   selector: 'app-word-counter',
@@ -8,17 +7,10 @@ import { Observable } from 'rxjs';
   styleUrls: ['./word-counter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WordCounterComponent implements OnInit {
-  // totalCardsLearned$: Observable<number> = this.counterService.totalCardsLearned$()
-  // learnedCardsFromGroup$: Observable<number> = this.counterService.getQuantityLearnedWords$();
-  // wordsInGroup$: Observable<number> = this.counterService.getQuantityAllWords$();
-
+export class WordCounterComponent {
   @Input() totalCardsLearned: number
   @Input() learnedCardsFromGroup: number
   @Input() wordsInGroup: number
   constructor() { }
-
-  ngOnInit() {
-  }
 
 }

@@ -14,5 +14,6 @@ export const LEVEL_LIST = [
 export const wordMenuItems = [
   new MenuItem('Edit', WordAction.EDIT_WORD, FontAwesomeIcons.Edit),
   new MenuItem('Share for all', WordAction.SHARE_FOR_ALL, FontAwesomeIcons.Share),
+  new MenuItem('Delete from group', WordAction.DELETE_FROM_GROUP, FontAwesomeIcons.Delete),
   new MenuItem('Delete', WordAction.DELETE_WORD, FontAwesomeIcons.Delete),
 ];

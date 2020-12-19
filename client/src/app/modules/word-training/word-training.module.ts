@@ -5,7 +5,6 @@ import { GroupStatisticsModule } from './../../shared/components/group-statistic
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { WordCounterModule } from 'src/app/shared/components/word-counter/word-counter.module';
-import { WordCounterService } from 'src/app/shared/components/word-counter/word-counter.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { GroupListModule } from './../../shared/components/group-list/group-list.module';
 import { SelectGroupComponent } from './select-group/select-group.component';
@@ -15,6 +14,7 @@ import { WordTrainingComponent } from './word-training.component';
 import { WordTrainingFacade } from './word-training.facade';
 import { WordTrainingService } from './word-training.service';
 import { UtilsService } from 'src/app/shared/services/utils.service';
+import { DirectivesModule } from 'src/app/shared/directives/directives.module';
 
 
 
@@ -48,13 +48,14 @@ const wordtrainingRoutes: Routes = [
     WordCounterModule,
     GroupStatisticsModule,
 
+    DirectivesModule,
+
     NbCardModule,
     NbButtonModule
   ],
   providers: [
     WordTrainingFacade,
     WordTrainingService,
-    WordCounterService,
     UtilsService
   ]
 })

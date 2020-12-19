@@ -15,6 +15,9 @@ class FileHandler {
             }
         });
     }
+    pathToSave() {
+        return process.env.NODE_ENV === 'production' ? '/tmp' : './tmp/';
+    }
 }
 exports.FileHandler = FileHandler;
 //# sourceMappingURL=file-handler.js.map

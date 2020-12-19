@@ -1,21 +1,28 @@
-import { WordTrainingService } from './word-training.service';
-import { nextWordAction, stopTrainingAction, saveTrainingProgressAction, resetWordTrainingStateAction, repeatTrainingAction } from './../../store/actions/word-training.actions';
-import { NavigationService } from 'src/app/core';
 import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { Observable, combineLatest } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
+import { NavigationService } from 'src/app/core';
+import { AppRoutes } from 'src/app/core/routes/routes';
 import { GroupStatistics } from 'src/app/shared/components/group-statistics/group-statistics.component';
 import { GroupStatisticsService } from 'src/app/shared/components/group-statistics/group-statistics.service';
 import { Word, WordGroup } from 'src/app/shared/interfaces';
 import { UtilsService } from 'src/app/shared/services/utils.service';
-import { selectGroupAction, startTrainAction } from 'src/app/store/actions/word-training.actions';
+import { addWordToFavoriteAction, selectGroupAction, startTrainAction } from 'src/app/store/actions/word-training.actions';
 import { AppStateInterface } from 'src/app/store/reducers';
-import { groupsSelector } from 'src/app/store/selectors/vocabulary.selectors';
-import { configDataSelector, IConfigData, learningWordSelector } from 'src/app/store/selectors/word-training.selector';
-import { allWordsSelector } from 'src/app/store/selectors/vocabulary.selectors';
-import { AppRoutes } from 'src/app/core/routes/routes';
+import { allWordsSelector, groupsSelector } from 'src/app/store/selectors/vocabulary.selectors';
+import { configDataSelector, IConfigData, isShowPreviousWordButtonSelector, learningWordSelector } from 'src/app/store/selectors/word-training.selector';
+import {
+  changeGroupAction, nextWordAction,
+
+
+
+
+
+  previousWordAction, repeatTrainingAction, resetWordTrainingStateAction, saveTrainingProgressAction, stopTrainingAction
+} from './../../store/actions/word-training.actions';
 import { CounterState } from './train/train.component';
+import { WordTrainingService } from './word-training.service';
 
 @Injectable()
 export class WordTrainingFacade {
@@ -100,8 +107,13 @@ export class WordTrainingFacade {
 
   get trainingResult$(): Observable<Word[]> {
 
-    return this.uniqueWordsLearned$.pipe(map(uniqueLearnedWords => [...uniqueLearnedWords.values()]))
+    // return this.uniqueWordsLearned$.pipe(map(uniqueLearnedWords => [...uniqueLearnedWords.values()]))
+    return this.wordsInGroup$.pipe(map(words => words))
 
+  }
+
+  get isShowPreviousWordButton$(): Observable<boolean> {
+    return this.store$.pipe(select(isShowPreviousWordButtonSelector))
   }
 
   get trainResultStatistics$(): Observable<GroupStatistics> {
@@ -127,6 +139,11 @@ export class WordTrainingFacade {
     this.navigationService.navigateTo(AppRoutes.Training)
   }
 
+  changeGroupForTraining() {
+    this.store$.dispatch(changeGroupAction())
+    this.navigationService.navigateTo(AppRoutes.SelectGroupForTraining)
+  }
+
   nextWord(word: Word, levelKnowledge: number): void {
     this.wordTrainingService.startAnimation('bounceInDown');
     this.store$.dispatch(nextWordAction({ word, levelKnowledge }))
@@ -134,15 +151,18 @@ export class WordTrainingFacade {
   }
 
   previousWord(): void {
+    this.store$.dispatch(previousWordAction())
+
     this.wordTrainingService.startAnimation('bounceInLeft');
 
   }
 
-  addWordToFavorite(): void {
-
+  addWordToFavorite(word: Word): void {
+    this.store$.dispatch(addWordToFavoriteAction({ word }))
   }
 
   stopTrain(): void {
+    this.saveProgress();
     this.navigationService.navigateTo(AppRoutes.TrainResult).then(isNavigated => {
       this.store$.dispatch(stopTrainingAction())
 
@@ -158,8 +178,6 @@ export class WordTrainingFacade {
   }
 
   selectGroup(group: WordGroup): void {
-
-    if (!group) throw new Error('Group is empty')
 
     this.store$.dispatch(selectGroupAction({ group }))
   }

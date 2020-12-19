@@ -1,94 +1,90 @@
 import { Request, Response } from "express";
 import path from "path";
-import { UserModel, WordModel } from "../interfaces";
+import { getAllUserGroups } from '../helper-functions/groups.heplers';
+import { GeneralWord as GeneralWordModel, IRequstUserInfo, IUserWordGroup, UserModel, WordModel } from "../interfaces";
 import GeneralWord from "../Models/GeneralWord";
 import User from "../Models/User";
 import Word from "../Models/Word";
+import WordGroup from '../Models/WordGroup';
 import errorHandler from "../utils/errorHandler";
 import { FileHandler } from '../utils/file-handler';
-import { getWordsByLanguage } from './../helper-functions/index';
-import { GeneralWord as GeneralWordModel } from './../interfaces';
 import { CSVtoJson } from './../utils/csv-to-json';
-
-const fileHandler = new FileHandler()
-
 
 
 export class WordsController {
     public getAllWordsForCurrentUser = async (req: Request, res: Response) => {
         try {
-            // const user = await User.findOne({ _id: req.user }) as UserModel
-            // const currentUserLanguage = user.currentLanguage;
-            // if (!currentUserLanguage) throw new Error('Language does not exists')
+            const user = req.user as IRequstUserInfo
 
-            // const words = await Word.find({
-            //     user: user._id,
-            //     language: currentUserLanguage._id,
+            const words = await getWords(user)
 
-            // });
-
-            const user = await User.findOne({ _id: req.user }) as UserModel
-            const currentUserLanguage = user.currentLanguage;
-
-            if (!currentUserLanguage) throw new Error('Language does not exists')
-
-            if (user.wordsForBackup.length === 0) {
-                user.wordsForBackup = [...user.words]
-            }
-
-            const words = getWordsByLanguage(currentUserLanguage._id, user.words)
-
-
-            res.status(200).json({ words, user });
+            res.status(200).json({ words, user, });
         } catch (error) {
             errorHandler(res, error);
         }
     };
 
-    // public getWordById = async (req: Request, res: Response) => {
-    //     try {
-    //     } catch (error) {
-    //         errorHandler(res, error);
-    //     }wsd
-    // };
+    public addMyWords = async (req: Request, res: Response) => {
+        try {
+            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
+            const newWords = user.words as WordModel[]
+
+            newWords.forEach(async element => {
+                const newWord: WordModel = await new Word({
+                    isFavorite: false,
+                    word: element.word,
+                    levelKnowledge: element.levelKnowledge,
+                    translation: element.translation,
+                    language: user.currentLanguage?._id,
+                    user: user._id,
+                    assignedGroups: element.assignedGroups
+                })
+
+                const isExist = await Word.exists({ user: user._id, word: newWord.word, translation: newWord.translation })
+                if (!isExist) {
+                    await newWord.save()
+                }
+
+            });
+
+            const words = await getWords(user)
+
+            res.status(200).json({ words, user, });
+        } catch (error) {
+            errorHandler(res, error);
+        }
+    };
+
 
     public createNewWordForUser = async (req: Request, res: Response) => {
         try {
-            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
-            const currentUserLanguage = user.currentLanguage
 
-            if (!currentUserLanguage) throw new Error('Language does not exists')
-
-            // if (!updatedUser || !updatedUser.currentLanguage) throw new Error('User or language does not exists')
-
-            const isExistWord = user.words.find(word => word.word === req.body.word && word.translation === req.body.translation);
-
-            if (isExistWord) {
-                res.status(403).json({ newWord: isExistWord, message: 'Word already exists' });
-                return
-            }
+            const user = req.user as IRequstUserInfo
 
             const newWord: WordModel = await new Word({
                 word: req.body.word,
                 translation: req.body.translation,
                 isFavorite: req.body.isFavorite,
-                language: currentUserLanguage._id,
+                language: user.currentLanguage?._id,
                 user: user._id,
                 assignedGroups: req.body.assignedGroups ? req.body.assignedGroups : []
-            });
-            console.log('NEW WORD', typeof newWord._id)
+            })
 
-            user.wordsForBackup.unshift(newWord)
-            user.words.unshift(newWord)
+            const isExist = await Word.exists({ user: user._id, word: newWord.word, translation: newWord.translation })
+            if (!isExist) {
+                await newWord.save()
+            } else {
+                const words = await getWords(user)
+                res.status(403).json({ words, message: 'Word already exists' });
+                return
+            };
 
+            console.log('new word', newWord)
 
-            const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
+            const words = await getWords(user)
+            const groups = await getGroups(user, words)
 
-            if (!updatedUser) throw new Error('User does not exists')
-
-            const words = getWordsByLanguage(currentUserLanguage._id, updatedUser.words)
-
-            res.status(201).json({ words, message: 'Successfully added', user: updatedUser, userOlder: user });
+            res.status(201).json({ words, groups, message: 'Successfully added' });
         } catch (error) {
             errorHandler(res, error);
         }
@@ -96,42 +92,61 @@ export class WordsController {
 
     public addWordsFromCSV = async (req: Request, res: Response) => {
         try {
-            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
-            const currentUserLanguage = user.currentLanguage
-            if (!currentUserLanguage) throw new Error('Language does not exists')
+            // const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
+            // const currentUserLanguage = user.currentLanguage
+            // if (!currentUserLanguage) throw new Error('Language does not exists')
 
             // multer({ dest: "./uploads/" }).single("csvFile"), (file) => {
             //     return file
             // },
+
+
+            const user = req.user as IRequstUserInfo
+
             const csvFile = req.file;
-            console.log('FILE PATH', csvFile.path)
+
             const filePath = process.env.NODE_ENV === 'production' ? `${csvFile.path}` : `${path.resolve()}/${csvFile.path}`
-
-            console.log('FILE PATH', filePath)
+            console.log('PATH', csvFile.path)
             const wordsFromCSV = await CSVtoJson.createJsonArray(filePath)
-            console.log('ASSIGN GROUPS', req.query.assignedGroups)
+
             const assignedGroups = JSON.parse(req.query.assignedGroups)
-            await wordsFromCSV.forEach(async word => {
 
-                if (!word || !word.Translation || !word.Word) return
+            wordsFromCSV.forEach(async word => {
 
-                const newWord: WordModel = await new Word({
-                    word: word.Word,
-                    translation: word.Translation,
-                    language: currentUserLanguage._id,
-                    assignedGroups: assignedGroups ? assignedGroups : []
-                });
-                user.words.unshift(newWord)
+                if (word && word.Translation && word.Word) {
+                    const newWord: WordModel = await new Word({
+                        isFavorite: false,
+                        word: word.Word,
+                        translation: word.Translation,
+                        language: user.currentLanguage?._id,
+                        user: user._id,
+                        assignedGroups: assignedGroups ? assignedGroups : []
+                    });
+
+                    const isExist = await Word.exists({ user: user._id, word: newWord.word, translation: newWord.translation })
+                    if (!isExist) {
+                        await newWord.save()
+                    }
+
+
+                    console.log('wordsFromCSV', newWord)
+
+                    // await newWord.save()
+                }
+
             })
+            const fileHandler = new FileHandler()
 
             fileHandler.deleteFile(filePath)
+
+            const words = await getWords(user)
 
             // const words = await new Word().collection.insertMany(wordsFromCSV);
 
             // user.words = [...user.words, ...words.ops]
 
-            const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
-            const words = getWordsByLanguage(currentUserLanguage._id, updatedUser?.words || [])
+            // const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
+            // const words = getWordsByLanguage(currentUserLanguage._id, updatedUser?.words || [])
             res.status(201).json(words);
         } catch (error) {
             errorHandler(res, error);
@@ -159,39 +174,18 @@ export class WordsController {
 
             const wordsToUpdate = req.body.words as WordModel[];
 
-
-            const user = await User.findOne({ _id: req.user }) as UserModel
+            const user = req.user as IRequstUserInfo
 
             const currentUserLanguage = user.currentLanguage
             if (!currentUserLanguage) throw new Error('Language does not exists')
 
-            // // let wordsByLanguage = user.words.filter(word => checkByLanguage(word.language, currentUserLanguage._id));
-            let words = [...user.words]
-            // console.log(' WORDS TO UPDATE', wordsToUpdate)
+            await wordsToUpdate.forEach(async word => {
+                await Word.findOneAndUpdate({ _id: word._id }, { $set: word })
+            })
 
-            user.words = words.map(word => {
-                const foundWord = wordsToUpdate.find(wordToUpdate => {
+            const words = await getWords(user)
 
-                    // console.log(wordToUpdate._id, word._id)
-                    // console.log(typeof wordToUpdate._id, typeof word._id)
-                    // console.log(wordToUpdate.word, word.word)
-                    return wordToUpdate._id.toString() === word._id.toString()
-                })
-
-                if (foundWord) {
-
-                    return { ...foundWord }
-                }
-
-                return word
-            }) as WordModel[]
-     
-
-            const updatedUser = await User.findOneAndUpdate({ _id: req.user }, { $set: user }, { new: true })
-
-            const wordsByLanguage = getWordsByLanguage(currentUserLanguage._id, updatedUser?.words || [])
-
-            res.status(201).json(wordsByLanguage);
+            res.status(201).json(words);
         } catch (error) {
             errorHandler(res, error);
         }
@@ -200,29 +194,20 @@ export class WordsController {
 
     public editWordByIdForCurrentUser = async (req: Request, res: Response) => {
         try {
+            const user = req.user as IRequstUserInfo
 
-            const user = await User.findOne({ _id: req.user }) as UserModel;
+            const editedWord = req.body as Pick<WordModel, '_id' | 'translation' | 'word' | 'isFavorite'>
 
-            const editedWord = req.body
+            const updatedWord = await Word.findOneAndUpdate({ _id: editedWord._id }, { $set: editedWord }, { new: true })
 
+            const words = await getWords(user)
 
-            user.words = user.words.map(word => {
-                return word._id == editedWord._id ? { ...word, ...editedWord } : word
-            })
-
-            const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
-            // const editedWord = await Word.findOneAndUpdate(
-            //     { _id: req.body._id },
-            //     { $set: req.body },
-            //     { new: true }
-            // )
-
-            if (!updatedUser || !updatedUser.currentLanguage) throw new Error('User or language does not exists')
-
-            const words = getWordsByLanguage(updatedUser.currentLanguage._id, updatedUser?.words)
+            const groups = await getGroups(user, words)
+            // Send groups back to client to update state if quantity of words changed
+            // Because we use this method to delete word from a group
 
 
-            res.status(200).json({ words })
+            res.status(200).json({ words, groups })
         } catch (error) {
             errorHandler(res, error);
         }
@@ -230,25 +215,42 @@ export class WordsController {
 
     public deleteWordByIdForCurrentUser = async (req: Request, res: Response) => {
         try {
-            const user = await User.findOne({ _id: req.user }) as UserModel;
-            user.words = user.words.filter(word => word._id.toString() !== req.params.wordId)
+            const user = req.user as IRequstUserInfo
 
-            const updatedUser = await User.findOneAndUpdate({ _id: user.id }, { $set: user }, { new: true })
-            // console.log('USER UPDATED', new Date().getTime())
+            const wordIdToDelete = req.params.wordId
 
+            await Word.findByIdAndRemove({ _id: wordIdToDelete })
 
-            if (!updatedUser || !updatedUser.currentLanguage) throw new Error('User or language does not exists')
-
-            const words = getWordsByLanguage(updatedUser.currentLanguage._id, updatedUser?.words)
-
+            const words = await getWords(user)
+            const groups = await getGroups(user, words)
             res.status(200).json({
                 words,
+                groups,
                 message: 'Removed'
             })
         } catch (error) {
             errorHandler(res, error);
         }
     };
+
+    // public deleteWordFromGroup = async (req: Request, res: Response) => {
+    //     try {
+    //         const user = req.user as IRequstUserInfo
+
+    //         const wordIdToDelete = req.params.wordId
+
+    //         await Word.findByIdAndRemove({ _id: wordIdToDelete })
+
+    //         const words = await getWords(user)
+
+    //         res.status(200).json({
+    //             words,
+    //             message: 'Removed'
+    //         })
+    //     } catch (error) {
+    //         errorHandler(res, error);
+    //     }
+    // };
 
 
     // public addWordsToGeneralList = async (req: Request, res: Response) => {
@@ -266,7 +268,7 @@ export class WordsController {
 
     public getGeneralWords = async (req: Request, res: Response) => {
         try {
-            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
+            const user = req.user as IRequstUserInfo
 
             const currentUserLanguage = user.currentLanguage
             if (!currentUserLanguage) throw new Error('Language does not exists')
@@ -280,10 +282,7 @@ export class WordsController {
 
     public addWordsToGeneralList = async (req: Request, res: Response) => {
         try {
-            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
-
-            const currentUserLanguage = user.currentLanguage
-            if (!currentUserLanguage) throw new Error('Language does not exists')
+            const user = req.user as IRequstUserInfo
 
             const words = req.body.words as GeneralWordModel[]
 
@@ -292,15 +291,14 @@ export class WordsController {
                     const newWord = await new GeneralWord({
                         word: word.word,
                         translation: word.translation,
-                        language: currentUserLanguage._id,
+                        language: user.currentLanguage?._id,
                         assignedGroups: word.assignedGroups,
                         user: user._id
                     }).save();
                 })
             }
 
-            const generalWords = await GeneralWord.find({ language: currentUserLanguage._id })
-
+            const generalWords = await GeneralWord.find({ language: user.currentLanguage?._id })
 
 
             res.status(201).json({ addedWord: '', generalWords });
@@ -309,12 +307,11 @@ export class WordsController {
         }
     };
 
-
     public deleteWordFromGeneralList = async (req: Request, res: Response) => {
         try {
-            console.log('WORD ID', req.query.wordId)
+            const user = req.user as IRequstUserInfo
+
             const deletedWord = await GeneralWord.findOneAndRemove({ _id: req.query.wordId })
-            const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
 
             const currentUserLanguage = user.currentLanguage
             if (!currentUserLanguage) throw new Error('Language does not exists')
@@ -328,11 +325,8 @@ export class WordsController {
                     message: 'Removed'
                 })
             } else {
-                throw new Error()
+                throw new Error('Word not found')
             }
-
-
-
 
         } catch (error) {
             errorHandler(res, error);
@@ -341,11 +335,22 @@ export class WordsController {
 }
 
 
-function checkByLanguage(language: string | object, language2: string | object): boolean {
-    return language.toString() === language2.toString()
+async function getWords(user: IRequstUserInfo): Promise<WordModel[]> {
+
+    return (await Word.find({ user: user, language: user.currentLanguage?._id })).reverse() as WordModel[]
+
 }
-// this.router.get("words/getAllWords", this.wordsController);
-// this.router.get("words/getWordById", this.wordsController);
-// this.router.post("words/addNewWord", this.wordsController);
-// this.router.patch("words/editWordById", this.wordsController);
-// this.router.delete("words/deleteWordById", this.wordsController);
+
+async function getGroups(user: IRequstUserInfo, words: WordModel[]): Promise<IUserWordGroup[]> {
+    const currentUserLanguage = user.currentLanguage
+    if (!currentUserLanguage) throw new Error('Language does not exists')
+
+    const userGroups = await WordGroup.find({
+        language: currentUserLanguage._id,
+        user: user
+    });
+    const groups = getAllUserGroups(userGroups, currentUserLanguage._id, words)
+
+    return groups
+}
+

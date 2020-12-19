@@ -17,8 +17,13 @@ import { AppStateInterface } from './../../../store/reducers';
 export class CsvManagerComponent implements OnInit {
   @ViewChild('instruction') insctructionModal: TemplateRef<any>;
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
-
-  @Input() expanded = false;
+  _expanded: boolean;
+  @Input() set expanded(isExpanded: boolean) {
+    this._expanded = isExpanded
+    if (isExpanded === false) {
+      this.resetState();
+    }
+  };
   @Input() selectedGroup: WordGroup;
 
   file = new EventEmitter<File>();
@@ -27,7 +32,6 @@ export class CsvManagerComponent implements OnInit {
   isResetCsvHandlerState$: Observable<boolean>
   words$: Observable<Word[]>;
   selectedFile: File;
-  @Output() updateWordList = new EventEmitter();
   constructor(
     private dialog: NbDialogService,
     private store$: Store<AppStateInterface>
@@ -60,7 +64,6 @@ export class CsvManagerComponent implements OnInit {
 
   resetState() {
     this.selectedFile = null;
-    this.updateWordList.emit();
     if (this.fileInput) {
       this.fileInput.nativeElement.value = '';
 

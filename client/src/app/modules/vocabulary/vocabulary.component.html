@@ -1,11 +1,13 @@
-
 <!-- <mat-error *ngIf="errorMessage$ | async as errorMessage">{{errorMessage}}</mat-error> -->
-<app-loader [show]="vocabularyLoader$ | async"></app-loader>
+
+
 
 <nb-card class="main-content">
 
   <nb-card-header>
-    <div class="d-flex" *ngIf="userWordsFiltredByGroupAndSearchValue$ | async as words">
+    <app-loader [show]="vocabularyLoader$ | async"></app-loader>
+    <div class="d-flex"
+      *ngIf=" !(vocabularyLoader$ | async) && userWordsFiltredByGroupAndSearchValue$ | async as words">
       <span class="search" [hidden]="!words && !words?.length && !searchValueControl.value">
         <app-search [filterValue]="searchValueControl" (addWord)="getActionFromChildren($event)">
 
@@ -39,22 +41,28 @@
     </section>
 
     <section class="csv-manager">
-      <app-csv-manager [expanded]="isShowUploader" [selectedGroup]="selectedGroup$ | async"
-        (updateWordList)="showUploader()"></app-csv-manager>
+      <app-csv-manager
+       [expanded]="isShowUploader"
+        [selectedGroup]="selectedGroup$ | async"
+
+      ></app-csv-manager>
     </section>
 
-    <app-word-list (action)="getActionFromChildren($event)"
-      [filterValue]="searchValueControl.valueChanges" [menuItems]="wordMenuItems"
-      [selectedGroup]="selectedGroup$ | async" [words]="userWordsFiltredByGroupAndSearchValue$ | async">
+    <app-word-list (action)="getActionFromChildren($event)" [filterValue]="searchValueControl.valueChanges"
+      [menuItems]="wordMenuItems$ | async" [selectedGroup]="selectedGroup$ | async"
+      [words]="userWordsFiltredByGroupAndSearchValue$ | async">
     </app-word-list>
 
 
+    <app-status-message [words]="userWordsFiltredByGroupAndSearchValue$ | async"
+      [searchValue]="searchValueControl.value" [selectedGroup]="selectedGroup$ | async"
+      [isLoading]="vocabularyLoader$ | async">
+    </app-status-message>
 
-    <ng-container *ngIf="userWordsFiltredByGroupAndSearchValue$ | async as words">
-      <ng-container *ngIf="words && !words?.length && !(vocabularyLoader$ | async)">
+    <!-- <ng-container *ngIf="userWordsFiltredByGroupAndSearchValue$ | async as words">
+      <ng-container *ngIf="words && !words?.length">
         <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
-          <div class="text-center"
-            *ngIf="selectedGroup._id !== '2' && selectedGroup._id !== '1' && !searchValueControl.value">
+          <div class="text-center" *ngIf="selectedGroup._id !== '2' && selectedGroup._id !== '1' && !searchValueControl.value">
             <span class="first-word-title">Empty group
             </span>
             <br>
@@ -81,7 +89,7 @@
 
 
       </ng-container>
-    </ng-container>
+    </ng-container> -->
 
 
   </nb-card-body>
@@ -106,18 +114,14 @@
 
 <!-- MODAL EDIT, ADD WORD  -->
 <ng-template #modalUiWrapper let-data let-ref="dialogRef">
-  <app-modal-ui
-    [isLoading]="modalLoader$ | async"
-    [title]="titleForModal"
-    [mode]="titleForModal === 'Edit word' ? 'update' : 'create'"
-    (save)="addNewWord()"
-    (update)="updateWord()"
+  <app-modal-ui [isLoading]="modalLoader$ | async" [title]="titleForModal"
+    [mode]="titleForModal === 'Edit word' ? 'update' : 'create'" (save)="addNewWord()" (update)="updateWord()"
     (cancel)="closeWordModal()">
     <ng-container *ngTemplateOutlet="wordFormTemplate"></ng-container>
   </app-modal-ui>
 </ng-template>
 
-<!-- MODAL DELETE WORD  -->
+<!-- MODAL DELETE WORD
 <ng-template #deleteWordModal let-data let-ref="dialogRef">
   <app-modal-ui
     [isLoading]="modalLoader$ | async"
@@ -127,4 +131,4 @@
     (cancel)="closeWordModal()">
     <mat-error *ngIf="errorMessage$ | async as errorMessage">{{errorMessage}}</mat-error>
   </app-modal-ui>
-</ng-template>
+</ng-template> -->

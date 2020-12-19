@@ -26,10 +26,11 @@ export class WordListComponent {
   @Input() isShowMenu = true;
   @Input() menuItems: MenuItem<WordAction>[];
   @Input() userId: string;
-  // @Input() set showenItems(quantity: number) {
-  //   debugger
-  //   this._showItems
-  // };
+  @Input() set showMoreItems(e: Event) {
+    this.showMoreWords();
+
+  };
+
   isShowGoToTopButton$: Observable<boolean> = fromEvent(window, 'scroll').pipe(map(event => window.scrollY >= 1400));
 
   get showItems() {

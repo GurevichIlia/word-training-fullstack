@@ -1,25 +1,31 @@
-import { FormGroup } from '@angular/forms';
 import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { NbDialogService } from '@nebular/theme';
 import { select, Store } from '@ngrx/store';
-import { Observable, of, Subject } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
+import { DefaultGroupId, MenuItem, WordAction, wordMenuItems } from 'src/app/core';
 import { InstallAppService } from 'src/app/core/install-app/install-app.service';
 import { InstallHelperFunctionsService } from 'src/app/core/install-app/install-helper-functions.service';
 import { GeneralFacade } from 'src/app/general.facade';
-import { ALL_WORDS_GROUP, GeneralState } from 'src/app/general.state';
 import { GroupStatisticsService } from 'src/app/shared/components/group-statistics/group-statistics.service';
 import { Word, WordGroup } from 'src/app/shared/interfaces';
 import { AskQuestionComponent } from 'src/app/shared/modals/ask-question/ask-question.component';
-import { ApiWordsService } from 'src/app/shared/services/api/api-words.service';
-import { addWordToUserWordsAction, fetchWordsAction, saveEditedWordAction, selectVocabularyGroupAction } from 'src/app/store/actions/vocabulary.actions';
+import { NotificationsService } from 'src/app/shared/services/notifications.service';
+import {
+  addWordToUserWordsAction,
+  deleteUserGroupAction,
+  deleteUserWordAction,
+  deleteUserWordFromGroupAction,
+  fetchWordsAction, saveEditedWordAction,
+  selectVocabularyGroupAction
+} from 'src/app/store/actions/vocabulary.actions';
 import { AppStateInterface } from 'src/app/store/reducers';
 import { allWordsSelector, selectedGroupSelector, vocabularyLoaderSelector } from 'src/app/store/selectors/vocabulary.selectors';
 import { GeneralWord } from '../general-words/types/general-words.interfaces';
 import { WordsService } from './../../core/services/words.service';
 import { fetchGroupsAction } from './../../store/actions/vocabulary.actions';
 import { groupsSelector } from './../../store/selectors/vocabulary.selectors';
-import { NotificationsService } from 'src/app/shared/services/notifications.service';
 
 
 
@@ -27,11 +33,7 @@ import { NotificationsService } from 'src/app/shared/services/notifications.serv
 
 @Injectable()
 export class VocabularyFacade {
-  // private selectedGroup$ = new BehaviorSubject<WordGroup>(ALL_WORDS_GROUP);
-  private updateVocabulary$ = new Subject()
   constructor(
-    private generalState: GeneralState,
-    private apiWords: ApiWordsService,
     private generalFacade: GeneralFacade,
     private dialogService: NbDialogService,
     private installApp: InstallAppService,
@@ -68,6 +70,18 @@ export class VocabularyFacade {
   get vocabularyLoader$(): Observable<boolean> {
     return this.store$.pipe(select(vocabularyLoaderSelector))
 
+  }
+
+  get wordMenuItems$(): Observable<MenuItem<WordAction>[]> {
+    return this.selectedGroup$.pipe(
+      filter(group => group !== null),
+      map(group => {
+        if (group._id === DefaultGroupId.ALL_WORDS || group._id === DefaultGroupId.FAVORITES) {
+          return wordMenuItems.filter(item => item.action !== WordAction.DELETE_FROM_GROUP)
+        }
+
+        return wordMenuItems
+      }))
   }
 
   fetchWordsAndGroups(): void {
@@ -131,6 +145,14 @@ export class VocabularyFacade {
     // this.generalState.setUserWords(words);
   }
 
+  deleteWordFromGroup(word: Word): void {
+    this.store$.dispatch(deleteUserWordFromGroupAction({ word }))
+  }
+
+  deleteWord(word: Word): void {
+    this.store$.dispatch(deleteUserWordAction({ word }))
+
+  }
 
   askQuestion(text: string) {
     const answer$ = this.dialogService.open(AskQuestionComponent, { context: { title: text }, hasBackdrop: true });

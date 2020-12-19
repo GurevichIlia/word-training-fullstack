@@ -80,13 +80,11 @@ export class WordTraining {
         threeLastWords = previousWordsInCache.slice(-3)
         threeLastWordsIds = threeLastWords.map(word => word._id)
         filtredWords = words.filter(word => !threeLastWordsIds.includes(word._id))
-        console.log('FILTERED WORDS MORE 3', filtredWords)
         return filtredWords
       }
 
       threeLastWordsIds = previousWordsInCache.map(word => word._id)
       filtredWords = words.filter(word => !threeLastWordsIds.includes(word._id))
-      console.log('FILTERED WORDS', filtredWords)
       return filtredWords
 
 

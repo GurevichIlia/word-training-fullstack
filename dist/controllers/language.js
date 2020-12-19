@@ -76,8 +76,18 @@ class LanguagesController {
         this.getCurrentLanguage = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const user = yield User_1.default.findOne({ _id: req.user });
-                const currentLang = user.currentLanguage;
-                res.status(200).json({ currentLang });
+                const currentLanguage = user.currentLanguage;
+                const isLanguageInUserLanguages = user.userLanguages.find(userLanguage => { var _a; return userLanguage._id.toString() === ((_a = currentLanguage) === null || _a === void 0 ? void 0 : _a._id.toString()); });
+                if (isLanguageInUserLanguages) {
+                    const currentLang = currentLanguage;
+                    res.status(200).json({ currentLang });
+                }
+                else if (isLanguageInUserLanguages) {
+                    user.currentLanguage = null;
+                    const updatedUser = yield User_1.default.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true });
+                    const currentLang = updatedUser.currentLanguage;
+                    res.status(200).json({ currentLang });
+                }
             }
             catch (error) {
                 errorHandler_1.default(res, error);
@@ -148,18 +158,18 @@ class LanguagesController {
             try {
                 const user = yield User_1.default.findOne({ _id: req.user });
                 const languageIdToDelete = req.body.languageId;
-                user.userLanguages = user.userLanguages.filter(language => languageIdToDelete != language._id);
+                user.userLanguages = user.userLanguages.filter(language => languageIdToDelete.toString() != language._id.toString());
                 console.log('USER', user.currentLanguage);
                 console.log('USER LANG', (_a = user.currentLanguage) === null || _a === void 0 ? void 0 : _a._id);
                 console.log('DELETE LANG', languageIdToDelete);
-                if (((_b = user.currentLanguage) === null || _b === void 0 ? void 0 : _b._id) === languageIdToDelete) {
+                if (((_b = user.currentLanguage) === null || _b === void 0 ? void 0 : _b._id.toString()) === languageIdToDelete.toString()) {
                     user.currentLanguage = null;
                 }
                 console.log('AFTER DELETE', user.currentLanguage);
                 if (user.userLanguages.length === 0) {
                     user.currentLanguage = null;
                 }
-                const foundLangauge = user.userLanguages.find(lang => { var _a; return ((_a = user.currentLanguage) === null || _a === void 0 ? void 0 : _a._id) === lang._id; });
+                const foundLangauge = user.userLanguages.find(lang => { var _a; return ((_a = user.currentLanguage) === null || _a === void 0 ? void 0 : _a._id.toString()) === lang._id.toString(); });
                 if (!foundLangauge) {
                     user.currentLanguage = null;
                 }

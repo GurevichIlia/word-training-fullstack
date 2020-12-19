@@ -1,14 +1,13 @@
 <i class="fas fa-angle-double-up to-top-button"  *ngIf="isShowGoToTopButton$ | async" (click)="goToTop()"></i>
-<div class="scroll-container">
-    <div class="word-list" *ngIf="words"
-      #wordsList
+    <div class="word-list"
+      #wordList
       infiniteScroll
       [infiniteScrollDistance]="2"
       [infiniteScrollThrottle]="10"
       (scrolled)="onScroll()">
 
 
-      <ng-container *ngIf="words.length !== 0">
+      <ng-container *ngIf="words?.length !== 0">
 
         <div  class="search-results" >
 
@@ -31,7 +30,6 @@
       </ng-container>
 
     </div>
-</div>
 
 
 

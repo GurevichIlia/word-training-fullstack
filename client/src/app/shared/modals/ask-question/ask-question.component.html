@@ -1,8 +1,17 @@
-<nb-card class="wordDialogBox">
+<!-- <nb-card class="wordDialogBox">
       <span class="text-center title">{{title}}</span>
       <span class="text-center item">{{item}}</span>
       <nb-card-footer class="wordDialogFooter">
             <button nbButton status="danger" (click)="close(false)">Cancel</button>
             <button nbButton class="purpleButton" (click)="close(true)">Remove</button>
       </nb-card-footer>
-</nb-card>
+</nb-card> -->
+<ng-container *ngIf="isCloseModal$ | async"></ng-container>
+<app-modal-ui
+    [isLoading]="isLoading$ | async"
+    [title]="title"
+    [mode]="'delete'"
+    (save)="save()"
+    (cancel)="cancel()">
+    <mat-error *ngIf="errorMessage$ | async as errorMessage">{{errorMessage}}</mat-error>
+</app-modal-ui>

@@ -21,6 +21,8 @@ import { GroupsModule } from './groups/groups.module';
 import { vocabularyReducer, VOCABULARY_REDUCER_NODE } from '../../store/reducers/vocabulary.reducers';
 import { VocabularyComponent } from './vocabulary.component';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { ModalService } from 'src/app/shared/services/modal.service';
+import { StatusMessageComponent } from './status-message/status-message.component';
 
 
 
@@ -40,6 +42,7 @@ const vocabularyRoutes: Routes = [
     VocabularyComponent,
     AssignWordListComponent,
     CsvManagerComponent,
+    StatusMessageComponent,
 
   ],
   imports: [
@@ -66,6 +69,8 @@ const vocabularyRoutes: Routes = [
     EffectsModule.forFeature([]),
 
   ],
-  providers: [VocabularyFacade]
+  providers: [
+    VocabularyFacade,
+  ]
 })
 export class VocabularyModule { }

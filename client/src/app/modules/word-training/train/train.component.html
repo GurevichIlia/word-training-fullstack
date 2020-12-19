@@ -3,9 +3,9 @@
 
     <div class="counter" *ngIf="counterState$ | async as counterState">
       <app-word-counter
-      [totalCardsLearned]="counterState.totalLearnedCards"
-      [wordsInGroup]="counterState.wordsInGroup.length"
-      [learnedCardsFromGroup]="counterState.uniqueWordsLearned"
+          [totalCardsLearned]="counterState.totalLearnedCards"
+          [wordsInGroup]="counterState.wordsInGroup.length"
+          [learnedCardsFromGroup]="counterState.uniqueWordsLearned"
       ></app-word-counter>
     </div>
 
@@ -16,7 +16,7 @@
           <app-word-card [word]="word" (favoriteToggle)="favoriteToggle($event)"></app-word-card>
 
     </div>
-
+      <small *ngIf="isShowPrevioudWordButton$ | async" (click)="previousWord()"><i class="fas fa-arrow-left"></i>  Previous word</small>
   </div>
 
   <nb-card class="knowledge-level-panel pr-3 pl-3 mt-4">

@@ -20,7 +20,7 @@
   }
 }
 
-.scroll-container {
-  height: 100%;
-  overflow-y: auto;
+.word-list {
+  transition: all 0.3s;
+  animation: fadeShow 0.3s linear;
 }

@@ -9,6 +9,9 @@ export enum WordTrainingActionsType {
   PreviousWord = '[Word training] Previous word',
   StopTraining = '[Word training] Stop training',
   RepeatTraining = '[Word training] Repeat training',
+  ChangeGroup = '[Word training] Change group for training',
+
+  AddToFavorite = '[Word training] Add word to favorite',
 
   SaveTrainingProgress = '[Word training] Save training progress',
   SaveTrainingProgressSuccess = '[Word training] Save training progress success',
@@ -31,4 +34,7 @@ export const saveTrainingProgressErrorAction = createAction(WordTrainingActionsT
 export const resetWordTrainingStateAction = createAction(WordTrainingActionsType.ResetWordTrainingState);
 
 export const repeatTrainingAction = createAction(WordTrainingActionsType.RepeatTraining);
+export const changeGroupAction = createAction(WordTrainingActionsType.ChangeGroup);
+
+export const addWordToFavoriteAction = createAction(WordTrainingActionsType.AddToFavorite, props<{ word: Word }>());
 

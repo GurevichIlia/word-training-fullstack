@@ -1,4 +1,4 @@
-import { Word } from 'src/app/shared/interfaces';
+import { Word, WordGroup } from 'src/app/shared/interfaces';
 
 export interface GetAllUserWordsResponseInterface {
   // [wordId: string]: Word;
@@ -11,13 +11,12 @@ export interface AddUserWordResponseInterface {
   // words: {
   //   [wordId: string]: Word;
   // }
+  groups: WordGroup[]
   words: Word[]
 }
 
 export interface DeleteUserWordResponseInterface extends AddUserWordResponseInterface {
-
 }
 
 export interface EditUserWordResponseInterface extends AddUserWordResponseInterface {
-
 }
