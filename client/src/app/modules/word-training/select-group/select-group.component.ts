@@ -24,9 +24,6 @@ export class SelectGroupComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initialValues()
-
-
-
   }
 
   initialValues(): void {

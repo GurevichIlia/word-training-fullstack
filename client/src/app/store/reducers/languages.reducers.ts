@@ -1,7 +1,8 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { ActiveLanguagesTab } from '../../types/languages.enums';
-import { ReducerNode } from './../../../../core/enums/store.enum';
-import { LanguagesStateInterface } from './../../types/languages.interfaces';
+import { ReducerNode } from 'src/app/core/enums/store.enum';
+import { ActiveLanguagesTab } from 'src/app/modules/languages/types/languages.enums';
+import { LanguagesStateInterface } from 'src/app/modules/languages/types/languages.interfaces';
+
 import {
   AddLanguageToUserLanguagesAction,
   AddLanguageToUserLanguagesErrorAction,
@@ -11,17 +12,21 @@ import {
   DeleteUserLanguageSuccessAction,
   FetchAllLanguagesAction, FetchAllLanguagesErrorAction, FetchAllLanguagesSuccessAction,
   FetchUserLanguagesAction, FetchUserLanguagesErrorAction, FetchUserLanguagesSuccessAction,
+  getCurrentLearningLanguageErrorAction,
+  getCurrentLearningLanguageSuccessAction,
+  getLearningLanguageAction,
   setCurrentLearningLanguageAction, setCurrentLearningLanguageErrorAction, setCurrentLearningLanguageSuccessAction
 } from './../actions/languages.actions';
 
 export const LANGUAGES_REDUCER_NODE: ReducerNode.LANGUAGES = ReducerNode.LANGUAGES
 
 const initialState: LanguagesStateInterface = {
-  currentLearningLanguage: null,
+  currentLearningLanguage: undefined,
   isLoading: false,
   error: null,
   allLanguages: null,
   userLanguages: [],
+  languageCandidateToLearn: null,
   activeLanguagesTab: ActiveLanguagesTab.AllLanguages
 }
 
@@ -86,7 +91,9 @@ const reducers = createReducer(
     (state, action): LanguagesStateInterface => ({
       ...state,
       isLoading: false,
+      allLanguages: action.allLanguages,
       userLanguages: action.userLanguages,
+      languageCandidateToLearn: action.userLanguages[action.userLanguages.length - 1],
       activeLanguagesTab: action.userLanguages.length > 0 ? ActiveLanguagesTab.UserLanguages : ActiveLanguagesTab.AllLanguages
     })
   ),
@@ -111,9 +118,10 @@ const reducers = createReducer(
     (state, action): LanguagesStateInterface => ({
       ...state,
       isLoading: false,
-      userLanguages: action.userLanguages.map(lang => ({ ...lang })),
+      userLanguages: action.userLanguages,
+      allLanguages: action.allLanguages,
+      currentLearningLanguage: action.currentLearningLanguage,
       activeLanguagesTab: action.userLanguages.length > 0 ? ActiveLanguagesTab.UserLanguages : ActiveLanguagesTab.AllLanguages,
-      currentLearningLanguage: null
     })
   ),
   on(
@@ -124,26 +132,26 @@ const reducers = createReducer(
       error: action.backendErrors
     })
   ),
-  // on(
-  //   getLearningLanguageAction,
-  //   (state): LanguagesStateInterface => ({
-  //     ...state,
-  //     isLoading: true
-  //   })),
-  // on(
-  //   getCurrentLearningLanguageSuccessAction,
-  //   (state, action): LanguagesStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     currentLearningLanguage: action.currentLanguage
-  //   })),
-  // on(
-  //   getCurrentLearningLanguageErrorAction,
-  //   (state, action): LanguagesStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     error: action.error
-  //   })),
+  on(
+    getLearningLanguageAction,
+    (state): LanguagesStateInterface => ({
+      ...state,
+      // isLoading: true
+    })),
+  on(
+    getCurrentLearningLanguageSuccessAction,
+    (state, action): LanguagesStateInterface => ({
+      ...state,
+      // isLoading: false,
+      currentLearningLanguage: action.currentLanguage
+    })),
+  on(
+    getCurrentLearningLanguageErrorAction,
+    (state, action): LanguagesStateInterface => ({
+      ...state,
+      // isLoading: false,
+      error: action.error
+    })),
   on(
     setCurrentLearningLanguageAction,
     (state): LanguagesStateInterface => ({

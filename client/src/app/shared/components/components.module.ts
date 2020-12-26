@@ -7,6 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { NbCardModule, NbCheckboxModule, NbInputModule, NbProgressBarModule, NbSpinnerModule } from '@nebular/theme';
 import { LoaderComponent } from './loader/loader.component';
+import { WordSkeletonComponent } from './word-skeleton/word-skeleton.component';
 
 
 
@@ -16,7 +17,7 @@ import { LoaderComponent } from './loader/loader.component';
 
 
 
-  ],
+  WordSkeletonComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -33,7 +34,7 @@ import { LoaderComponent } from './loader/loader.component';
 
   ],
   exports: [
-
+    WordSkeletonComponent
 
 
   ],

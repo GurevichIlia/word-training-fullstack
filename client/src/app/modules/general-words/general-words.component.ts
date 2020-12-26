@@ -2,7 +2,7 @@ import { WordAction } from '../../core/enums/word.enum';
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
-import { map, startWith, takeUntil, tap } from 'rxjs/operators';
+import { map, startWith, takeUntil, tap, shareReplay } from 'rxjs/operators';
 import { Action } from 'src/app/core';
 import { sharedWordMenuItem } from 'src/app/core/models/shared-word.model';
 import { GeneralWordsFacade } from './general-words.facade';
@@ -30,8 +30,8 @@ export class GeneralWordsComponent implements OnInit {
     this.generalWordsFacade.fetchGeneralWords()
 
 
-    this.userId$ = this.generalWordsFacade.userId$.pipe(tap(res => console.log('USER', res)));
-    this.generalWords$ = this.generalWordsFacade.generalWords$.pipe(map(words => words.reverse()))
+    this.userId$ = this.generalWordsFacade.userId$;
+    this.generalWords$ = this.generalWordsFacade.generalWords$.pipe(map(words => words.reverse()), shareReplay())
     this.isLoading$ = this.generalWordsFacade.isLoading$
   }
 

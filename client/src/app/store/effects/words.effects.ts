@@ -28,7 +28,7 @@ import {
   shareWordToGeneralWordsSuccessAction,
   shareWordToGeneralWordsErrorAction
 } from '../actions/vocabulary.actions';
-import { currentLanguageSelector } from '../selectors/language.selector';
+import { currentLanguageSelector } from './../selectors/languages.selectors';
 import { HttpErrorResponse } from '@angular/common/http';
 import { selectedGroupSelector } from '../selectors/vocabulary.selectors';
 
@@ -40,7 +40,6 @@ export class WordsEffects {
     private wordsService: WordsService,
     private store$: Store<AppStateInterface>,
     private notificationService: NotificationsService,
-    private csvHandlerService: CsvHandlerService
   ) { }
 
   loadWords$ = createEffect(() => this.actions$.pipe(
@@ -84,11 +83,11 @@ export class WordsEffects {
     )
   )
 
-  // addWordSuccess$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(VocabularyActionsType.AddWordToUserWordsSuccess),
-  //     tap(_ => this.store$.dispatch(fetchGroupsAction()))
-  //   ), { dispatch: false })
+  addWordSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(VocabularyActionsType.AddWordToUserWordsSuccess),
+      tap(_ => this.notificationService.success('Word added'))
+    ), { dispatch: false })
 
   addWordError$ = createEffect(() =>
     this.actions$.pipe(
@@ -174,24 +173,24 @@ export class WordsEffects {
 
         return this.wordsService.addNewWordsFromCSV({ file, selectedGroupId })
           .pipe(
-            map((words: Word[]) => {
-              return addWordsFromCsvSuccessAction({ words });
+            map(({ words, groups }: { words: Word[], groups: WordGroup[] }) => {
+              return addWordsFromCsvSuccessAction({ words, groups });
             }),
             catchError((err) => {
-              return of(addWordsFromCsvErrorAction({ error: err.error.message }))
+              return of(addWordsFromCsvErrorAction({ error: err.message }))
             })
           )
       }))
   )
 
-  addWordsFromCsvSuccess$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(VocabularyActionsType.AddWordsFromCsvSuccess),
-      tap(_ => {
-        this.store$.dispatch(fetchGroupsAction())
-        this.notificationService.success('Words added')
-      })
-    ), { dispatch: false })
+  // addWordsFromCsvSuccess$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(VocabularyActionsType.AddWordsFromCsvSuccess),
+  //     tap(_ => {
+  //       this.store$.dispatch(fetchGroupsAction())
+  //       this.notificationService.success('Words added')
+  //     })
+  //   ), { dispatch: false })
 
 
   markAsFavorite$ = createEffect(

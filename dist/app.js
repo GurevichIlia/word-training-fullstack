@@ -13,7 +13,7 @@ const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
 const auth_1 = require("./routes/auth");
 const passport_1 = __importDefault(require("passport"));
-const passport_2 = __importDefault(require("./middleware/passport"));
+const passport_2 = require("./middleware/passport");
 const language_1 = require("./routes/language");
 const word_group_1 = require("./routes/word-group");
 // import { initAuth } from './utils/google-sheets';
@@ -34,19 +34,22 @@ mongoose_1.default
 app.use(body_parser_1.default.json({ limit: '50mb' }));
 app.use(body_parser_1.default.urlencoded({ limit: '50mb', extended: true }));
 app.use(passport_1.default.initialize());
-passport_2.default(passport_1.default);
+passport_2.passportCheck(passport_1.default);
+// googleAuth(passport)
 app.use(morgan_1.default("dev"));
 app.use(cors_1.default());
 app.use("/api/auth", new auth_1.AuthRoutes().router);
 app.use("/api/vocabulary", new words_1.WordsRoutes().router);
 app.use("/api/languages", new language_1.LanguagesRoutes().router);
 app.use("/api/word-group", new word_group_1.WordGroupRoutes().router);
-// process.env.NODE_ENV = 'production'
-console.log('SENDING HTML', path_1.default.resolve('', 'client', 'dist', 'word-training', 'index.html'));
+// console.log('SENDING HTML', path.resolve(
+//     '', 'client', 'dist', 'word-training', 'index.html'
+// ))
 if (process.env.NODE_ENV === 'production') {
     app.use(express_1.default.static('client/dist/word-training'));
     app.get('*', (req, res) => {
-        console.log('SENDING PATH', path_1.default.resolve('client', 'dist', 'word-training', 'index.html'));
+        // console.log('SENDING PATH', path.resolve(
+        //     'client', 'dist', 'word-training', 'index.html'))
         res.sendFile(path_1.default.resolve(__dirname, 'client', 'dist', 'word-training', 'index.html'));
     });
 }

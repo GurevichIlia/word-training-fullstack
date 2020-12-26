@@ -18,8 +18,16 @@ class WordsRoutes {
     routes() {
         this.router.get("/getAllWords", passport_1.default.authenticate("jwt", { session: false }), this.wordsController.getAllWordsForCurrentUser);
         this.router.post("/createWord", passport_1.default.authenticate("jwt", { session: false }), this.wordsController.createNewWordForUser);
-        this.router.post("/addWords", passport_1.default.authenticate("jwt", { session: false }), this.wordsController.addNewWords);
-        this.router.get("/addMyWords", passport_1.default.authenticate("jwt", { session: false }), this.wordsController.addMyWords);
+        // this.router.post(
+        //     "/addWords",
+        //     passport.authenticate("jwt", { session: false }),
+        //     this.wordsController.addNewWords
+        // );
+        // this.router.get(
+        //     "/addMyWords",
+        //     passport.authenticate("jwt", { session: false }),
+        //     this.wordsController.addMyWords
+        // );
         this.router.post("/addWordsFromCSV", passport_1.default.authenticate("jwt", { session: false }), multer_1.default({ dest: this.fileHandler.pathToSave() }).single("csvFile"), function (req, res, next) {
             req.file;
             next();

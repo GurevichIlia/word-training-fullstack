@@ -57,7 +57,7 @@ export const uniqueLearnedWordsSelector = createSelector(
 
 export const wordsToSaveSelector = createSelector(
   featureSelector,
-  state => state.words
+  state => [...state.newWordsLearnedInTrain.values()]
 )
 
 export const isShowPreviousWordButtonSelector = createSelector(

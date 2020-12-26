@@ -25,17 +25,17 @@ export class WordsRoutes {
             this.wordsController.createNewWordForUser
         );
 
-        this.router.post(
-            "/addWords",
-            passport.authenticate("jwt", { session: false }),
-            this.wordsController.addNewWords
-        );
+        // this.router.post(
+        //     "/addWords",
+        //     passport.authenticate("jwt", { session: false }),
+        //     this.wordsController.addNewWords
+        // );
 
-        this.router.get(
-            "/addMyWords",
-            passport.authenticate("jwt", { session: false }),
-            this.wordsController.addMyWords
-        );
+        // this.router.get(
+        //     "/addMyWords",
+        //     passport.authenticate("jwt", { session: false }),
+        //     this.wordsController.addMyWords
+        // );
 
         this.router.post(
             "/addWordsFromCSV",

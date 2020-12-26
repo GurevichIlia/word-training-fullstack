@@ -1,7 +1,8 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { LanguagesStateInterface } from 'src/app/modules/languages/types/languages.interfaces';
 import { AppStateInterface } from 'src/app/store/reducers';
-import { LanguagesStateInterface } from './../../types/languages.interfaces';
-import { LANGUAGES_REDUCER_NODE } from './../reducers/languages.reducers';
+import { LANGUAGES_REDUCER_NODE } from '../reducers/languages.reducers';
+
 
 export const languagesFeatureSelector = createFeatureSelector<AppStateInterface, LanguagesStateInterface>(LANGUAGES_REDUCER_NODE);
 
@@ -30,7 +31,7 @@ export const errorSelector = createSelector(
   state => state.error
 );
 
-// export const currentLanguageSelector = createSelector(
-//   languagesFeatureSelector,
-//   state => state.currentLearningLanguage
-// );
+export const currentLanguageSelector = createSelector(
+  languagesFeatureSelector,
+  state => state.currentLearningLanguage
+);

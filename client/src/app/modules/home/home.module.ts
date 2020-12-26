@@ -7,7 +7,6 @@ import { HeaderComponent } from 'src/app/shared/components/header/header.compone
 import { SelectLanguageGuard } from 'src/app/shared/guards/select-language-guard.guard';
 import { HomeComponent } from './components/home/home.component';
 import { HomeRoutingModule } from './home-routing.module';
-import { CurrentLanguageEffects } from '../languages/store/effects/current-language.effects';
 import { LoaderModule } from 'src/app/shared/components/loader/loader.module';
 
 
@@ -24,9 +23,6 @@ import { LoaderModule } from 'src/app/shared/components/loader/loader.module';
     HomeRoutingModule,
 
     LoaderModule,
-
-    EffectsModule.forFeature([CurrentLanguageEffects])
-
   ],
   providers: [SelectLanguageGuard]
 

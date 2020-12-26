@@ -6,8 +6,7 @@ import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { BehaviorSubject, combineLatest, fromEvent, Observable, Subject } from 'rxjs';
 import { debounceTime, delay, distinctUntilChanged, map, startWith, takeUntil, tap } from 'rxjs/operators';
-import { Action, MenuItem } from 'src/app/core';
-import { wordMenuItems } from 'src/app/core/models/vocabulary.model';
+import { Action, MenuItem, wordMenuItems } from 'src/app/core';
 import { GroupStatistics } from 'src/app/shared/components/group-statistics/group-statistics.component';
 import { Word } from 'src/app/shared/interfaces';
 import {
@@ -41,7 +40,6 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   // @ViewChild('deleteWordModal') deleteWordModal: TemplateRef<any>;
   selectedGroup$: Observable<WordGroup>
   wordForm: FormGroup;
-  addWordByList: string;
   searchValueControl = new FormControl('');
   subscription$ = new Subject();
   titleForModal: string;
@@ -63,8 +61,6 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   errorMessage$: Observable<string | BackendErrorInterface>
   modalLoader$: Observable<boolean>
   modalContext: TemplateRef<any>
-
-  wordToDelete: Word;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -76,7 +72,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.fetchData();
+    // this.fetchData();
     this.initializeValues()
     this.initializeListeners()
 
@@ -108,8 +104,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
             return this.vocabularyFacade.getUserWordsFiltredByGroup(searchValue, words, selectedGroup)
           }))
 
-    this.groupStatistics$ = this.vocabularyFacade.getGroupStatistics(
-      this.userWordsFiltredByGroupAndSearchValue$).pipe(tap(words => console.log('WORDS FOR STATISTICS', words)));
+    this.groupStatistics$ = this.vocabularyFacade.getGroupStatistics(this.userWordsFiltredByGroupAndSearchValue$);
 
   }
 
@@ -133,28 +128,6 @@ export class VocabularyComponent implements OnInit, OnDestroy {
       .subscribe()
   }
 
-  // getGroupStatistics() {
-  //   this.statistics$ = this.vocabularyFacade.getGroupStatistics(of(this.wordsFiltredByGroup));
-  // }
-
-  // getWordsFilteredByGroup(): void {
-  //   this.getGroupStatistics();
-  // }
-
-  // getUserGroups() {
-  //   this.vocabularyFacade.getWordsGroups()
-  //     .pipe(
-  //       take(1),
-  //       takeUntil(this.subscription$)
-
-  //     ).subscribe(() => console.log('USER GROUPS GOT'));
-  // }
-
-  // getWordsGroups() {
-
-  //   this.wordGroups$ = this.vocabularyFacade.getWordsGroups();
-
-  // }
 
   wordFormInitial() {
     this.wordForm = this.fb.group({
@@ -215,14 +188,6 @@ export class VocabularyComponent implements OnInit, OnDestroy {
 
   }
 
-  // trackWords(index, word: Word) {
-  //   if (!word) {
-  //     return null;
-  //   } else {
-  //     return word._id;
-  //   }
-  // }
-
   getActionFromChildren(event: Action<Word>) {
     switch (event.action) {
       case WordAction.SHARE_FOR_ALL: this.shareWordsForAll([event.payload]);
@@ -248,41 +213,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     const word: Word = this.wordForm.value
 
     this.store$.dispatch(deleteUserWordAction({ word }))
-    // // tslint:disable-next-line: max-line-length
-    // const title = `Would you like to remove word ${word.word} ?`;
-    // const result$ = this.vocabularyFacade.askQuestion(title);
-
-    // result$.onClose.pipe(
-    //   switchMap(res => {
-    //     if (res) {
-    //       // this.vocabularyFacade.deleteWord(word);
-    //       return this.vocabularyFacade.deleteWordFromServer(word._id);
-    //     } else {
-    //       return EMPTY;
-    //     }
-    //   }),
-    //   takeUntil(this.subscription$)
-    // )
-    // this.openModal(`Would you like to remove this word?`, ModalUiComponent, word.word);
-
-    // this.modalRef.onClose.pipe(
-    //   tap(answer => answer ? this.store$.dispatch(deleteUserWordAction({ word })) : null),
-    //   takeUntil(this.subscription$)
-    // ).subscribe()
   }
-  // this.vocabularyFacade.deleteWordFromServer(word)
-  //   .pipe(
-  //     takeUntil(this.subscription$))
-  //   .subscribe(res => {
-  //     // this.notification.success('', `Word ${word.word} removed`);
-  //     this.notification.success('Removed');
-  //     this.vocabularyFacade.updateWordsAndGroups();
-  //     // this.getWords();
-  //   }, err => {
-  //     this.notification.error('', err.error.message);
-  //   });
-
-
 
   openModal(title: string, template: TemplateRef<any> | Type<any>, item?: string) {
     this.titleForModal = title;
@@ -297,22 +228,10 @@ export class VocabularyComponent implements OnInit, OnDestroy {
     }
   }
 
-
-  toggleWordAssignToGroup(wordId: string) {
-    // const selectedProduct = this.vocabularyFacade.selectWord(this.selectedWordsForAssignGroups$.getValue(), wordId);
-    // this.selectedWordsForAssignGroups$.next(selectedProduct);
-    console.log('SELECTED WORDS FOR ASSIGN GROUPS', this.selectedWordsForAssignGroups$.getValue());
-  }
-
   shareWordsForAll(words: Word[]) {
     this.store$.dispatch(shareWordToGeneralWordsAction({ words }))
 
   }
-
-  // updateWordsList() {
-  //   this.vocabularyFacade.updateWordsAndGroups();
-
-  // }
 
   showInstallAppSuggestion() {
     const beforeinstallprompt$ = fromEvent(window, 'beforeinstallprompt');

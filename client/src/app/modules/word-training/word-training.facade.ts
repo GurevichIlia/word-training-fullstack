@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
+import { filter, map, take, tap, switchMap } from 'rxjs/operators';
 import { NavigationService } from 'src/app/core';
 import { AppRoutes } from 'src/app/core/routes/routes';
 import { GroupStatistics } from 'src/app/shared/components/group-statistics/group-statistics.component';
@@ -107,8 +107,10 @@ export class WordTrainingFacade {
 
   get trainingResult$(): Observable<Word[]> {
 
-    // return this.uniqueWordsLearned$.pipe(map(uniqueLearnedWords => [...uniqueLearnedWords.values()]))
-    return this.wordsInGroup$.pipe(map(words => words))
+    return this.uniqueWordsLearned$.pipe(map(uniqueLearnedWords => [...uniqueLearnedWords.values()]))
+    // return this.wordsInGroup$.pipe(
+    //   take(1),
+    //   map(words => words))
 
   }
 
@@ -117,7 +119,22 @@ export class WordTrainingFacade {
   }
 
   get trainResultStatistics$(): Observable<GroupStatistics> {
-    return this.groupStatisticsService.getGroupStatistics(this.trainingResult$)
+    return this.wordsInGroup$.pipe(
+      take(1),
+      switchMap(words => {
+        const notLearnedWordsQuantity = words.filter(word => word.levelKnowledge === 0).length
+
+        return this.groupStatisticsService.getGroupStatistics(this.trainingResult$)
+          .pipe(
+            map(statistics => ({
+              ...statistics, knowledgeLevel: statistics.knowledgeLevel.map(state =>
+                state.level === 0 ? ({ ...state, wordQuantity: notLearnedWordsQuantity }) : state)
+            }))
+          )
+
+      }))
+
+
   }
 
   get isStartedTrain$(): Observable<boolean> {
@@ -162,11 +179,7 @@ export class WordTrainingFacade {
   }
 
   stopTrain(): void {
-    this.saveProgress();
-    this.navigationService.navigateTo(AppRoutes.TrainResult).then(isNavigated => {
-      this.store$.dispatch(stopTrainingAction())
-
-    })
+    this.store$.dispatch(stopTrainingAction())
   }
 
   saveProgress(): void {

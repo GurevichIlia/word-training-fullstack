@@ -31,7 +31,6 @@ class CSVtoJson {
             //        */
             // })
             const jsonArray = yield csvtojson_1.default().fromFile(csvFile);
-            // console.log('JSON ARRA', jsonArray)
             return jsonArray;
         });
     }

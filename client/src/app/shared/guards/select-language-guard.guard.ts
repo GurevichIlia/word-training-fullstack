@@ -8,8 +8,8 @@ import { LanguageInterface } from 'src/app/modules/languages/types/languages.int
 import { AppStateInterface } from 'src/app/store/reducers';
 import { NavigationService } from './../../core/services/navigation.service';
 import { NotificationsService } from './../services/notifications.service';
-import { currentLanguageSelector } from './../../store/selectors/language.selector'
-import { getLearningLanguageAction } from 'src/app/store/actions/language.actions';
+import { currentLanguageSelector } from './../../store/selectors/languages.selectors'
+import { getLearningLanguageAction } from 'src/app/store/actions/languages.actions';
 @Injectable()
 export class SelectLanguageGuard implements CanActivate {
 
@@ -28,13 +28,13 @@ export class SelectLanguageGuard implements CanActivate {
     let canActive = false;
     return this.getCurrentLanguage$().pipe(
       map((language: LanguageInterface) => {
-        console.log('GUARD LANG', language);
         if (language) {
           canActive = true;
         } else {
           this.navigationService.navigateTo(AppRoutes.Languages)
-          this.notification.success('Select learning language');
-          canActive = false;
+          tap(lang => lang === null ? this.notification.success('Select learning language') : null),
+
+            canActive = false;
         }
         return canActive;
       })
@@ -51,9 +51,8 @@ export class SelectLanguageGuard implements CanActivate {
           this.store$.dispatch(getLearningLanguageAction())
         }
       }),
-      filter(lang => lang !== null),
+      filter(lang => lang !== undefined),
       take(1),
-      tap(lang => console.log('LANGUAGE AFTER SKIP', lang)),
     )
 
   }

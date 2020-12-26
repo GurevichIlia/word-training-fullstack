@@ -4,9 +4,11 @@ import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import {
   AddUserWordResponseInterface,
+  AddWordsFromCsvResponseInterface,
   DeleteUserWordResponseInterface,
   EditUserWordResponseInterface,
-  GetAllUserWordsResponseInterface
+  GetAllUserWordsResponseInterface,
+  UpdateWordsResponseInterface
 } from 'src/app/core/models/words.interface';
 import { GeneralWord, IDeleteGeneralWordResponse } from 'src/app/modules/general-words/types/general-words.interfaces';
 import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
@@ -53,8 +55,8 @@ export class ApiWordsService {
     return this.http.delete<DeleteUserWordResponseInterface>(`${BASE_URL}/api/vocabulary/deleteWord/${wordId}`);
   }
 
-  updateWords(words: Word[]) {
-    return this.http.post<Word[]>(`${BASE_URL}/api/vocabulary/updateWords`, { words });
+  updateWords(words: Word[]): Observable<UpdateWordsResponseInterface> {
+    return this.http.post<UpdateWordsResponseInterface>(`${BASE_URL}/api/vocabulary/updateWords`, { words });
 
   }
 
@@ -71,7 +73,7 @@ export class ApiWordsService {
     return this.http.get<{ userId: string }>(`${BASE_URL}/api/auth/getUserId`);
   }
 
-  addWordsFromCSV(csvFile: any, assignedGroups?: string) {
+  addWordsFromCSV(csvFile: any, assignedGroups?: string): Observable<AddWordsFromCsvResponseInterface> {
     const headers = new HttpHeaders();
     const params = new HttpParams();
     /** In Angular 5, including the header Content-Type can invalidate your request */
@@ -80,7 +82,7 @@ export class ApiWordsService {
       header: headers,
       params,
     };
-    return this.api.post<Word[]>(`${BASE_URL}/api/vocabulary/addWordsFromCSV?assignedGroups=${assignedGroups}`,
+    return this.api.post<AddWordsFromCsvResponseInterface>(`${BASE_URL}/api/vocabulary/addWordsFromCSV?assignedGroups=${assignedGroups}`,
       csvFile, options);
 
   }

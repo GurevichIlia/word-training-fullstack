@@ -8,6 +8,8 @@ export enum WordTrainingActionsType {
   NextWord = '[Word training] Next word',
   PreviousWord = '[Word training] Previous word',
   StopTraining = '[Word training] Stop training',
+  StopTrainingSuccess = '[Word training] Stop training success',
+  StopTrainingCancel = '[Word training] Stop training cancel',
   RepeatTraining = '[Word training] Repeat training',
   ChangeGroup = '[Word training] Change group for training',
 
@@ -24,10 +26,12 @@ export const startTrainAction = createAction(WordTrainingActionsType.StartTrain,
 export const nextWordAction = createAction(WordTrainingActionsType.NextWord, props<{ word: Word, levelKnowledge: number }>());
 export const previousWordAction = createAction(WordTrainingActionsType.PreviousWord);
 export const stopTrainingAction = createAction(WordTrainingActionsType.StopTraining);
+export const stopTrainingSuccessAction = createAction(WordTrainingActionsType.StopTrainingSuccess);
+export const stopTrainingCancelAction = createAction(WordTrainingActionsType.StopTrainingCancel);
 
 export const saveTrainingProgressAction = createAction(WordTrainingActionsType.SaveTrainingProgress);
 export const saveTrainingProgressSuccessAction = createAction(WordTrainingActionsType.SaveTrainingProgressSuccess,
-  props<{ words: Word[] }>());
+  props<{ words: Word[], groups: WordGroup[] }>());
 export const saveTrainingProgressErrorAction = createAction(WordTrainingActionsType.SaveTrainingProgressError,
   props<{ error: BackendErrorInterface }>());
 

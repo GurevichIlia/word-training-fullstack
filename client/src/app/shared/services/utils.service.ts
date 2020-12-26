@@ -21,13 +21,26 @@ export class UtilsService {
       group$
     ]).pipe(
       map(([words, group]) => {
-        if (words && group) {
-          return words.filter(word => word.assignedGroups.includes(group._id))
-
-        }
-
-        return []
+        return this.filter(words, group)
       })
     )
   }
+
+  private isFavoriteWords(group: WordGroup): boolean {
+    return group._id === '2'
+  }
+
+  filter(words: Word[], selectedGroup: WordGroup): Word[] {
+    if (words && selectedGroup) {
+
+      if (this.isFavoriteWords(selectedGroup)) {
+        return words.filter(word => word.isFavorite)
+      }
+      return words.filter(word => word.assignedGroups.includes(selectedGroup._id))
+
+    }
+    return []
+  }
+
 }
+

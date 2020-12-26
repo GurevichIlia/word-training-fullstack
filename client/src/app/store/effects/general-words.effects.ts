@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { GeneralWord, IDeleteGeneralWordResponse } from 'src/app/modules/general-words/types/general-words.interfaces';
 import { ApiWordsService } from 'src/app/shared/services/api/api-words.service';
+import { NotificationsService } from 'src/app/shared/services/notifications.service';
 import {
   deleteGeneralWordErrorAction,
   deleteGeneralWordSuccessAction,
@@ -20,7 +21,9 @@ export class GeneralWordsEffects {
   constructor(
     private actions$: Actions,
     private apiWords: ApiWordsService,
-    private store$: Store<AppStateInterface>
+    private store$: Store<AppStateInterface>,
+    private notificationService: NotificationsService,
+
   ) {
 
   }
@@ -57,6 +60,7 @@ export class GeneralWordsEffects {
     this.actions$.pipe(
       ofType(GeneralWordsActionsType.DeleteGeneralWordSuccess),
       tap(_ => {
+        this.notificationService.success('Deleted from shared')
         this.store$.dispatch(fetchGroupsAction())
       })
     ), { dispatch: false })

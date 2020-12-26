@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { AppStateInterface } from 'src/app/store/reducers';
 import { AppRoutes } from 'src/app/core/routes/routes';
 import { logoutAction } from '../../authorization/store/actions/auth.actions';
-import { currentLanguageSelector } from '../../../store/selectors/language.selector';
+import { currentLanguageSelector } from 'src/app/store/selectors/languages.selectors';
 
 @Component({
   selector: 'app-settings',

@@ -22,29 +22,29 @@ const userSchema = new Schema({
       },
       currentLanguage: {
             type: Object,
-            default: ''
+            default: null
       },
-      wordGroups: {
-            type: Array,
-            default: <WordGroupModel[]>[]
-      },
+      // wordGroups: {
+      //       type: Array,
+      //       default: <WordGroupModel[]>[]
+      // },
       words: {
             type: Array,
             default: <WordModel[]>[]
       },
-      wordsForBackup:
-      {
-            type: Array,
-            default: <WordModel[]>[]
-      },
-      wordsAsObject: {
-            type: Object,
-            default: <WordModelAsObject>{}
-      },
-      userLanguages: {
-            type: Array,
-            default: <Language[]>[]
-      }
+      // wordsForBackup:
+      // {
+      //       type: Array,
+      //       default: <WordModel[]>[]
+      // },
+      // wordsAsObject: {
+      //       type: Object,
+      //       default: <WordModelAsObject>{}
+      // },
+      // userLanguages: {
+      //       type: Array,
+      //       default: <Language[]>[]
+      // }
 
 })
 const User = mongoose.model<UserModel>('users', userSchema)

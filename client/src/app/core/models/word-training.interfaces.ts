@@ -8,7 +8,7 @@ export interface IWordTrainingState {
   isStarted: boolean,
   nextWord: Word | null,
   previousWordsInCache: Word[],
-  levelKnowledgeToShow: number,
   allLearnedCardsQuantity: number,
   uniqueLearnedWords: Map<WordId, Word>;
+  newWordsLearnedInTrain: Map<WordId, Word>
 }

@@ -22,7 +22,7 @@ import {
   getCurrentLearningLanguageSuccessAction
   , getCurrentLearningLanguageErrorAction,
   setCurrentLanguageAction
-} from '../actions/language.actions';
+} from '../actions/languages.actions';
 import {
   fetchWordsAction, fetchWordsSuccessAction,
   fetchWordsErrorAction, addWordToUserWordsAction, addWordToUserWordsSuccessAction, addWordToUserWordsErrorAction,
@@ -31,7 +31,7 @@ import {
   deleteUserWordSuccessAction, deleteUserWordErrorAction, setWordAsFavoriteAction,
   setWordAsFavoriteSuccessAction, setWordAsFavoriteErrorAction,
   shareWordToGeneralWordsAction, shareWordToGeneralWordsSuccessAction,
-  shareWordToGeneralWordsErrorAction, setWordsAction, openAssigningBottomSheetAction, closeAssigningBottomSheetAction
+  shareWordToGeneralWordsErrorAction, setWordsAndGroupsAction, openAssigningBottomSheetAction, closeAssigningBottomSheetAction
 } from '../actions/vocabulary.actions';
 import { WordGroup, Word } from 'src/app/shared/interfaces';
 
@@ -76,7 +76,7 @@ const reducers = createReducer(
     (state): VocabularyStateInterface => ({
       ...state,
       userWords: [],
-      vocabularyLoader: true
+      // vocabularyLoader: true
     })
   ),
   on(
@@ -141,7 +141,8 @@ const reducers = createReducer(
       isCloseCsvHandler: true,
       userWords: [
         ...action.words
-      ]
+      ],
+      userGroups: action.groups
     })
   ),
   on(
@@ -311,10 +312,11 @@ const reducers = createReducer(
     })
   ),
   on(
-    setWordsAction,
+    setWordsAndGroupsAction,
     (state, action): VocabularyStateInterface => ({
       ...state,
-      userWords: action.words
+      userWords: action.words ? action.words : state.userWords,
+      userGroups: action.groups ? action.groups : state.userGroups
 
     })
   ),
@@ -324,7 +326,7 @@ const reducers = createReducer(
     (state): VocabularyStateInterface => ({
       ...state,
       userGroups: [],
-      vocabularyLoader: true
+      // vocabularyLoader: true
     })
   ),
   on(

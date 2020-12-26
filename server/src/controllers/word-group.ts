@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { getAllUserGroups } from '../helper-functions/groups.heplers';
-import { IRequstUserInfo, IUserWordGroup, UserModel, WordGroupModel, WordModel } from "../interfaces";
+import { IRequestUserInfo, IUserWordGroup, UserModel, WordGroupModel, WordModel } from "../interfaces";
 import User from "../Models/User";
 import Word from '../Models/Word';
 import WordGroup, { ALL_WORDS_GROUP, FAVORITES } from "../Models/WordGroup";
@@ -13,7 +13,7 @@ export class WordGroupController {
             try {
                   // const user = req.user as { _id: string, email: string }
 
-                  const user = req.user as IRequstUserInfo
+                  const user = req.user as IRequestUserInfo
                   if (!user.currentLanguage) throw new Error('Language is not exists')
 
                   const words = await Word.find({ user: user, language: user.currentLanguage._id })
@@ -39,7 +39,7 @@ export class WordGroupController {
 
       public saveGroup = async (req: Request, res: Response) => {
             try {
-                  const user = req.user as IRequstUserInfo
+                  const user = req.user as IRequestUserInfo
 
                   const groupCondidate: { name: string, id: string, languageId: string } = req.body.group
 
@@ -82,7 +82,7 @@ export class WordGroupController {
 
       public deleteWordGroup = async (req: Request, res: Response) => {
             try {
-                  const user = req.user as IRequstUserInfo
+                  const user = req.user as IRequestUserInfo
 
                   if (!user.currentLanguage) throw new Error('Language is not exists')
 
@@ -108,7 +108,7 @@ export class WordGroupController {
             try {
                   const groupIdForAssign = req.body.groupId as string;
                   const selectedWords = req.body.selectedWords as string[];
-                  const user = req.user as IRequstUserInfo
+                  const user = req.user as IRequestUserInfo
 
                   const language = user.currentLanguage
 

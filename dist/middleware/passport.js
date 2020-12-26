@@ -18,6 +18,7 @@ const User_1 = __importDefault(require("../Models/User"));
 const keys = require('./../config/keys');
 const JwtStrategy = passport_jwt_1.default.Strategy;
 const ExtractJwt = passport_jwt_1.default.ExtractJwt;
+// const GoogleStrategy = PassportGoogleOAuth2.Strategy
 const options = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: keys.jwt
@@ -38,5 +39,5 @@ const passportCheck = (passport) => {
         }
     })));
 };
-exports.default = passportCheck;
+exports.passportCheck = passportCheck;
 //# sourceMappingURL=passport.js.map

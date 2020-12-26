@@ -13,6 +13,8 @@ class AuthRoutes {
         this.routes();
     }
     routes() {
+        // this.router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
+        // this.router.get('/google/callback', passport.authenticate('google'), this.authController.googleLogin)
         this.router.post('/login', this.authController.login);
         this.router.post('/registration', this.authController.registration);
         this.router.get('/getCurrentUser', passport_1.default.authenticate("jwt", { session: false }), this.authController.getCurrentUser);

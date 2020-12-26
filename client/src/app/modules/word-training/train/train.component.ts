@@ -70,7 +70,6 @@ export class TrainComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.stopTraining()
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }

@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Actions } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { tap } from 'rxjs/operators';
-import { fetchGroupsAction } from '../actions/vocabulary.actions';
-import { fetchWordsAction } from '../actions/vocabulary.actions';
 import { AppStateInterface } from '../reducers';
-import { GeneralActionsType } from './../actions/general.actions';
 @Injectable()
 export class GeneralEffects {
 
@@ -17,19 +13,19 @@ export class GeneralEffects {
   ) { }
 
 
-  isUpdateData$ = createEffect(() => this.actions$.pipe(
-    ofType(GeneralActionsType.UPDATE_GROUPS_AND_WORDS),
-    tap(({ isUpdate }: { isUpdate: boolean }) => {
-      debugger
-      if (isUpdate) {
+  // isUpdateData$ = createEffect(() => this.actions$.pipe(
+  //   ofType(GeneralActionsType.UPDATE_GROUPS_AND_WORDS),
+  //   tap(({ isUpdate }: { isUpdate: boolean }) => {
+  //     debugger
+  //     if (isUpdate) {
 
-        this.store$.dispatch(fetchWordsAction())
-        this.store$.dispatch(fetchGroupsAction())
-      }
+  //       this.store$.dispatch(fetchWordsAction())
+  //       this.store$.dispatch(fetchGroupsAction())
+  //     }
 
 
-    })
-  ),
-    { dispatch: false }
-  )
+  //   })
+  // ),
+  //   { dispatch: false }
+  //
 }

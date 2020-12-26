@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
 
-export type IRequstUserInfo = Pick<UserModel, '_id' | 'currentLanguage' | 'email'>
+export type IRequestUserInfo = Pick<UserModel, '_id' | 'currentLanguage' | 'email' >
 
 
 export interface UserModel extends Document {
@@ -9,10 +9,10 @@ export interface UserModel extends Document {
       email: string;
       password: string;
       currentLanguage: Language | null,
-      userLanguages: Language[],
-      wordGroups: WordGroupModel[],
-      wordsForBackup: WordModel[]
-      words: WordModel[]
+      // userLanguages: Language[],
+      // wordGroups: WordGroupModel[],
+      // wordsForBackup: WordModel[]
+      // words: WordModel[]
 }
 
 export interface WordModel extends Document {
@@ -32,7 +32,21 @@ export interface WordModelAsObject {
 
 export interface Language extends Document {
       readonly _id: string
-      langName: string;
+      name: string;
+}
+
+export interface UserLanguageModel extends Document {
+      name: string,
+      _id: string,
+      userId: string,
+      langId: string
+
+}
+
+export interface IUserLanguage {
+      name: string,
+      _id: string
+      userId: string
 }
 
 export interface WordGroupModel extends Document {
@@ -57,6 +71,20 @@ export interface afterCSV {
       insertedIds: object
       ops: []
       result: object
+}
+
+
+
+export interface ILearningLanguage {
+      _id: string,
+      name: string,
+      userId?: string
+}
+export interface LearningLanguageModel extends Document {
+      langId: string,
+      _id: string,
+      name: string,
+      userId: string
 }
 
 export type IUserWord = Pick<WordModel, '_id' | 'translation' | 'word' | 'isFavorite' | 'levelKnowledge' | 'assignedGroups' | 'language' | 'date'>

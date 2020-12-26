@@ -31,6 +31,7 @@ export class LoginEffects {
         .pipe(
           map((successData: AfterLoginDataInterface) => {
             this.persistanceService.set('words-token', successData.token)
+            this.persistanceService.set('word-training-email', successData.currentUser.email)
             return loginSuccessAction({ successData })
           }),
           catchError((err: { message: string }) => {

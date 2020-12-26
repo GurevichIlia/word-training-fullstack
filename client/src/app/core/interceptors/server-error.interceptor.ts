@@ -28,7 +28,7 @@ export class ServerErrorInterceptor implements HttpInterceptor {
       retry(1),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          console.log(error);
+          console.log('SERVER ERROR INTERECEPTOR', error);
           this.store$.dispatch(logoutAction())
           return throwError(error);
            // this.authService.logOut();

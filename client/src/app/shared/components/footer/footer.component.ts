@@ -1,3 +1,4 @@
+import { NavigationService } from 'src/app/core';
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
 
 @Component({
@@ -7,7 +8,7 @@ import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FooterComponent implements OnInit {
-  constructor() { }
+  constructor(public navigationService: NavigationService) { }
 
   ngOnInit() {
   }

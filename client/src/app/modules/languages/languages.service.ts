@@ -1,32 +1,30 @@
-
+import { ApiService } from './../../core/services/api.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of, EMPTY } from 'rxjs';
-import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { GeneralFacade } from 'src/app/general.facade';
-import { AddLanguageToUserLanguagesResponseInterface, DeleteUserLanguageResponseInterface, LanguageInterface, SetCurrentLanguageResponseInterface } from './types/languages.interfaces';
+import { EMPTY, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import {
+  AddLanguageToUserLanguagesResponseInterface,
+  DeleteUserLanguageResponseInterface,
+  LanguageInterface,
+  SetCurrentLanguageResponseInterface
+} from './types/languages.interfaces';
+
 
 @Injectable(
+  { providedIn: 'root' }
 )
 export class LanguagesService {
   // shareReplay(1));
   constructor(
-    private http: HttpClient,
-    private generalFacade: GeneralFacade
+    private http: ApiService,
   ) { }
 
   getAllLanguages(): Observable<LanguageInterface[]> {
     return this.http.get<LanguageInterface[]>(`/api/languages/getAllLanguages`)
   }
 
-  // getCurrentLearningLanguage$() {
 
-  //   return this.generalFacade.getCurrentLearningLanguage$();
-  // }
-
-  // setCurrentLearningLanguage(language: Language) {
-  //   this.generalFacade.setCurrentLanguage(of(language));
-  // }
 
   getUserLanguages(): Observable<LanguageInterface[]> {
     return this.http.get<LanguageInterface[]>(`/api/languages/getUserLanguages`);
@@ -36,9 +34,9 @@ export class LanguagesService {
   //   return this.http.post<Language>(`/api/languages/createLanguage`, language);
   // }
 
-  addUserLanguages(languages: LanguageInterface[]): Observable<LanguageInterface[]> {
+  addUserLanguages(languages: LanguageInterface[]): Observable<AddLanguageToUserLanguagesResponseInterface> {
     return this.http.post<AddLanguageToUserLanguagesResponseInterface>(`/api/languages/addUserLanguages`, { userLanguages: languages })
-      .pipe(map(res => res.userLanguages));
+      .pipe(map(res => res));
   }
 
   // editLanguage(language: Language): Observable<Language> {
@@ -54,13 +52,13 @@ export class LanguagesService {
 
   }
 
-  deleteUserLanguage(languageId: string) {
+  deleteUserLanguage(languageId: string): Observable<DeleteUserLanguageResponseInterface> {
     if (confirm('Would you like to delete this langauge?')) {
 
       if (!languageId) return EMPTY;
 
       return this.http.post<DeleteUserLanguageResponseInterface>(`/api/languages/deleteUserLanguage`, { languageId })
-        .pipe(map(res => res.userLanguages));
+        .pipe(map(res => res));
 
       // return this.getCurrentLearningLanguage$()
       //   .pipe(
@@ -124,38 +122,18 @@ export class LanguagesService {
   }
 
   // tslint:disable-next-line: max-line-length
-  markLanguageAsAddedToUserLanguages(allLanguages: LanguageInterface[], userLanguages$: Observable<LanguageInterface[]>): Observable<LanguageInterface[]> {
+  markLanguageAsAddedToUserLanguages(allLanguages: LanguageInterface[], userLanguages: LanguageInterface[]): LanguageInterface[] {
     const languages = allLanguages.map(lang => ({ ...lang }))
 
-    return userLanguages$.pipe(
-      tap(userLanguages => {
-        for (const userLanguage of userLanguages) {
 
-          const matchedLanguageIndex = languages.findIndex(language => userLanguage._id === language._id)
-          languages[matchedLanguageIndex].addedToUser = true;
-        }
-      }),
-      map(_ => {
-        console.log('CLONE', languages)
-        console.log('ORIGINAL', allLanguages)
+    for (const userLanguage of userLanguages) {
 
-        return languages;
-      })
-    )
+      const matchedLanguageIndex = languages.findIndex(language => userLanguage._id === language._id)
+      languages[matchedLanguageIndex].addedToUser = true;
 
+    }
 
-    // return userLanguages$.pipe(
-    //   map(userlanguages =>
-    //     userlanguages.map(userLanguage => {
-    //       const languageInUserLanguages = allLanguages.find(language => language._id === userLanguage._id)
-    //       if (languageInUserLanguages) {
-    //         return { ...userLanguage, addedToUser: true }
-    //       }
-    //       return userLanguage
-
-    //     })))
+    return languages
   }
-  // getCurrentLearningLanguage() {
-  //   return this.generalFacade.getCurrentLearningLanguage();
-  // }
+
 }

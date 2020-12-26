@@ -1,3 +1,4 @@
+import { ComponentsModule } from './../components.module';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -10,9 +11,12 @@ import { UtilsService } from '../../services/utils.service';
   imports: [
     CommonModule,
     WordModule,
-    InfiniteScrollModule
+    InfiniteScrollModule,
+    ComponentsModule
   ],
-  exports: [WordListComponent],
+  exports: [
+    WordListComponent
+  ],
   declarations: [WordListComponent],
   providers: [UtilsService],
 })

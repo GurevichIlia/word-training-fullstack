@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { filter, map, startWith } from 'rxjs/operators';
+import { Router, NavigationEnd, NavigationCancel } from '@angular/router';
+import { filter, map, startWith, tap } from 'rxjs/operators';
 import { AppRoutes } from './../routes/routes';
 
 @Injectable({
@@ -21,7 +21,6 @@ export class NavigationService {
       startWith(new NavigationEnd(null, '/vocabulary', 'vocabulary')),
       filter(e => e instanceof NavigationEnd),
       map((e: NavigationEnd) => {
-
         if (this.isCurrentLocation(e, 'vocabulary')) {
           return 'Vocabulary';
         }
@@ -50,10 +49,12 @@ export class NavigationService {
   }
 
   private isCurrentLocation(e: NavigationEnd, location: string) {
-    return e.urlAfterRedirects.includes(location);
+    if ('urlAfterRedirects' in e)
+      return e.urlAfterRedirects.includes(location);
+
   }
 
-  navigateTo(route: AppRoutes, queryParams: { [key: string]: string } = {}) {
+  navigateTo(route: string | AppRoutes, queryParams: { [key: string]: string } = {}) {
     return this.router.navigate([route], { queryParams })
   }
 }

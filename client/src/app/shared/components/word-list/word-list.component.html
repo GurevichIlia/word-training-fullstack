@@ -7,7 +7,7 @@
       (scrolled)="onScroll()">
 
 
-      <ng-container *ngIf="words?.length !== 0">
+      <ng-container *ngIf="words?.length !== 0 ">
 
         <div  class="search-results" >
 
@@ -28,8 +28,16 @@
 
 
       </ng-container>
+      <ng-container *ngIf="!words">
+          <div *ngFor="let i of skeletonArrIndexes">
+            <app-word-skeleton></app-word-skeleton>
+          </div>
+      </ng-container>
+
 
     </div>
+
+
 
 
 

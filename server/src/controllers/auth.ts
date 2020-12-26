@@ -1,10 +1,9 @@
-import { UserModel } from "../interfaces";
+import { IRequestUserInfo, UserModel } from "../interfaces";
 import { Response, Request } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../Models/User";
 import errorHandler from "../utils/errorHandler";
-import nodemailer from 'nodemailer'
 const sendgrid = require('nodemailer-sendgrid-transport')
 const keys = require('./../config/keys')
 const baseConf = require('../config/base')
@@ -43,7 +42,7 @@ export class AuthController {
 
             } else {
                 res.status(401).json({
-                    message: "Password is not correct"
+                    message: "Password or email is  incorrect"
                 });
             }
         } else {
@@ -53,6 +52,25 @@ export class AuthController {
         }
 
     };
+
+
+    public googleLogin = async (res: Response, req: Request) => {
+        console.log('REQUEST DATA', req.user)
+        // let user = {
+        //     displayName: req.user.displayName,
+        //     name: req.user.name.givenName,
+        //     email: req.user._json.email,
+        //     provider: req.user.provider
+        // }
+        // console.log(user)
+
+        // // FindOrCreate(user)
+        // let token = jwt.sign({
+        //     data: user
+        // }, 'secret', { expiresIn: 60 }); // expiry in seconds
+        // res.cookie('jwt', token)
+        // res.redirect('/')
+    }
 
     public registration = async (req: Request, res: Response) => {
         const body: UserModel = req.body;
@@ -96,8 +114,9 @@ export class AuthController {
 
     public getCurrentUser = async (req: Request, res: Response) => {
         try {
-            const user = await User.findOne({ _id: req.user })
-            console.log('USER test', req.user)
+            const user = req.user as IRequestUserInfo
+
+            // const user = await User.findOne({ _id: req.user })
 
             if (user) {
                 // const userClone = { ...user, password: '' }
@@ -111,27 +130,3 @@ export class AuthController {
 
 }
 
-
-// export const login = async (req: Request, res: Response) => {
-//       await console.log('REQUEST', req.body)
-// }
-
-// export const registration = async (req: Request, res: Response) => {
-//       const body: User = req.body
-//       const candidate = await UserModel.findOne({ email: body.email })
-
-//       if (candidate) {
-//             res.status(409).json({
-//                   message: 'This email is already exist'
-//             })
-//       } else {
-//             // Create user
-//       }
-
-//       try {
-
-//       } catch (error) {
-
-//       }
-
-// }

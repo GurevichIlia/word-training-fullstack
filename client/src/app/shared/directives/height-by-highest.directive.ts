@@ -26,11 +26,9 @@ export class HeightByHighestDirective implements AfterContentInit, AfterViewChec
       acc = curr > acc ? curr : acc
       return acc
     })
-    console.log('highest', highest)
 
     children.forEach(e => this.renderer.setStyle(e, 'height', `${highest}px`))
 
-    console.log('ELEMENTS', children)
 
 
 

@@ -1,3 +1,4 @@
+import { environment } from 'src/environments/environment';
 import { WordAction } from '../../../core/enums/word.enum';
 import {
   ChangeDetectionStrategy, Component,
@@ -5,7 +6,7 @@ import {
   Output
 } from '@angular/core';
 import { Action, MenuItem, wordMenuItems } from 'src/app/core';
-import {  Word } from 'src/app/shared/interfaces';
+import { Word } from 'src/app/shared/interfaces';
 import { GeneralWord } from 'src/app/modules/general-words/types/general-words.interfaces';
 
 
@@ -15,38 +16,51 @@ import { GeneralWord } from 'src/app/modules/general-words/types/general-words.i
   styleUrls: ['./word.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WordComponent implements OnInit {
+export class WordComponent {
   wordAction = WordAction;
+  _menuItems: MenuItem<WordAction>[] = []
   @Input() word: Word | GeneralWord;
   @Input() isShowMenu = true;
   @Input() isShowDefaultOptions = true;
-  @Input() menuItems: MenuItem<WordAction>[] = wordMenuItems;
   @Input() userId: string;
   @Output() action = new EventEmitter<Action>();
+  @Input() set menuItems(items: MenuItem<WordAction>[]) {
+    // Check if word is GeneralWord
+    if ('user' in this.word) {
+      if (this.isAdmin()) {
+        this._menuItems = items
+        return
+      }
 
-  constructor(
-  ) { }
+      if (this.wordAddedByCurrentUser(this.word, this.userId)) {
+        this._menuItems = this.hideAddWordButton(items)
+      } else {
+        this._menuItems = this.hideDeleteWordButton(items)
+      }
 
 
-  ngOnInit() {
-    // this.createEditFormForWord();
-  }
-
+    }
+  };
 
   dispatchAction(action: string, payload?: any) {
     this.action.emit({ action, payload });
   }
 
-  isHideDeleteButton() {
-    const adminId = '5e2b1984d72eaf2478d678f4';
-
-    if (adminId === this.userId) {
-      return false;
-    } else if (this.userId === this.word['user']) {
-      return false;
-    } else {
-      return true;
-    }
-
+  wordAddedByCurrentUser(word: GeneralWord, userId: string): boolean {
+    return word.user === userId
   }
+
+  isAdmin() {
+    return this.userId === environment.adminId
+  }
+
+
+  hideAddWordButton(menuItems: MenuItem<WordAction>[]): MenuItem<WordAction>[] {
+    return menuItems.filter(item => item.action !== WordAction.ADD_TO_MY_WORDS)
+  }
+
+  hideDeleteWordButton(menuItems: MenuItem<WordAction>[]): MenuItem<WordAction>[] {
+    return menuItems.filter(item => item.action !== WordAction.DELETE_FROM_SHARE_LIST)
+  }
+
 }

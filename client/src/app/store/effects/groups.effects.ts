@@ -9,7 +9,7 @@ import { IAssignWordsResponse, ISaveGroupResponse } from 'src/app/modules/vocabu
 import { WordGroup } from 'src/app/shared/interfaces';
 import { NotificationsService } from 'src/app/shared/services/notifications.service';
 import { AppStateInterface } from 'src/app/store/reducers';
-import { currentLanguageSelector } from '../selectors/language.selector';
+import { currentLanguageSelector } from '../selectors/languages.selectors';
 import { selectedGroupSelector } from '../selectors/vocabulary.selectors';
 import { AssignWordsService } from './../../modules/vocabulary/assign-words.service';
 import {
@@ -60,13 +60,11 @@ export class GroupsEffects {
       switchMap(_ => {
         return this.store$.pipe(
           select(currentLanguageSelector),
-          tap(lang => console.log('LANG EFFECT', lang)),
           take(1),
           switchMap((language: LanguageInterface) =>
             this.groupsService.getWordsGroups$(language)
               .pipe(
                 map((groups: WordGroup[]) => {
-                  console.log('Groups', groups)
                   return fetchGroupsSuccessAction({ groups });
                 }),
                 catchError((err: any) => of(fetchGroupsErrorAction({ error: err })))

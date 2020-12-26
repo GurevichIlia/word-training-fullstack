@@ -31,7 +31,6 @@ export class WordsService {
       .pipe(
         // map(words => this.convertToArray(words)),
         map(res => res.words),
-        tap(words => console.log('WORDS FROM SERVER', words))
       );
 
   }
@@ -194,13 +193,11 @@ export class WordsService {
     //   .pipe(
     //     switchMap(language => {
     const assignedGroups = JSON.stringify([DefaultGroupId.ALL_WORDS, selectedGroupId]);
-    console.log('GROUPS', assignedGroups);
     return this.apiWords.addWordsFromCSV(formData, assignedGroups).pipe(
       catchError(err => {
         this.notification.error('Something went wrong, file was not uploaded');
-        console.log('Uploading error', err);
 
-        return EMPTY;
+        return throwError(err);
       })
     )
     // }),

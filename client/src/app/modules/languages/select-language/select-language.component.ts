@@ -4,7 +4,7 @@ import { LanguageInterface } from 'src/app/modules/languages/types/languages.int
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { AddLanguageToUserLanguagesAction, DeleteUserLanguageAction } from '../store/actions/languages.actions';
+import { AddLanguageToUserLanguagesAction, DeleteUserLanguageAction } from 'src/app/store/actions/languages.actions';
 
 @Component({
   selector: 'app-select-language',
@@ -22,7 +22,12 @@ export class SelectLanguageComponent {
   @Input() userLanguages: LanguageInterface[];
   @Input() activeLanguagesTab: ActiveLanguagesTab;
   @Input() set currentlanguageId(currentlanguageId: string) {
-    this.selectedLanguage.patchValue(currentlanguageId);
+    if (currentlanguageId) {
+      this.selectedLanguage.patchValue(currentlanguageId);
+    } else {
+      this.selectedLanguage.reset()
+      console.log(this.selectedLanguage.value)
+    }
   }
 
   @Output() selectUserLanguageForLearning = new EventEmitter();

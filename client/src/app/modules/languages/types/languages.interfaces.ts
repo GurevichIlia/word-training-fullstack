@@ -2,12 +2,13 @@ import { BackendErrorInterface } from 'src/app/core';
 import { ActiveLanguagesTab } from './languages.enums';
 
 export interface LanguagesStateInterface {
-  currentLearningLanguage: LanguageInterface | null
+  currentLearningLanguage: LanguageInterface | null | undefined
   isLoading: boolean,
   error: BackendErrorInterface | null | string,
   allLanguages: LanguageInterface[] | null,
   userLanguages: LanguageInterface[] | [],
-  activeLanguagesTab: ActiveLanguagesTab
+  activeLanguagesTab: ActiveLanguagesTab,
+  languageCandidateToLearn: LanguageInterface
 }
 
 export interface SetCurrentLanguageResponseInterface {
@@ -23,11 +24,14 @@ export interface LanguageInterface {
 }
 
 export interface AddLanguageToUserLanguagesResponseInterface {
+  allLanguages: LanguageInterface[],
   userLanguages: LanguageInterface[],
   message: 'Languages added'
 }
 
 export interface DeleteUserLanguageResponseInterface {
+  currentLearningLanguage: LanguageInterface,
+  allLanguages: LanguageInterface[],
   userLanguages: LanguageInterface[],
   message: 'Language removed'
 }

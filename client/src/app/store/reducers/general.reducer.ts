@@ -6,13 +6,13 @@ import { LanguageInterface } from 'src/app/modules/languages/types/languages.int
 import { deleteGeneralWordAction, deleteGeneralWordErrorAction, deleteGeneralWordSuccessAction,
    fetchGeneralWordsAction,
     fetchGeneralWordsErrorAction, fetchGeneralWordsSuccessAction } from '../actions/general-words.actions';
-import { updateGroupsAndWordsAction } from '../actions/general.actions';
+// import { updateGroupsAndWordsAction } from '../actions/general.actions';
 import {
   getCurrentLearningLanguageErrorAction,
   getCurrentLearningLanguageSuccessAction,
   getLearningLanguageAction,
   setCurrentLanguageAction
-} from '../actions/language.actions';
+} from '../actions/languages.actions';
 
 
 export const GENERAL_REDUCER_NODE: ReducerNode.GENERAL_STATE = ReducerNode.GENERAL_STATE
@@ -35,13 +35,13 @@ const initialState: GeneralStateInterface = {
 export const reducer = createReducer(
   initialState,
   // GENERAL ACTIONS
-  on(
-    updateGroupsAndWordsAction,
-    (state, action): GeneralStateInterface => ({
-      ...state,
-      isUpdateGroupsAndWords: action.isUpdate
-    })
-  ),
+  // on(
+  //   updateGroupsAndWordsAction,
+  //   (state, action): GeneralStateInterface => ({
+  //     ...state,
+  //     isUpdateGroupsAndWords: action.isUpdate
+  //   })
+  // ),
   // LEARNING LANGUAGE ACTIONS
   on(
     getLearningLanguageAction,

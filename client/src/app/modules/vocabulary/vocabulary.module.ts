@@ -1,3 +1,4 @@
+import { VocabularyResolver } from './../../core/resolvers/vocabulary.resolver';
 import { VocabularyFacade } from './vocabulary.facade';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -28,10 +29,11 @@ import { StatusMessageComponent } from './status-message/status-message.componen
 
 const vocabularyRoutes: Routes = [
   {
-    path: '', component: VocabularyComponent, children: [
-      { path: '', },
-      { path: 'add-words-to-group', component: AssignWordListComponent }
-    ]
+    path: '', component: VocabularyComponent, resolve: { isDataFetched: VocabularyResolver },
+    //  children: [
+    //   { path: '', },
+    //   { path: 'add-words-to-group', component: AssignWordListComponent }
+    // ]
   },
 
 ];
@@ -71,6 +73,7 @@ const vocabularyRoutes: Routes = [
   ],
   providers: [
     VocabularyFacade,
+    VocabularyResolver
   ]
 })
 export class VocabularyModule { }

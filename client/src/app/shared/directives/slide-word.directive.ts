@@ -12,7 +12,6 @@ export class SlideWordDirective {
   @Host()
 
   @HostListener('swipeleft') slideLeft = () => {
-    debugger
 
     const isIncludes = this.e.nativeElement.classList.contains('slideRight')
 
@@ -28,7 +27,6 @@ export class SlideWordDirective {
   }
 
   @HostListener('swiperight') slideRight = () => {
-    debugger
     const isIncludes = this.e.nativeElement.classList.contains('slideLeft')
     if (isIncludes) {
       this.renderer.removeClass(this.e.nativeElement, 'slideLeft')

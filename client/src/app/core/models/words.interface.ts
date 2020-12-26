@@ -20,3 +20,12 @@ export interface DeleteUserWordResponseInterface extends AddUserWordResponseInte
 
 export interface EditUserWordResponseInterface extends AddUserWordResponseInterface {
 }
+
+export interface AddWordsFromCsvResponseInterface {
+  groups: WordGroup[]
+  words: Word[]
+}
+
+export interface UpdateWordsResponseInterface extends AddWordsFromCsvResponseInterface {
+
+}

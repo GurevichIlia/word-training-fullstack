@@ -21,10 +21,8 @@ export class CSVtoJson {
                   // })
 
             const jsonArray = await csvtojson().fromFile(csvFile);
-            // console.log('JSON ARRA', jsonArray)
             return jsonArray 
           
       }
 
-      // Async / await usage
 }

@@ -1,9 +1,15 @@
 import { createAction, props } from '@ngrx/store';
 import { BackendErrorInterface } from 'src/app/core';
-import { AfterLoginDataInterface } from 'src/app/core/models/auth.model';
 import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
 
 export enum LanguagesActionTypes {
+
+  SET_CURRENT_LANGUAGE = '[GENERAL] Set current language',
+
+  GET_CURRENT_LEARNING_LANGUAGE = '[LANGUAGES] Get current learning language',
+  GET_CURRENT_LEARNING_LANGUAGE_SUCCESS = '[LANGUAGES] Get current learning language success',
+  GET_CURRENT_LEARNING_LANGUAGE_ERROR = '[LANGUAGES] Get current learning language error',
+
   FetchUserLanguages = '[LANGUAGES] Fetch user languages',
   FetchUserLanguagesSuccess = '[LANGUAGES] Fetch user languages success',
   FetchUserLanguagesError = '[LANGUAGES] Fetch user languages error',
@@ -33,7 +39,17 @@ export enum LanguagesActionTypes {
   SET_CURRENT_LEARNING_LANGUAGE_ERROR = '[LANGUAGES] Set current learning language error',
 
   MarkLanguageAsAddedToUserLanguages = '[LANGUAGES] Mark language as added to user languages'
+
 }
+
+export const setCurrentLanguageAction = createAction(LanguagesActionTypes.SET_CURRENT_LANGUAGE, props<{ language: LanguageInterface }>())
+
+export const getLearningLanguageAction = createAction(LanguagesActionTypes.GET_CURRENT_LEARNING_LANGUAGE)
+export const getCurrentLearningLanguageSuccessAction = createAction(LanguagesActionTypes.GET_CURRENT_LEARNING_LANGUAGE_SUCCESS,
+  props<{ currentLanguage: LanguageInterface }>())
+export const getCurrentLearningLanguageErrorAction = createAction(LanguagesActionTypes.GET_CURRENT_LEARNING_LANGUAGE_ERROR,
+  props<{ error: BackendErrorInterface }>());
+
 
 export const FetchUserLanguagesAction = createAction(LanguagesActionTypes.FetchUserLanguages);
 export const FetchUserLanguagesSuccessAction = createAction(LanguagesActionTypes.FetchUserLanguagesSuccess,
@@ -56,13 +72,13 @@ export const FetchAllLanguagesErrorAction = createAction(LanguagesActionTypes.Fe
 export const AddLanguageToUserLanguagesAction = createAction(LanguagesActionTypes.AddLanguageToUserLanguages,
   props<{ languages: LanguageInterface[] }>())
 export const AddLanguageToUserLanguagesSuccessAction = createAction(LanguagesActionTypes.AddLanguageToUserLanguagesSuccess,
-  props<{ userLanguages: LanguageInterface[] }>());
+  props<{ userLanguages: LanguageInterface[], allLanguages: LanguageInterface[] }>());
 export const AddLanguageToUserLanguagesErrorAction = createAction(LanguagesActionTypes.AddLanguageToUserLanguagesError,
   props<{ backendErrors: BackendErrorInterface }>())
 
 export const DeleteUserLanguageAction = createAction(LanguagesActionTypes.DeleteUserLanguage, props<{ languageId: string }>());
 export const DeleteUserLanguageSuccessAction = createAction(LanguagesActionTypes.DeleteUserLanguageSuccess,
-  props<{ userLanguages: LanguageInterface[] }>());
+  props<{ userLanguages: LanguageInterface[], allLanguages: LanguageInterface[], currentLearningLanguage: LanguageInterface }>());
 export const DeleteUserLanguageErrorAction = createAction(LanguagesActionTypes.DeleteUserLanguageError,
   props<{ backendErrors: BackendErrorInterface }>())
 

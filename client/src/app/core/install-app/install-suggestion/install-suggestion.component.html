@@ -4,8 +4,8 @@
     <br>
 
     <ng-container *ngIf="!data; else iosSuggestion">
-      <button nbButton size="medium" shape="round" class="purpleButton mt-2 mb-2"
-        (click)="onInstallApp()">Install</button>
+      <a  size="medium"  class="custom-button dark small mt-2 mb-2"
+        (click)="onInstallApp()">Install</a>
       <br>
       <small class="sub-title" (click)="dialogRef.close()">Not now</small>
     </ng-container>

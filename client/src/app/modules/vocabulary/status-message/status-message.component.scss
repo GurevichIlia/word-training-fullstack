@@ -2,6 +2,7 @@
 
 .first-word-title {
   color: $titleColor;
+  line-height: 2;
 
   i {
     color: #646464;
@@ -11,5 +12,6 @@
   a {
     color: #252527;
     font-weight: 700;
+    cursor: pointer;
   }
 }

@@ -19,7 +19,6 @@ import { TokenInterceptorService } from './core/interceptors/token.interceptor';
 import { AuthorizationModule } from './modules/authorization/authorization.module';
 import { PersistanceService } from './shared/services/persistance.service';
 import { clearState, getGeneralStateEffects, reducers } from './store/reducers';
-import { CurrentLanguageEffects } from './modules/languages/store/effects/current-language.effects';
 import { LoaderModule } from './shared/components/loader/loader.module';
 
 

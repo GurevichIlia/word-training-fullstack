@@ -21,28 +21,16 @@ const userSchema = new Schema({
     },
     currentLanguage: {
         type: Object,
-        default: ''
+        default: null
     },
-    wordGroups: {
-        type: Array,
-        default: []
-    },
+    // wordGroups: {
+    //       type: Array,
+    //       default: <WordGroupModel[]>[]
+    // },
     words: {
         type: Array,
         default: []
     },
-    wordsForBackup: {
-        type: Array,
-        default: []
-    },
-    wordsAsObject: {
-        type: Object,
-        default: {}
-    },
-    userLanguages: {
-        type: Array,
-        default: []
-    }
 });
 const User = mongoose_1.default.model('users', userSchema);
 exports.default = User;

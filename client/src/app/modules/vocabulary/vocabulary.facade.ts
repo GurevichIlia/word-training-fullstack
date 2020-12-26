@@ -162,19 +162,12 @@ export class VocabularyFacade {
   removeWordsAlreadyExistInThisGroup(words$: Observable<Word[]>, groupId: string) {
     if (words$ && groupId) {
       return words$.pipe(
-        tap(words => console.log('Words befor filter', words)),
         map(words => words.filter(word => !word.assignedGroups.includes(groupId))),
-        tap(words => console.log('Words after filter', words)),
-
       )
     } else {
       return of([]);
     }
 
-  }
-
-  getWordsGroups() {
-    return this.generalFacade.getWordsGroups();
   }
 
   showInstallPromotion(e?: Event) {

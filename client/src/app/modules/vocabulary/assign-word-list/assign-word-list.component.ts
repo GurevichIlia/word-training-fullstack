@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { select, Store } from '@ngrx/store';
 import { fromEvent, Observable, Subject } from 'rxjs';
-import { filter, map, switchMap, tap, startWith } from 'rxjs/operators';
+import { filter, map, switchMap, tap, startWith, takeUntil } from 'rxjs/operators';
 import { NavigationService } from 'src/app/core';
 import { GeneralFacade } from 'src/app/general.facade';
 import { Word } from 'src/app/shared/interfaces';
@@ -59,22 +59,11 @@ export class AssignWordListComponent implements OnInit, AfterViewInit, OnDestroy
     fromEvent(this.wordList.nativeElement, 'scroll')
       .pipe(
         filter(e => {
-          console.log(e.target['scrollHeight'] - e.target['scrollTop'], e.target['clientHeight'])
-          console.log(e)
           return (e.target['scrollHeight'] - e.target['scrollTop']) <= e.target['clientHeight']
         }),
-        tap((e => {
-          this.showMoreElements$.next(e)
-          console.log('SHOW MORE ELEMENTS')
-
-
-          // if ((e.target['scrollHeight'] - e.target['scrollTop']) >= e.target['clientHeight']) {
-          //   console.log('SHOW MORE ELEMENTS')
-          // }
-        }))).subscribe()
-
-
-
+        tap((e => this.showMoreElements$.next(e))),
+        takeUntil(this.subscription$)
+      ).subscribe()
 
 
 
@@ -98,7 +87,6 @@ export class AssignWordListComponent implements OnInit, AfterViewInit, OnDestroy
 
   selectWordForAssign(wordsId: string) {
     this.selectedWords = this.assignService.selectWordForAssign(wordsId, this.selectedWords);
-    console.log('SELECTED WORDS', this.selectedWords);
 
   }
 
@@ -115,7 +103,6 @@ export class AssignWordListComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   onScroll() {
-    console.log('Scrolled');
   }
 
   ngOnDestroy(): void {

@@ -1,3 +1,4 @@
+import { PersistanceService } from 'src/app/shared/services/persistance.service';
 import { LanguageInterface } from './../../languages/types/languages.interfaces';
 import { ApiService } from './../../../core/services/api.service';
 import { Injectable } from '@angular/core';
@@ -10,16 +11,19 @@ import { AppStateInterface } from 'src/app/store/reducers';
 import { getCurrentUserAction } from '../store/actions/auth.actions';
 
 @Injectable({
-  providedIn:'root'
+  providedIn: 'root'
 })
 export class AuthService {
   constructor(
     private http: ApiService,
-    private store$: Store<AppStateInterface>
+    private persistanceService: PersistanceService
 
   ) {
-    console.log('AUTH SERVICE LOADED')
 
+  }
+
+  get lastEmail(): string {
+    return this.persistanceService.get('word-training-email') || ''
   }
 
   registration(newUser: RegisterRequestInterface): Observable<CurrentUserInterface> {
@@ -39,4 +43,6 @@ export class AuthService {
   isPasswordsMatch(password: string, confirmPassword: string) {
     return password === confirmPassword;
   }
+
+
 }

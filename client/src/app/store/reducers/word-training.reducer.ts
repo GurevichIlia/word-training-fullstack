@@ -6,6 +6,7 @@ import {
   nextWordAction,
 
   resetWordTrainingStateAction,
+  saveTrainingProgressAction,
   selectGroupAction,
   startTrainAction,
   stopTrainingAction
@@ -21,9 +22,9 @@ const initialState: IWordTrainingState = {
   isStarted: false,
   nextWord: null,
   previousWordsInCache: [],
-  levelKnowledgeToShow: 0,
   allLearnedCardsQuantity: 0,
-  uniqueLearnedWords: new Map([])
+  uniqueLearnedWords: new Map([]),
+  newWordsLearnedInTrain: new Map([])
 }
 
 export const reducer = createReducer(
@@ -75,10 +76,11 @@ export const reducer = createReducer(
   on(
     nextWordAction,
     (state, action): IWordTrainingState => {
-      const { words, uniqueLearnedWords, allLearnedCardsQuantity } = state
+      const { words, uniqueLearnedWords, allLearnedCardsQuantity, newWordsLearnedInTrain } = state
       const lvlKnowledge = action.levelKnowledge
       const currentLearningWord = { ...action.word, levelKnowledge: lvlKnowledge }
       const wordsInCache = [...state.previousWordsInCache, currentLearningWord]
+
       if (uniqueLearnedWords.has(currentLearningWord._id)) {
 
         uniqueLearnedWords.delete(currentLearningWord._id)
@@ -86,12 +88,22 @@ export const reducer = createReducer(
       } else {
         uniqueLearnedWords.set(currentLearningWord._id, currentLearningWord)
       }
+
+      if (newWordsLearnedInTrain.has(currentLearningWord._id)) {
+
+        newWordsLearnedInTrain.delete(currentLearningWord._id)
+        newWordsLearnedInTrain.set(currentLearningWord._id, currentLearningWord)
+      } else {
+        newWordsLearnedInTrain.set(currentLearningWord._id, currentLearningWord)
+      }
+
       return {
         ...state,
         words: words.map(word => word._id === currentLearningWord._id ? currentLearningWord : word),
         nextWord: WordTraining.getWordForLearning(words, wordsInCache),
         previousWordsInCache: wordsInCache,
         uniqueLearnedWords,
+        newWordsLearnedInTrain,
         allLearnedCardsQuantity: allLearnedCardsQuantity + 1
       }
     }
@@ -137,7 +149,21 @@ export const reducer = createReducer(
       nextWord: { ...state.nextWord, isFavorite: !state.nextWord.isFavorite }
 
     })
-  )
+  ),
+  on(
+    resetWordTrainingStateAction,
+    (state): IWordTrainingState => ({
+      ...state,
+      ...initialState
+
+    })
+  ),
+  // on(
+  //   saveTrainingProgressAction,
+  //   (state, action): IWordTrainingState => ({
+  //     ...state,
+  //   })
+  // ),
 )
 
 
@@ -145,85 +171,6 @@ export const reducer = createReducer(
 export const wordTrainingReducer = (state: IWordTrainingState, action: Action) => {
   return reducer(state, action)
 }
-
-// const getRandomIndex = (maxNum: number): number => {
-//   return Math.floor(Math.random() * maxNum)
-// }
-
-// const getRandomOrder = (words: Word[]): Word[] => {
-//   for (let i = words.length - 1; i >= 0; i--) {
-//     const j = Math.floor(Math.random() * words.length);
-//     const temp = words[i];
-//     words[i] = words[j]
-//     words[j] = temp;
-//   }
-//   return words;
-// }
-
-// const filterWordByGroup = (words: Word[], selectedGroup: WordGroup): Word[] => {
-//   const filtredWords = words.filter(word => word.assignedGroups.includes(selectedGroup._id))
-
-//   return filtredWords
-// }
-
-// const removeThreeLastLearnedWords = (words: Word[], previousWordsInCache: Word[]): Word[] => {
-//   const length = previousWordsInCache.length;
-//   if (length > 0) {
-//     const lastIndex = length - 1
-//     const thirdFromEndIndex = lastIndex - 2
-//     const lastThreeWordsIds: string[] = previousWordsInCache.slice(thirdFromEndIndex, lastIndex).map(word => word._id)
-
-//     const filtredWords = words.filter(word => !lastThreeWordsIds.includes(word._id))
-
-//     return filtredWords
-//   }
-
-//   return words
-// }
-
-// const getWordForLearning = (words: Word[], previousWordsInCache: Word[]): Word => {
-
-//   words = removeThreeLastLearnedWords(words, previousWordsInCache);
-
-//   const neverLearnedYetWords: Word[] = [] // level knowledge 0
-//   const learnedBadWords: Word[] = [] // level knowledge 1,2
-//   const otherWords: Word[] = [] // level knowledge 3,4,5
-
-//   words.forEach(word => {
-//     if (word.levelKnowledge === 0) {
-//       neverLearnedYetWords.push(word)
-//     }
-
-//     if (word.levelKnowledge === 1 || word.levelKnowledge === 2) {
-//       learnedBadWords.push(word)
-//     }
-
-//     if (word.levelKnowledge === 3 || word.levelKnowledge === 4 || word.levelKnowledge === 5) {
-//       otherWords.push(word)
-//     }
-//   })
-
-//   if (neverLearnedYetWords.length > 0) {
-//     const randomOrderedWords = getRandomOrder(neverLearnedYetWords)
-//     return randomOrderedWords[getRandomIndex(neverLearnedYetWords.length)]
-
-//   }
-//   if (learnedBadWords.length > 0) {
-//     const randomOrderedWords = getRandomOrder(learnedBadWords)
-
-//     return randomOrderedWords[getRandomIndex(learnedBadWords.length)]
-
-//   }
-
-//   if (otherWords.length > 0) {
-//     const randomOrderedWords = getRandomOrder(otherWords)
-
-//     return randomOrderedWords[getRandomIndex(otherWords.length)]
-//   }
-
-//   return words[getRandomIndex(words.length)]
-// }
-
 
 
 

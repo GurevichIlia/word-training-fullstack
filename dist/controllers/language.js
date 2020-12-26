@@ -12,9 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const errorHandler_1 = __importDefault(require("../utils/errorHandler"));
+const languages_1 = require("../helper-functions/languages");
 const Language_1 = __importDefault(require("../Models/Language"));
 const User_1 = __importDefault(require("../Models/User"));
+const UserLanguage_1 = __importDefault(require("../Models/UserLanguage"));
+const errorHandler_1 = __importDefault(require("../utils/errorHandler"));
 class LanguagesController {
     constructor() {
         this.getAllLanguages = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -30,10 +32,11 @@ class LanguagesController {
         });
         this.getUserLanguages = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const gotUser = req.user;
-                const user = yield User_1.default.findOne({ _id: gotUser });
-                const languages = user.userLanguages;
-                res.status(200).json(languages);
+                // const user = await User.findOne({ _id: req.user }) as UserModel;
+                // const languages = user.userLanguages;
+                const user = req.user;
+                const userLanguages = yield languages_1.getUserLanguages(user);
+                res.status(200).json(userLanguages);
             }
             catch (error) {
                 errorHandler_1.default(res, error);
@@ -75,32 +78,50 @@ class LanguagesController {
         });
         this.getCurrentLanguage = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield User_1.default.findOne({ _id: req.user });
-                const currentLanguage = user.currentLanguage;
-                const isLanguageInUserLanguages = user.userLanguages.find(userLanguage => { var _a; return userLanguage._id.toString() === ((_a = currentLanguage) === null || _a === void 0 ? void 0 : _a._id.toString()); });
-                if (isLanguageInUserLanguages) {
-                    const currentLang = currentLanguage;
-                    res.status(200).json({ currentLang });
-                }
-                else if (isLanguageInUserLanguages) {
-                    user.currentLanguage = null;
-                    const updatedUser = yield User_1.default.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true });
-                    const currentLang = updatedUser.currentLanguage;
-                    res.status(200).json({ currentLang });
-                }
+                const user = req.user;
+                // const user = await User.findOne({ _id: req.user }) as UserModel
+                // const currentLanguage = user.currentLanguage
+                // const isLanguageInUserLanguages = user.userLanguages.find(userLanguage => userLanguage._id.toString() === currentLanguage?._id.toString())
+                // if (isLanguageInUserLanguages) {
+                //     const currentLang = currentLanguage;
+                //     res.status(200).json({ currentLang });
+                // } else if (!isLanguageInUserLanguages) {
+                //     user.currentLanguage = null
+                //     const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true }) as UserModel
+                //     const currentLang = updatedUser.currentLanguage
+                //     res.status(200).json({ currentLang });
+                // }
+                const currentLang = yield languages_1.getLearningLanguage(user);
+                res.status(200).json({ currentLang });
             }
             catch (error) {
                 errorHandler_1.default(res, error);
             }
         });
         this.setCurrentLanguage = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
             try {
                 const user = req.user;
-                const currentLanguage = yield Language_1.default.findOne({ _id: req.body.currentLanguage });
-                user.currentLanguage = currentLanguage;
-                const updatedUser = yield User_1.default.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true });
+                // const currentLanguage = req.body.currentLanguage as string
+                const languageCandidate = yield Language_1.default.findOne({ _id: req.body.currentLanguage });
+                const updated = yield User_1.default.findOneAndUpdate({ _id: user.id }, { currentLanguage: languageCandidate }, { new: true });
+                // const languageCandidate = await Language.findOne({ _id: req.body.currentLanguage }) as LangModel;
+                // const currentLanguage = await LearningLanguage.remove({ userId: user._id })
+                // console.log('currentLanguage', currentLanguage)
+                // await new LearningLanguage({
+                //     userId: user._id,
+                //     langId: languageCandidate._id,
+                //     name: languageCandidate.name
+                // }).save()
+                // const currentLang = await getLearningLanguage(user)
+                // console.log('currentLanguage 2', currentLang)
+                // const user: UserModel = req.user as UserModel;
+                // const currentLanguage = await Language.findOne({ _id: req.body.currentLanguage }) as LangModel;
+                // console.log('CURRENT', currentLanguage)
+                // user.currentLanguage = currentLanguage
+                // const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true }) as UserModel
                 res.status(200).json({
-                    currentLanguage: updatedUser.currentLanguage,
+                    currentLanguage: (_a = updated) === null || _a === void 0 ? void 0 : _a.currentLanguage,
                     message: 'Language selected'
                 });
             }
@@ -129,23 +150,38 @@ class LanguagesController {
         // }
         this.addUserLanguages = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield User_1.default.findOne({ _id: req.user });
+                const user = req.user;
                 const selectedUserLanguages = req.body.userLanguages;
-                const promises = yield selectedUserLanguages.map((language) => __awaiter(this, void 0, void 0, function* () {
-                    const lang = yield Language_1.default.findOne({ _id: language });
-                    return lang;
-                }));
-                const userLanguages = yield Promise.all(promises);
-                if (user.userLanguages) {
-                    user.userLanguages = [...user.userLanguages, ...userLanguages];
-                    // user.userLanguages = userLanguages.map(language => user.userLanguages.splice(index))
+                const lang = selectedUserLanguages[0];
+                const newUserLanguage = yield new UserLanguage_1.default({
+                    langId: lang._id,
+                    name: lang.name,
+                    userId: user._id
+                });
+                const isExist = yield UserLanguage_1.default.exists({ userId: user._id, name: newUserLanguage.name, langId: newUserLanguage.langId });
+                if (!isExist) {
+                    yield newUserLanguage.save();
                 }
-                else {
-                    user.userLanguages = userLanguages;
-                }
-                const updatedUser = yield User_1.default.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true });
+                const allLanguages = yield Language_1.default.find();
+                const userLanguages = yield languages_1.getUserLanguages(user);
+                // const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
+                // const selectedUserLanguages: LangModel[] = req.body.userLanguages as LangModel[];
+                // const promises = await selectedUserLanguages.map(async language => {
+                //     const lang = await Language.findOne({ _id: language }) as LangModel
+                //     return lang;
+                // })
+                // const userLanguages = await Promise.all(promises);
+                // if (user.userLanguages) {
+                //     user.userLanguages = [...user.userLanguages, ...userLanguages]
+                //     // user.userLanguages = userLanguages.map(language => user.userLanguages.splice(index))
+                // } else {
+                //     user.userLanguages = userLanguages;
+                // }
+                // const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true }) as UserModel
+                // const allLanguages = await Language.find();
                 res.status(200).json({
-                    userLanguages: updatedUser.userLanguages,
+                    allLanguages,
+                    userLanguages,
                     message: 'Languages added'
                 });
             }
@@ -154,31 +190,44 @@ class LanguagesController {
             }
         });
         this.deleteUserLanguage = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
+            var _b;
             try {
-                const user = yield User_1.default.findOne({ _id: req.user });
+                // const user: UserModel = await User.findOne({ _id: req.user }) as UserModel;
+                const user = req.user;
                 const languageIdToDelete = req.body.languageId;
-                user.userLanguages = user.userLanguages.filter(language => languageIdToDelete.toString() != language._id.toString());
-                console.log('USER', user.currentLanguage);
-                console.log('USER LANG', (_a = user.currentLanguage) === null || _a === void 0 ? void 0 : _a._id);
-                console.log('DELETE LANG', languageIdToDelete);
-                if (((_b = user.currentLanguage) === null || _b === void 0 ? void 0 : _b._id.toString()) === languageIdToDelete.toString()) {
+                if (((_b = user.currentLanguage) === null || _b === void 0 ? void 0 : _b._id.toString()) === languageIdToDelete) {
                     user.currentLanguage = null;
+                    yield User_1.default.findOneAndUpdate({ _id: user._id }, { $set: user });
                 }
-                console.log('AFTER DELETE', user.currentLanguage);
-                if (user.userLanguages.length === 0) {
-                    user.currentLanguage = null;
-                }
-                const foundLangauge = user.userLanguages.find(lang => { var _a; return ((_a = user.currentLanguage) === null || _a === void 0 ? void 0 : _a._id.toString()) === lang._id.toString(); });
-                if (!foundLangauge) {
-                    user.currentLanguage = null;
-                }
-                console.log('USER CURRENT LANG', user.currentLanguage);
-                const updatedUser = yield User_1.default.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true });
-                console.log('USER CURRENT LANG AFTER UPDATE', updatedUser.currentLanguage);
+                const langs = yield UserLanguage_1.default.findOneAndRemove({ userId: user._id, langId: languageIdToDelete });
+                // console.log('LANGUAGE DLETE', langs, typeof languageIdToDelete)
+                const allLanguages = yield Language_1.default.find();
+                const userLanguages = yield languages_1.getUserLanguages(user);
+                // const currentLearningLanguage = userLanguages.find(userLang => userLang._id === user.currentLanguage?._id) || null
+                // user.userLanguages = user.userLanguages.filter(language => languageIdToDelete.toString() != language._id.toString())
+                // console.log('USER', user.currentLanguage)
+                // console.log('USER LANG', user.currentLanguage?._id,)
+                // console.log('DELETE LANG', languageIdToDelete)
+                // if (user.currentLanguage?._id.toString() === languageIdToDelete.toString()) {
+                //     user.currentLanguage = null
+                // }
+                // console.log('AFTER DELETE', user.currentLanguage)
+                // if (user.userLanguages.length === 0) {
+                //     user.currentLanguage = null
+                // }
+                // const foundLangauge = user.userLanguages.find(lang => user.currentLanguage?._id.toString() === lang._id.toString())
+                // if (!foundLangauge) {
+                //     user.currentLanguage = null
+                // }
+                // console.log('USER CURRENT LANG', user.currentLanguage)
+                // const updatedUser = await User.findOneAndUpdate({ _id: user._id }, { $set: user }, { new: true }) as UserModel
+                // console.log('USER CURRENT LANG AFTER UPDATE', updatedUser.currentLanguage)
+                // const allLanguages = await Language.find();
+                // const lang = await LearningLanguage.findOne({ user: user._id })
                 res.status(200).json({
-                    currentLearningLanguage: updatedUser.currentLanguage,
-                    userLanguages: updatedUser.userLanguages,
+                    currentLearningLanguage: user.currentLanguage,
+                    userLanguages,
+                    allLanguages,
                     message: 'Language removed'
                 });
             }

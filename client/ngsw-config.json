@@ -30,9 +30,10 @@
     {
       "name": "current-language",
       "urls": [
-        "/api/languages/getCurrentLanguage",
-        "/api/word-group/getAllGroups",
-        "/api/vocabulary/getAllWords",
+        "https://word-training-ngrx.oa.r.appspot.com/api/auth/getCurrentUser",
+        "https://word-training-ngrx.oa.r.appspot.com/api/languages/getCurrentLanguage",
+        "https://word-training-ngrx.oa.r.appspot.com/api/word-group/getAllGroups",
+        "https://word-training-ngrx.oa.r.appspot.com/api/vocabulary/getAllWords",
         "https://kit.fontawesome.com/0cef43f628.js",
         "https://fonts.googleapis.com/css?family=Roboto:300,400,500&amp;display=swap",
         "https://fonts.googleapis.com/icon?family=Material+Icons",

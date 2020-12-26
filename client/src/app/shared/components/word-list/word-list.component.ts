@@ -15,6 +15,7 @@ import { GeneralWord } from 'src/app/modules/general-words/types/general-words.i
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WordListComponent {
+  skeletonArrIndexes = [1,2,3,4,5,6,7,8,9,10]
   _showItems: number = 15
   selector = '.scroll-container'
   @Input() words: Word[] | GeneralWord[];

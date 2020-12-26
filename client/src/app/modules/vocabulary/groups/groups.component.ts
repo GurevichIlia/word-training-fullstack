@@ -39,14 +39,11 @@ export class GroupsComponent implements OnInit, OnDestroy {
   menuItems$: Observable<GroupMenuItem[]>
   errorMessage$: Observable<string | BackendErrorInterface>
   constructor(
-    private vocabularyService: VocabularyFacade,
     private notification: NotificationsService,
-    private navigation: NavigationService,
     private groupsService: GroupsService,
     private dialog: MatDialog,
     private store$: Store<AppStateInterface>,
     private vocabularyFacade: VocabularyFacade,
-    private groupApi: GroupsApiService
   ) {
 
   }
@@ -75,8 +72,6 @@ export class GroupsComponent implements OnInit, OnDestroy {
     this.menuItems$ = this.vocabularyFacade.selectedGroup$.pipe(
       tap(selectedGroup => this.selectedGroup = selectedGroup),
       map(selectedGroup => this.groupsService.createMenu(selectedGroup, groupMenuItems as GroupMenuItem[])),
-      tap(groups => console.log('SELECTED GROUP', groups))
-
     )
 
     this.modalLoader$ = this.store$.pipe(select(modalLoaderSelector));
@@ -164,9 +159,9 @@ export class GroupsComponent implements OnInit, OnDestroy {
 
         break;
 
-      case GroupAction.ADD_MY_WORDS: this.addMyWords()
+      // case GroupAction.ADD_MY_WORDS: this.addMyWords()
 
-        break;
+      //   break;
 
     }
   }
@@ -184,12 +179,13 @@ export class GroupsComponent implements OnInit, OnDestroy {
     // this.vocabularyService.setSelectedGroup(group);
   }
 
-  addMyWords() {
-    this.groupApi.addMyWords()
-      .subscribe(res => console.log('MY WORDS', res))
-  }
+  // addMyWords() {
+  //   this.groupApi.addMyWords()
+  //     .subscribe(res => console.log('MY WORDS', res))
+  // }
 
   ngOnDestroy() {
-
+    this.subscription$.next()
+    this.subscription$.complete()
   }
 }

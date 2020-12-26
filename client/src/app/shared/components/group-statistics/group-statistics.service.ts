@@ -7,13 +7,13 @@ import { GroupStatistics, KnowledgeLevel } from './group-statistics.component';
 
 @Injectable()
 export class GroupStatisticsService {
-  getGroupStatistics(words$: Observable<Word[]>): Observable<GroupStatistics> {
-    const statistics$: Observable<GroupStatistics> = words$
+  getGroupStatistics(learnedWords$: Observable<Word[]>, allWordsInGroup?: Observable<Word[]>): Observable<GroupStatistics> {
+    const statistics$: Observable<GroupStatistics> = learnedWords$
       .pipe(
         filter(words => words !== null && words !== undefined),
-        map(words => {
-          const knowledgeLevel: KnowledgeLevel[] = this.getKnowledgeLevel(words, LEVEL_LIST);
-          return { knowledgeLevel, allWordsInGroup: words.length };
+        map(learnedWords => {
+          const knowledgeLevel: KnowledgeLevel[] = this.getKnowledgeLevel(learnedWords, LEVEL_LIST);
+          return { knowledgeLevel, allWordsInGroup: learnedWords.length };
         })
       );
 

@@ -8,14 +8,14 @@ import { vocabularyReducer, VocabularyStateInterface } from './reducers/vocabula
 import { AuthStateInterface } from './../core/models/auth.model';
 import { GeneralWordsEffects } from './effects/general-words.effects';
 import { GroupsEffects } from './effects/groups.effects';
-import { LanguageEffects } from './effects/language.effect';
 import { WordTrainingEffects } from './effects/word-training.effects';
 import { WordsEffects } from './effects/words.effects';
 import { generalReducer, GeneralStateInterface } from './reducers/general.reducer';
 import { wordTrainingReducer } from './reducers/word-training.reducer';
-import { languagesReducer } from '../modules/languages/store/reducers/languages.reducers';
+import { languagesReducer } from '../store/reducers/languages.reducers';
 import { LanguagesStateInterface } from '../modules/languages/types/languages.interfaces';
 import { generalWordsReducer, IGeneralWordsState } from './reducers/general-words.reducer';
+import { LanguagesEffects } from './effects/languages.effects';
 
 
 
@@ -58,7 +58,7 @@ export const getGeneralStateEffects = (): Type<any>[] => {
   return [
     GroupsEffects,
     WordsEffects,
-    LanguageEffects,
+    LanguagesEffects,
     GeneralWordsEffects,
     WordTrainingEffects
   ]

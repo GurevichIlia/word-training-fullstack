@@ -1,6 +1,6 @@
-<nb-flip-card [showToggleButton]="'false'">
-  <nb-card-front class="front-card">
-    <nb-card #frontCard class="word-card">
+<nb-flip-card [showToggleButton]="false" [flipped]="isFlipped">
+  <nb-card-front class="front-card" >
+    <nb-card #frontCard class="word-card" >
       <nb-card-header [ngClass]="{
         'bad': word.levelKnowledge == 1,
       'better': word.levelKnowledge == 2,
@@ -11,12 +11,8 @@
 }">
         <span class="card-title">Word</span>
       </nb-card-header>
-      <nb-card-body>
-        <div class="word m-auto" [ngStyle]="{
-          'height':
-           backCard['clientHeight'] > frontCard['clientHeight']
-           ? backCard['clientHeight'] + 'px'
-           : frontCard['clientHeight'] + 'px'}">
+      <nb-card-body [hidden]="isFlipped === true">
+        <div class="word m-auto">
           <span [ngStyle]="{'font-size': word?.word.length > 11 ? '30px' : '35px'}">
             {{word?.word}}</span>
 
@@ -34,12 +30,14 @@
         <!-- <button (click)="addToFavorites(word)">fav</button> -->
 
       </nb-card-body>
-
+      <div class="flipToggle" (click)="flipToggle()">
+        Flip card <i class="fas fa-sync-alt"></i>
+      </div>
     </nb-card>
 
   </nb-card-front>
-  <nb-card-back>
-    <nb-card #backCard status="danger" class="word-card">
+  <nb-card-back >
+    <nb-card #backCard status="danger" class="word-card" >
 
       <nb-card-header [ngClass]="{
         'bad': word.levelKnowledge == 1,
@@ -51,12 +49,8 @@
 }">
         <span class="card-title">Translation </span>
       </nb-card-header>
-      <nb-card-body style="height: 100%">
-        <div [ngStyle]="{
-            'height':
-            backCard['clientHeight'] > frontCard['clientHeight']
-           ? backCard['clientHeight'] + 'px'
-           : frontCard['clientHeight'] + 'px'}" class="word m-auto">
+      <nb-card-body style="height: 100%" [hidden]="isFlipped === false">
+        <div class="word m-auto">
           <span [ngStyle]="{'font-size': word?.translation.length > 11 ? '30px' : '35px'}">
             {{word?.translation}}
 
@@ -71,6 +65,9 @@
         </div>
 
       </nb-card-body>
+      <div class="flipToggle" (click)="flipToggle()">
+        Flip card<i class="fas fa-sync-alt"></i>
+      </div>
     </nb-card>
 
   </nb-card-back>

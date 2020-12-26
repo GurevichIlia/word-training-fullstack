@@ -1,12 +1,19 @@
+import { UtilsService } from 'src/app/shared/services/utils.service';
 import { Word, WordGroup } from 'src/app/shared/interfaces';
 
 export class WordTraining {
+
+
   private static getRandomIndex = (maxNum: number): number => {
     return Math.floor(Math.random() * maxNum)
   }
 
   static filterWordsByGroup = (words: Word[], selectedGroup: WordGroup): Word[] => {
-    const filtredWords = words.filter(word => word.assignedGroups.includes(selectedGroup._id))
+    const utilsService = new UtilsService()
+
+    const filtredWords = utilsService.filter(words, selectedGroup)
+
+    words.filter(word => word.assignedGroups.includes(selectedGroup._id))
 
     return filtredWords
   }
@@ -86,10 +93,6 @@ export class WordTraining {
       threeLastWordsIds = previousWordsInCache.map(word => word._id)
       filtredWords = words.filter(word => !threeLastWordsIds.includes(word._id))
       return filtredWords
-
-
-
-
     }
 
     return words

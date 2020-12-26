@@ -1,6 +1,18 @@
 .word-card {
   min-height: 200px;
   max-height: 300px;
+  position: relative;
+}
+
+.flipToggle {
+  position: absolute;
+  bottom: 20px;
+  right: 40px;
+  color: #9b9fab;
+
+  i{
+    margin-left: 5px
+  }
 }
 
 .card-title {
@@ -14,7 +26,7 @@
 
   span {
     // font-family: 'Muli', "Helvetica Neue", sans-serif !important;
-        font-family: 'Muli', "Helvetica Neue", sans-serif !important;
+    font-family: 'Muli', "Helvetica Neue", sans-serif !important;
 
     font-weight: 600;
   }

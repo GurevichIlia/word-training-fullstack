@@ -10,8 +10,8 @@
   </nb-card-body>
 </nb-card>
 
-<ng-container *ngIf="(generalWords$ | async) as words;">
-  <div class="search">
+<!-- <ng-container *ngIf="(generalWords$ | async) as words;"> -->
+  <div class="search" *ngIf="(generalWords$ | async)">
     <div>
       <app-search [filterValue]="filterValue" (addWord)="getActionFromChildren($event)"></app-search>
 
@@ -26,22 +26,26 @@
         [isShowDefaultOptions]="false"
         (action)="getActionFromChildren($event)"
         [menuItems]="wordMenuItems"
-        [words]="words">
+        [words]="generalWords$ | async">
       </app-word-list>
-      <div class="sub-title" *ngIf="words?.length === 0 && !filterValue.value">
-        <span>Unfortunately no one has added words yet. <br> Be the first <br> Add words from <a
-            routerLink="/vocabulary">Your list <i class="fas fa-list-alt"></i></a> </span>
-      </div>
 
-      <div class="text-center" *ngIf="words?.length === 0 && filterValue.value">
-        <span class="first-word-title">Word not found
-        </span>
+      <ng-container *ngIf="(generalWords$ | async) as words">
+        <div class="sub-title" *ngIf="words?.length === 0 && !filterValue.value">
+          <span>Unfortunately no one has added words yet. <br> Be the first <br> Add words from <a
+              routerLink="/vocabulary">Your list <i class="fas fa-list-alt"></i></a> </span>
+        </div>
 
-      </div>
+        <div class="text-center" *ngIf="words?.length === 0 && filterValue.value">
+          <span class="first-word-title">Word not found
+          </span>
+
+        </div>
+      </ng-container>
+
 
     </nb-card-body>
   </nb-card>
-</ng-container>
+<!-- </ng-container> -->
 
 <!--
 <ng-template #loader>

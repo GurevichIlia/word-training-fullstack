@@ -1,3 +1,4 @@
+import { AuthService } from 'src/app/modules/authorization/services/auth.service';
 import { animate, keyframes, transition, trigger } from '@angular/animations';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -43,7 +44,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private store$: Store<AppStateInterface>,
-    private navigation: NavigationService
+    private navigation: NavigationService,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -73,8 +75,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   initializeForm() {
+    const lastEmail = this.authService.lastEmail
+
+
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: [lastEmail, [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
   }
@@ -98,16 +103,15 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
 
-  startAnimation(state) {
-    console.log(state);
-    if (!this.animationState) {
-      this.animationState = state;
-    }
-  }
+  // startAnimation(state) {
+  //   if (!this.animationState) {
+  //     this.animationState = state;
+  //   }
+  // }
 
-  resetAnimationState() {
-    this.animationState = '';
-  }
+  // resetAnimationState() {
+  //   this.animationState = '';
+  // }
 
   goToRegistration() {
     this.navigation.navigateTo(AppRoutes.Register);

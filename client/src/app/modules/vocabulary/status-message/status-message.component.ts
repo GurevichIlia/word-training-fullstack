@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Word, WordGroup } from 'src/app/shared/interfaces';
 
 @Component({
@@ -12,6 +12,8 @@ export class StatusMessageComponent implements OnInit {
   @Input() selectedGroup: WordGroup
   @Input() searchValue: string
   @Input() isLoading: boolean
+
+  @Output() openCsvUploader = new EventEmitter<void>()
   constructor() { }
 
   ngOnInit() {

@@ -42,7 +42,7 @@ export enum VocabularyActionsType {
   OpenAssigningBottomSheet = '[Vocabulary] Open Assigning bottom sheet',
   CloseAssigningBottomSheet = '[Vocabulary] Close Assigning bottom sheet',
 
-  SetWords = '[Vocabulary] Set words',
+  SetWordsAndGroups = '[Vocabulary] Set words and groups',
 
   SelectVocabularyGroup = '[Vocabulary] Select vocabulary group',
 
@@ -103,7 +103,7 @@ export const setWordAsFavoriteErrorAction = createAction(VocabularyActionsType.S
 
 export const addWordsFromCsvAction = createAction(VocabularyActionsType.AddWordsFromCsv, props<{ file: File, selectedGroupId?: string }>());
 export const addWordsFromCsvSuccessAction = createAction(VocabularyActionsType.AddWordsFromCsvSuccess,
-  props<{ words: Word[] }>());
+  props<{ words: Word[], groups: WordGroup[] }>());
 export const addWordsFromCsvErrorAction = createAction(VocabularyActionsType.AddWordsFromCsvError,
   props<{ error: BackendErrorInterface | string }>());
 
@@ -118,7 +118,8 @@ export const csvHandlerToggleAction = createAction(VocabularyActionsType.CsvHand
 export const openAssigningBottomSheetAction = createAction(VocabularyActionsType.OpenAssigningBottomSheet);
 export const closeAssigningBottomSheetAction = createAction(VocabularyActionsType.CloseAssigningBottomSheet);
 
-export const setWordsAction = createAction(VocabularyActionsType.SetWords, props<{ words: Word[] }>());
+export const setWordsAndGroupsAction = createAction(VocabularyActionsType.SetWordsAndGroups,
+  props<{ words: Word[], groups: WordGroup[] }>());
 
 export const selectVocabularyGroupAction = createAction(VocabularyActionsType.SelectVocabularyGroup, props<{ group: WordGroup }>());
 
