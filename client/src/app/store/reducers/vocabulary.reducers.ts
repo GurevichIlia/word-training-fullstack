@@ -76,7 +76,7 @@ const reducers = createReducer(
     (state): VocabularyStateInterface => ({
       ...state,
       userWords: [],
-      // vocabularyLoader: true
+      vocabularyLoader: true
     })
   ),
   on(
@@ -300,7 +300,8 @@ const reducers = createReducer(
     shareWordToGeneralWordsSuccessAction,
     (state, action): VocabularyStateInterface => ({
       ...state,
-      vocabularyLoader: false
+      vocabularyLoader: false,
+      userWords: action.words
     })
   ),
   on(
@@ -326,7 +327,7 @@ const reducers = createReducer(
     (state): VocabularyStateInterface => ({
       ...state,
       userGroups: [],
-      // vocabularyLoader: true
+      vocabularyLoader: true
     })
   ),
   on(

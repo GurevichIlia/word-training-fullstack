@@ -1,4 +1,4 @@
-<app-loader [show]="isLoading$ |async"></app-loader>
+<!-- <app-loader [show]="isLoading$ |async"></app-loader> -->
 <nb-card>
   <!-- <nb-card-header class="title">
     <span>Shared words</span>
@@ -22,6 +22,7 @@
   <nb-card>
     <nb-card-body>
       <app-word-list
+        [isLoading]="isLoading$ |async"
         [userId]="userId$ | async"
         [isShowDefaultOptions]="false"
         (action)="getActionFromChildren($event)"

@@ -6,6 +6,7 @@ export interface GeneralWord extends Word {
 
 export interface IDeleteGeneralWordResponse {
   word: GeneralWord,
+  userWords: Word[],
   message: string,
-  words: GeneralWord[]
+  generalWords: GeneralWord[]
 }

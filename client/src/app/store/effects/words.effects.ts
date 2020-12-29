@@ -31,6 +31,7 @@ import {
 import { currentLanguageSelector } from './../selectors/languages.selectors';
 import { HttpErrorResponse } from '@angular/common/http';
 import { selectedGroupSelector } from '../selectors/vocabulary.selectors';
+import { IAddWordToGeneralListResponse } from 'src/app/core/models/words.interface';
 
 @Injectable()
 export class WordsEffects {
@@ -215,8 +216,8 @@ export class WordsEffects {
       switchMap(({ words }: { words: Word[] }) =>
         this.wordsService.shareWordsToGeneralList(words)
           .pipe(
-            map(_ => {
-              return shareWordToGeneralWordsSuccessAction({});
+            map(({ userWords }: IAddWordToGeneralListResponse) => {
+              return shareWordToGeneralWordsSuccessAction({ words: userWords });
             }),
             catchError((err) => {
               return of(shareWordToGeneralWordsErrorAction({ error: err.message }))

@@ -4,11 +4,13 @@
   <div class="container ">
 
     <div class="row">
-      <div class="col-1">
-        <app-menu [menuItems]="_menuItems" (action)="dispatchAction($event, word)"></app-menu>
+      <ng-container *ngIf="isShowMenu && _menuItems">
+        <div class="col-1">
 
-      </div>
-      <ng-container *ngIf="isShowMenu && menuItems"></ng-container>
+          <app-menu [menuItems]="_menuItems | wordMenu : word" (action)="dispatchAction($event, word)"></app-menu>
+
+        </div>
+      </ng-container>
 
 
 
@@ -28,10 +30,10 @@
 
       </div>
 
-      <div class="col-2 ml-auto " *ngIf="!userId" >
+      <div class="col-2 ml-auto " *ngIf="!userId">
 
-        <ng-container  *ngIf="!isShowDefaultOptions && !isShowMenu">
-          <nb-checkbox class="" (checkedChange)="dispatchAction('assign', word._id)"></nb-checkbox>
+        <ng-container *ngIf="!isShowDefaultOptions && !isShowMenu">
+          <nb-checkbox (checkedChange)="dispatchAction('assign', word._id)"></nb-checkbox>
         </ng-container>
 
         <ng-container *ngIf="isShowDefaultOptions">

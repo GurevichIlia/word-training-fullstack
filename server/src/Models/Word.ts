@@ -22,6 +22,10 @@ const wordSchema = new Schema({
         type: Number,
         default: 0
     },
+    isShared: {
+        type: Boolean,
+        default: false
+    },
     date: {
         type: Date,
         default: new Date()

@@ -29,7 +29,8 @@
       <app-word-list
         [showMoreItems]="showMoreElements$ | async"
         [words]="words | wordsFilter: filterControl.value"
-        (action)="getAction($event)" [isShowMenu]="false"
+        (action)="getAction($event)"
+        [isShowMenu]="false"
         [isShowDefaultOptions]="false">
       </app-word-list>
     </div>

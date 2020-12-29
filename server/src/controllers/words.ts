@@ -306,7 +306,7 @@ export class WordsController {
             const currentUserLanguage = user.currentLanguage
             if (!currentUserLanguage) throw new Error('Language does not exists')
 
-            const words = await GeneralWord.find({ language: currentUserLanguage._id });
+            const words = await (await GeneralWord.find({ language: currentUserLanguage._id })).reverse();
             res.status(200).json(words);
         } catch (error) {
             errorHandler(res, error)
@@ -320,21 +320,51 @@ export class WordsController {
             const words = req.body.words as GeneralWordModel[]
 
             if (words && words.length > 0) {
-                words.forEach(async word => {
-                    const newWord = await new GeneralWord({
+
+                if (words.length === 1) {
+                    const word = words[0]
+                    const updatedWord = await Word.findByIdAndUpdate(word._id, { isShared: true }, { new: true })
+                    const newWord = new GeneralWord({
                         word: word.word,
                         translation: word.translation,
                         language: user.currentLanguage?._id,
                         assignedGroups: word.assignedGroups,
-                        user: user._id
+                        user: user._id,
+                        originId: word._id
                     }).save();
-                })
+
+                } else if (words.length > 1) {
+                    for (let word of words) {
+                        const updatedWord = await Word.findByIdAndUpdate(word._id, { isShared: true }, { new: true })
+                        const newWord = new GeneralWord({
+                            word: word.word,
+                            translation: word.translation,
+                            language: user.currentLanguage?._id,
+                            assignedGroups: word.assignedGroups,
+                            user: user._id,
+                            originId: word._id
+                        }).save();
+
+                    }
+                }
+
+
+                // words.forEach(async word => {
+                //     const newWord = await new GeneralWord({
+                //         word: word.word,
+                //         translation: word.translation,
+                //         language: user.currentLanguage?._id,
+                //         assignedGroups: word.assignedGroups,
+                //         user: user._id
+                //     }).save();
+                // })
             }
 
             const generalWords = await GeneralWord.find({ language: user.currentLanguage?._id })
+            const userWords = await getWords(user)
 
 
-            res.status(201).json({ addedWord: '', generalWords });
+            res.status(201).json({ addedWord: '', generalWords, userWords });
         } catch (error) {
             errorHandler(res, error);
         }
@@ -345,15 +375,22 @@ export class WordsController {
             const user = req.user as IRequestUserInfo
 
             const deletedWord = await GeneralWord.findOneAndRemove({ _id: req.query.wordId })
+            const updatedWord = await Word.findOneAndUpdate({
+                user: user._id,
+                _id: deletedWord?.originId
+            }, { isShared: false }, { new: true })
 
             const currentUserLanguage = user.currentLanguage
             if (!currentUserLanguage) throw new Error('Language does not exists')
 
-            const words = await GeneralWord.find({ language: currentUserLanguage._id.toString() });
+            const generalWords = await (await GeneralWord.find({ language: currentUserLanguage._id.toString() })).reverse();
+            const userWords = await getWords(user)
+            console.log('Updated word', updatedWord)
 
             if (deletedWord) {
                 res.status(200).json({
-                    words,
+                    generalWords,
+                    userWords,
                     word: deletedWord,
                     message: 'Removed'
                 })

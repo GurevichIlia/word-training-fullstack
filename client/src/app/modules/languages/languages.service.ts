@@ -1,3 +1,4 @@
+import { Languages } from './../../core/enums/languages.enum';
 import { ApiService } from './../../core/services/api.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -96,22 +97,22 @@ export class LanguagesService {
     const languagesWithFlags = languages.map(language => {
       const lang = { ...language };
       switch (language.name) {
-        case 'Hebrew':
+        case Languages.Hebrew:
           lang.flag = '../../assets/icons/Flags/iconfinder_flag-israel_748123.png'
           break;
-        case 'English':
+        case Languages.English:
           lang.flag = '../../assets/icons/Flags/iconfinder_flag-united-kingdom_748024.png'
           break;
-        case 'Spain':
+        case Languages.Spanish:
           lang.flag = '../../assets/icons/Flags/iconfinder_flag-spain_748120.png'
           break;
-        case 'Germany':
+        case Languages.German:
           lang.flag = '../../assets/icons/Flags/iconfinder_flag-germany_748067.png'
           break;
-        case 'Dutch':
+        case Languages.Dutch:
           lang.flag = '../../assets/icons/Flags/iconfinder_flag-the-netherlands_748017.png'
           break;
-        case 'France':
+        case Languages.French:
           lang.flag = '../../assets/icons/Flags/iconfinder_flag-france_748130.png'
           break;
       }

@@ -271,7 +271,7 @@ class WordsController {
                 const currentUserLanguage = user.currentLanguage;
                 if (!currentUserLanguage)
                     throw new Error('Language does not exists');
-                const words = yield GeneralWord_1.default.find({ language: currentUserLanguage._id });
+                const words = yield (yield GeneralWord_1.default.find({ language: currentUserLanguage._id })).reverse();
                 res.status(200).json(words);
             }
             catch (error) {
@@ -279,40 +279,73 @@ class WordsController {
             }
         });
         this.addWordsToGeneralList = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _d;
+            var _d, _e, _f;
             try {
                 const user = req.user;
                 const words = req.body.words;
                 if (words && words.length > 0) {
-                    words.forEach((word) => __awaiter(this, void 0, void 0, function* () {
-                        var _e;
-                        const newWord = yield new GeneralWord_1.default({
+                    if (words.length === 1) {
+                        const word = words[0];
+                        const updatedWord = yield Word_1.default.findByIdAndUpdate(word._id, { isShared: true }, { new: true });
+                        const newWord = new GeneralWord_1.default({
                             word: word.word,
                             translation: word.translation,
-                            language: (_e = user.currentLanguage) === null || _e === void 0 ? void 0 : _e._id,
+                            language: (_d = user.currentLanguage) === null || _d === void 0 ? void 0 : _d._id,
                             assignedGroups: word.assignedGroups,
-                            user: user._id
+                            user: user._id,
+                            originId: word._id
                         }).save();
-                    }));
+                    }
+                    else if (words.length > 1) {
+                        for (let word of words) {
+                            const updatedWord = yield Word_1.default.findByIdAndUpdate(word._id, { isShared: true }, { new: true });
+                            const newWord = new GeneralWord_1.default({
+                                word: word.word,
+                                translation: word.translation,
+                                language: (_e = user.currentLanguage) === null || _e === void 0 ? void 0 : _e._id,
+                                assignedGroups: word.assignedGroups,
+                                user: user._id,
+                                originId: word._id
+                            }).save();
+                        }
+                    }
+                    // words.forEach(async word => {
+                    //     const newWord = await new GeneralWord({
+                    //         word: word.word,
+                    //         translation: word.translation,
+                    //         language: user.currentLanguage?._id,
+                    //         assignedGroups: word.assignedGroups,
+                    //         user: user._id
+                    //     }).save();
+                    // })
                 }
-                const generalWords = yield GeneralWord_1.default.find({ language: (_d = user.currentLanguage) === null || _d === void 0 ? void 0 : _d._id });
-                res.status(201).json({ addedWord: '', generalWords });
+                const generalWords = yield GeneralWord_1.default.find({ language: (_f = user.currentLanguage) === null || _f === void 0 ? void 0 : _f._id });
+                const userWords = yield getWords(user);
+                res.status(201).json({ addedWord: '', generalWords, userWords });
             }
             catch (error) {
                 errorHandler_1.default(res, error);
             }
         });
         this.deleteWordFromGeneralList = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            var _g;
             try {
                 const user = req.user;
                 const deletedWord = yield GeneralWord_1.default.findOneAndRemove({ _id: req.query.wordId });
+                const updatedWord = yield Word_1.default.findOneAndUpdate({
+                    user: user._id,
+                    _id: (_g = deletedWord) === null || _g === void 0 ? void 0 : _g.originId
+                }, { isShared: false }, { new: true });
                 const currentUserLanguage = user.currentLanguage;
                 if (!currentUserLanguage)
                     throw new Error('Language does not exists');
-                const words = yield GeneralWord_1.default.find({ language: currentUserLanguage._id.toString() });
+                const generalWords = yield (yield GeneralWord_1.default.find({ language: currentUserLanguage._id.toString() })).reverse();
+                const userWords = yield getWords(user);
+                console.log('Updated word', updatedWord);
                 if (deletedWord) {
                     res.status(200).json({
-                        words,
+                        generalWords,
+                        userWords,
                         word: deletedWord,
                         message: 'Removed'
                     });

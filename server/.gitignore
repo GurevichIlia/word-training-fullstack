@@ -1,5 +1,6 @@
 node_modules
-# base.ts
-# keys.dev.ts
+base.ts
+keys.dev.ts
+keys.prod.ts
 output.pdf
 token.json

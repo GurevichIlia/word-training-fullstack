@@ -56,10 +56,12 @@ export class WordComponent {
 
 
   hideAddWordButton(menuItems: MenuItem<WordAction>[]): MenuItem<WordAction>[] {
+    if (!menuItems) return
     return menuItems.filter(item => item.action !== WordAction.ADD_TO_MY_WORDS)
   }
 
   hideDeleteWordButton(menuItems: MenuItem<WordAction>[]): MenuItem<WordAction>[] {
+    if (!menuItems) return
     return menuItems.filter(item => item.action !== WordAction.DELETE_FROM_SHARE_LIST)
   }
 

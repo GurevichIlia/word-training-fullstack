@@ -16,7 +16,7 @@
 
 
     <a [ngClass]="{'disabled': isLoading$ | async}" *ngIf=" selectedFile" (click)="onUpload(fileInput.files[0])"
-      class="custom-button dark mb-3 w-50" type="submit">Upload</a>
+      class="custom-button dark mb-3 w-50">Upload</a>
     <app-loader [show]="isLoading$ | async"></app-loader>
   </section>
 

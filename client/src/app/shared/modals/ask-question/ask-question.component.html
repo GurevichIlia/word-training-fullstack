@@ -1,11 +1,4 @@
-<!-- <nb-card class="wordDialogBox">
-      <span class="text-center title">{{title}}</span>
-      <span class="text-center item">{{item}}</span>
-      <nb-card-footer class="wordDialogFooter">
-            <button nbButton status="danger" (click)="close(false)">Cancel</button>
-            <button nbButton class="purpleButton" (click)="close(true)">Remove</button>
-      </nb-card-footer>
-</nb-card> -->
+
 <ng-container *ngIf="isCloseModal$ | async"></ng-container>
 <app-modal-ui
     [isLoading]="isLoading$ | async"

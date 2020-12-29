@@ -19,6 +19,7 @@
               [isShowMenu]="isShowMenu"
               [menuItems]="menuItems"
               [isShowDefaultOptions]="isShowDefaultOptions">
+
             </app-word>
 
 
@@ -28,7 +29,7 @@
 
 
       </ng-container>
-      <ng-container *ngIf="!words">
+      <ng-container *ngIf="isLoading">
           <div *ngFor="let i of skeletonArrIndexes">
             <app-word-skeleton></app-word-skeleton>
           </div>

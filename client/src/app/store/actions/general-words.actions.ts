@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { GeneralWord } from 'src/app/modules/general-words/types/general-words.interfaces';
+import { Word } from 'src/app/shared/interfaces';
 
 export enum GeneralWordsActionsType {
   FetchGeneralWords = '[Words] Fetch general words',
@@ -19,5 +20,5 @@ export const fetchGeneralWordsErrorAction = createAction(GeneralWordsActionsType
 
 export const deleteGeneralWordAction = createAction(GeneralWordsActionsType.DeleteGeneralWord, props<{ word: GeneralWord }>());
 export const deleteGeneralWordSuccessAction = createAction(GeneralWordsActionsType.DeleteGeneralWordSuccess,
-  props<{ words: GeneralWord[] }>());
+  props<{ words: GeneralWord[], userWords: Word[] }>());
 export const deleteGeneralWordErrorAction = createAction(GeneralWordsActionsType.DeleteGeneralWordError, props<{ error: string }>());

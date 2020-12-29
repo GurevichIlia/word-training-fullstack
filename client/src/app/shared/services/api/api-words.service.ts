@@ -8,6 +8,7 @@ import {
   DeleteUserWordResponseInterface,
   EditUserWordResponseInterface,
   GetAllUserWordsResponseInterface,
+  IAddWordToGeneralListResponse,
   UpdateWordsResponseInterface
 } from 'src/app/core/models/words.interface';
 import { GeneralWord, IDeleteGeneralWordResponse } from 'src/app/modules/general-words/types/general-words.interfaces';
@@ -60,8 +61,8 @@ export class ApiWordsService {
 
   }
 
-  addWordsToGeneralList(words: Word[]) {
-    return this.http.post(`${BASE_URL}/api/vocabulary/addWordsToGeneralList`, { words });
+  addWordsToGeneralList(words: Word[]): Observable<IAddWordToGeneralListResponse> {
+    return this.http.post<IAddWordToGeneralListResponse>(`${BASE_URL}/api/vocabulary/addWordsToGeneralList`, { words });
   }
 
   deleteWordFromGeneralList(wordId: string): Observable<IDeleteGeneralWordResponse> {

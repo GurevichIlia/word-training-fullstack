@@ -1,3 +1,4 @@
+import { setWordsAndGroupsAction } from './../actions/vocabulary.actions';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -46,8 +47,8 @@ export class GeneralWordsEffects {
       switchMap(({ word }: { word: GeneralWord }) =>
         this.apiWords.deleteWordFromGeneralList(word._id)
           .pipe(
-            map(({ words, word, message }: IDeleteGeneralWordResponse) => {
-              return deleteGeneralWordSuccessAction({ words });
+            map(({ generalWords, word, message, userWords }: IDeleteGeneralWordResponse) => {
+              return deleteGeneralWordSuccessAction({ words: generalWords, userWords });
             }),
             catchError((err) => {
               return of(deleteGeneralWordErrorAction({ error: err.message }))
@@ -59,8 +60,9 @@ export class GeneralWordsEffects {
   deleteWordSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(GeneralWordsActionsType.DeleteGeneralWordSuccess),
-      tap(_ => {
+      tap(({ userWords }: Pick<IDeleteGeneralWordResponse, 'userWords' | 'generalWords'>) => {
         this.notificationService.success('Deleted from shared')
+        this.store$.dispatch(setWordsAndGroupsAction({ words: userWords, groups: null }))
         this.store$.dispatch(fetchGroupsAction())
       })
     ), { dispatch: false })

@@ -31,7 +31,7 @@ export class GeneralWordsComponent implements OnInit {
 
 
     this.userId$ = this.generalWordsFacade.userId$;
-    this.generalWords$ = this.generalWordsFacade.generalWords$.pipe(map(words => words.reverse()), shareReplay())
+    this.generalWords$ = this.generalWordsFacade.generalWords$.pipe(shareReplay())
     this.isLoading$ = this.generalWordsFacade.isLoading$
   }
 

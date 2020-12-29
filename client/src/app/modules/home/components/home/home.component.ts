@@ -1,8 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { getLearningLanguageAction } from 'src/app/store/actions/languages.actions';
+import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
-import { GeneralFacade } from 'src/app/general.facade';
+import { Observable } from 'rxjs';
 import { AppStateInterface } from 'src/app/store/reducers';
 import { globalLoaderSelector } from 'src/app/store/selectors/general.selector';
 @Component({
@@ -15,8 +14,7 @@ export class HomeComponent implements OnInit {
 
   // currentLearningLanguage
   constructor(
-    private generaFacade: GeneralFacade,
-    private router: Router,
+
     private store$: Store<AppStateInterface>
 
   ) {
@@ -24,6 +22,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.globalLoader$ = this.store$.pipe(select(globalLoaderSelector))
+    this.store$.dispatch(getLearningLanguageAction())
 
   }
 }

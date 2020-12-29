@@ -109,7 +109,7 @@ export const addWordsFromCsvErrorAction = createAction(VocabularyActionsType.Add
 
 export const shareWordToGeneralWordsAction = createAction(VocabularyActionsType.ShareWordToGeneralWords, props<{ words: Word[] }>());
 export const shareWordToGeneralWordsSuccessAction = createAction(VocabularyActionsType.ShareWordToGeneralWordsSuccess,
-  props<{ words?: Word[], message?: string }>());
+  props<{ words: Word[], message?: string }>());
 export const shareWordToGeneralWordsErrorAction = createAction(VocabularyActionsType.ShareWordToGeneralWordsError,
   props<{ error: string }>());
 

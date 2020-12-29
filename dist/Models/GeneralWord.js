@@ -26,6 +26,10 @@ const generalWordSchema = new Schema({
         ref: "languages",
         type: Schema.Types.ObjectId
     },
+    originId: {
+        ref: "words",
+        type: Schema.Types.ObjectId
+    }
 });
 const GeneralWord = mongoose_1.default.model("generalWords", generalWordSchema);
 exports.default = GeneralWord;

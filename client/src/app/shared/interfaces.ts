@@ -25,6 +25,7 @@ export interface Word {
   levelKnowledge?: number;
   assignedGroups?: string[];
   date?: string;
+  isShared: boolean
 }
 
 

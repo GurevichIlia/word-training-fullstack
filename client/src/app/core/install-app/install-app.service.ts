@@ -1,6 +1,4 @@
-import { InstallHelperFunctionsService } from './install-helper-functions.service';
 import { Injectable } from '@angular/core';
-import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Injectable({
   providedIn: 'root'

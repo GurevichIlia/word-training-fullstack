@@ -29,3 +29,9 @@ export interface AddWordsFromCsvResponseInterface {
 export interface UpdateWordsResponseInterface extends AddWordsFromCsvResponseInterface {
 
 }
+
+export interface IAddWordToGeneralListResponse {
+  addedWord: Word | '',
+  generalWords: Word[],
+  userWords: Word[]
+}

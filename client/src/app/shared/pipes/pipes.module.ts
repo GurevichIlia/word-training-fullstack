@@ -2,6 +2,7 @@ import { ConvertToPercentPipe } from './convert-to-percent.pipe';
 import { ReverseArrayPipe } from './reverse-array.pipe';
 import { NgModule } from '@angular/core';
 import { WordsFilterPipe } from './words-filter.pipe';
+import { WordMenuPipe } from './word-menu.pipe';
 
 
 
@@ -10,12 +11,14 @@ import { WordsFilterPipe } from './words-filter.pipe';
   exports: [
     ReverseArrayPipe,
     ConvertToPercentPipe,
-    WordsFilterPipe
+    WordsFilterPipe,
+    WordMenuPipe
   ],
   declarations: [
     ReverseArrayPipe,
     ConvertToPercentPipe,
-    WordsFilterPipe
+    WordsFilterPipe,
+    WordMenuPipe
   ],
   providers: [],
 })

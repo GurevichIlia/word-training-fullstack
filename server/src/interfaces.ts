@@ -20,6 +20,7 @@ export interface WordModel extends Document {
       word: string;
       translation: string;
       isFavorite?: boolean;
+      isShared?: boolean,
       levelKnowledge: number;
       assignedGroups: string[];
       language: Object,
@@ -62,7 +63,8 @@ export interface GeneralWord extends Document {
       word: string;
       translation: string;
       assignedGroups: string[];
-      language: string
+      language: string,
+      originId: object
 }
 
 
