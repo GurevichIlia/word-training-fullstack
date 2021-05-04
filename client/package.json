@@ -14,7 +14,6 @@
   "dependencies": {
     "@angular/animations": "^9.0.0",
     "@angular/cdk": "^9.2.1",
-    "@angular/cli": "^9.1.4",
     "@angular/common": "^9.0.0",
     "@angular/compiler": "^9.0.0",
     "@angular/compiler-cli": "^9.0.0",
@@ -42,7 +41,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.1001.4",
-    "@angular/cli": "^9.1.4",
+    "@angular/cli": "^11.2.11",
     "@angular/compiler-cli": "^9.0.0",
     "@angular/language-service": "^9.0.0",
     "@ngx-builders/analyze": "^2.0.0",
