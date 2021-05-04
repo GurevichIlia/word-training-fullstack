@@ -2,30 +2,31 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { NbDialogService } from '@nebular/theme';
 import { select, Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
-import { DefaultGroupId, MenuItem, WordAction, wordMenuItems } from 'src/app/core';
+import { combineLatest, Observable, of, EMPTY } from 'rxjs';
+import { filter, map, mergeMap, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { DefaultGroupId, MenuItem, SupportedLanguage, TranslationConfig, TranslationService, WordAction, wordMenuItems } from 'src/app/core';
 import { InstallAppService } from 'src/app/core/install-app/install-app.service';
 import { InstallHelperFunctionsService } from 'src/app/core/install-app/install-helper-functions.service';
-import { GeneralFacade } from 'src/app/general.facade';
 import { GroupStatisticsService } from 'src/app/shared/components/group-statistics/group-statistics.service';
 import { Word, WordGroup } from 'src/app/shared/interfaces';
 import { AskQuestionComponent } from 'src/app/shared/modals/ask-question/ask-question.component';
 import { NotificationsService } from 'src/app/shared/services/notifications.service';
 import {
   addWordToUserWordsAction,
-  deleteUserGroupAction,
+
   deleteUserWordAction,
   deleteUserWordFromGroupAction,
   fetchWordsAction, saveEditedWordAction,
-  selectVocabularyGroupAction
+  selectVocabularyGroupAction,
+  showVerbsInVocabularyToggleAction
 } from 'src/app/store/actions/vocabulary.actions';
 import { AppStateInterface } from 'src/app/store/reducers';
+import { currentLanguageSelector } from 'src/app/store/selectors/languages.selectors';
 import { allWordsSelector, selectedGroupSelector, vocabularyLoaderSelector } from 'src/app/store/selectors/vocabulary.selectors';
 import { GeneralWord } from '../general-words/types/general-words.interfaces';
 import { WordsService } from './../../core/services/words.service';
 import { fetchGroupsAction } from './../../store/actions/vocabulary.actions';
-import { groupsSelector } from './../../store/selectors/vocabulary.selectors';
+import { groupsSelector, isShowOnlyVerbsInVocabularySelector } from './../../store/selectors/vocabulary.selectors';
 
 
 
@@ -33,8 +34,22 @@ import { groupsSelector } from './../../store/selectors/vocabulary.selectors';
 
 @Injectable()
 export class VocabularyFacade {
+  isShowVerbsToggle$: Observable<boolean> = this.store$.pipe(select(currentLanguageSelector), map(lang => lang.name === 'Hebrew'))
+  words$ = this.store$.pipe(select(isShowOnlyVerbsInVocabularySelector),
+    switchMap(isVerbs => {
+      return this.wordsService.verbsFilter(
+        this.store$.pipe(select(allWordsSelector)),
+        isVerbs
+      )
+    }),
+    switchMap(words =>
+      this.selectedGroup$.pipe(
+        map(selectedGroup =>
+          this.wordsService.filterWordsByGroup(selectedGroup, words))
+      )
+    )
+  )
   constructor(
-    private generalFacade: GeneralFacade,
     private dialogService: NbDialogService,
     private installApp: InstallAppService,
     private installAppHelper: InstallHelperFunctionsService,
@@ -42,10 +57,10 @@ export class VocabularyFacade {
     private groupStatisticsService: GroupStatisticsService,
     private store$: Store<AppStateInterface>,
     private notification: NotificationsService,
+    private translation: TranslationService
 
-  ) {
 
-  }
+  ) { }
 
   getGroupStatistics(words$: Observable<Word[]>) {
     return this.groupStatisticsService.getGroupStatistics(words$)
@@ -57,11 +72,18 @@ export class VocabularyFacade {
     )
   }
 
-  get words$(): Observable<Word[]> {
-    return this.store$.pipe(
-      select(allWordsSelector),
-    )
-  }
+  // get words$(): Observable<Word[]> {
+  //   // return this.store$.pipe(
+  //   //   select(allWordsSelector),
+  //   // )
+  //   return this.store$.pipe(select(isShowOnlyVerbsInVocabularySelector), switchMap(isVerbs => {
+
+  //     return this.wordsService.verbsFilter(
+  //       this.store$.pipe(select(allWordsSelector), tap(w => console.log('WORDS', w))),
+  //       isVerbs
+  //     )
+  //   }))
+  // }
 
   get selectedGroup$(): Observable<WordGroup> {
     return this.store$.pipe(select(selectedGroupSelector))
@@ -84,6 +106,10 @@ export class VocabularyFacade {
       }))
   }
 
+  get supportedLanguagesForTranslation$(): Observable<SupportedLanguage[]> {
+    return this.translation.supportedLanguages$
+  }
+
   fetchWordsAndGroups(): void {
     this.store$.dispatch(fetchWordsAction())
     this.store$.dispatch(fetchGroupsAction())
@@ -96,11 +122,10 @@ export class VocabularyFacade {
 
   getUserWordsFiltredByGroup(
     searchValue: string,
-    words: Word[],
-    selectedGroup: WordGroup
-  ): Word[] {
-    const wordsFilteredByGroup = this.wordsService.filterWordsByGroup(selectedGroup, words)
-    return this.wordsService.filterBySearcValue(searchValue, wordsFilteredByGroup)
+  ): Observable<Word[]> {
+
+    return this.words$.pipe(map(words => this.wordsService.filterBySearcValue(searchValue, words)))
+
   }
 
   filterBySearcValue(searchValue: string, words: (Word | GeneralWord)[]): Word[] {
@@ -181,6 +206,22 @@ export class VocabularyFacade {
   detectDevice() {
     return this.installAppHelper.detectDevice();
   }
+
+  translateText(config: TranslationConfig): Observable<string[]> {
+    return this.translation.getTranslation(config)
+      .pipe(
+        map(res => res.text),
+      )
+  }
+
+  get isShowVerbs$(): Observable<boolean> {
+    return this.store$.pipe(select(isShowOnlyVerbsInVocabularySelector))
+  }
+
+  showVerbsToggle(): void {
+    this.store$.dispatch(showVerbsInVocabularyToggleAction())
+  }
+
 
 
 }

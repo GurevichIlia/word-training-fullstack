@@ -41,7 +41,10 @@ const wordSchema = new Schema({
     user: {
         ref: "users",
         type: Schema.Types.ObjectId
-    }
+    },
+    conjugations: {
+        type: Object
+  }
 });
 
 const Word = mongoose.model<WordModel>("words", wordSchema);

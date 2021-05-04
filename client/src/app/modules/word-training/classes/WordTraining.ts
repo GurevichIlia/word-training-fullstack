@@ -1,8 +1,28 @@
 import { UtilsService } from 'src/app/shared/services/utils.service';
-import { Word, WordGroup } from 'src/app/shared/interfaces';
+import { Verb, Word, WordGroup } from 'src/app/shared/interfaces';
+import { IWordTrainingState } from 'src/app/core/models/word-training.interfaces';
 
 export class WordTraining {
 
+
+  static getWordsForTraining(words: Word[], state: IWordTrainingState): Word[] {
+
+    if (state.isVerbs === true) {
+
+      return words.filter(word => WordTraining.isVerb(word))
+    }
+
+
+    return WordTraining.filterWordsByGroup(words, state.selectedGroup)
+  }
+
+  static getAlreadyLearnedWords(words: Word[]): Map<string, Word> {
+
+    const alreadyLearnedWords = new Map<string, Word>()
+    words.forEach(word => word.levelKnowledge > 0 ? alreadyLearnedWords.set(word._id, word) : null)
+
+    return alreadyLearnedWords
+  }
 
   private static getRandomIndex = (maxNum: number): number => {
     return Math.floor(Math.random() * maxNum)
@@ -99,4 +119,12 @@ export class WordTraining {
   }
 
 
+  static isVerb(word: Word): boolean {
+
+    const verbMarker: keyof Verb = 'conjugations'
+
+    const isVerb = (verbMarker in word) ? true : false
+
+    return isVerb
+  }
 }

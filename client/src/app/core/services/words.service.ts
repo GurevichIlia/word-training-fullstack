@@ -1,17 +1,17 @@
-import { EditUserWordResponseInterface, DeleteUserWordResponseInterface, AddUserWordResponseInterface } from './../models/words.interface';
-import { IModalData } from './../../shared/modals/ask-question/ask-question.component';
-import { AskQuestionComponent } from 'src/app/shared/modals/ask-question/ask-question.component';
-import { MatDialog } from '@angular/material/dialog';
 import { Injectable } from '@angular/core';
 import { EMPTY, Observable, Subject, throwError } from 'rxjs';
-import { catchError, map, tap, switchMap, finalize } from 'rxjs/operators';
+import { catchError, finalize, map, switchMap } from 'rxjs/operators';
 import { GeneralWord } from 'src/app/modules/general-words/types/general-words.interfaces';
 import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
+import { WordTraining } from 'src/app/modules/word-training/classes/WordTraining';
 import { Word, WordGroup } from 'src/app/shared/interfaces';
+import { AskQuestionComponent } from 'src/app/shared/modals/ask-question/ask-question.component';
 import { ApiWordsService } from 'src/app/shared/services/api/api-words.service';
+import { ModalService } from 'src/app/shared/services/modal.service';
+import { IModalData } from './../../shared/modals/ask-question/ask-question.component';
 import { NotificationsService } from './../../shared/services/notifications.service';
 import { DefaultGroupId } from './../enums/group.enum';
-import { ModalService } from 'src/app/shared/services/modal.service';
+import { AddUserWordResponseInterface, DeleteUserWordResponseInterface, EditUserWordResponseInterface } from './../models/words.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +34,18 @@ export class WordsService {
       );
 
   }
+
+  // getAllUserWords$(language: LanguageInterface): Observable<Word[]> {
+  //   return combineLatest([
+  //     this.apiWords.getWordsFromServerForUser(language._id).pipe(map(res => res.words)),
+  //     this.apiVerbs.fetchVerbs().pipe(map(res => res.verbs || []))
+  //   ]).pipe(
+  //     map(([words, verbs]: [Word[], Verb[]]) => {
+  //       return words.concat(verbs)
+  //     })
+  //   )
+
+  // }
 
   addNewWord(word: Partial<Word>, language: LanguageInterface, selectedGroupId?: string): Observable<AddUserWordResponseInterface> {
     const updatedWord = { ...word, assignedGroups: [DefaultGroupId.ALL_WORDS, selectedGroupId] };
@@ -170,8 +182,10 @@ export class WordsService {
   filterBySearcValue(searchValue: string, words: (Word | GeneralWord)[]) {
     if (searchValue) {
 
-      return words.filter(word => word.word.toLowerCase().includes(searchValue.toLowerCase()) ||
-        word.translation.toLowerCase().includes(searchValue.toLowerCase()));
+      return words.filter(word =>
+        word.word?.toLowerCase().includes(searchValue.toLowerCase()) ||
+        word.translation?.toLowerCase().includes(searchValue.toLowerCase())
+      );
 
     } else {
 
@@ -215,5 +229,14 @@ export class WordsService {
 
   updateUsersWordList(): void {
     this.updateUsersWordList$.next();
+  }
+
+  verbsFilter(words$: Observable<Word[]>, isShowOnlyVerbs: boolean): Observable<Word[]> {
+    if (isShowOnlyVerbs) {
+      return words$.pipe(map(words => words?.filter(word => WordTraining.isVerb(word))))
+    }
+
+    return words$.pipe(map(words => words?.filter(word => !WordTraining.isVerb(word))))
+
   }
 }

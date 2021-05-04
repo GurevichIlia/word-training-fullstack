@@ -65,3 +65,8 @@ export const isShowPreviousWordButtonSelector = createSelector(
   state => state.previousWordsInCache.length > 0 ? true : false
 )
 
+export const isShowOnlyVerbsSelector = createSelector(
+  featureSelector,
+  state => state.isVerbs
+)
+

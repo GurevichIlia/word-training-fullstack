@@ -13,7 +13,7 @@
 <!-- <ng-container *ngIf="(generalWords$ | async) as words;"> -->
   <div class="search" *ngIf="(generalWords$ | async)">
     <div>
-      <app-search [filterValue]="filterValue" (addWord)="getActionFromChildren($event)"></app-search>
+      <app-search [filterValue]="filterControl" (addWord)="getActionFromChildren($event)"></app-search>
 
     </div>
   </div>
@@ -27,16 +27,16 @@
         [isShowDefaultOptions]="false"
         (action)="getActionFromChildren($event)"
         [menuItems]="wordMenuItems"
-        [words]="generalWords$ | async">
+        [words]="generalWords$ | async | wordsFilter : filterControl.value">
       </app-word-list>
 
       <ng-container *ngIf="(generalWords$ | async) as words">
-        <div class="sub-title" *ngIf="words?.length === 0 && !filterValue.value">
+        <div class="sub-title" *ngIf="words?.length === 0 && !filterControl.value">
           <span>Unfortunately no one has added words yet. <br> Be the first <br> Add words from <a
               routerLink="/vocabulary">Your list <i class="fas fa-list-alt"></i></a> </span>
         </div>
 
-        <div class="text-center" *ngIf="words?.length === 0 && filterValue.value">
+        <div class="text-center" *ngIf="words?.length === 0 && filterControl.value">
           <span class="first-word-title">Word not found
           </span>
 

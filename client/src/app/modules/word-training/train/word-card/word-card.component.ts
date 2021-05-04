@@ -10,13 +10,17 @@ export class WordCardComponent {
   isFlipped = false
   @ViewChild('frontCard') frontCard
   @Input() word: Word;
-  @Output() favoriteToggle = new EventEmitter<Word>();
+  // @Output() favoriteToggle = new EventEmitter<Word>();
 
-  favorite(word: Word) {
-    this.favoriteToggle.emit(word);
-  }
+  // favorite(word: Word) {
+  //   this.favoriteToggle.emit(word);
+  // }
 
   flipToggle() {
     this.isFlipped = !this.isFlipped
+  }
+
+  get isVerb(): boolean {
+    return this.word.conjugations !== undefined
   }
 }

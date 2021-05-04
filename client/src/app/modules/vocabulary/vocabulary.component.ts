@@ -1,3 +1,6 @@
+import { WordsService } from './../../core/services/words.service';
+import { TranslatorComponent } from './../../shared/components/translator/translator.component';
+import { SupportedLanguage, TranslationService } from './../../core/services/translation.service';
 import { Component, OnDestroy, OnInit, TemplateRef, Type, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
@@ -5,7 +8,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { BehaviorSubject, combineLatest, fromEvent, Observable, Subject } from 'rxjs';
-import { debounceTime, delay, distinctUntilChanged, map, startWith, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, delay, distinctUntilChanged, map, startWith, takeUntil, tap, shareReplay, switchMap, concatMap } from 'rxjs/operators';
 import { Action, MenuItem, wordMenuItems } from 'src/app/core';
 import { GroupStatistics } from 'src/app/shared/components/group-statistics/group-statistics.component';
 import { Word } from 'src/app/shared/interfaces';
@@ -16,7 +19,7 @@ import {
   setWordAsFavoriteAction
 } from 'src/app/store/actions/vocabulary.actions';
 import { errorSelector } from 'src/app/store/selectors/general.selector';
-import { isCloseModalSelector, modalLoaderSelector, isCloseCsvHandlerSelector } from 'src/app/store/selectors/vocabulary.selectors';
+import { isCloseModalSelector, modalLoaderSelector, isCloseCsvHandlerSelector, allWordsSelector } from 'src/app/store/selectors/vocabulary.selectors';
 import { WordAction } from '../../core/enums/word.enum';
 import { BackendErrorInterface } from './../../core/models/general.model';
 import { WordGroup } from './../../shared/interfaces';
@@ -54,6 +57,8 @@ export class VocabularyComponent implements OnInit, OnDestroy {
 
   userWords$: Observable<Word[]>;
   userWordsFiltredByGroupAndSearchValue$: Observable<Word[]>;
+  userWordsFiltredByGroupAndSearchValue: Word[];
+
 
   groups$: Observable<WordGroup[]>;
   wordMenuItems$: Observable<MenuItem<WordAction>[]>;
@@ -61,13 +66,16 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   errorMessage$: Observable<string | BackendErrorInterface>
   modalLoader$: Observable<boolean>
   modalContext: TemplateRef<any>
+  supportedLanguagesForTranslation$: Observable<SupportedLanguage[]>
+  isShowOnlyVerbs$: Observable<boolean>
+  isShowVerbsToggle$: Observable<boolean>
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private vocabularyFacade: VocabularyFacade,
     private dialog: MatDialog,
     private store$: Store<AppStateInterface>,
-    private _bottomSheet: MatBottomSheet
+    private _bottomSheet: MatBottomSheet,
 
   ) { }
 
@@ -78,6 +86,8 @@ export class VocabularyComponent implements OnInit, OnDestroy {
 
     this.showInstallAppSuggestion();
     this.detectDevice();
+
+    // this.translation.getTranslation()
   }
 
   fetchData() {
@@ -86,26 +96,26 @@ export class VocabularyComponent implements OnInit, OnDestroy {
 
   initializeValues() {
     this.wordFormInitial();
-    this.userWords$ = this.vocabularyFacade.words$;
+    this.userWords$ = this.vocabularyFacade.words$
     this.vocabularyLoader$ = this.vocabularyFacade.vocabularyLoader$
     this.modalLoader$ = this.store$.pipe(select(modalLoaderSelector))
     this.selectedGroup$ = this.vocabularyFacade.selectedGroup$;
     this.errorMessage$ = this.store$.pipe(select(errorSelector))
     this.wordMenuItems$ = this.vocabularyFacade.wordMenuItems$;
+    this.supportedLanguagesForTranslation$ = this.vocabularyFacade.supportedLanguagesForTranslation$
 
-    this.userWordsFiltredByGroupAndSearchValue$ =
-      combineLatest([
-        this.searchValueControl.valueChanges.pipe(startWith(''), debounceTime(300), distinctUntilChanged()),
-        this.userWords$,
-        this.selectedGroup$
-      ])
-        .pipe(
-          map(([searchValue, words, selectedGroup]) => {
-            return this.vocabularyFacade.getUserWordsFiltredByGroup(searchValue, words, selectedGroup)
-          }))
+    this.userWordsFiltredByGroupAndSearchValue$ = this.searchValueControl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((value: string) => this.vocabularyFacade.getUserWordsFiltredByGroup(value)),
+      tap(w => console.log('WORDS IN COMP', w)),
+      tap(words => this.userWordsFiltredByGroupAndSearchValue = words),
+    )
 
     this.groupStatistics$ = this.vocabularyFacade.getGroupStatistics(this.userWordsFiltredByGroupAndSearchValue$);
-
+    this.isShowOnlyVerbs$ = this.vocabularyFacade.isShowVerbs$
+    this.isShowVerbsToggle$ = this.vocabularyFacade.isShowVerbsToggle$
   }
 
   initializeListeners() {
@@ -152,9 +162,11 @@ export class VocabularyComponent implements OnInit, OnDestroy {
 
   openAssignWordsList() {
     this._bottomSheet.open(AssignWordListComponent, { panelClass: ['p-0', 'mat-bottom-sheet'], disableClose: true });
-
   }
 
+  openTranslation() {
+    this._bottomSheet.open(TranslatorComponent, { panelClass: ['p-0', 'mat-bottom-sheet'], disableClose: true });
+  }
 
   openEditModal(word: Word) {
     this.wordForm.patchValue({
@@ -250,7 +262,6 @@ export class VocabularyComponent implements OnInit, OnDestroy {
         }
 
         this.vocabularyFacade.showInstallPromotion(e);
-        console.log(e, 'BEFORE INSTALL');
       });
   }
 
@@ -270,6 +281,10 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   unsubscribe() {
     this.subscription$.next();
     this.subscription$.complete();
+  }
+
+  onShowOnlyVerbs(): void {
+    this.vocabularyFacade.showVerbsToggle()
   }
 
   ngOnDestroy(): void {

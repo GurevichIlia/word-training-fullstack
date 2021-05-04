@@ -1,3 +1,4 @@
+import { WordsService } from 'src/app/core/services';
 import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
@@ -8,17 +9,12 @@ import { GroupStatistics } from 'src/app/shared/components/group-statistics/grou
 import { GroupStatisticsService } from 'src/app/shared/components/group-statistics/group-statistics.service';
 import { Word, WordGroup } from 'src/app/shared/interfaces';
 import { UtilsService } from 'src/app/shared/services/utils.service';
-import { addWordToFavoriteAction, selectGroupAction, startTrainAction } from 'src/app/store/actions/word-training.actions';
+import { addWordToFavoriteAction, selectGroupAction, showVerbsToggleAction, startTrainAction } from 'src/app/store/actions/word-training.actions';
 import { AppStateInterface } from 'src/app/store/reducers';
 import { allWordsSelector, groupsSelector } from 'src/app/store/selectors/vocabulary.selectors';
-import { configDataSelector, IConfigData, isShowPreviousWordButtonSelector, learningWordSelector } from 'src/app/store/selectors/word-training.selector';
+import { configDataSelector, IConfigData, isShowOnlyVerbsSelector, isShowPreviousWordButtonSelector, learningWordSelector } from 'src/app/store/selectors/word-training.selector';
 import {
   changeGroupAction, nextWordAction,
-
-
-
-
-
   previousWordAction, repeatTrainingAction, resetWordTrainingStateAction, saveTrainingProgressAction, stopTrainingAction
 } from './../../store/actions/word-training.actions';
 import { CounterState } from './train/train.component';
@@ -31,7 +27,8 @@ export class WordTrainingFacade {
     private groupStatisticsService: GroupStatisticsService,
     private utilsService: UtilsService,
     private navigationService: NavigationService,
-    private wordTrainingService: WordTrainingService
+    private wordTrainingService: WordTrainingService,
+    private wordsService: WordsService
   ) { }
 
   get configData$(): Observable<IConfigData> {
@@ -66,7 +63,14 @@ export class WordTrainingFacade {
   }
 
   get allWords$(): Observable<Word[]> {
-    return this.store$.pipe(select(allWordsSelector))
+
+    return this.store$.pipe(select(isShowOnlyVerbsSelector), switchMap(isVerbs => {
+
+      return this.wordsService.verbsFilter(
+        this.store$.pipe(select(allWordsSelector)),
+        isVerbs
+      )
+    }))
   }
 
   get wordsInGroup$(): Observable<Word[]> {
@@ -197,5 +201,13 @@ export class WordTrainingFacade {
 
   resetWordTrainingState(): void {
     this.store$.dispatch(resetWordTrainingStateAction())
+  }
+
+  get isShowVerbs$(): Observable<boolean> {
+    return this.store$.pipe(select(isShowOnlyVerbsSelector))
+  }
+
+  showVerbsToggle(): void {
+    this.store$.dispatch(showVerbsToggleAction())
   }
 }

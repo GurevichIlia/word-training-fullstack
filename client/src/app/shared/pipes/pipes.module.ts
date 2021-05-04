@@ -3,6 +3,7 @@ import { ReverseArrayPipe } from './reverse-array.pipe';
 import { NgModule } from '@angular/core';
 import { WordsFilterPipe } from './words-filter.pipe';
 import { WordMenuPipe } from './word-menu.pipe';
+import { VerbConjugationPipe } from './verb-conjugation.pipe';
 
 
 
@@ -18,7 +19,8 @@ import { WordMenuPipe } from './word-menu.pipe';
     ReverseArrayPipe,
     ConvertToPercentPipe,
     WordsFilterPipe,
-    WordMenuPipe
+    WordMenuPipe,
+    VerbConjugationPipe
   ],
   providers: [],
 })

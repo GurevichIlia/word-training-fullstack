@@ -18,6 +18,7 @@ export class SelectGroupComponent implements OnInit, OnDestroy {
   selectedTrainingGroup$: Observable<WordGroup>
   groupStatistics$: Observable<GroupStatistics>;
   words: Word[] = []
+  isShowOnlyVerbs$: Observable<boolean>
   constructor(
     private wordTrainingFacade: WordTrainingFacade
   ) { }
@@ -32,6 +33,7 @@ export class SelectGroupComponent implements OnInit, OnDestroy {
     this.selectedTrainingGroup$ = this.wordTrainingFacade.selectedGroup$
     this.isAllowedStart$ = this.wordTrainingFacade.isAllowedStart$
     this.groupStatistics$ = this.wordTrainingFacade.groupStatistics$
+    this.isShowOnlyVerbs$ = this.wordTrainingFacade.isShowVerbs$
 
     this.wordTrainingFacade.allWords$.pipe(
       tap(words => this.words = words),
@@ -45,6 +47,10 @@ export class SelectGroupComponent implements OnInit, OnDestroy {
 
   startTrain(): void {
     this.wordTrainingFacade.startTrain(this.words)
+  }
+
+  onShowOnlyVerbs(): void {
+    this.wordTrainingFacade.showVerbsToggle()
   }
 
   ngOnDestroy() {

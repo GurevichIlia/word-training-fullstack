@@ -20,6 +20,8 @@ export enum WordTrainingActionsType {
   SaveTrainingProgressError = '[Word training] Save training progress error',
 
   ResetWordTrainingState = '[Word training] Reset word training state',
+
+  ShowVerbsToggle = '[Word training] Show verbs for training toggle'
 }
 export const selectGroupAction = createAction(WordTrainingActionsType.SelectGroup, props<{ group: WordGroup }>());
 export const startTrainAction = createAction(WordTrainingActionsType.StartTrain, props<{ words: Word[] }>());
@@ -41,4 +43,7 @@ export const repeatTrainingAction = createAction(WordTrainingActionsType.RepeatT
 export const changeGroupAction = createAction(WordTrainingActionsType.ChangeGroup);
 
 export const addWordToFavoriteAction = createAction(WordTrainingActionsType.AddToFavorite, props<{ word: Word }>());
+
+export const showVerbsToggleAction = createAction(WordTrainingActionsType.ShowVerbsToggle);
+
 

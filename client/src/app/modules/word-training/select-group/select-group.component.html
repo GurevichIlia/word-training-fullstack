@@ -6,6 +6,13 @@
         <span> Select group you want to train</span>
       </div>
 
+
+      <app-toggle
+        label="Train verbs"
+        [checked]="isShowOnlyVerbs$ | async"
+        (check)="onShowOnlyVerbs()">
+      </app-toggle>
+
       <app-group-list
         [groups]="groups$ | async"
         [selectedGroup]="selectedTrainingGroup$ | async"

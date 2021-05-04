@@ -1,6 +1,4 @@
-import { filter } from 'rxjs/operators';
 import { DefaultGroupId } from './../../core/enums/group.enum';
-import { defaultGroups } from 'src/app/core/models/groups.model';
 import { addWordsFromCsvErrorAction, deleteUserWordFromGroupAction, deleteUserWordFromGroupErrorAction, deleteUserWordFromGroupSuccessAction, selectVocabularyGroupAction } from 'src/app/store/actions/vocabulary.actions';
 import { BackendErrorInterface } from './../../core/models/general.model';
 import { Action, createReducer, on } from '@ngrx/store';
@@ -17,12 +15,7 @@ import {
   saveEditedGroupErrorAction, deleteUserGroupAction, deleteUserGroupSuccessAction, deleteUserGroupErrorAction,
   assignWordsToGroupAction, assignWordsToGroupSuccessAction, assignWordsToGroupErrorAction
 } from '../actions/vocabulary.actions';
-import {
-  getLearningLanguageAction,
-  getCurrentLearningLanguageSuccessAction
-  , getCurrentLearningLanguageErrorAction,
-  setCurrentLanguageAction
-} from '../actions/languages.actions';
+
 import {
   fetchWordsAction, fetchWordsSuccessAction,
   fetchWordsErrorAction, addWordToUserWordsAction, addWordToUserWordsSuccessAction, addWordToUserWordsErrorAction,
@@ -34,6 +27,7 @@ import {
   shareWordToGeneralWordsErrorAction, setWordsAndGroupsAction, openAssigningBottomSheetAction, closeAssigningBottomSheetAction
 } from '../actions/vocabulary.actions';
 import { WordGroup, Word } from 'src/app/shared/interfaces';
+import { showVerbsInVocabularyToggleAction } from '../actions/vocabulary.actions';
 
 export const VOCABULARY_REDUCER_NODE: ReducerNode.VOCABULARY = ReducerNode.VOCABULARY
 
@@ -50,6 +44,7 @@ export interface VocabularyStateInterface {
   bottomSheetLoader: boolean;
   userGroups: WordGroup[] | null,
   userWords: Word[] | null,
+  isVerbs: boolean
 }
 
 
@@ -66,6 +61,8 @@ const initialState: VocabularyStateInterface = {
   csvLoader: false,
   isCloseCsvHandler: false,
   isResetCsvHandler: false,
+  isVerbs: false
+
 }
 
 const reducers = createReducer(
@@ -474,7 +471,13 @@ const reducers = createReducer(
       selectedGroup: action.group
     })
   ),
-
+  on(
+    showVerbsInVocabularyToggleAction,
+    (state, action): VocabularyStateInterface => ({
+      ...state,
+      isVerbs: !state.isVerbs
+    })
+  ),
 
 
 )

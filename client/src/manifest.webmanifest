@@ -2,13 +2,13 @@
   "name": "Word Training",
   "short_name": "Word Training",
   "theme_color": "whitesmoke",
-  "background_color": "#212121",
+  "background_color": "#ffffff",
   "display": "standalone",
   "scope": "./",
   "start_url": "index.html",
   "icons": [
     {
-      "src": "assets/icons/on-white-72.png",
+      "src": "assets/icons/logo-on-black-72.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "maskable any"
@@ -20,7 +20,7 @@
       "purpose": "maskable any"
     },
     {
-      "src": "assets/icons/on-white-128.png",
+      "src": "assets/icons/logo-on-black-128.png",
       "sizes": "128x128",
       "type": "image/png",
       "purpose": "maskable any"
@@ -50,7 +50,7 @@
       "purpose": "maskable any"
     },
     {
-      "src": "assets/icons/on-white-512.png",
+      "src": "assets/icons/logo-on-white-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"

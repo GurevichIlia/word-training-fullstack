@@ -19,10 +19,10 @@ export class ApiService {
     return throwError(error.error);
   }
 
-  get<T>(path: string, params: HttpParams = new HttpParams()): Observable<T> {
+  get<T>(path: string, options = {}): Observable<T> {
 
 
-    return this.http.get<T>(`${path}`, { params })
+    return this.http.get<T>(`${path}`, options)
       .pipe(catchError(this.formatErrors));
   }
 

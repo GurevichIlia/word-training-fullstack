@@ -1,3 +1,4 @@
+import { VerbsRoutes } from './routes/verbs';
 import { WordsRoutes } from "./routes/words";
 import express from "express";
 import mongoose from "mongoose";
@@ -38,7 +39,7 @@ app.use(cors());
 
 
 app.use("/api/auth", new AuthRoutes().router);
-app.use("/api/vocabulary", new WordsRoutes().router);
+app.use("/api/vocabulary", [new WordsRoutes().router, new VerbsRoutes().router]);
 app.use("/api/languages", new LanguagesRoutes().router);
 app.use("/api/word-group", new WordGroupRoutes().router);
 

@@ -11,11 +11,17 @@ export class TokenInterceptorService implements HttpInterceptor {
   ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const newRequest = req.clone({
-      setHeaders: {
-        Authorization: this.persistanceService.get('words-token') ? this.persistanceService.get('words-token') : '',
-      }
-    });
-    return next.handle(newRequest);
+
+    if (!req.url.includes('translate')) {
+      const newRequest = req.clone({
+        setHeaders: {
+          Authorization: this.persistanceService.get('words-token') ? this.persistanceService.get('words-token') : '',
+        }
+      });
+      return next.handle(newRequest);
+    }
+
+    return next.handle(req);
+
   }
 }

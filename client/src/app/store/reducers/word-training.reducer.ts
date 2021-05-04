@@ -2,12 +2,14 @@ import { Action, createReducer, on } from '@ngrx/store';
 import { ReducerNode } from 'src/app/core/enums/store.enum';
 import { IWordTrainingState } from 'src/app/core/models/word-training.interfaces';
 import { WordTraining } from 'src/app/modules/word-training/classes/WordTraining';
+import { Word } from 'src/app/shared/interfaces';
 import {
   nextWordAction,
 
   resetWordTrainingStateAction,
   saveTrainingProgressAction,
   selectGroupAction,
+  showVerbsToggleAction,
   startTrainAction,
   stopTrainingAction
 } from '../actions/word-training.actions';
@@ -24,7 +26,8 @@ const initialState: IWordTrainingState = {
   previousWordsInCache: [],
   allLearnedCardsQuantity: 0,
   uniqueLearnedWords: new Map([]),
-  newWordsLearnedInTrain: new Map([])
+  newWordsLearnedInTrain: new Map([]),
+  isVerbs: false
 }
 
 export const reducer = createReducer(
@@ -39,16 +42,14 @@ export const reducer = createReducer(
   on(
     startTrainAction,
     (state, action): IWordTrainingState => {
-      const filtredWords = WordTraining.filterWordsByGroup(action.words, state.selectedGroup)
-      const alreadyLearnedWords = new Map()
-      filtredWords.forEach(word => word.levelKnowledge > 0 ? alreadyLearnedWords.set(word._id, word) : null)
+      const words = WordTraining.getWordsForTraining(action.words, state)
       return {
         ...state,
         previousWordsInCache: [],
-        words: filtredWords,
-        uniqueLearnedWords: alreadyLearnedWords,
+        words,
+        uniqueLearnedWords: WordTraining.getAlreadyLearnedWords(words),
         isStarted: true,
-        nextWord: WordTraining.getWordForLearning(filtredWords, state.previousWordsInCache)
+        nextWord: WordTraining.getWordForLearning(words, state.previousWordsInCache)
       }
     }
   ),
@@ -156,6 +157,13 @@ export const reducer = createReducer(
       ...state,
       ...initialState
 
+    })
+  ),
+  on(
+    showVerbsToggleAction,
+    (state, action): IWordTrainingState => ({
+      ...state,
+      isVerbs: !state.isVerbs
     })
   ),
   // on(

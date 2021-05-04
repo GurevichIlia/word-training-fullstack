@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
 
-export type IRequestUserInfo = Pick<UserModel, '_id' | 'currentLanguage' | 'email' >
+export type IRequestUserInfo = Pick<UserModel, '_id' | 'currentLanguage' | 'email'>
 
 
 export interface UserModel extends Document {
@@ -15,7 +15,7 @@ export interface UserModel extends Document {
       // words: WordModel[]
 }
 
-export interface WordModel extends Document {
+export interface WordModel extends Document, VerbModel {
       readonly _id: string;
       word: string;
       translation: string;
@@ -26,6 +26,39 @@ export interface WordModel extends Document {
       language: Object,
       date: string
 }
+
+export interface VerbModel {
+      conjugations: {
+            past?: Conjugation
+            present?: Conjugation
+            future?: Conjugation
+      }
+
+
+}
+export interface VerbFromCSV extends Conjugation {
+      translation: string
+}
+
+export interface VerbForConjugation {
+      word: string
+}
+
+export interface Conjugation {
+      verb: string
+      time: VerbTime
+      i: string | null;
+      you_male: string | null;
+      you_female: string | null
+      he: string | null
+      she: string | null
+      we: string | null
+      you_plural: string | null
+      they: string | null
+
+}
+
+export type VerbTime = 'past' | 'present' | 'future'
 
 export interface WordModelAsObject {
       [key: string]: WordModel

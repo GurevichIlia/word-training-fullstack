@@ -1,5 +1,5 @@
 import { StopWordsTrainGuard } from './../../shared/guards/stop-words-train.guard';
-import { NbCardModule, NbButtonModule } from '@nebular/theme';
+import { NbCardModule, NbButtonModule, NbToggleModule } from '@nebular/theme';
 import { CommonModule } from '@angular/common';
 import { GroupStatisticsModule } from './../../shared/components/group-statistics/group-statistics.module';
 import { NgModule } from '@angular/core';
@@ -15,6 +15,11 @@ import { WordTrainingFacade } from './word-training.facade';
 import { WordTrainingService } from './word-training.service';
 import { UtilsService } from 'src/app/shared/services/utils.service';
 import { DirectivesModule } from 'src/app/shared/directives/directives.module';
+import { CardBodyComponent } from './train/card-body/card-body.component';
+import { WordCardBodyComponent } from './train/word-card-body/word-card-body.component';
+import { VerbCardBodyComponent } from './train/verb-card-body/verb-card-body.component';
+import { VerbTableRowComponent } from './train/verb-table-row/verb-table-row.component';
+import { ToggleModule } from 'src/app/shared/components/toggle/toggle.module';
 
 
 
@@ -39,6 +44,10 @@ const wordtrainingRoutes: Routes = [
     TrainComponent,
     SelectGroupComponent,
     WordCardComponent,
+    CardBodyComponent,
+    WordCardBodyComponent,
+    VerbCardBodyComponent,
+    VerbTableRowComponent,
   ],
   imports: [
     CommonModule,
@@ -51,7 +60,9 @@ const wordtrainingRoutes: Routes = [
     DirectivesModule,
 
     NbCardModule,
-    NbButtonModule
+    NbButtonModule,
+    ToggleModule
+
   ],
   providers: [
     WordTrainingFacade,
