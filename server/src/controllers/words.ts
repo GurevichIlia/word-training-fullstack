@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import path from "path";
 import { getAllUserGroups } from '../helper-functions/groups.heplers';
-import { GeneralWord as GeneralWordModel, IRequestUserInfo, IUserWordGroup, UserModel, WordModel } from "../interfaces";
+import { replaceCharacters } from '../helper-functions/replace-characters';
+import { GeneralWord as GeneralWordModel, IRequestUserInfo, IUserWordGroup, WordModel } from "../interfaces";
 import GeneralWord from "../Models/GeneralWord";
-import User from "../Models/User";
 import Word from "../Models/Word";
 import WordGroup from '../Models/WordGroup';
 import errorHandler from "../utils/errorHandler";
@@ -23,6 +23,7 @@ export class WordsController {
             errorHandler(res, error);
         }
     };
+
 
     // public addMyWords = async (req: Request, res: Response) => {
     //     try {
@@ -119,8 +120,8 @@ export class WordsController {
                 if (word && word.Translation && word.Word) {
                     const newWord: WordModel = await new Word({
                         isFavorite: false,
-                        word: word.Word,
-                        translation: word.Translation,
+                        word: replaceCharacters(word.Word),
+                        translation: replaceCharacters(word.Translation),
                         language: user.currentLanguage?._id,
                         user: user._id,
                         assignedGroups: assignedGroups ? assignedGroups : []
@@ -185,6 +186,10 @@ export class WordsController {
             errorHandler(res, error);
         }
     }
+
+
+
+
 
     // public addNewWords = async (req: Request, res: Response) => {
     //     try {
@@ -411,7 +416,9 @@ async function getWords(user: IRequestUserInfo): Promise<WordModel[]> {
 
 }
 
-async function getGroups(user: IRequestUserInfo, words: WordModel[]): Promise<IUserWordGroup[]> {
+
+
+export async function getGroups(user: IRequestUserInfo, words: WordModel[]): Promise<IUserWordGroup[]> {
     const currentUserLanguage = user.currentLanguage
     if (!currentUserLanguage) throw new Error('Language does not exists')
 

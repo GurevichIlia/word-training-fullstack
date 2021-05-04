@@ -29,7 +29,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.store$.dispatch(getCurrentUserAction())
     // this.store$.dispatch(getLearningLanguageAction())
 
-
   }
 
   ngOnInit() {

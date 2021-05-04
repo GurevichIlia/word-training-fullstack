@@ -1,6 +1,7 @@
 import { animate, keyframes, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { tap, shareReplay } from 'rxjs/operators';
 import { Word } from 'src/app/shared/interfaces';
 import * as kf from '../../../shared/keyframes';
 import { WordTrainingFacade } from './../word-training.facade';
@@ -32,6 +33,7 @@ export class TrainComponent implements OnInit, OnDestroy {
   animationState$: Observable<string>
   counterState$: Observable<CounterState>
   isShowPrevioudWordButton$: Observable<boolean>
+  isVerbsTraining$: Observable<boolean>
   constructor(
 
     private wordTrainingFacade: WordTrainingFacade
@@ -46,6 +48,7 @@ export class TrainComponent implements OnInit, OnDestroy {
     this.animationState$ = this.wordTrainingFacade.animationState$;
     this.isShowPrevioudWordButton$ = this.wordTrainingFacade.isShowPreviousWordButton$
     this.counterState$ = this.wordTrainingFacade.counterState$
+    this.isVerbsTraining$ = this.wordTrainingFacade.isShowVerbs$.pipe(shareReplay())
   }
 
   stopTraining() {

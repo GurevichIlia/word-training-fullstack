@@ -17,7 +17,7 @@ import { GeneralWord } from './types/general-words.interfaces';
 export class GeneralWordsComponent implements OnInit {
   generalWords$: Observable<GeneralWord[]>;
   wordMenuItems = sharedWordMenuItem;
-  filterValue = new FormControl('');
+  filterControl = new FormControl('');
   userId$: Observable<string>;
   isLoading$: Observable<boolean>
   constructor(

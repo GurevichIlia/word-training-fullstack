@@ -6,7 +6,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { NbCardModule, NbCheckboxModule, NbInputModule, NbProgressBarModule, NbSpinnerModule } from '@nebular/theme';
-import { LoaderComponent } from './loader/loader.component';
 import { WordSkeletonComponent } from './word-skeleton/word-skeleton.component';
 
 
@@ -17,7 +16,11 @@ import { WordSkeletonComponent } from './word-skeleton/word-skeleton.component';
 
 
 
-  WordSkeletonComponent],
+  WordSkeletonComponent,
+
+
+
+],
   imports: [
     CommonModule,
     ReactiveFormsModule,

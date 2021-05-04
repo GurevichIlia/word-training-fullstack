@@ -38,7 +38,6 @@
     "ngx-infinite-scroll": "^9.0.0",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
-    "typescript": "~3.7.5",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
@@ -62,6 +61,6 @@
     "protractor": "^5.4.3",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
-    "typescript": "~3.7.5"
+    "typescript": "^3.7.7"
   }
 }

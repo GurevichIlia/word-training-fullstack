@@ -74,3 +74,8 @@ export const selectedGroupSelector = createSelector(
   state => state.selectedGroup
 )
 
+export const isShowOnlyVerbsInVocabularySelector = createSelector(
+  featureSelector,
+  state => state.isVerbs
+)
+

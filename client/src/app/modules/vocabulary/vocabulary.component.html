@@ -2,24 +2,25 @@
 
 
 <!-- <app-loader [show]="vocabularyLoader$ | async"></app-loader> -->
-
 <nb-card class="main-content">
 
+
   <nb-card-header>
-    <div class="d-flex" *ngIf=" !(vocabularyLoader$ | async) && userWordsFiltredByGroupAndSearchValue$ | async as words">
-      <span *ngIf="words.length !== 0 && !searchValueControl.value" class="search">
+    <div class="d-flex align-items-center" *ngIf=" !(vocabularyLoader$ | async) && userWordsFiltredByGroupAndSearchValue">
+      <span [hidden]="userWordsFiltredByGroupAndSearchValue.length === 0 && !searchValueControl.value" class="search">
         <app-search [filterValue]="searchValueControl" (addWord)="getActionFromChildren($event)">
 
         </app-search>
       </span>
-    </div>
-  </nb-card-header>
 
+      <ng-container *ngIf="isShowVerbsToggle$ | async">
+        <span class="d-block verb-toggle" (click)="onShowOnlyVerbs()">{{(isShowOnlyVerbs$ | async) ? 'All' : 'Verbs'}} </span>
+      </ng-container>
+    </div>
+   </nb-card-header>
   <nb-card-body class="p-3">
 
-
-
-    <app-groups></app-groups>
+  <app-groups></app-groups>
 
 
     <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
@@ -41,9 +42,8 @@
 
     <section class="csv-manager">
       <app-csv-manager
-       [expanded]="isShowUploader"
+        [expanded]="isShowUploader"
         [selectedGroup]="selectedGroup$ | async"
-
       ></app-csv-manager>
     </section>
 
@@ -53,13 +53,13 @@
       [filterValue]="searchValueControl.valueChanges"
       [menuItems]="wordMenuItems$ | async"
       [selectedGroup]="selectedGroup$ | async"
-      [words]="userWordsFiltredByGroupAndSearchValue$ | async">
+      [words]="userWordsFiltredByGroupAndSearchValue">
     </app-word-list>
 
 
     <app-status-message
       (openCsvUploader)="showUploader()"
-      [words]="userWordsFiltredByGroupAndSearchValue$ | async"
+      [words]="userWordsFiltredByGroupAndSearchValue"
       [searchValue]="searchValueControl.value"
       [selectedGroup]="selectedGroup$ | async"
       [isLoading]="vocabularyLoader$ | async">
@@ -77,8 +77,12 @@
 <!-- WORD FORM TEMPLATE -->
 <ng-template #wordFormTemplate>
   <form [formGroup]="wordForm">
-    <input formControlName="word" class="mb-1 w-100" type="text" fieldSize="small" nbInput placeholder="Word">
-    <br>
+    <div class="d-flex">
+      <input formControlName="word" class="mb-1 w-100" type="text" fieldSize="small" nbInput placeholder="Word">
+      <!-- <div class="translate-icon-block">
+        <i class="fas fa-language p-2"></i>
+      </div> -->
+    </div>
     <input formControlName="translation" class="mb-2 w-100" type="text" fieldSize="small" nbInput
       placeholder="Translation">
   </form>

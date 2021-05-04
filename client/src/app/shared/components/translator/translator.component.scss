@@ -1,0 +1,27 @@
+.translator-container {
+
+  background-color: white;
+
+  .header {
+    background: whitesmoke;
+    padding: 10px 0 0;
+
+    .swap-icon {
+      font-size: 25px;
+    }
+  }
+
+  .content {
+    padding-top: 20px;
+    min-height: 400px;
+
+    label {
+      font-weight: 600
+    }
+
+    .text {}
+
+    .translation {}
+  }
+
+}

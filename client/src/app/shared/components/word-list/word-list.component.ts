@@ -59,6 +59,7 @@ export class WordListComponent {
 
   goToTop() {
     window.scrollTo({ top: 50 });
+    this._showItems = 15;
   }
 
 

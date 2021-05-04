@@ -9,5 +9,6 @@ export const environment = {
   //   messagingSenderId: '1076800799532',
   //   appId: '1:1076800799532:web:f0d305fc14599e30'
   // }
-  adminId: '5e2b1984d72eaf2478d678f4'
+  adminId: '5e2b1984d72eaf2478d678f4',
+
 };

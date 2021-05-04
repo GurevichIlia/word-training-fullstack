@@ -20,6 +20,7 @@ import { AuthorizationModule } from './modules/authorization/authorization.modul
 import { PersistanceService } from './shared/services/persistance.service';
 import { clearState, getGeneralStateEffects, reducers } from './store/reducers';
 import { LoaderModule } from './shared/components/loader/loader.module';
+import { LEARNING_LANGUAGE_PROVIDER } from './core/tokens/learning-language.token';
 
 
 @Injectable()
@@ -76,6 +77,7 @@ export class MyHammerConfig extends HammerGestureConfig {
     { provide: HTTP_INTERCEPTORS, useClass: ServerErrorInterceptor, multi: true },
     { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig },
     PersistanceService,
+    LEARNING_LANGUAGE_PROVIDER
 
   ],
   bootstrap: [AppComponent]

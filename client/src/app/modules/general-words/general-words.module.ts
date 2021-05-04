@@ -1,3 +1,4 @@
+import { PipesModule } from './../../shared/pipes/pipes.module';
 import { LoaderModule } from 'src/app/shared/components/loader/loader.module';
 import { WordListModule } from './../../shared/components/word-list/word-list.module';
 import { SharedModule } from './../../shared/shared.module';
@@ -17,7 +18,8 @@ import { SearchModule } from 'src/app/shared/components/search/search.module';
     GeneralWordsRoutingModule,
     WordListModule,
     LoaderModule,
-    SearchModule
+    SearchModule,
+    PipesModule
   ]
 })
 export class GeneralWordsModule { }

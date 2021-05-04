@@ -68,7 +68,9 @@ export enum VocabularyActionsType {
   AssignWordsToGroupSuccess = '[Vocabulary] Assign words to group success',
   AssignWordsToGroupError = '[Vocabulary] Assign words to group error',
 
-  UpdateGroupsQuantityInGroup = '[Vocabulary] update Groups quantity in group'
+  UpdateGroupsQuantityInGroup = '[Vocabulary] update Groups quantity in group',
+
+  ShowVerbsToggle = '[Vocabulary] Show verbs for training toggle'
 
 }
 // WORDS ACTIONS
@@ -150,3 +152,5 @@ export const assignWordsToGroupAction = createAction(VocabularyActionsType.Assig
 export const assignWordsToGroupSuccessAction = createAction(VocabularyActionsType.AssignWordsToGroupSuccess,
   props<{ groups: WordGroup[], message: string, words: Word[] }>());
 export const assignWordsToGroupErrorAction = createAction(VocabularyActionsType.AssignWordsToGroupError, props<{ error: string }>());
+
+export const showVerbsInVocabularyToggleAction = createAction(VocabularyActionsType.ShowVerbsToggle);

@@ -6,4 +6,6 @@ output.pdf
 token.json
 credentials.json
 app.yaml
+/dist
+/build for google-app
 

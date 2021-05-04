@@ -1,3 +1,4 @@
+import { TranslatorModule } from './../../shared/components/translator/translator.module';
 import { VocabularyResolver } from './../../core/resolvers/vocabulary.resolver';
 import { VocabularyFacade } from './vocabulary.facade';
 import { CommonModule } from '@angular/common';
@@ -6,7 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { RouterModule, Routes } from '@angular/router';
-import { NbButtonModule, NbCardModule, NbInputModule } from '@nebular/theme';
+import { NbButtonModule, NbCardModule, NbInputModule, NbIconModule } from '@nebular/theme';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { LoaderModule } from 'src/app/shared/components/loader/loader.module';
@@ -24,6 +25,7 @@ import { VocabularyComponent } from './vocabulary.component';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { ModalService } from 'src/app/shared/services/modal.service';
 import { StatusMessageComponent } from './status-message/status-message.component';
+import { ToggleModule } from 'src/app/shared/components/toggle/toggle.module';
 
 
 
@@ -69,6 +71,9 @@ const vocabularyRoutes: Routes = [
     RouterModule.forChild(vocabularyRoutes),
     StoreModule.forFeature(VOCABULARY_REDUCER_NODE, vocabularyReducer),
     EffectsModule.forFeature([]),
+
+    TranslatorModule,
+    ToggleModule
 
   ],
   providers: [

@@ -9,6 +9,7 @@
   </span>
 
 </div>
+<small class="mt-2 version">v1.0.6</small>
 
 <app-toolbar [title]="'Learning language: ' + ((learningLanguage$ | async)?.name || 'Not selected')"
   (click)="onChangeLearningLanguage()">
@@ -20,4 +21,3 @@
   <i class="fa fa-sign-out" aria-hidden="true"></i>
 </app-toolbar>
 
-<small class="mt-2 version">v1.0</small>

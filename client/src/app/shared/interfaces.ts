@@ -16,7 +16,7 @@ export interface LanguageInCurrentUser {
   _id?: string;
 }
 
-export interface Word {
+export interface Word extends Verb {
   word: string;
   translation: string;
   isFavorite?: boolean | null;
@@ -26,6 +26,33 @@ export interface Word {
   assignedGroups?: string[];
   date?: string;
   isShared: boolean
+}
+export type VerbTime = 'past' | 'present' | 'future'
+
+export interface Verb {
+  conjugations: {
+    past?: Conjugation,
+    present?: Conjugation,
+    future?: Conjugation
+  }
+}
+
+export interface FetchVerbsResponseData {
+  verbs: Verb[]
+}
+
+export interface Conjugation {
+  verb: string
+  time: VerbTime
+  i: string | null;
+  you_male: string | null;
+  you_female: string | null
+  he: string | null
+  she: string | null
+  we: string | null
+  you_plural: string | null
+  they: string | null
+
 }
 
 

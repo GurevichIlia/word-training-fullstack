@@ -11,4 +11,5 @@ export interface IWordTrainingState {
   allLearnedCardsQuantity: number,
   uniqueLearnedWords: Map<WordId, Word>;
   newWordsLearnedInTrain: Map<WordId, Word>
+  isVerbs:boolean
 }

@@ -13,13 +13,22 @@
         [@wordCardAnimator]="animationState$ | async"
         (@wordCardAnimator.done)="onResetAnimationState()">
 
-          <app-word-card [word]="word" (favoriteToggle)="favoriteToggle($event)"></app-word-card>
+      <app-word-card [word]="word">
+
+          <app-word-card-body *ngIf="(isVerbsTraining$ | async) === false" topSide [text]="word.word" [isFavorite]="word.isFavorite" (favoriteToggle)="favoriteToggle(word)"></app-word-card-body>
+          <app-word-card-body *ngIf="(isVerbsTraining$ | async) === false" downSide [text]="word.translation" [isFavorite]="word.isFavorite" (favoriteToggle)="favoriteToggle(word)"></app-word-card-body>
+
+          <app-verb-card-body *ngIf="isVerbsTraining$ | async" topSide  (favoriteToggle)="favoriteToggle(word)" [verb]="word"></app-verb-card-body>
+          <app-verb-card-body *ngIf="isVerbsTraining$ | async" downSide (favoriteToggle)="favoriteToggle(word)" [verb]="word"></app-verb-card-body>
+
+
+      </app-word-card>
 
     </div>
-      <small *ngIf="isShowPrevioudWordButton$ | async" (click)="previousWord()"><i class="fas fa-arrow-left"></i>  Previous word</small>
+      <small class="d-block pt-2" *ngIf="isShowPrevioudWordButton$ | async" (click)="previousWord()"><i class="fas fa-arrow-left"></i>  Previous word</small>
   </div>
 
-  <nb-card class="knowledge-level-panel pr-3 pl-3 mt-4">
+  <nb-card class="knowledge-level-panel pr-3 pl-3 mt-4" [ngClass]="{'mt-4' : !(isVerbsTraining$ | async)}">
     <div class="p-2 text-center question-title">
       <span>How well do you know this word?</span>
     </div>
