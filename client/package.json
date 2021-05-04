@@ -27,7 +27,7 @@
     "@angular/service-worker": "^9.0.0",
     "@google-cloud/translate": "^6.0.2",
     "@nebular/eva-icons": "^4.6.0",
-    "@nebular/theme": "^4.6.0",
+    "@nebular/theme": "^7.0.0",
     "@ngrx/effects": "^10.0.1",
     "@ngrx/store": "^10.0.1",
     "@ngrx/store-devtools": "^10.0.1",
