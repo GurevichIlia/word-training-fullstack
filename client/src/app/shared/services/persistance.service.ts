@@ -1,3 +1,5 @@
+import { Injectable } from "@angular/core";
+@Injectable()
 export class PersistanceService {
   set(key: string, data: any): void {
     try {

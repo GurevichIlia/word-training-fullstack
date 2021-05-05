@@ -20,7 +20,7 @@ import {
   NbProgressBarModule, NbSelectModule, NbSpinnerModule,
   NbThemeModule, NbUserModule
 } from '@nebular/theme';
-import { DeviceDetectorModule } from 'ngx-device-detector';
+
 import { AskQuestionComponent } from './modals/ask-question/ask-question.component';
 
 
@@ -61,7 +61,6 @@ import { AskQuestionComponent } from './modals/ask-question/ask-question.compone
     MatBadgeModule,
     MatDialogModule,
     MatExpansionModule,
-    DeviceDetectorModule,
     ModalUiModule
   ],
   exports: [
@@ -96,7 +95,6 @@ import { AskQuestionComponent } from './modals/ask-question/ask-question.compone
     MatMenuModule,
     MatSelectModule,
     MatExpansionModule,
-    DeviceDetectorModule,
 
 
   ],
