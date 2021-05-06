@@ -246,6 +246,40 @@ nb-card-body {
   overflow: hidden !important;
 }
 
+.scv-instruction-dialog {
+  background-color: #d5d5d5;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+
+  .title {
+    font-size: 16px;
+    color: #000000;
+  }
+
+  img {
+    margin-top: 5px;
+  }
+}
+
+.sub-title {
+  text-align: center;
+
+  span {
+    color: $titleColor;
+  }
+
+  a{
+    color: #252527;
+    font-weight: 700;
+  }
+
+  i {
+    color: #646464;
+    font-size: 20px;
+  }
+}
+
 // Material
 .snack-bar-error {
   color: white !important;

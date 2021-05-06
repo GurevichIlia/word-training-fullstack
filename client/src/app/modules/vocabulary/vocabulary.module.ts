@@ -26,6 +26,7 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { ModalService } from 'src/app/shared/services/modal.service';
 import { StatusMessageComponent } from './status-message/status-message.component';
 import { ToggleModule } from 'src/app/shared/components/toggle/toggle.module';
+import { CsvManagerModule } from './csv-manager/csv-manager.module';
 
 
 
@@ -45,7 +46,6 @@ const vocabularyRoutes: Routes = [
   declarations: [
     VocabularyComponent,
     AssignWordListComponent,
-    CsvManagerComponent,
     StatusMessageComponent,
 
   ],
@@ -73,7 +73,9 @@ const vocabularyRoutes: Routes = [
     EffectsModule.forFeature([]),
 
     TranslatorModule,
-    ToggleModule
+    ToggleModule,
+    CsvManagerModule
+
 
   ],
   providers: [

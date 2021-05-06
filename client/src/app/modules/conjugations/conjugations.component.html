@@ -1,0 +1,35 @@
+<nb-card class="main-content">
+
+  <nb-card-header>
+    <div class="sub-title">
+      <span> Find conjugations for hebrew verbs.</span>
+    </div>
+
+
+  </nb-card-header>
+  <nb-card-body class="p-3">
+
+    <section class="settings mb-3">
+      <div class="d-flex justify-content-between">
+        <nb-checkbox status="basic" (checkedChange)="isShowUploader = !isShowUploader">CSV</nb-checkbox>
+        <nb-checkbox status="basic">Past</nb-checkbox>
+        <nb-checkbox status="basic">Present</nb-checkbox>
+        <nb-checkbox status="basic">Future</nb-checkbox>
+      </div>
+
+    </section>
+
+    <section class="verb-input" *ngIf="!isShowUploader">
+      <app-verbs-input (send)="getConjugationsFromVerbsAsString($event)"></app-verbs-input>
+    </section>
+
+    <section class="csv-manager" *ngIf="isShowUploader">
+      <app-csv-verbs-input></app-csv-verbs-input>
+    </section>
+
+    <section class="result-conjugations-list">
+
+    </section>
+
+  </nb-card-body>
+</nb-card>

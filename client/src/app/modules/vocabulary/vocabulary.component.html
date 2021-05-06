@@ -26,7 +26,9 @@
     <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">
       <div class="d-flex">
         <a *ngIf="selectedGroup._id !== '2'" (click)="openModal('New word', modalUiWrapper)"
-          class="custom-button light mb-3 w-100">Add word</a>
+          class="custom-button light add-word-btn mb-3 w-100">Add word</a>
+        <a [routerLink]="['/conjugations']"> <i class="fas fa-list-alt"></i></a>
+        <a [routerLink]="['/translator']">  <i class="fas fa-language" ></i></a>
 
         <i *ngIf="selectedGroup._id !== '2'" class="fas fa-file-csv" (click)="showUploader()"></i>
 
@@ -42,9 +44,19 @@
 
     <section class="csv-manager">
       <app-csv-manager
+        [isResetCsvState]="isResetCsvHandlerState$ | async"
+        [isLoading]="csvLoading$ | async"
         [expanded]="isShowUploader"
-        [selectedGroup]="selectedGroup$ | async"
-      ></app-csv-manager>
+        (upload)="addWordsFromCsv($event)"
+      >
+
+        <div class="scv-instruction-dialog">
+          <span class="title">Words can be added even easier using CSV file. <br>
+            Below is an example table: <i>"your-filename.csv"</i> </span>
+          <img width="100%" src="../../../../assets//Photos//csvExample.png" alt="">
+        </div>
+
+      </app-csv-manager>
     </section>
 
     <app-word-list

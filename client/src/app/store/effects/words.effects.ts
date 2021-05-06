@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { of, combineLatest } from 'rxjs';
-import { switchMap, tap, map, catchError, take } from 'rxjs/operators';
+import { switchMap, tap, map, catchError, take, withLatestFrom } from 'rxjs/operators';
 import { WordsService } from 'src/app/core/services';
 import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
 import { Word, WordGroup } from 'src/app/shared/interfaces';
@@ -161,7 +161,8 @@ export class WordsEffects {
   addWordsFromCsv$ = createEffect(
     () => this.actions$.pipe(
       ofType(VocabularyActionsType.AddWordsFromCsv),
-      switchMap(({ file, selectedGroupId }: { file: File, selectedGroupId?: string }) => {
+      withLatestFrom(this.store$.pipe(select(selectedGroupSelector))),
+      switchMap(([{ file }, selectedGroup]: [{ file: File, type: string }, WordGroup]) => {
         if (!file) {
           return of(addWordsFromCsvErrorAction({ error: 'Please select CSV file' }))
         };
@@ -172,7 +173,7 @@ export class WordsEffects {
           // return EMPTY;
         }
 
-        return this.wordsService.addNewWordsFromCSV({ file, selectedGroupId })
+        return this.wordsService.addNewWordsFromCSV({ file, selectedGroupId: selectedGroup._id })
           .pipe(
             map(({ words, groups }: { words: Word[], groups: WordGroup[] }) => {
               return addWordsFromCsvSuccessAction({ words, groups });

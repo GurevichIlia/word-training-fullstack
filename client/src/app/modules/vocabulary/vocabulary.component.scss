@@ -64,8 +64,16 @@
   width: 100%;
 }
 
+.add-word-btn {}
 
-.fa-file-csv {
+i[class^="fas fa"] {
+  font-size: 30px;
+  margin-left: 10px;
+  color: #191a1aa6;
+  cursor: pointer;
+}
+
+.fas.fa {
   font-size: 30px;
   margin-left: 20px;
   color: #191a1aa6;
@@ -91,3 +99,5 @@
   display: block;
   margin-inline-start: 5px
 }
+
+

@@ -1,27 +1,27 @@
-import { WordsService } from './../../core/services/words.service';
-import { TranslatorComponent } from './../../shared/components/translator/translator.component';
-import { SupportedLanguage, TranslationService } from './../../core/services/translation.service';
 import { Component, OnDestroy, OnInit, TemplateRef, Type, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { BehaviorSubject, combineLatest, fromEvent, Observable, Subject } from 'rxjs';
-import { debounceTime, delay, distinctUntilChanged, map, startWith, takeUntil, tap, shareReplay, switchMap, concatMap } from 'rxjs/operators';
-import { Action, MenuItem, wordMenuItems } from 'src/app/core';
+import { BehaviorSubject, fromEvent, Observable, Subject } from 'rxjs';
+import { debounceTime, delay, distinctUntilChanged, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Action, MenuItem } from 'src/app/core';
 import { GroupStatistics } from 'src/app/shared/components/group-statistics/group-statistics.component';
 import { Word } from 'src/app/shared/interfaces';
 import {
+  addWordsFromCsvAction,
   deleteUserWordAction,
 
 
   setWordAsFavoriteAction
 } from 'src/app/store/actions/vocabulary.actions';
 import { errorSelector } from 'src/app/store/selectors/general.selector';
-import { isCloseModalSelector, modalLoaderSelector, isCloseCsvHandlerSelector, allWordsSelector } from 'src/app/store/selectors/vocabulary.selectors';
+import { csvLoaderSelector, isCloseCsvHandlerSelector, isCloseModalSelector, isResetCsvHandlerSelector, modalLoaderSelector } from 'src/app/store/selectors/vocabulary.selectors';
 import { WordAction } from '../../core/enums/word.enum';
 import { BackendErrorInterface } from './../../core/models/general.model';
+import { SupportedLanguage } from './../../core/services/translation.service';
+import { TranslatorComponent } from './../../shared/components/translator/translator.component';
 import { WordGroup } from './../../shared/interfaces';
 import { shareWordToGeneralWordsAction } from './../../store/actions/vocabulary.actions';
 import { AppStateInterface } from './../../store/reducers';
@@ -69,6 +69,8 @@ export class VocabularyComponent implements OnInit, OnDestroy {
   supportedLanguagesForTranslation$: Observable<SupportedLanguage[]>
   isShowOnlyVerbs$: Observable<boolean>
   isShowVerbsToggle$: Observable<boolean>
+  csvLoading$ = this.store$.pipe(select(csvLoaderSelector));
+  isResetCsvHandlerState$ = this.store$.pipe(select(isResetCsvHandlerSelector))
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -86,6 +88,7 @@ export class VocabularyComponent implements OnInit, OnDestroy {
 
     this.showInstallAppSuggestion();
     this.detectDevice();
+
 
     // this.translation.getTranslation()
   }
@@ -276,6 +279,10 @@ export class VocabularyComponent implements OnInit, OnDestroy {
 
   showUploader() {
     this.isShowUploader = !this.isShowUploader;
+  }
+
+  addWordsFromCsv(file: File): void {
+    this.store$.dispatch(addWordsFromCsvAction({ file }))
   }
 
   unsubscribe() {
