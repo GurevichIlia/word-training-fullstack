@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { WordsFilterPipe } from './words-filter.pipe';
 import { WordMenuPipe } from './word-menu.pipe';
 import { VerbConjugationPipe } from './verb-conjugation.pipe';
+import { ConjugationTemplatePipe } from './conjugation-template.pipe';
 
 
 
@@ -13,14 +14,16 @@ import { VerbConjugationPipe } from './verb-conjugation.pipe';
     ReverseArrayPipe,
     ConvertToPercentPipe,
     WordsFilterPipe,
-    WordMenuPipe
+    WordMenuPipe,
+    ConjugationTemplatePipe
   ],
   declarations: [
     ReverseArrayPipe,
     ConvertToPercentPipe,
     WordsFilterPipe,
     WordMenuPipe,
-    VerbConjugationPipe
+    VerbConjugationPipe,
+    ConjugationTemplatePipe
   ],
   providers: [],
 })

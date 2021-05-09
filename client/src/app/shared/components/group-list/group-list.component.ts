@@ -11,6 +11,7 @@ import { FormControl } from '@angular/forms';
 export class GroupListComponent {
   groupControl = new FormControl('');
   @Input() groups: WordGroup[];
+  @Input() size: 'tiny' | 'small' | 'medium'| 'large' | 'giant' = 'small';
   @Input() set selectedGroup(group: WordGroup) {
     if (group) {
       this.groupControl.patchValue(group._id);

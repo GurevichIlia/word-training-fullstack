@@ -20,6 +20,7 @@ import { WordCardBodyComponent } from './train/word-card-body/word-card-body.com
 import { VerbCardBodyComponent } from './train/verb-card-body/verb-card-body.component';
 import { VerbTableRowComponent } from './train/verb-table-row/verb-table-row.component';
 import { ToggleModule } from 'src/app/shared/components/toggle/toggle.module';
+import { VerbTableRowModule } from './train/verb-table-row/verb-table-row.module';
 
 
 
@@ -47,7 +48,6 @@ const wordtrainingRoutes: Routes = [
     CardBodyComponent,
     WordCardBodyComponent,
     VerbCardBodyComponent,
-    VerbTableRowComponent,
   ],
   imports: [
     CommonModule,
@@ -61,7 +61,8 @@ const wordtrainingRoutes: Routes = [
 
     NbCardModule,
     NbButtonModule,
-    ToggleModule
+    ToggleModule,
+    VerbTableRowModule
 
   ],
   providers: [

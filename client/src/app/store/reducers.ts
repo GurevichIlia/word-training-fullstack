@@ -1,3 +1,4 @@
+import { ConjugationsEffects } from './effects/conjugations.effects';
 import { Type } from '@angular/core';
 import { ActionReducerMap, MetaReducer } from '@ngrx/store';
 import { environment } from 'src/environments/environment';
@@ -16,6 +17,8 @@ import { languagesReducer } from '../store/reducers/languages.reducers';
 import { LanguagesStateInterface } from '../modules/languages/types/languages.interfaces';
 import { generalWordsReducer, IGeneralWordsState } from './reducers/general-words.reducer';
 import { LanguagesEffects } from './effects/languages.effects';
+import { ConjugationsState } from '../modules/conjugations/models/conjugations.interface';
+import { conjugationsReducer } from './reducers/conjugations.reducer';
 
 
 
@@ -27,7 +30,8 @@ export interface AppStateInterface {
   generalWords: IGeneralWordsState,
   languages: LanguagesStateInterface,
   vocabulary: VocabularyStateInterface,
-  generalState: GeneralStateInterface
+  generalState: GeneralStateInterface,
+  conjugations: ConjugationsState
 }
 
 export const reducers: ActionReducerMap<AppStateInterface> = {
@@ -36,7 +40,8 @@ export const reducers: ActionReducerMap<AppStateInterface> = {
   generalWords: generalWordsReducer,
   wordTraining: wordTrainingReducer,
   vocabulary: vocabularyReducer,
-  generalState: generalReducer
+  generalState: generalReducer,
+  conjugations: conjugationsReducer
 };
 
 export const metaReducers: MetaReducer<AppStateInterface>[] = !environment.production ? [] : [];
@@ -60,7 +65,8 @@ export const getGeneralStateEffects = (): Type<any>[] => {
     WordsEffects,
     LanguagesEffects,
     GeneralWordsEffects,
-    WordTrainingEffects
+    WordTrainingEffects,
+    ConjugationsEffects
   ]
 }
 // export function getInititalState() {

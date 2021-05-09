@@ -16,7 +16,7 @@ export class GeneralEffects {
   // isUpdateData$ = createEffect(() => this.actions$.pipe(
   //   ofType(GeneralActionsType.UPDATE_GROUPS_AND_WORDS),
   //   tap(({ isUpdate }: { isUpdate: boolean }) => {
-  //     debugger
+  //
   //     if (isUpdate) {
 
   //       this.store$.dispatch(fetchWordsAction())

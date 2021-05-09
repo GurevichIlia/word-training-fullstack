@@ -1,23 +1,23 @@
 import { createAction, props } from '@ngrx/store';
-import { GeneralWord } from 'src/app/modules/general-words/types/general-words.interfaces';
+import { VerbWithConjugations } from 'src/app/modules/conjugations/models/conjugations.interface';
 
 export enum ConjugationsActionsType {
-  FetchGeneralConjugations = '[Conjugations] Fetch conjugations',
-  FetchGeneralConjugationsSuccess = '[Conjugations] Fetch conjugations success',
-  FetchGeneralConjugationsError = '[Conjugations] Fetch gconjugations error',
+  FetchConjugations = '[Conjugations] Fetch conjugations',
+  FetchConjugationsSuccess = '[Conjugations] Fetch conjugations success',
+  FetchConjugationsError = '[Conjugations] Fetch gconjugations error',
 
-  FetchGeneralConjugationsFromCSV = '[Conjugations] Fetch conjugations',
-  FetchGeneralConjugationsromCSVSuccess = '[Conjugations] Fetch conjugations success',
-  FetchGeneralConjugationsromCSVError = '[Conjugations] Fetch gconjugations error',
+  FetchConjugationsFromCSV = '[Conjugations] Fetch conjugations',
+  FetchConjugationsromCSVSuccess = '[Conjugations] Fetch conjugations success',
+  FetchConjugationsromCSVError = '[Conjugations] Fetch gconjugations error',
 }
 
 
-export const fetchConjugationsAction = createAction(ConjugationsActionsType.FetchGeneralConjugations, props<{ verbs: string }>());
-export const fetchConjugationsSuccessAction = createAction(ConjugationsActionsType.FetchGeneralConjugationsSuccess,
-  props<{ conjugations: GeneralWord[] }>());
-export const fetchConjugationsErrorAction = createAction(ConjugationsActionsType.FetchGeneralConjugationsError, props<{ error: string }>());
+export const fetchConjugationsAction = createAction(ConjugationsActionsType.FetchConjugations, props<{ verbs: string }>());
+export const fetchConjugationsSuccessAction = createAction(ConjugationsActionsType.FetchConjugationsSuccess,
+  props<{ verbs: VerbWithConjugations[] }>());
+export const fetchConjugationsErrorAction = createAction(ConjugationsActionsType.FetchConjugationsError, props<{ error: string }>());
 
-export const fetchConjugationsFromCSVAction = createAction(ConjugationsActionsType.FetchGeneralConjugations, props<{ file: File }>());
-export const fetchConjugationsFromCSVSuccessAction = createAction(ConjugationsActionsType.FetchGeneralConjugationsSuccess,
-  props<{ conjugations: GeneralWord[] }>());
-export const fetchConjugationsFromCSVErrorAction = createAction(ConjugationsActionsType.FetchGeneralConjugationsError, props<{ error: string }>());
+export const fetchConjugationsFromCSVAction = createAction(ConjugationsActionsType.FetchConjugations, props<{ file: File }>());
+export const fetchConjugationsFromCSVSuccessAction = createAction(ConjugationsActionsType.FetchConjugationsSuccess,
+  props<{ verbs: VerbWithConjugations[] }>());
+export const fetchConjugationsFromCSVErrorAction = createAction(ConjugationsActionsType.FetchConjugationsError, props<{ error: string }>());

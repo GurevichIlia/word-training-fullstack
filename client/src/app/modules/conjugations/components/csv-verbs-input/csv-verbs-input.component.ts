@@ -9,7 +9,7 @@ import { ConjugationsFacade } from '../../conjugations.facade';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CsvVerbsInputComponent {
-  csvLoading$: Observable<boolean> = this.conjugationsFacade.csvLoading$;
+  csvLoading$: Observable<boolean> = this.conjugationsFacade.isLoading$;
   isResetCsvHandlerState$: Observable<boolean> = this.conjugationsFacade.isResetCsvHandlerState$;
 
   constructor(

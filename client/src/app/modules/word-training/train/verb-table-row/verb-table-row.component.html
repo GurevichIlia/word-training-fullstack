@@ -18,7 +18,7 @@
       <span class="conj" *ngIf="showText">{{conjugation?.value}}</span>
       <span class="question-mark" *ngIf="!showText">? ? ? ?</span>
     </div>
-    <div class="col-1">
+    <div class="col-1" *ngIf="isShowEyeIcon">
       <i *ngIf="showText" (click)="showToggle()" class="fas fa-eye-slash icon"></i>
       <i *ngIf="!showText" (click)="showToggle()" class="fas fa-eye icon"></i>
     </div>

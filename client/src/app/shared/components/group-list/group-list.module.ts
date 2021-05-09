@@ -5,13 +5,15 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
 import { GroupListComponent } from './group-list.component';
+import { NbSelectModule } from '@nebular/theme';
 
 @NgModule({
   imports: [
     CommonModule,
     MatFormFieldModule,
     MatSelectModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NbSelectModule
   ],
   exports: [
     GroupListComponent

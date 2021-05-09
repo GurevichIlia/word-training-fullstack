@@ -1,3 +1,4 @@
+import { Conjugation } from '../modules/conjugations/models/conjugations.interface';
 import { LanguageInterface } from '../modules/languages/types/languages.interfaces';
 
 export interface CurrentUserInterface {
@@ -16,7 +17,7 @@ export interface LanguageInCurrentUser {
   _id?: string;
 }
 
-export interface Word extends Verb {
+export interface Word {
   word: string;
   translation: string;
   isFavorite?: boolean | null;
@@ -27,33 +28,18 @@ export interface Word extends Verb {
   date?: string;
   isShared: boolean
 }
-export type VerbTime = 'past' | 'present' | 'future'
 
-export interface Verb {
-  conjugations: {
-    past?: Conjugation,
-    present?: Conjugation,
-    future?: Conjugation
-  }
+
+export interface Verb extends Word {
+  isVerb: boolean,
+  conjugations: Conjugation[]
 }
 
 export interface FetchVerbsResponseData {
   verbs: Verb[]
 }
 
-export interface Conjugation {
-  verb: string
-  time: VerbTime
-  i: string | null;
-  you_male: string | null;
-  you_female: string | null
-  he: string | null
-  she: string | null
-  we: string | null
-  you_plural: string | null
-  they: string | null
 
-}
 
 
 export class WordGroup {

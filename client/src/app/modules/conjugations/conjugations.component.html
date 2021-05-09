@@ -5,18 +5,16 @@
       <span> Find conjugations for hebrew verbs.</span>
     </div>
 
-
   </nb-card-header>
   <nb-card-body class="p-3">
 
     <section class="settings mb-3">
       <div class="d-flex justify-content-between">
-        <nb-checkbox status="basic" (checkedChange)="isShowUploader = !isShowUploader">CSV</nb-checkbox>
-        <nb-checkbox status="basic">Past</nb-checkbox>
-        <nb-checkbox status="basic">Present</nb-checkbox>
-        <nb-checkbox status="basic">Future</nb-checkbox>
+        <nb-checkbox [disabled]="true" [attr.title]="'Will be soon'" status="basic" (checkedChange)="isShowUploader = !isShowUploader">CSV</nb-checkbox>
+        <nb-checkbox [disabled]="true" [attr.title]="'Will be soon'"  status="basic">Past</nb-checkbox>
+        <nb-checkbox [disabled]="true" [attr.title]="'Will be soon'" status="basic">Present</nb-checkbox>
+        <nb-checkbox [disabled]="true" [attr.title]="'Will be soon'" [checked]="true" status="basic">Future</nb-checkbox>
       </div>
-
     </section>
 
     <section class="verb-input" *ngIf="!isShowUploader">
@@ -27,9 +25,9 @@
       <app-csv-verbs-input></app-csv-verbs-input>
     </section>
 
-    <section class="result-conjugations-list">
-
-    </section>
-
   </nb-card-body>
 </nb-card>
+
+<section class="result-conjugations-list">
+  <app-conjugations-list></app-conjugations-list>
+</section>

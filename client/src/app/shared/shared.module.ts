@@ -1,5 +1,3 @@
-import { ModalUiModule } from 'src/app/shared/components/modal-ui/modal-ui.module';
-import { ModalUiComponent } from './components/modal-ui/modal-ui.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -20,8 +18,9 @@ import {
   NbProgressBarModule, NbSelectModule, NbSpinnerModule,
   NbThemeModule, NbUserModule
 } from '@nebular/theme';
-
+import { ModalUiModule } from 'src/app/shared/components/modal-ui/modal-ui.module';
 import { AskQuestionComponent } from './modals/ask-question/ask-question.component';
+
 
 
 

@@ -27,8 +27,8 @@
       <div class="d-flex">
         <a *ngIf="selectedGroup._id !== '2'" (click)="openModal('New word', modalUiWrapper)"
           class="custom-button light add-word-btn mb-3 w-100">Add word</a>
-        <a [routerLink]="['/conjugations']"> <i class="fas fa-list-alt"></i></a>
-        <a [routerLink]="['/translator']">  <i class="fas fa-language" ></i></a>
+        <a [routerLink]="['/conjugations']" *ngIf="isShowVerbsToggle$ | async"> <i class="fas fa-list-alt"></i></a>
+        <!-- <a [routerLink]="['/translator']">  <i class="fas fa-language" ></i></a> -->
 
         <i *ngIf="selectedGroup._id !== '2'" class="fas fa-file-csv" (click)="showUploader()"></i>
 

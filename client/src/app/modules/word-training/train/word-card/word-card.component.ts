@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { Word } from 'src/app/shared/interfaces';
+import { Word, Verb } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-word-card',
@@ -9,7 +9,7 @@ import { Word } from 'src/app/shared/interfaces';
 export class WordCardComponent {
   isFlipped = false
   @ViewChild('frontCard') frontCard
-  @Input() word: Word;
+  @Input() word: Word | Verb;
   // @Output() favoriteToggle = new EventEmitter<Word>();
 
   // favorite(word: Word) {
@@ -21,6 +21,7 @@ export class WordCardComponent {
   }
 
   get isVerb(): boolean {
-    return this.word.conjugations !== undefined
+    const isVerb = 'conjugations' in this.word
+    return isVerb
   }
 }

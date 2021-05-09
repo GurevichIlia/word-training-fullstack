@@ -1,4 +1,3 @@
-import { AuthService } from 'src/app/modules/authorization/services/auth.service';
 import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Injectable, NgModule } from '@angular/core';
@@ -16,11 +15,11 @@ import { AppComponent } from './app.component';
 import { InstallSuggestionComponent } from './core/install-app/install-suggestion/install-suggestion.component';
 import { ServerErrorInterceptor } from './core/interceptors/server-error.interceptor';
 import { TokenInterceptorService } from './core/interceptors/token.interceptor';
+import { LEARNING_LANGUAGE_PROVIDER } from './core/tokens/learning-language.token';
 import { AuthorizationModule } from './modules/authorization/authorization.module';
+import { LoaderModule } from './shared/components/loader/loader.module';
 import { PersistanceService } from './shared/services/persistance.service';
 import { clearState, getGeneralStateEffects, reducers } from './store/reducers';
-import { LoaderModule } from './shared/components/loader/loader.module';
-import { LEARNING_LANGUAGE_PROVIDER } from './core/tokens/learning-language.token';
 
 
 @Injectable()

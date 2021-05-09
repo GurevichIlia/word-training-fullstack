@@ -3,7 +3,7 @@ import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Word, WordGroup } from '../interfaces';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UtilsService {
 
 
@@ -40,6 +40,17 @@ export class UtilsService {
 
     }
     return []
+  }
+
+  verbsForConjugationsParser(verbsAsString: string): string[] {
+
+    const verbs: string[] = verbsAsString.split(';')
+    const uniq: Set<string> = new Set(verbs)
+    const uniqVerbs = Array.from(uniq.values())
+      .filter(verb => Boolean(verb))
+      .map(verb => verb.trim())
+
+    return uniqVerbs
   }
 
 }
