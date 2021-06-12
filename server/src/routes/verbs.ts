@@ -28,15 +28,15 @@ export class VerbsRoutes {
                   },
                   this.verbsController.addVerbsFromCSV
             );
-            this.router.get(
-                  "/getConjugationForVerb",
+            this.router.post(
+                  "/getConjugationForVerbs",
                   passport.authenticate("jwt", { session: false }),
-                  this.verbsController.getConjugationForVerb
+                  this.verbsController.getConjugationForVerbs
             );
             this.router.post(
-                  "/saveVerb",
+                  "/saveVerbs",
                   passport.authenticate("jwt", { session: false }),
-                  this.verbsController.saveVerb
+                  this.verbsController.saveVerbs
             );
             this.router.post(
                   "/getConjugationForVerbFromCSV",

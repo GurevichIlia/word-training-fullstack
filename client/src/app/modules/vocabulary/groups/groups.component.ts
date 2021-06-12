@@ -12,7 +12,6 @@ import { AppStateInterface } from 'src/app/store/reducers';
 import { modalLoaderSelector, isCloseModalSelector } from 'src/app/store/selectors/vocabulary.selectors';
 import { GroupAction } from '../../../core/enums/group.enum';
 import { VocabularyFacade } from '../vocabulary.facade';
-import { NavigationService } from './../../../core/services/navigation.service';
 import { NotificationsService } from './../../../shared/services/notifications.service';
 import { addGroupToUserGroupsAction, deleteUserGroupAction } from './../../../store/actions/vocabulary.actions';
 import { openAssigningBottomSheetAction } from './../../../store/actions/vocabulary.actions';
@@ -59,15 +58,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
   }
 
   initializeValues() {
-    this.groups$ = this.vocabularyFacade.groups$
-
-    // this.vocabularyService.isUpdateGroups().pipe(
-    //   startWith(''),
-    //   tap(_ => {
-    //     this.store$.dispatch(fetchGroupsAction())
-    //   }),
-    //   switchMap(_ => this.store$.pipe(select(groupsSelector))),
-    // );
+    this.groups$ =  this.vocabularyFacade.groups$
 
     this.menuItems$ = this.vocabularyFacade.selectedGroup$.pipe(
       tap(selectedGroup => this.selectedGroup = selectedGroup),

@@ -1,7 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store'
-import { ConjugationsState } from 'src/app/modules/conjugations/models/conjugations.interface'
 import { AppStateInterface } from '../reducers'
-import { CONJUGATIONS_REDUCER_NODE } from '../reducers/conjugations.reducer'
+import { ConjugationsState, CONJUGATIONS_REDUCER_NODE } from '../reducers/conjugations.reducer'
 
 const featureSelector = createFeatureSelector<AppStateInterface, ConjugationsState>(CONJUGATIONS_REDUCER_NODE)
 
@@ -13,4 +12,19 @@ export const isLoadingSelector = createSelector(
 export const verbsWithConjugationsSelector = createSelector(
   featureSelector,
   state => state.verbs
+)
+
+export const selectedGroupSelector = createSelector(
+  featureSelector,
+  state => state.selectedGroup
+)
+
+export const addGroupModalLoadingSelector = createSelector(
+  featureSelector,
+  state => state.addGroupModalLoading
+)
+
+export const saveVerbsModalLoadingSelector = createSelector(
+  featureSelector,
+  state => state.saveVerbsModalLoading
 )

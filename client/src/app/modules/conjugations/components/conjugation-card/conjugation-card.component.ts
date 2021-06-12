@@ -1,3 +1,4 @@
+import { VerbTime } from 'src/app/modules/conjugations/models/conjugations.interface';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { VerbWithConjugations } from '../../models/conjugations.interface';
 
@@ -11,6 +12,7 @@ export class ConjugationCardComponent implements OnInit {
   @Input()
   verbWithConjugations: VerbWithConjugations
 
+  times: VerbTime[] = ['future', 'present', 'past']
   constructor() { }
 
   ngOnInit(): void {

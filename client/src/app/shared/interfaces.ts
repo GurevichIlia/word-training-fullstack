@@ -1,3 +1,5 @@
+import { FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { Conjugation } from '../modules/conjugations/models/conjugations.interface';
 import { LanguageInterface } from '../modules/languages/types/languages.interfaces';
 
@@ -24,6 +26,7 @@ export interface Word {
   readonly _id?: string;
   knowen?: boolean;
   levelKnowledge?: number;
+  isVerb: boolean,
   assignedGroups?: string[];
   date?: string;
   isShared: boolean
@@ -31,7 +34,6 @@ export interface Word {
 
 
 export interface Verb extends Word {
-  isVerb: boolean,
   conjugations: Conjugation[]
 }
 
@@ -39,14 +41,12 @@ export interface FetchVerbsResponseData {
   verbs: Verb[]
 }
 
-
-
-
 export class WordGroup {
   _id: string;
   name: string;
   wordQuantity: number;
   shareForAll: boolean;
+  isVerbsGroup: boolean;
   constructor({ _id, name, wordQuantity, shareForAll }) {
     this._id = _id,
       this.name = name,
@@ -56,6 +56,11 @@ export class WordGroup {
 
 }
 
+export interface TypedFormGroup<T> extends FormGroup {
+  value: T,
+  valueChanges: Observable<T>,
+  getRawValue(): T
+}
 
 
 

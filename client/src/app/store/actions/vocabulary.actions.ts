@@ -1,7 +1,7 @@
-import { BackendErrorInterface } from './../../core/models/general.model';
 import { createAction, props } from '@ngrx/store';
-import { Word, WordGroup } from 'src/app/shared/interfaces';
-import { WordTrainingActionsType } from './word-training.actions';
+import { Word } from 'src/app/shared/interfaces';
+import { BackendErrorInterface } from './../../core/models/general.model';
+import { WordGroup } from './../../shared/interfaces';
 
 export enum VocabularyActionsType {
   // WORDS ACTIONS
@@ -70,7 +70,10 @@ export enum VocabularyActionsType {
 
   UpdateGroupsQuantityInGroup = '[Vocabulary] update Groups quantity in group',
 
-  ShowVerbsToggle = '[Vocabulary] Show verbs for training toggle'
+  ShowVerbsToggle = '[Vocabulary] Show verbs for vocabulary toggle',
+
+  UpdateGroups = '[Vocabulary] Update groups',
+  UpdateWords = '[Vocabulary] Update words'
 
 }
 // WORDS ACTIONS
@@ -154,3 +157,14 @@ export const assignWordsToGroupSuccessAction = createAction(VocabularyActionsTyp
 export const assignWordsToGroupErrorAction = createAction(VocabularyActionsType.AssignWordsToGroupError, props<{ error: string }>());
 
 export const showVerbsInVocabularyToggleAction = createAction(VocabularyActionsType.ShowVerbsToggle);
+
+export const updateGroupsAction = createAction(
+  VocabularyActionsType.UpdateGroups,
+  props<{ groups: WordGroup[] }>()
+);
+
+export const updateWordsAction = createAction(
+  VocabularyActionsType.UpdateWords,
+  props<{ words: Word[] }>()
+);
+

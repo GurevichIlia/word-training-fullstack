@@ -13,8 +13,8 @@ export class GroupsApiService {
 
   }
 
-  saveGroup(name: string, id: string = '') {
-    return this.http.post<ISaveGroupResponse>(`${BASE_URL}/api/word-group/create`, { group: { name, id } });
+  saveGroup(name: string, id: string = '', isVerbsGroup: boolean = false) {
+    return this.http.post<ISaveGroupResponse>(`${BASE_URL}/api/word-group/create`, { group: { name, id, isVerbsGroup } });
   }
 
   deleteWordGroup(groupId: string) {

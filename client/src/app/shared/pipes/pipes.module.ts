@@ -5,6 +5,7 @@ import { WordsFilterPipe } from './words-filter.pipe';
 import { WordMenuPipe } from './word-menu.pipe';
 import { VerbConjugationPipe } from './verb-conjugation.pipe';
 import { ConjugationTemplatePipe } from './conjugation-template.pipe';
+import { VerbTimePipe } from './verb-time.pipe';
 
 
 
@@ -15,7 +16,8 @@ import { ConjugationTemplatePipe } from './conjugation-template.pipe';
     ConvertToPercentPipe,
     WordsFilterPipe,
     WordMenuPipe,
-    ConjugationTemplatePipe
+    ConjugationTemplatePipe,
+    VerbTimePipe
   ],
   declarations: [
     ReverseArrayPipe,
@@ -23,7 +25,8 @@ import { ConjugationTemplatePipe } from './conjugation-template.pipe';
     WordsFilterPipe,
     WordMenuPipe,
     VerbConjugationPipe,
-    ConjugationTemplatePipe
+    ConjugationTemplatePipe,
+    VerbTimePipe
   ],
   providers: [],
 })

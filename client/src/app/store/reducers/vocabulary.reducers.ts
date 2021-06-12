@@ -1,5 +1,7 @@
+import { All, defaultGroups } from './../../core/models/groups.model';
+import { updateWordsAction } from './../actions/vocabulary.actions';
 import { DefaultGroupId } from './../../core/enums/group.enum';
-import { addWordsFromCsvErrorAction, deleteUserWordFromGroupAction, deleteUserWordFromGroupErrorAction, deleteUserWordFromGroupSuccessAction, selectVocabularyGroupAction } from 'src/app/store/actions/vocabulary.actions';
+import { addWordsFromCsvErrorAction, deleteUserWordFromGroupAction, deleteUserWordFromGroupErrorAction, deleteUserWordFromGroupSuccessAction, selectVocabularyGroupAction, updateGroupsAction } from 'src/app/store/actions/vocabulary.actions';
 import { BackendErrorInterface } from './../../core/models/general.model';
 import { Action, createReducer, on } from '@ngrx/store';
 import { ReducerNode } from '../../core/enums/store.enum';
@@ -318,6 +320,14 @@ const reducers = createReducer(
 
     })
   ),
+  on(
+    updateGroupsAction,
+    (state, action): VocabularyStateInterface => ({
+      ...state,
+      userGroups: action.groups
+
+    })
+  ),
   // GROUPS ACTIONS
   on(
     fetchGroupsAction,
@@ -475,7 +485,16 @@ const reducers = createReducer(
     showVerbsInVocabularyToggleAction,
     (state, action): VocabularyStateInterface => ({
       ...state,
+      selectedGroup: defaultGroups[All],
       isVerbs: !state.isVerbs
+    })
+  ),
+  on(
+    updateWordsAction,
+    (state, action): VocabularyStateInterface => ({
+      ...state,
+      userWords: action.words
+
     })
   ),
 

@@ -1,7 +1,7 @@
-import { Conjugation } from 'src/app/modules/conjugations/models/conjugations.interface';
+import { Conjugation, PresentConjugation } from 'src/app/modules/conjugations/models/conjugations.interface';
 
 export interface ConjugationTemplate {
-  pronoun: keyof Conjugation
+  pronoun: keyof (Conjugation & PresentConjugation)
   hebPronoun: string
   value: string
 }
@@ -46,6 +46,29 @@ export const CONJUGATION_TEMPLATE_MODEL: ConjugationTemplate[] = [
   {
     pronoun: 'they',
     hebPronoun: 'הם / הן',
+    value: ''
+  }
+]
+
+export const CONJUGATION_TEMPLATE_PRESENT_TIME_MODEL: ConjugationTemplate[] = [
+  {
+    pronoun: 'singularMan',
+    hebPronoun: 'זבר',
+    value: ''
+  },
+  {
+    pronoun: 'singularFem',
+    hebPronoun: 'נקבה',
+    value: ''
+  },
+  {
+    pronoun: 'pluralMan',
+    hebPronoun: 'רבים',
+    value: ''
+  },
+  {
+    pronoun: 'pluralFem',
+    hebPronoun: 'רבות',
     value: ''
   }
 ]

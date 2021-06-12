@@ -1,4 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { getWordQuantity } from 'src/app/core/utils/get-word-quantity';
 import { AppStateInterface } from 'src/app/store/reducers';
 import { VocabularyStateInterface, VOCABULARY_REDUCER_NODE } from '../reducers/vocabulary.reducers';
 
@@ -66,7 +67,8 @@ export const isBottomSheetLoadingSelector = createSelector(
 
 export const groupsSelector = createSelector(
   featureSelector,
-  state => state.userGroups
+  (state, isVerbs: boolean) => getWordQuantity(state.userGroups, state.userWords, isVerbs ?? state.isVerbs),
+
 )
 
 export const selectedGroupSelector = createSelector(

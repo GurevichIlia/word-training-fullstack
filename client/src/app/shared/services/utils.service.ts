@@ -1,3 +1,4 @@
+import { VerbWithConjugations, VerbWithConjugationsFromServer } from './../../modules/conjugations/models/conjugations.interface';
 import { Injectable } from '@angular/core';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -51,6 +52,11 @@ export class UtilsService {
       .map(verb => verb.trim())
 
     return uniqVerbs
+  }
+
+  convertVerbsFromServerToCorrectFormat(verbs: VerbWithConjugationsFromServer[]): VerbWithConjugations[] {
+
+    return verbs.map(verb => ({ ...verb, selected: true }))
   }
 
 }

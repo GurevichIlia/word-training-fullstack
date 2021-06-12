@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ConjugationsFacade } from '../../conjugations.facade';
 
@@ -9,15 +9,15 @@ import { ConjugationsFacade } from '../../conjugations.facade';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CsvVerbsInputComponent {
-  csvLoading$: Observable<boolean> = this.conjugationsFacade.isLoading$;
-  isResetCsvHandlerState$: Observable<boolean> = this.conjugationsFacade.isResetCsvHandlerState$;
-
+  readonly csvLoading$: Observable<boolean> = this.conjugationsFacade.isLoading$;
+  readonly isResetCsvHandlerState$: Observable<boolean> = this.conjugationsFacade.isResetVerbsInputs$;
+  @Output() readonly send = new EventEmitter<File>()
   constructor(
     private conjugationsFacade: ConjugationsFacade
   ) { }
 
   getConjugationsFromCsv(file: File): void {
-    this.conjugationsFacade.getConjugationsFromCsv(file)
+    this.send.emit(file)
   }
 
 }

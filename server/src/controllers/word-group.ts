@@ -41,27 +41,28 @@ export class WordGroupController {
             try {
                   const user = req.user as IRequestUserInfo
 
-                  const groupCondidate: { name: string, id: string, languageId: string } = req.body.group
+                  const groupCandidate: { name: string, id: string, languageId: string, isVerbsGroup: boolean } = req.body.group
 
-                  if (!groupCondidate) return
+                  if (!groupCandidate) return
 
                   let group: WordGroupModel;
 
-                  if (groupCondidate.id) {
+                  if (groupCandidate.id) {
 
-                        group = await WordGroup.findOneAndUpdate({ _id: groupCondidate.id }, { name: groupCondidate.name }, { new: true }) as WordGroupModel
+                        group = await WordGroup.findOneAndUpdate({ _id: groupCandidate.id }, { name: groupCandidate.name }, { new: true }) as WordGroupModel
 
                   } else {
 
                         group = await new WordGroup({
-                              name: groupCondidate.name,
-                              language: groupCondidate.languageId || user.currentLanguage?._id,
-                              user: req.user
+                              name: groupCandidate.name,
+                              language: groupCandidate.languageId || user.currentLanguage?._id,
+                              user: req.user,
+                              isVerbsGroup: groupCandidate?.isVerbsGroup
                         }).save();
                   }
 
                   const userGroups = await WordGroup.find({
-                        language: groupCondidate.languageId || user.currentLanguage?._id,
+                        language: groupCandidate.languageId || user.currentLanguage?._id,
                         user: user
                   });
 
@@ -141,9 +142,9 @@ export class WordGroupController {
             }
       }
 
- 
 
-    
+
+
       // public editWordGroupById = async (req: Request, res: Response) => {
       //       try {
       //             const editedWord = await Word.findOneAndUpdate(

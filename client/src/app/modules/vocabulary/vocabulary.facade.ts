@@ -32,7 +32,7 @@ import { groupsSelector, isShowOnlyVerbsInVocabularySelector } from './../../sto
 
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class VocabularyFacade {
   isShowVerbsToggle$: Observable<boolean> = this.store$.pipe(select(currentLanguageSelector), map(lang => lang.name === 'Hebrew'))
   words$ = this.store$.pipe(select(isShowOnlyVerbsInVocabularySelector),
@@ -67,8 +67,14 @@ export class VocabularyFacade {
   }
 
   get groups$(): Observable<WordGroup[]> {
-    return this.store$.pipe(
-      select(groupsSelector)
+    return this.isShowVerbs$.pipe(switchMap(isShowOnlyVerbs => {
+
+      if (isShowOnlyVerbs) {
+        return this.store$.pipe(select(groupsSelector), map(groups => groups.filter(group => group.isVerbsGroup || group._id === '1' || group._id === '2')))
+      }
+
+      return this.store$.pipe(select(groupsSelector))
+    })
     )
   }
 
@@ -221,7 +227,5 @@ export class VocabularyFacade {
   showVerbsToggle(): void {
     this.store$.dispatch(showVerbsInVocabularyToggleAction())
   }
-
-
 
 }

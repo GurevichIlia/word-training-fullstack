@@ -24,18 +24,19 @@ export interface WordModel extends Document, VerbModel {
       levelKnowledge: number;
       assignedGroups: string[];
       language: Object,
-      date: string
+      date: string,
+      isVerb: boolean
+
 }
 
 export interface VerbModel {
       conjugations: {
             past?: Conjugation
-            present?: Conjugation
+            present?: PresentConjugation
             future?: Conjugation
-      }
-
-
+      },
 }
+
 export interface VerbFromCSV extends Conjugation {
       translation: string
 }
@@ -44,9 +45,9 @@ export interface VerbForConjugation {
       word: string
 }
 
-export interface Conjugation {
+export interface Conjugation<T = VerbTime> {
       verb: string
-      time: VerbTime
+      time: T
       i: string | null;
       you_male: string | null;
       you_female: string | null
@@ -56,6 +57,14 @@ export interface Conjugation {
       you_plural: string | null
       they: string | null
 
+}
+
+export interface PresentConjugation {
+      time: 'present'
+      singularMan: string
+      singularFem: string
+      pluralMan: string
+      pluralFem: string
 }
 
 export type VerbTime = 'past' | 'present' | 'future'
@@ -88,7 +97,8 @@ export interface WordGroupModel extends Document {
       name: string,
       wordQuantity: number,
       shareForAll: boolean;
-      language: string
+      language: string;
+      isVerbsGroup: boolean
 }
 
 export interface GeneralWord extends Document {
@@ -122,6 +132,41 @@ export interface LearningLanguageModel extends Document {
       userId: string
 }
 
+export type VerbWithConjugations = Pick<VerbWithConjugationModel, 'verb' | 'past' | 'present' | 'future'>
+
 export type IUserWord = Pick<WordModel, '_id' | 'translation' | 'word' | 'isFavorite' | 'levelKnowledge' | 'assignedGroups' | 'language' | 'date'>
 export type IUserWordGroup = Pick<WordGroupModel, '_id' | 'name' | 'wordQuantity' | 'shareForAll' | 'language'>
+
+export interface VerbWithConjugationModel extends Document {
+      verb: string;
+      past?: Conjugation;
+      present?: PresentConjugation;
+      future?: Conjugation;
+      _id: string
+}
+
+export interface VerbsInCache extends Document {
+      verbsInCache: Map<string, VerbWithConjugations>
+}
+
+export interface RequestedVerbTime {
+      future?: boolean;
+      present?: boolean;
+      past?: boolean
+}
+
+export interface SaveVerbsRequestData {
+      verbs: VerbWithConjugationsForSave[],
+      assignedGroups: string[]
+}
+
+export interface VerbWithConjugationsForSave {
+      selected: boolean;
+      verb: string;
+      translation: string;
+      past?: Conjugation;
+      present?: PresentConjugation;
+      future?: Conjugation;
+}
+
 

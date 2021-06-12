@@ -8,6 +8,7 @@ import { Word, WordGroup } from 'src/app/shared/interfaces';
 import { AskQuestionComponent } from 'src/app/shared/modals/ask-question/ask-question.component';
 import { ApiWordsService } from 'src/app/shared/services/api/api-words.service';
 import { ModalService } from 'src/app/shared/services/modal.service';
+import { replaceNekudot } from '../utils/replace-nikudot';
 import { IModalData } from './../../shared/modals/ask-question/ask-question.component';
 import { NotificationsService } from './../../shared/services/notifications.service';
 import { DefaultGroupId } from './../enums/group.enum';
@@ -183,7 +184,7 @@ export class WordsService {
     if (searchValue) {
 
       return words.filter(word =>
-        word.word?.toLowerCase().includes(searchValue.toLowerCase()) ||
+        replaceNekudot(word.word?.toLowerCase()).includes(replaceNekudot(searchValue.toLowerCase())) ||
         word.translation?.toLowerCase().includes(searchValue.toLowerCase())
       );
 
@@ -233,10 +234,12 @@ export class WordsService {
 
   verbsFilter(words$: Observable<Word[]>, isShowOnlyVerbs: boolean): Observable<Word[]> {
     if (isShowOnlyVerbs) {
-      return words$.pipe(map(words => words?.filter(word => WordTraining.isVerb(word))))
+      return words$.pipe(map(words => {
+        return words?.filter(word => word.isVerb)
+      }))
     }
 
-    return words$.pipe(map(words => words?.filter(word => !WordTraining.isVerb(word))))
+    return words$
 
   }
 }

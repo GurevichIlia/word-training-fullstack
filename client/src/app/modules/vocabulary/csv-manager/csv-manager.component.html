@@ -12,9 +12,11 @@
     <input #fileInput type="file" (change)="showFile(fileInput.files[0])" multi name="uploadFile" hidden>
 
 
-    <a [ngClass]="{'disabled': isLoading}" *ngIf=" selectedFile" (click)="onUpload(fileInput.files[0])"
+    <a [ngClass]="{'disabled': isLoading}" *ngIf="selectedFile && !isLoading" (click)="onUpload(fileInput.files[0])"
       class="custom-button dark mb-3 w-50">Upload</a>
-    <app-loader [show]="isLoading"></app-loader>
+    <a class="custom-button light get-conjugations-btn w-50" [ngClass]="{'disabled': true}"  *ngIf="isLoading">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    </a>
   </section>
 
 </mat-expansion-panel>

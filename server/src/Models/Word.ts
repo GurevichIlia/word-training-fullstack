@@ -42,9 +42,13 @@ const wordSchema = new Schema({
         ref: "users",
         type: Schema.Types.ObjectId
     },
+    isVerb: {
+        type: Boolean,
+        default: false
+    },
     conjugations: {
         type: Object
-  }
+    }
 });
 
 const Word = mongoose.model<WordModel>("words", wordSchema);

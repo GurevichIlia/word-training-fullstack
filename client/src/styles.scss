@@ -4,6 +4,10 @@
 @import './styles/variables.scss';
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
+:root {
+  --button-font-size: 13px
+}
+
 * {
   font-family: 'Lato', 'Font Awesome 5 Free', sans-serif !important;
 
@@ -164,10 +168,11 @@ html {
 
 
 .custom-button {
+  font-size: var(--button-font-size) !important;
   display: block;
   text-transform: capitalize;
   font-weight: 600 !important;
-  padding: 7px 7px;
+  padding: 5px 7px;
   border-radius: 5px;
   // background-color: #f5893de0;
   box-shadow: 0px 1px 7px 0px #a2a0a08c;
@@ -226,7 +231,7 @@ html {
 }
 
 .submit-button {
-  @include btn-color($btn-dark-background-color,  $btn-light-color);
+  @include btn-color($btn-dark-background-color, $btn-light-color);
   border-color: $btn-dark-background-color !important;
   box-shadow: 0px 1px 7px 0px #a2a0a08c;
 
@@ -269,7 +274,7 @@ nb-card-body {
     color: $titleColor;
   }
 
-  a{
+  a {
     color: #252527;
     font-weight: 700;
   }

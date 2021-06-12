@@ -1,7 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ConjugationsFacade } from '../../conjugations.facade';
-import { VerbWithConjugations } from '../../models/conjugations.interface';
+import { ChangeDetectionStrategy, Component, Input, TemplateRef } from '@angular/core';
+import { VerbWithConjugations } from 'src/app/modules/conjugations/models/conjugations.interface';
+import { Word } from 'src/app/shared/interfaces';
+import { UtilsService } from 'src/app/shared/services/utils.service';
+import { ConjugationCardComponent } from './../conjugation-card/conjugation-card.component';
 
 @Component({
   selector: 'app-conjugations-list',
@@ -9,13 +10,32 @@ import { VerbWithConjugations } from '../../models/conjugations.interface';
   styleUrls: ['./conjugations-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ConjugationsListComponent implements OnInit {
-  verbs$: Observable<VerbWithConjugations[]> = this.conjugationsFacade.verbs$
-  constructor(
-    private conjugationsFacade: ConjugationsFacade
-  ) { }
+export class ConjugationsListComponent {
+  @Input()
+  conjugationCardRef: TemplateRef<ConjugationCardComponent>
+  @Input()
+  verbs: VerbWithConjugations[]
 
-  ngOnInit(): void {
+  private _showItems: number = 15
+  trackWords: (index: number, word: Word) => string
+
+  constructor(private utilsService: UtilsService) {
+    this.trackWords = this.utilsService.trackBy
   }
+  get showItems() {
+    return this._showItems
+  }
+
+  public onScroll() {
+    console.log('SCROLL')
+    this.showMoreWords();
+  }
+
+  private showMoreWords() {
+    this._showItems += 15;
+  }
+
+
+
 
 }

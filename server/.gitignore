@@ -4,3 +4,5 @@ keys.dev.ts
 keys.prod.ts
 output.pdf
 token.json
+
+/data

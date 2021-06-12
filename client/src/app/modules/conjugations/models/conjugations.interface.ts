@@ -1,7 +1,15 @@
-import { BackendErrorInterface } from 'src/app/core';
+import { Word } from 'src/app/shared/interfaces';
+import { WordGroup } from './../../../shared/interfaces';
 
 export interface GetConjugationsResponse {
-  verbs: VerbWithConjugations[]
+  verbs: VerbWithConjugationsFromServer[]
+}
+
+export interface VerbWithConjugationsFromServer {
+  verb: string;
+  past?: Conjugation;
+  present?: PresentConjugation;
+  future?: Conjugation;
 }
 
 export type VerbTime = 'past' | 'present' | 'future'
@@ -17,16 +25,38 @@ export interface Conjugation {
   we: string | null
   you_plural: string | null
   they: string | null
+}
 
+export interface PresentConjugation {
+  time: 'present'
+  singularMan: string
+  singularFem: string
+  pluralMan: string
+  pluralFem: string
 }
 
 export interface VerbWithConjugations {
-  verb: string,
-  conjugations: Conjugation[]
+  verb: string;
+  selected: boolean,
+  past?: Conjugation;
+  present?: PresentConjugation;
+  future?: Conjugation;
 }
 
-export interface ConjugationsState {
-  error: BackendErrorInterface | string | null,
-  verbs: VerbWithConjugations[]
-  isLoading: boolean
+export interface VerbOptions {
+  present: boolean,
+  past: boolean,
+  future: boolean
 }
+
+export interface SaveVerbsResponse {
+  words: Word[];
+  groups: WordGroup[];
+}
+
+export interface SaveVerbsRequestData extends VerbWithConjugations {
+  translation?: string;
+
+}
+
+export type ModalName = 'add-new-group-modal' | 'save-verbs-modal'

@@ -12,15 +12,15 @@
 
         </app-search>
       </span>
-
-      <ng-container *ngIf="isShowVerbsToggle$ | async">
-        <span class="d-block verb-toggle" (click)="onShowOnlyVerbs()">{{(isShowOnlyVerbs$ | async) ? 'All' : 'Verbs'}} </span>
-      </ng-container>
     </div>
    </nb-card-header>
   <nb-card-body class="p-3">
 
-  <app-groups></app-groups>
+  <app-groups>
+    <ng-container word-type-toggle *ngIf="isShowVerbsToggle$ | async">
+      <span class="d-block verb-toggle" (click)="onShowOnlyVerbs()">{{(isShowOnlyVerbs$ | async) ? 'All' : 'Verbs'}} </span>
+    </ng-container>
+  </app-groups>
 
 
     <ng-container *ngIf="(selectedGroup$ | async ) as selectedGroup">

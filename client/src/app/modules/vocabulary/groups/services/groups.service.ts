@@ -1,14 +1,13 @@
-import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
-import { GeneralFacade } from '../../../../general.facade';
 import { Injectable } from '@angular/core';
 import { NbDialogService } from '@nebular/theme';
-import { EMPTY, Observable } from 'rxjs';
-import { map, switchMap, shareReplay } from 'rxjs/operators';
-import { GroupMenuItem, MenuItem } from 'src/app/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { GroupMenuItem } from 'src/app/core';
+import { LanguageInterface } from 'src/app/modules/languages/types/languages.interfaces';
+import { GroupsApiService } from 'src/app/modules/vocabulary/groups/services/groups-api.service';
 import { WordGroup } from 'src/app/shared/interfaces';
 import { AskQuestionComponent } from 'src/app/shared/modals/ask-question/ask-question.component';
-import { GroupsApiService } from 'src/app/modules/vocabulary/groups/services/groups-api.service';
-import { GroupAction, DefaultGroupId } from '../../../../core/enums';
+import { DefaultGroupId, GroupAction } from '../../../../core/enums';
 import { ISaveGroupResponse } from '../types/groups-state.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -26,10 +25,10 @@ export class GroupsService {
 
   }
 
-  saveGroup(name: string, selectedGroup?: WordGroup): Observable<ISaveGroupResponse> {
+  saveGroup(name: string, selectedGroup: WordGroup = null, isVerbsGroup: boolean = false): Observable<ISaveGroupResponse> {
     const groupId = selectedGroup ? selectedGroup._id : '';
 
-    return this.groupsApi.saveGroup(name, groupId)
+    return this.groupsApi.saveGroup(name, groupId, isVerbsGroup)
   }
 
   deleteWordGroup(group: WordGroup): Observable<WordGroup[]> {
@@ -56,7 +55,7 @@ export class GroupsService {
   }
 
   isDefaultGroup(selectedGroup: WordGroup): boolean {
-    if(!selectedGroup) return
+    if (!selectedGroup) return
     return (selectedGroup._id === DefaultGroupId.ALL_WORDS || selectedGroup._id === DefaultGroupId.FAVORITES) ? true : false;
 
   }

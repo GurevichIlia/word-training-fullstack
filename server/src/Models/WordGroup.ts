@@ -3,17 +3,17 @@ import { WordGroupModel } from "../interfaces";
 
 export const ALL_WORDS_GROUP: Partial<WordGroupModel> =
 {
-  _id: '1',
-  name: 'All',
-  wordQuantity: 0,
-  shareForAll: false
+      _id: '1',
+      name: 'All',
+      wordQuantity: 0,
+      shareForAll: false
 };
 export const FAVORITES: Partial<WordGroupModel> =
 {
-  _id: '2',
-  name: 'Favorites',
-  wordQuantity: 0,
-  shareForAll: false,
+      _id: '2',
+      name: 'Favorites',
+      wordQuantity: 0,
+      shareForAll: false,
 };
 
 const Schema = mongoose.Schema;
@@ -38,6 +38,10 @@ const wordGroupSchema = new Schema({
       user: {
             ref: "users",
             type: Schema.Types.ObjectId
+      },
+      isVerbsGroup: {
+            type: Boolean,
+            default: false
       }
 });
 

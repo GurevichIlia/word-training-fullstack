@@ -22,8 +22,15 @@ export class NavigationService {
       filter(e => e instanceof NavigationEnd),
       map((e: NavigationEnd) => {
         if (this.isCurrentLocation(e, 'vocabulary')) {
+
           return 'Vocabulary';
         }
+
+        if (this.isCurrentLocation(e, 'conjugations')) {
+
+          return 'Vocabulary';
+        }
+
 
         if (this.isCurrentLocation(e, 'word-training')) {
           if (this.isCurrentLocation(e, 'train-result')) {

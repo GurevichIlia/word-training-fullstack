@@ -57,9 +57,13 @@ export class WordTrainingFacade {
 
   get groups$(): Observable<WordGroup[]> {
     const ALL_WORDS = 0
-    return this.store$.pipe(select(groupsSelector),
-      filter(groups => groups !== null),
-      tap(groups => this.selectGroup(groups[ALL_WORDS])))
+    return this.isShowVerbs$.pipe(switchMap(isVerbs => {
+      debugger
+      return this.store$.pipe(select(groupsSelector, isVerbs),
+        filter(groups => groups?.length > 0 ),
+        tap(groups => this.selectGroup(groups[ALL_WORDS])))
+    }))
+
   }
 
   get allWords$(): Observable<Word[]> {

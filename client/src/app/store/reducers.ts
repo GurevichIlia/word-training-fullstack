@@ -17,8 +17,7 @@ import { languagesReducer } from '../store/reducers/languages.reducers';
 import { LanguagesStateInterface } from '../modules/languages/types/languages.interfaces';
 import { generalWordsReducer, IGeneralWordsState } from './reducers/general-words.reducer';
 import { LanguagesEffects } from './effects/languages.effects';
-import { ConjugationsState } from '../modules/conjugations/models/conjugations.interface';
-import { conjugationsReducer } from './reducers/conjugations.reducer';
+import { conjugationsReducer, ConjugationsState } from './reducers/conjugations.reducer';
 
 
 
